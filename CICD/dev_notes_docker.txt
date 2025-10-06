@@ -1,0 +1,300 @@
+how to make public Docker containers and make it easy to self host:
+
+
+--- dictionary container: ---
+sensitive files: config.json
+these files must be provided at container runtime from host machine
+
+--- flask container: ---
+no sensitive files yet
+
+--- express container: ---
+no sensitive files yet
+
+--- frontend container: ---
+sensitive files: config.json
+google tracking code must be in private config
+
+--- nginx ---
+nginx config needs to be copied to local instance
+and we should commit our self signed certs to repo, it is OK
+
+--- ansible ---
+we need to create ansible playbook to install stuff maybe - well just docker and nginx, so thats fine I guess
+
+
+
+
+// --------------------------------------------------------------- //
+
+
+ACCESS TOKEN DESCRIPTION
+token for zenbook laptop VM
+ACCESS PERMISSIONS
+Read, Write, Delete
+To use the access token from your Docker CLI client:
+
+1. Run docker login -u coil
+
+2. At the password prompt, enter the personal access token.
+
+when you modify IPTABLES rules, you then need to restart docker daemon, 
+otherwise docker compose cannot create default docker network
+
+------------------------------------------------------
+
+on the zen-lingo server
+docker compose pull 
+to get newest image version
+
+
+cleanup stuff
+docker image prune -a --filter "until=24h"
+docker container prune --filter "until=24h"
+
+
+
+
+my private dockerhub repo
+docker push coil/zen-lingo:tagname
+
+
+we have followed this source and all worked:
+https://jsramblings.com/dockerizing-a-react-app/
+
+other tutorials that look nice
+https://www.knowledgehut.com/blog/web-development/how-to-dockerize-react-app
+https://dev.to/karanpratapsingh/dockerize-your-react-app-4j2e
+https://www.geeksforgeeks.org/how-to-dockerize-a-reactjs-app/
+https://docs.docker.com/docker-hub/repos/
+
+
+
+
+------------------------------------------------------
+
+Pushing a Docker container image to Docker Hub
+To push an image to Docker Hub, you must first name your local image using your Docker Hub username and the repository name that you created through Docker Hub on the web.
+
+You can add multiple images to a repository by adding a specific :<tag> to them (for example docs/base:testing). If it’s not specified, the tag defaults to latest.
+
+Name your local images using one of these methods:
+
+When you build them, using docker build -t <hub-user>/<repo-name>[:<tag>]
+By re-tagging an existing local image docker tag <existing-image> <hub-user>/<repo-name>[:<tag>]
+By using docker commit <existing-container> <hub-user>/<repo-name>[:<tag>] to commit changes
+Now you can push this repository to the registry designated by its name or tag.
+
+
+ docker push <hub-user>/<repo-name>:<tag>
+
+
+
+HOW TO RUN ON SERVER
+
+docker run -d \
+  -p 3000:3000 \
+  -e REACT_APP_HOST_IP=$(hostname -I | awk '{print $1}') \
+  --restart=unless-stopped \
+  coil/zen-lingo:frontend-next
+
+docker run -d \
+  -p 8000:8000 \
+  -e REACT_APP_HOST_IP=$(hostname -I | awk '{print $1}') \
+  --restart=unless-stopped \
+  coil/zen-lingo:express-db
+
+docker run -d   -p 5100:5100   -v /home/coil/user_db:/var/lib/mongodb --add-host=host.docker.internal:host-gateway --restart=unless-stopped coil/zen-lingo:flask-dynamic-db
+
+
+------------------------------------------------------
+
+NGINX
+nginx is installed locally for now 
+on dev VM go to localhost:8080 and it will redirect to https 
+and will link to containers on ports 3000 and 8000
+
+
+on hanabira server:
+-------------------
+docker pull coil/zen-lingo:express-db
+docker pull coil/zen-lingo:frontend-next
+docker pull coil/zen-lingo:flask-dynamic-db
+docker pull coil/zen-lingo:dictionary-db 
+
+# we might need to get rid of old db structure occasionally
+rm -rf /home/coil/user_db
+
+docker run -d   -p 8000:8000   -e REACT_APP_HOST_IP=$(hostname -I | awk '{print $1}')   --restart=unless-stopped   coil/zen-lingo:express-db
+docker run -d   -p 5100:5100   -v /home/coil/user_db:/data/db --add-host=host.docker.internal:host-gateway --restart=unless-stopped coil/zen-lingo:flask-dynamic-db
+docker run -d   -p 5200:5200   --add-host=host.docker.internal:host-gateway --restart=unless-stopped coil/zen-lingo:dictionary-db 
+docker run -d   -p 3000:3000   -e REACT_APP_HOST_IP=$(hostname -I | awk '{print $1}')   --restart=unless-stopped   coil/zen-lingo:frontend-next
+
+
+note: in Firefox on your dev ubuntu, you can right click on the page and make nice screenshots of divs, it can recognize them, lol 
+great feature for creating about page
+
+
+
+// -------------------------- BLUE PROD DEPLOYMENT ----------------------------- //
+
+
+
+// -------------------------- GREEN PROD DEPLOYMENT ---------------------------- //
+
+
+
+
+
+
+// ---------------------------------------------------------------------------- //
+// ------------------------- PUBLIC CONTAINER BUILDS -------------------------- //
+// ---------------------------------------------------------------------------- //
+
+
+Tested on Ubuntu based system
+
+Setup reverse NGINX proxy:
+sudo apt-get install nginx 
+sudo systemctl enable nginx 
+sudo systemctl start nginx 
+# put hanabira.org file into /etc/nginx/sites-enabled directory, also delete file called "default" so it is not conflicting our new config and restart nginx
+sudo systemctl restart nginx 
+sudo systemctl status nginx
+
+Install Docker:
+sudo apt-get install docker-compose
+sudo usermod -aG docker $USER
+(then reboot VM for the changes to take effect, there are options without reboot, this one is just easy)
+
+
+FRONTEND-NEXT
+-------------
+cd /home/coil/Desktop/zen-lingo-website/prod/frontend-next
+
+# have express backend running during build process
+export NODE_TLS_REJECT_UNAUTHORIZED=0 # to accept self signed certs since we have all http -> https on nginx
+npm run dev
+npm run build 
+# keep .next dir from build and let it copy to img during build process, 
+# otherwise SSR pages will not build properly, it needs likely to have acces to express backend during build 
+docker buildx build . -t coil/hanabira.org:frontend-next
+docker push coil/hanabira.org:frontend-next
+docker pull coil/hanabira.org:frontend-next
+docker run -p 3000:3000 coil/hanabira.org:frontend-next
+docker run -it  -p 3000:3000 -e GA_MEASUREMENT_ID="G-P4SLLVSNCX" -e REACT_APP_HOST_IP=$(hostname -I | awk '{print $1}') -v $(pwd)/config.json:/app/config.json coil/hanabira.org:frontend-next   
+docker run -d   -p 3000:3000 -e GA_MEASUREMENT_ID="G-P4SLLVSNCX" -e REACT_APP_HOST_IP=$(hostname -I | awk '{print $1}') -v $(pwd)/config.json:/app/config.json --restart=unless-stopped   coil/hanabira.org:frontend-next
+
+
+STATIC BACKEND EXPRESS+DB
+-------------------------
+cd /home/coil/Desktop/zen-lingo-website/prod/backend/express
+
+docker buildx build . -t coil/hanabira.org:express-db
+docker push coil/hanabira.org:express-db
+docker pull coil/hanabira.org:express-db
+docker run -it -p 8000:8000 coil/hanabira.org:express-db
+docker run -it -p 8000:8000   -e REACT_APP_HOST_IP=$(hostname -I | awk '{print $1}') coil/hanabira.org:express-db
+docker run -d  -p 8000:8000   -e REACT_APP_HOST_IP=$(hostname -I | awk '{print $1}')   --restart=unless-stopped   coil/hanabira.org:express-db
+
+import https from 'https';
+
+const agent = new https.Agent({  
+  rejectUnauthorized: false
+});
+
+const res = await fetch('https://localhost', { agent });
+
+USER SPECIFIC FLASK BACKEND
+------------------------
+cd /home/coil/Desktop/zen-lingo-website/prod/backend/flask
+
+docker buildx build . -t coil/hanabira.org:flask-dynamic-db
+docker push coil/hanabira.org:flask-dynamic-db
+docker pull coil/hanabira.org:flask-dynamic-db
+mkdir -p /home/$USER/user_db
+docker run -it -p 5100:5100 -v /home/coil/user_db:/data/db --add-host=host.docker.internal:host-gateway coil/hanabira.org:flask-dynamic-db # interactive
+docker run -d -p 5100:5100 -v /home/coil/user_db:/data/db --add-host=host.docker.internal:host-gateway --restart=unless-stopped coil/hanabira.org:flask-dynamic-db # daemonised
+
+
+DICTIONARY/TEXT PARSER/YOUTUBE backend image /d-api/v1              
+------------------------------------------------------
+cd /home/coil/Desktop/zen-lingo-website/prod/backend/dictionary       # kinda fails when we do not run container from this dir
+
+docker buildx build . -t coil/hanabira.org:dictionary-db
+docker push coil/hanabira.org:dictionary-db
+docker pull coil/hanabira.org:dictionary-db
+# run these from directory where you have the config files .env and config.json with API keys
+docker run -it -p 5200:5200 --add-host=host.docker.internal:host-gateway -v $(pwd)/config.json:/app/config.json coil/hanabira.org:dictionary-db # interactive
+docker run -d -p 5200:5200  --add-host=host.docker.internal:host-gateway -v $(pwd)/config.json:/app/config.json --restart=unless-stopped coil/hanabira.org:dictionary-db # daemonised
+
+
+you can start all these containers with 
+docker-compose up
+from prod/ directory
+
+
+
+
+
+
+
+how to get backup of the database directory from Hanabira server:
+related flask container needs to be stopped on the server before copying data (docker stop mongodbcont) otherwise database will be corrupt
+coil@coil-VM:user_db$ sudo chown -R coil:coil /home/coil/user_db
+coil@coil-VM:user_db$ scp -r root@hanabira.org:/home/coil/user_db /home/coil/
+chmod -R 777 user_db
+
+
+
+
+
+// ----------------------------------------------------------------------------------- //
+// ------------------------- END of PUBLIC CONTAINER BUILDS -------------------------- //
+// ----------------------------------------------------------------------------------- //
+
+
+
+hetzner hanabira server deployments:
+WE NEED TO USE CUSTOM DEFINED systemctl USER BASED DAEMON SERVICE, NOT podman-compose up -d 
+
+
+coil@ubuntu-4gb-hel1-2:~/hanabira$ systemctl --user start hanabira.service
+coil@ubuntu-4gb-hel1-2:~/hanabira$ systemctl --user stop hanabira.service
+
+
+
+
+
+
+coil@ubuntu-4gb-hel1-2:~/hanabira$ podman images
+REPOSITORY                   TAG               IMAGE ID      CREATED     SIZE
+docker.io/coil/hanabira.org  flask-dynamic-db  3e19c2f3f989  8 days ago  1.25 GB
+docker.io/coil/hanabira.org  express-db        503db9b36970  8 days ago  1.1 GB
+docker.io/coil/hanabira.org  frontend-next     b22efd367d0d  8 days ago  3.87 GB
+docker.io/coil/hanabira.org  dictionary-db     390969c33329  8 days ago  5.56 GB
+coil@ubuntu-4gb-hel1-2:~/hanabira$ podman ps
+CONTAINER ID  IMAGE                                         COMMAND               CREATED       STATUS       PORTS                     NAMES
+eeec055ffb15  docker.io/coil/hanabira.org:express-db        sh -c mongod --db...  40 hours ago  Up 40 hours  127.0.0.1:8000->8000/tcp  hanabira_express-db_1
+2a926ac811a3  docker.io/coil/hanabira.org:flask-dynamic-db  sh -c mongod --db...  40 hours ago  Up 40 hours  127.0.0.1:5100->5100/tcp  hanabira_flask-dynamic-db_1
+aaa482f0434a  docker.io/coil/hanabira.org:dictionary-db     sh -c mongod --db...  40 hours ago  Up 40 hours  127.0.0.1:5200->5200/tcp  hanabira_dictionary-db_1
+88eb93aeae6f  docker.io/coil/hanabira.org:frontend-next     npm start             40 hours ago  Up 40 hours  127.0.0.1:3000->3000/tcp  hanabira_frontend-next_1
+
+
+
+
+
+
+// NOTES:
+
+might be useful in dev when nextjs is rejecting self-signed certs
+
+import https from 'https';
+
+const agent = new https.Agent({  
+  rejectUnauthorized: false
+});
+
+const res = await fetch('https://localhost', { agent });
+
+
