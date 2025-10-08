@@ -21,17 +21,17 @@ def show_full_context_prompt_example():
     This simulates what happens inside the Flask application without running the server.
     """
     # We import the app and modules here to ensure the app context is available
-    from agent.app import app
+    from app import app
     # It's good practice to import the data models you're working with directly
     # for better readability and clarity, even if they might be imported by other modules.
-    from agent.modules.data_models import Prompt, RetrievedKnowledgeItem, Turn, UserProfile, LearningGoal, UserQuery, QueryType, QueryPart
+    from modules.data_models import Prompt, RetrievedKnowledgeItem, Turn, UserProfile, LearningGoal, UserQuery, QueryType, QueryPart
 
-    from agent.modules.context.user_profile import UserProfile
-    from agent.modules.context.conversation_history import ConversationHistory
-    from agent.modules.context.learning_goals import LearningGoals
-    from agent.modules.context.system_context import SystemContext
-    from agent.modules.context.retrieved_knowledge import RetrievedKnowledge
-    from agent.modules.context.context_manager import ContextManager
+    from modules.context.user_profile import UserProfile
+    from modules.context.conversation_history import ConversationHistory
+    from modules.context.learning_goals import LearningGoals
+    from modules.context.system_context import SystemContext
+    from modules.context.retrieved_knowledge import RetrievedKnowledge
+    from modules.context.context_manager import ContextManager
 
     # Create an application context to make 'app.logger' and other Flask globals available
     with app.app_context():
