@@ -1,0 +1,49 @@
+# Examples for testing the /agent/v1/build_prompt endpoint in ContextManager
+
+# ----------------------------------------------------------------------
+# Example 1: User asks a specific grammar question.
+# This would trigger the knowledge base to search for "wa vs ga".
+# ----------------------------------------------------------------------
+curl -X POST http://localhost:5400/agent/v1/build_prompt \
+-H "Content-Type: application/json" \
+-d '{
+    "user_id": "user123",
+    "session_id": "session456",
+    "query": "What is the difference between は (wa) and が (ga)?"
+}'
+
+# Expected output: A JSON object representing the `Prompt` dataclass,
+# containing user profile, conversation history, learning goals,
+# retrieved knowledge about "wa" and "ga", and the current query.
+
+
+# ----------------------------------------------------------------------
+# Example 2: User wants to learn something new based on their interests.
+# The agent could use the user's profile (interests: "anime") to suggest
+# vocabulary related to anime.
+# ----------------------------------------------------------------------
+curl -X POST http://localhost:5400/agent/v1/build_prompt \
+-H "Content-Type: application/json" \
+-d '{
+    "user_id": "user123",
+    "session_id": "session789",
+    "query": "Teach me some new words related to my interests."
+}'
+
+# Expected output: A `Prompt` object where the agent can use the
+# user's profile ("interests": ["anime", "technology", "travel"]) to
+# generate a relevant response.
+
+
+# ----------------------------------------------------------------------
+# Example 3: User asks for a general recommendation without a specific query.
+# The agent should look at the user's current learning goal ("JLPT N4 Vocabulary")
+# and conversation history to suggest the next step.
+# ----------------------------------------------------------------------
+curl -X POST http://localhost:5400/agent/v1/build_prompt \
+-H "Content-Type: application/json" \
+-d '{
+    "user_id": "user123",
+    "session_id": "sessionABC",
+    "query": "What should I study next?"
+}'

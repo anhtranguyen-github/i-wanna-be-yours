@@ -1,0 +1,140 @@
+@startuml
+!theme plain
+skinparam class {
+  BackgroundColor White
+  BorderColor Black
+  ArrowColor Black
+}
+
+title Full Class Diagram for the Language Learning Agent's Context
+
+' =========================================================================
+' Main Orchestration Component
+' =========================================================================
+class ContextManager {
+    - userProfile: UserProfile
+    - conversationHistory: ConversationHistory
+    - learningGoals: LearningGoals
+    - knowledgeBase: KnowledgeBase
+
+    + <<constructor>>(userProfile, history, goals, knowledge)
+    + build_prompt(userInput: string): Prompt
+}
+note top of ContextManager: The central component for assembling all context data.
+
+' =========================================================================
+' Core Context Data Sources
+' =========================================================================
+class UserProfile {
+    - id: string
+    - name: string
+    - native_language: string
+    - target_language: string
+    - proficiency_level: string
+    - interests: string[]
+}
+
+class ConversationHistory {
+    - turns: Turn[]
+    + add_turn(turn: Turn)
+    + get_recent_turns(n: int): Turn[]
+    + format_for_prompt(): string
+}
+
+class LearningGoals {
+    - goalId: string
+    - topic: string
+    - proficiencyTarget: string
+    - startDate: date
+    - completionDate: date
+    - status: GoalStatus
+
+    + set_target(level: string)
+    + update_progress(progress: ProgressSnapshot)
+}
+
+enum GoalStatus {
+    ACTIVE
+    COMPLETED
+    ON_HOLD
+    ARCHIVED
+}
+
+class KnowledgeBase {
+    - documents: Document[]
+    - index: VectorIndex
+    + add_document(doc: Document)
+    + search_documents(query: string, k: int): list<Document>
+}
+
+' =========================================================================
+' Supporting Data Structures & Relationships
+' =========================================================================
+class Prompt {
+    - content: string
+    - length: int
+}
+note right of Prompt: The final, formatted string sent to the LLM.
+
+class Turn {
+    - speaker: Speaker
+    - text: string
+    - timestamp: datetime
+}
+note left of Turn: A single message in the conversation.
+
+enum Speaker {
+    USER
+    AGENT
+}
+
+class ProgressTracker {
+    - userId: string
+    - scores: map<string, float>
+    - performanceHistory: list<ProgressSnapshot>
+    + update_score(skill: string, score: float)
+}
+
+class ProgressSnapshot {
+    - timestamp: datetime
+    - type: string
+    - score: float
+    - feedback: string
+}
+
+class Document {
+    - documentId: string
+    - content: string
+    - metadata: dict
+    - embedding: vector
+    + get_content(): string
+}
+
+class VectorIndex {
+    + add_embedding(docId: string, embedding: vector)
+    + search(queryEmbedding: vector, k: int): list<string>
+}
+note right of VectorIndex: Optimizes retrieval for RAG.
+
+' =========================================================================
+' Class Relationships
+' =========================================================================
+
+' ContextManager aggregates the core components
+ContextManager o-- UserProfile
+ContextManager o-- ConversationHistory
+ContextManager o-- LearningGoals
+ContextManager o-- KnowledgeBase
+
+' Core component relationships
+ConversationHistory *-- Turn
+LearningGoals *-- ProgressTracker
+ProgressTracker "1" -- "*" ProgressSnapshot: "contains"
+KnowledgeBase "1" -- "*" Document
+KnowledgeBase ..> VectorIndex
+
+' Data flow and dependencies
+ContextManager ..> Prompt: builds
+LearningGoals ..> ProgressTracker: updates via
+Document "1" -- "1" vector: has
+@enduml
