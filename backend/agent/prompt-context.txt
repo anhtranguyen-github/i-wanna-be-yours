@@ -15,12 +15,10 @@ class ContextManager {
     - userProfile: UserProfile
     - conversationHistory: ConversationHistory
     - learningGoals: LearningGoals
-    - knowledgeBase: KnowledgeBase
-
-    + <<constructor>>(userProfile, history, goals, knowledge)
-    + build_prompt(userInput: string): Prompt
+    - system_context: SystemContext
+    + <<constructor>>(userProfile, history, goals, system_context, knowledge_base)
+    + build_prompt_data(user_id, session_id, query): Prompt
 }
-note top of ContextManager: The central component for assembling all context data.
 
 ' =========================================================================
 ' Core Context Data Sources
@@ -60,21 +58,17 @@ enum GoalStatus {
     ARCHIVED
 }
 
-class KnowledgeBase {
-    - documents: Document[]
-    - index: VectorIndex
-    + add_document(doc: Document)
-    + search_documents(query: string, k: int): list<Document>
-}
-
 ' =========================================================================
 ' Supporting Data Structures & Relationships
 ' =========================================================================
 class Prompt {
-    - content: string
-    - length: int
+    + system_prompt: dict
+    + user_profile: UserProfile
+    + conversation_history: Turn[]
+    + learning_goals: LearningGoal
+    + retrieved_knowledge: RetrievedKnowledgeItem[]
+    + current_query: string
 }
-note right of Prompt: The final, formatted string sent to the LLM.
 
 class Turn {
     - speaker: Speaker
@@ -82,7 +76,6 @@ class Turn {
     - timestamp: datetime
 }
 note left of Turn: A single message in the conversation.
-
 enum Speaker {
     USER
     AGENT
@@ -102,39 +95,37 @@ class ProgressSnapshot {
     - feedback: string
 }
 
-class Document {
-    - documentId: string
+class RetrievedKnowledgeItem {
+    + type: KnowledgeType
     - content: string
+    - source: string
     - metadata: dict
-    - embedding: vector
-    + get_content(): string
 }
 
-class VectorIndex {
-    + add_embedding(docId: string, embedding: vector)
-    + search(queryEmbedding: vector, k: int): list<string>
+enum KnowledgeType {
+    DOCUMENT
+    GRAMMAR_RULE
+    NOTE
+    SEARCH_RESULT
 }
-note right of VectorIndex: Optimizes retrieval for RAG.
 
 ' =========================================================================
 ' Class Relationships
 ' =========================================================================
 
 ' ContextManager aggregates the core components
-ContextManager o-- UserProfile
-ContextManager o-- ConversationHistory
-ContextManager o-- LearningGoals
-ContextManager o-- KnowledgeBase
+ContextManager o-- UserProfile: uses
+ContextManager o-- ConversationHistory: uses
+ContextManager o-- LearningGoals: uses
 
 ' Core component relationships
 ConversationHistory *-- Turn
 LearningGoals *-- ProgressTracker
 ProgressTracker "1" -- "*" ProgressSnapshot: "contains"
-KnowledgeBase "1" -- "*" Document
-KnowledgeBase ..> VectorIndex
 
 ' Data flow and dependencies
 ContextManager ..> Prompt: builds
+Prompt "1" *-- "*" RetrievedKnowledgeItem: contains
+RetrievedKnowledgeItem o-- KnowledgeType
 LearningGoals ..> ProgressTracker: updates via
-Document "1" -- "1" vector: has
 @enduml

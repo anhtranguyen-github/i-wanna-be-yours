@@ -38,6 +38,7 @@ from modules.context.user_profile import UserProfile
 from modules.context.conversation_history import ConversationHistory
 from modules.context.learning_goals import LearningGoals
 from modules.context.system_context import SystemContext
+from modules.context.retrieved_knowledge import RetrievedKnowledge
 from modules.context.context_manager import ContextManager
 
 # Instantiate and register the user profile component
@@ -54,10 +55,12 @@ learning_goals.register_routes(app)
 system_context = SystemContext()
 system_context.register_routes(app)
 
+retrieved_knowledge = RetrievedKnowledge()
+# retrieved_knowledge has no web routes to register yet.
 
 
 # Instantiate the main agent orchestrator (ContextManager) with its dependencies
-context_manager = ContextManager(user_profile, conversation_history, learning_goals, system_context)
+context_manager = ContextManager(user_profile, conversation_history, learning_goals, system_context, retrieved_knowledge)
 context_manager.register_routes(app)
 
 # --------------- End of Class imports ---------------- #

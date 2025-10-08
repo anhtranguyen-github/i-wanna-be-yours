@@ -53,10 +53,41 @@ class Document:
     metadata: Dict[str, Any] = field(default_factory=dict)
 
 @dataclass
+class RetrievedKnowledgeItem:
+    """Represents a single piece of retrieved information for the prompt context."""
+    type: 'KnowledgeType'
+    content: str
+    source: str  
+    metadata: Dict[str, Any] = field(default_factory=dict)
+
+class KnowledgeType(Enum):
+    """Enumeration for the different types of retrieved knowledge."""
+    DOCUMENT = "document"
+    NOTE = "note"
+    SEARCH_RESULT = "search_result"
+
+class QueryType(Enum):
+    """Enumeration for the different types of user queries."""
+    TEXT = "text"
+    VOICE = "voice"
+    VIDEO = "video"
+
+@dataclass
+class QueryPart:
+    """Represents one part of a potentially multi-modal user query."""
+    type: QueryType
+    content: str # Can be text, a URL to a voice file, a URL to a video, etc.
+
+@dataclass
+class UserQuery:
+    """Represents the user's input to the agent, which can be multi-modal."""
+    parts: List[QueryPart]
+
+@dataclass
 class Prompt:
     system_prompt: Dict[str, Any] # SystemContext returns a dict
     user_profile: UserProfile
     conversation_history: List[Turn]
     learning_goals: LearningGoal
-    retrieved_knowledge: List[str]
-    current_query: str
+    retrieved_knowledge: List[RetrievedKnowledgeItem]
+    user_query: UserQuery
