@@ -229,6 +229,20 @@ docker run -it -p 5200:5200 --add-host=host.docker.internal:host-gateway -v $(pw
 docker run -d -p 5200:5200  --add-host=host.docker.internal:host-gateway -v $(pwd)/config.json:/app/config.json --restart=unless-stopped coil/hanabira.org:dictionary-db # daemonised
 
 
+AGENT SERVICE (Personalized Learning) /agent/v1
+------------------------------------------------------
+cd /home/coil/Desktop/zen-lingo-website/prod/backend/agent
+
+# This service will handle personalized learning logic.
+# It uses uv for faster package installation.
+
+docker buildx build . -t coil/hanabira.org:agent-service
+docker push coil/hanabira.org:agent-service
+docker pull coil/hanabira.org:agent-service
+docker run -it -p 5400:5400 coil/hanabira.org:agent-service # interactive
+docker run -d -p 5400:5400 --restart=unless-stopped coil/hanabira.org:agent-service # daemonised
+
+
 you can start all these containers with 
 docker-compose up
 from prod/ directory
@@ -296,5 +310,3 @@ const agent = new https.Agent({
 });
 
 const res = await fetch('https://localhost', { agent });
-
-

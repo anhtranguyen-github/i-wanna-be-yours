@@ -14,7 +14,7 @@ interface UserContextValue {
   userName: string;
   userId: string;
   jwtToken: string;
-  loading: boolean;              // <-- NEW: Indicates if we're still checking for cookies/session
+  loading: boolean; // <-- NEW: Indicates if we're still checking for cookies/session
   handleLogin: () => void;
   handleLogout: () => void;
 }
@@ -24,7 +24,7 @@ const UserContext = createContext<UserContextValue>({
   userName: "",
   userId: "",
   jwtToken: "",
-  loading: true,                 // <-- Provide a default "true" for SSR/hydration
+  loading: true, // <-- Provide a default "true" for SSR/hydration
   handleLogin: () => {},
   handleLogout: () => {},
 });
@@ -37,7 +37,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
   //const [userId, setUserId] = useState("");
-  const [userId, setUserId] = useState("testUserId");     // TODO: remove later and set to empty, so we see errors
+  const [userId, setUserId] = useState("testUserId"); // TODO: remove later and set to empty, so we see errors
   const [jwtToken, setJwtToken] = useState("");
   const [loading, setLoading] = useState(true); // <-- track if we’re still “verifying” cookies
 
@@ -58,13 +58,12 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   //   setLoading(false);
   // }, []);
 
-
   useEffect(() => {
     const timer = setTimeout(() => {
       const storedName = Cookies.get("hanabira_userName");
       const storedId = Cookies.get("hanabira_userId");
       const storedJwt = Cookies.get("hanabira_jwt");
-  
+
       if (storedName && storedId && storedJwt) {
         setLoggedIn(true);
         setUserName(storedName);
@@ -73,21 +72,9 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       }
       setLoading(false);
     }, 10); // 2000 milisecond delay
-  
+
     return () => clearTimeout(timer);
   }, []);
-  
-
-
-
-
-
-
-
-
-
-
-
 
   const notifyLogin = async (userId: string) => {
     try {
@@ -151,7 +138,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         userName,
         userId,
         jwtToken,
-        loading,               // <-- expose loading to consumers
+        loading, // <-- expose loading to consumers
         handleLogin,
         handleLogout,
       }}
@@ -162,17 +149,6 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 };
 
 export const useUser = () => useContext(UserContext);
-
-
-
-
-
-
-
-
-
-
-
 
 // ------------------------------------------------
 
@@ -302,11 +278,6 @@ export const useUser = () => useContext(UserContext);
 // };
 
 // export const useUser = () => useContext(UserContext);
-
-
-
-
-
 
 // -----------------------------------
 
