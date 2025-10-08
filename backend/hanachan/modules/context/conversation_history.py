@@ -9,7 +9,7 @@ class ConversationHistory:
         # This would typically interact with a database (e.g., Redis, MongoDB)
         # to store and retrieve conversation logs.
         self.history_bp = Blueprint('conversation_history_bp', __name__)
-        self.history_bp.add_url_rule("/agent/v1/history/<session_id>", view_func=self.get_history, methods=["GET"])
+        self.history_bp.add_url_rule("/hanachan/v1/history/<session_id>", view_func=self.get_history, methods=["GET"])
 
     def _get_history_data(self, session_id: str) -> List[Turn]:
         """Core logic to fetch conversation history data."""
@@ -25,7 +25,7 @@ class ConversationHistory:
         """
         Web endpoint to retrieve the conversation history for a given session.
         ---
-        /agent/v1/history/session456
+        /hanachan/v1/history/session456
         """
         turns = self._get_history_data(session_id)
         return jsonify([asdict(turn) for turn in turns]), 200

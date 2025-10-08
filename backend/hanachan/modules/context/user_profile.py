@@ -8,7 +8,7 @@ class UserProfile:
         # In a real application, this would connect to a database
         # to fetch and store user profile information.
         self.profile_bp = Blueprint('user_profile_bp', __name__)
-        self.profile_bp.add_url_rule("/agent/v1/profile/<user_id>", view_func=self.get_profile, methods=["GET"])
+        self.profile_bp.add_url_rule("/hanachan/v1/profile/<user_id>", view_func=self.get_profile, methods=["GET"])
 
     def _get_profile_data(self, user_id: str) -> UserProfileModel:
         """Core logic to fetch user profile data."""
@@ -28,7 +28,7 @@ class UserProfile:
         """
         Web endpoint to retrieve the learning profile for a given user.
         ---
-        /agent/v1/profile/user123
+        /hanachan/v1/profile/user123
         """
         profile = self._get_profile_data(user_id)
         return jsonify(asdict(profile)), 200

@@ -12,12 +12,12 @@ app = Flask(__name__)
 CORS(app)
 
 # Database configuration (placeholder for when you need it)
-# app.config["MONGO_URI_AGENT"] = "mongodb://localhost:27017/agentDB"
-# mongo_agentDB = PyMongo(app, uri="mongodb://localhost:27017/agentDB")
+# app.config["MONGO_URI_hanachan"] = "mongodb://localhost:27017/hanachanDB"
+# mongo_hanachanDB = PyMongo(app, uri="mongodb://localhost:27017/hanachanDB")
 
 # ---------------------------------- Global vars ----------------------------------------------
 
-agent_port = 5400
+hanachan_port = 5400
 
 # Determine the environment (dev or prod)
 # Reading environment variable with a default value of "dev"
@@ -25,12 +25,12 @@ env = os.getenv("APP_ENV", "dev")
 
 # --- universal API endpoints ---- #
 
-# curl -X GET http://localhost:5400/agent/v1/health or http://127.0.0.1:5400/agent/v1/health
-@app.route("/agent/v1/health", methods=["GET"])
+# curl -X GET http://localhost:5400/hanachan/v1/health or http://127.0.0.1:5400/hanachan/v1/health
+@app.route("/hanachan/v1/health", methods=["GET"])
 def health_check():
     """Responds with a simple JSON message and a 200 OK status."""
     app.logger.info("Health check endpoint was called.")
-    return jsonify({"status": "OK", "message": "Agent service is running"}), 200
+    return jsonify({"status": "OK", "message": "hanachan service is running"}), 200
 
 # ---------------- Class imports ----------------- #
 
@@ -59,7 +59,7 @@ retrieved_knowledge = RetrievedKnowledge()
 # retrieved_knowledge has no web routes to register yet.
 
 
-# Instantiate the main agent orchestrator (ContextManager) with its dependencies
+# Instantiate the main hanachan orchestrator (ContextManager) with its dependencies
 context_manager = ContextManager(user_profile, conversation_history, learning_goals, system_context, retrieved_knowledge)
 context_manager.register_routes(app)
 
@@ -69,5 +69,5 @@ if __name__ == '__main__':
     # debug=True will reload the server on code changes
     # and provide more detailed error messages.
     # In a production environment using Gunicorn, debug should be False.
-    app.logger.info(f"Starting agent service in {env} mode on port {agent_port}")
-    app.run(debug=True, host="0.0.0.0", port=agent_port)
+    app.logger.info(f"Starting hanachan service in {env} mode on port {hanachan_port}")
+    app.run(debug=True, host="0.0.0.0", port=hanachan_port)

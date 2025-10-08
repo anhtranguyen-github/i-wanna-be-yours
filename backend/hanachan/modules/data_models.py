@@ -5,7 +5,7 @@ from typing import List, Dict, Any
 
 class Speaker(Enum):
     USER = "user"
-    AGENT = "agent"
+    AGENT = "hanachan"
 
 @dataclass
 class Turn:
@@ -80,7 +80,7 @@ class QueryPart:
 
 @dataclass
 class UserQuery:
-    """Represents the user's input to the agent, which can be multi-modal."""
+    """Represents the user's input to the hanachan, which can be multi-modal."""
     parts: List[QueryPart]
 
 @dataclass

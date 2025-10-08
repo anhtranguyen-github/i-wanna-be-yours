@@ -3,9 +3,9 @@ from flask import current_app as app
 
 class SystemContext:
     def __init__(self):
-        # Defines the agent's core instructions, tools, and functions.
+        # Defines the hanachan's core instructions, tools, and functions.
         self.system_bp = Blueprint('system_context_bp', __name__)
-        self.system_bp.add_url_rule("/agent/v1/system/instructions", view_func=self.get_instructions, methods=["GET"])
+        self.system_bp.add_url_rule("/hanachan/v1/system/instructions", view_func=self.get_instructions, methods=["GET"])
 
     def _get_instructions_data(self):
         """Core logic to fetch system instructions."""
@@ -18,9 +18,9 @@ class SystemContext:
 
     def get_instructions(self):
         """
-        Web endpoint to provide system-level instructions for the agent.
+        Web endpoint to provide system-level instructions for the hanachan.
         ---
-        /agent/v1/system/instructions
+        /hanachan/v1/system/instructions
         """
         instructions = self._get_instructions_data()
         return jsonify(instructions), 200

@@ -8,7 +8,7 @@ class LearningGoals:
     def __init__(self):
         # Manages the state of the user's current learning goals.
         self.goals_bp = Blueprint('learning_goals_bp', __name__)
-        self.goals_bp.add_url_rule("/agent/v1/goals/<user_id>", view_func=self.get_goals, methods=["GET"])
+        self.goals_bp.add_url_rule("/hanachan/v1/goals/<user_id>", view_func=self.get_goals, methods=["GET"])
 
     def _get_goals_data(self, user_id: str) -> LearningGoal:
         """Core logic to fetch learning goals data."""

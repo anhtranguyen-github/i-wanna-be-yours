@@ -6,7 +6,7 @@ skinparam class {
   ArrowColor Black
 }
 
-title Full Class Diagram for the Language Learning Agent's Context
+title Full Class Diagram for the Language Learning hanachan's Context
 
 ' =========================================================================
 ' Main Orchestration Component

@@ -6,10 +6,10 @@ from dataclasses import asdict
 class ContextManager:
     def __init__(self, user_profile, conversation_history, learning_goals, system_context, retrieved_knowledge):
         """
-        Initializes the main agent context orchestrator (ContextManager).
+        Initializes the main hanachan context orchestrator (ContextManager).
         """
         self.manager_bp = Blueprint('context_manager_bp', __name__)
-        self.manager_bp.add_url_rule("/agent/v1/build_prompt", view_func=self.build_prompt, methods=["POST"])
+        self.manager_bp.add_url_rule("/hanachan/v1/build_prompt", view_func=self.build_prompt, methods=["POST"])
 
 
         # Store references to other modules
@@ -51,7 +51,7 @@ class ContextManager:
         The web endpoint that handles the POST request, calls the core logic,
         and returns a JSON response.
         ---
-        POST /agent/v1/build_prompt
+        POST /hanachan/v1/build_prompt
         Body: { 
             "user_id": "user123", 
             "session_id": "session456", 

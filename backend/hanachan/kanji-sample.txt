@@ -1,0 +1,20 @@
+chữ gốc: 海（うみ）
+chữ gần giống: 河, 洗, 泳, 消
+chữ gốc: 林（はやし）
+chữ gần giống: 森, 校, 村, 板
+chữ gốc: 時（とき）
+chữ gần giống: 明, 昨, 映, 晴
+chữ gốc: 銀（ぎん）
+chữ gần giống: 鉄, 銅, 録, 鋭
+chữ gốc: 病（びょう）
+chữ gần giống: 疲, 痛, 症, 癖
+chữ gốc: 鳥（とり）
+chữ gần giống: 鶏, 鴨, 鳴, 鷹
+chữ gốc: 計（けい）
+chữ gần giống: 話, 読, 説, 記
+chữ gốc: 体（からだ）
+chữ gần giống: 休, 使, 借, 係
+chữ gốc: 思（おもう）
+chữ gần giống: 怒, 恋, 情, 忘
+chữ gốc: 花（はな）
+chữ gần giống: 草, 茶, 英, 菜
