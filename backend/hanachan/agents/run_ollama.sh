@@ -23,4 +23,6 @@ docker exec -it ollama ollama list
 
 # Run Qwen3 model (4B)
 echo "Running qwen3:4b..."
-docker exec -it ollama ollama run qwen3:4b
+docker exec -it ollama ollama run qwen3:0.6b
+docker exec -it ollama ollama pull bge-m3
+docker exec -it ollama ollama pull xitao/bge-reranker-v2-m3

@@ -7,6 +7,8 @@ from langchain_core.tools import tool
 from langgraph.graph import StateGraph, END
 import json
 
+
+
 # Define the custom tools
 @tool
 def get_user_profile(_: str = "") -> str:
