@@ -1,0 +1,69 @@
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
+.venv/
+ENV/
+.env/
+.venv.bak/
+
+# === Flask-specific ===
+instance/
+*.db
+*.sqlite3
+*.sqlite
+
+# === Environment & Secrets ===
+.env
+.env.*
+*.env
+
+# === IDE / Editor files ===
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# === OS generated files ===
+.DS_Store
+Thumbs.db
+
+# === Logs ===
+*.log
+logs/
+*.out
+*.err
+
+# === Compiled / Cache ===
+*.egg-info/
+dist/
+build/
+__pypackages__/
+
+# === Testing ===
+.coverage
+.tox/
+.pytest_cache/
+
+# === Docker ===
+*.pid
+*.tar
+*.sock
+*.pid.lock
+docker-compose.override.yml
+
+# === Node (if frontend bundled inside) ===
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# === Others ===
+.mypy_cache/
+.pyre/
+.coverage.*
+.cache/
