@@ -518,13 +518,13 @@ function formatKanjiData(kanji) {
   // Ensuring radicals are processed correctly whether as an array or a single object
   const radicals = Array.isArray(kanji.radical?.rad_value)
     ? kanji.radical.rad_value.map((rad) => ({
-        type: rad["@rad_type"],
-        value: rad["#text"],
-      }))
+      type: rad["@rad_type"],
+      value: rad["#text"],
+    }))
     : [kanji.radical?.rad_value].map((rad) => ({
-        type: rad["@rad_type"],
-        value: rad["#text"],
-      }));
+      type: rad["@rad_type"],
+      value: rad["#text"],
+    }));
 
   return {
     literal: kanji.literal,
@@ -1497,11 +1497,13 @@ app.get("/d-api/v1/audio/:filename", (req, res) => {
 });
 
 
-
-// --- //
-
 // --- //
 
 app.listen(PORT, () =>
   console.log(`Server running on http://localhost:${PORT}`)
 );
+
+// Basic health endpoint
+app.get("/health", (req, res) => {
+  res.json({ status: "ok" });
+});
