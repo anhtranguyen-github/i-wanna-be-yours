@@ -53,7 +53,7 @@ prompt = ChatPromptTemplate.from_messages([
 ])
 
 # Initialize the Ollama model
-llm = ChatOllama(model="qwen3:4b", temperature=0)
+llm = ChatOllama(model="qwen3:1.7b", temperature=0)
 
 # Define the graph state
 class AgentState(Dict):
