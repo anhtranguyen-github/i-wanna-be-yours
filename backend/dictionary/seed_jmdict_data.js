@@ -21,6 +21,7 @@ const EntrySchema = new mongoose.Schema({
 const Entry = mongoose.model('Entry', EntrySchema);
 
 const inputDir = path.join(__dirname, 'jmdict_json_data_simplified');
+//const inputDir = path.join(__dirname, 'jmdict_json_data');
 
 async function seedDatabase() {
   fs.readdir(inputDir, async (err, files) => {
