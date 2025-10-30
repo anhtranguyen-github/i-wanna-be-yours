@@ -60,6 +60,14 @@ export default function Nav() {
 
 
             <Link
+              href="/learning-workspace"
+              className="mr-10 hover:text-gray-800 dark:hover:text-gray-600 font-medium"
+            >
+              {" "}
+              Learning Workspace{" "}
+            </Link>
+
+            <Link
               href="/japanese/kana"
               className="mr-10 hover:text-gray-800 dark:hover:text-gray-600 font-medium"
             >
