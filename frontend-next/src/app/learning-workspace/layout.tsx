@@ -1,7 +1,7 @@
 "use client";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+
 
 function getMode(path: string) {
   if (path.endsWith("auto-task")) return "auto-task";
@@ -43,13 +43,8 @@ export default function LearningWorkspaceLayout({ children }: { children: React.
       {/* Main flex layout: sidebar - main - right notes */}
       <div className="flex flex-1 min-h-0">
         {/* Left sidebar */}
-        <AnimatePresence initial={false}>
-          {sidebarOpen && (
-            <motion.aside
-              initial={{ x: -240, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: -240, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 350, damping: 35 }}
+        {sidebarOpen && (
+            <aside
               className="w-60 min-w-[190px] max-w-[220px] bg-white dark:bg-gray-50 border-r border-gray-200 h-[calc(100vh-3.5rem)] flex flex-col"
             >
               <div className="flex items-center justify-between px-3 py-2 border-b">
@@ -60,22 +55,16 @@ export default function LearningWorkspaceLayout({ children }: { children: React.
                 {/* Sidebar stub content - will be replaced based on mode */}
                 sidebar stub
               </div>
-            </motion.aside>
+            </aside>
           )}
-        </AnimatePresence>
         {!sidebarOpen && (
           <button className="w-6 min-w-[20px] flex flex-col items-center justify-center bg-white border-r border-gray-200 text-gray-300 hover:text-indigo-400" style={{height:"calc(100vh - 3.5rem)"}} onClick={()=>setSidebarOpen(true)}>❯</button>
         )}
         {/* Main view */}
         <main className="flex-1 px-0 md:px-6 py-6 md:py-10 flex flex-col">{children}</main>
         {/* Notes panel (right) only in AI Tutor mode */}
-        <AnimatePresence initial={false}>
-          {mode==="ai-tutor" && notesOpen && (
-            <motion.aside
-              initial={{ x: 280, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: 280, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 350, damping: 35 }}
+        {mode==="ai-tutor" && notesOpen && (
+            <aside
               className="hidden md:flex w-72 max-w-[300px] bg-white dark:bg-gray-50 border-l border-gray-200 h-[calc(100vh-3.5rem)] flex-col z-20"
             >
               <div className="flex items-center justify-between px-3 py-2 border-b">
@@ -85,9 +74,8 @@ export default function LearningWorkspaceLayout({ children }: { children: React.
               <div className="flex-1 overflow-auto px-3 py-2 text-gray-600">
                 Notes stub
               </div>
-            </motion.aside>
+            </aside>
           )}
-        </AnimatePresence>
         {mode==="ai-tutor" && !notesOpen && (
           <button className="hidden md:flex w-6 min-w-[20px] flex-col items-center justify-center bg-white border-l border-gray-200 text-gray-300 hover:text-indigo-400" style={{height:"calc(100vh - 3.5rem)"}} onClick={()=>setNotesOpen(true)}>❮</button>
         )}
