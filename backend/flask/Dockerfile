@@ -46,3 +46,8 @@ EXPOSE 5100
 
 # Start MongoDB and Gunicorn using uv environment
 CMD ["sh", "-c", "mongod --dbpath /data/db --bind_ip_all --fork --logpath /var/log/mongodb/mongod.log && ./.venv/bin/gunicorn -w 4 -b 0.0.0.0:5100 server:app"]
+
+# ###
+
+# mongod --dbpath /data/db --bind_ip_all --fork --logpath /var/log/mongodb/mongod.log
+# ./.venv/bin/gunicorn -w 4 -b 0.0.0.0:5100 server:app
