@@ -8,7 +8,7 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Install uv, then use it to install dependencies from requirements.txt
-RUN pip install uv && uv pip install --no-cache -r requirements.txt
+RUN pip install uv && uv pip install --system --no-cache -r requirements.txt
 
 # Copy the content of the local src directory to the working directory
 COPY . .
