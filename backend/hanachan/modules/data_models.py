@@ -1,7 +1,7 @@
 from enum import Enum
 from dataclasses import dataclass, field
 from datetime import datetime, date
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 
 
@@ -21,6 +21,7 @@ class QueryType(Enum):
 class KnowledgeType(Enum):
     DOCUMENT = "DOCUMENT"
     API_RESULT = "API_RESULT"
+
 
 @dataclass
 class Turn:
@@ -58,7 +59,7 @@ class UserProfileModel: # Renamed from original for clarity
     target_language: str
     proficiency_level: str
     interests: List[str]
-    learning_goals: List[LearningGoal] # Updated to include goals!
+    learning_goals: List[LearningGoal] 
 
 @dataclass
 class CurrentConversationGoal:
@@ -67,19 +68,12 @@ class CurrentConversationGoal:
     goal_description: str
     is_completed: bool
 
-@dataclass
-class ToolDefinition:
-    """Defines a tool the agent can use."""
-    name: str
-    description: str
-    input_schema: Dict[str, Any] # For function calling definition
 
 @dataclass
 class Prompt:
     system_prompt: Dict[str, Any] # Includes core instructions
     user_profile: UserProfileModel
     conversation_history: List[Turn]
-    current_chat_goal: CurrentConversationGoal # NEW FIELD
-    available_tools: List[ToolDefinition] # NEW FIELD
+    current_chat_goal: CurrentConversationGoal 
     retrieved_knowledge: List[RetrievedKnowledgeItem]
     user_query: UserQuery
