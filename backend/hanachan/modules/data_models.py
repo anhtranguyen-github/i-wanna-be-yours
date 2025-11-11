@@ -52,7 +52,7 @@ class UserQuery:
     parts: List[QueryPart]
 
 @dataclass
-class UserProfileModel: # Renamed from original for clarity
+class UserProfileModel: 
     id: str
     name: str
     native_language: str
@@ -71,7 +71,7 @@ class CurrentConversationGoal:
 
 @dataclass
 class Prompt:
-    system_prompt: Dict[str, Any] # Includes core instructions
+    system_prompt: Dict[str, Any] 
     user_profile: UserProfileModel
     conversation_history: List[Turn]
     current_chat_goal: CurrentConversationGoal 
