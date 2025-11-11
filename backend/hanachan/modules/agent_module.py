@@ -190,6 +190,8 @@ def synthesizer_node(state: AgentState) -> Dict[str, Any]:
     }
 
 
+from flask import Flask, request, jsonify
+from modules.context import ContextManager
 # --- 4. Build and Compile the LangGraph ---
 
 def create_mas_workflow():
@@ -222,6 +224,51 @@ def create_mas_workflow():
     workflow.add_edge("synthesizer", END)
 
     return workflow.compile()
+
+
+# --- 5. Agent Module for Flask Integration ---
+
+class AgentModule:
+    def __init__(self):
+        self.workflow = create_mas_workflow()
+
+    def register_routes(self, app: Flask):
+        @app.route("/chat", methods=["POST"])
+        def chat():
+            """
+            Handles a chat request by invoking the multi-agent system.
+            """
+            data = request.get_json()
+            user_id = data.get("user_id")
+            session_id = data.get("session_id")
+            query_text = data.get("query")
+
+            if not all([user_id, session_id, query_text]):
+                return jsonify({"error": "Missing user_id, session_id, or query"}), 400
+
+            # Initialize context for this specific request
+            context_manager = ContextManager(user_id, session_id)
+            
+            # Assemble the initial state for the graph
+            initial_state = context_manager.assemble_prompt(query_text)
+            
+            # The state for the graph is a dictionary, so we convert the Pydantic model
+            graph_input = {
+                "user_profile": initial_state.user_profile,
+                "user_query": initial_state.user_query,
+                "conversation_history": initial_state.conversation_history,
+                # The rest of the state will be filled in by the graph
+                "routing_decision": None,
+                "retrieved_knowledge": [],
+                "pedagogical_plan": "",
+                "cultural_context": "",
+                "final_agent_response": ""
+            }
+
+            # Invoke the workflow
+            final_state = self.workflow.invoke(graph_input)
+
+            return jsonify({"response": final_state.get("final_agent_response")})
 
 
 app = create_mas_workflow()
