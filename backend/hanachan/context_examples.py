@@ -2,6 +2,21 @@ import json
 from dataclasses import asdict
 from datetime import date, datetime
 from enum import Enum
+from typing import List, Dict, Any
+
+# --- Import ALL necessary classes from the amalgamated context file ---
+# Assuming you saved the final context code into a file named 'context_modules.py'
+from modules.context.combined_context import (
+    ContextManager, UserProfile, ConversationHistory, SystemContext, 
+    RetrievedKnowledge, ToolContext, ConversationGoalTracker
+)
+
+# Also import the data model structures for initialization
+from modules.data_models import (
+    Prompt, UserQuery, QueryType, QueryPart, LearningGoal, GoalStatus, 
+    Turn, Speaker, RetrievedKnowledgeItem, KnowledgeType, UserProfileModel
+)
+
 
 class CustomJSONEncoder(json.JSONEncoder):
     """
@@ -13,54 +28,63 @@ class CustomJSONEncoder(json.JSONEncoder):
             return obj.isoformat()
         if isinstance(obj, Enum):
             return obj.value
+        # Handle dataclasses explicitly if asdict didn't catch everything (though it should)
+        if isinstance(obj, (UserProfileModel, LearningGoal, UserQuery, QueryPart, Turn, RetrievedKnowledgeItem)):
+             return asdict(obj)
         return super().default(obj)
 
 def show_full_context_prompt_example():
     """
-    A script to demonstrate the ContextManager building a complete, synthetic prompt.
-    This simulates what happens inside the Flask application without running the server.
+    A script to demonstrate the ContextManager building a complete, synthetic prompt 
+    in a pure Python environment, ready for the FastAPI application.
     """
-    # We import the app and modules here to ensure the app context is available
-    from app import app
-    # It's good practice to import the data models you're working with directly
-    # for better readability and clarity, even if they might be imported by other modules.
-    from modules.data_models import Prompt, RetrievedKnowledgeItem, Turn, UserProfile, LearningGoal, UserQuery, QueryType, QueryPart
+    
+    # 1. Instantiate all the necessary components (No Flask Context required)
+    # These dependencies are initialized once at application startup in a FastAPI app
+    user_profile = UserProfile()
+    conversation_history = ConversationHistory()
+    system_context = SystemContext()
+    retrieved_knowledge = RetrievedKnowledge()
+    tool_context = ToolContext()                      # New Dependency
+    conversation_goal_tracker = ConversationGoalTracker() # New Dependency
 
-    from modules.context.user_profile import UserProfile
-    from modules.context.conversation_history import ConversationHistory
-    from modules.context.learning_goals import LearningGoals
-    from modules.context.system_context import SystemContext
-    from modules.context.retrieved_knowledge import RetrievedKnowledge
-    from modules.context.context_manager import ContextManager
+    # 2. Instantiate the ContextManager with ALL its dependencies
+    context_manager = ContextManager(
+        user_profile=user_profile, 
+        conversation_history=conversation_history, 
+        system_context=system_context, 
+        retrieved_knowledge=retrieved_knowledge,
+        tool_context=tool_context, 
+        conversation_goal_tracker=conversation_goal_tracker
+    )
 
-    # Create an application context to make 'app.logger' and other Flask globals available
-    with app.app_context():
-        # 1. Instantiate all the necessary components, just like in app.py
-        user_profile = UserProfile()
-        conversation_history = ConversationHistory()
-        learning_goals = LearningGoals()
-        system_context = SystemContext()
-        retrieved_knowledge = RetrievedKnowledge()
+    # 3. Define the inputs for our synthetic prompt (simulating FastAPI request data)
+    test_user_id = "user123"
+    test_session_id = "session456"
+    
+    # We must use the internal QueryPart/UserQuery objects here, not the Pydantic models
+    test_query = UserQuery(parts=[
+        QueryPart(type=QueryType.TEXT, content="How do I use 'wa' vs 'ga'?"),
+    ])
+    
+    # Convert the internal UserQuery object to the Pydantic format expected by build_prompt_data
+    # For this demonstration, we'll bypass the Pydantic model conversion inside the ContextManager
+    # and call the core logic method directly.
+    
+    print("--- Building Example of a Full Context Prompt ---")
+    
+    # 4. Build the prompt data by calling the core logic method
+    # Note: We must adjust the arguments to match the simplified structure of the core method
+    prompt_object = context_manager.build_prompt_data(
+        user_id=test_user_id, 
+        session_id=test_session_id, 
+        user_query_model=test_query # Passed as the internal dataclass for the demo's simplicity
+    )
 
-        # 2. Instantiate the ContextManager with its dependencies
-        context_manager = ContextManager(user_profile, conversation_history, learning_goals, system_context, retrieved_knowledge)
-
-        # 3. Define the inputs for our synthetic prompt
-        test_user_id = "user123"
-        test_session_id = "session456"
-        test_query = UserQuery(parts=[
-            QueryPart(type=QueryType.TEXT, content="How do I use 'wa' vs 'ga'?"),
-            # Example of how a future multi-modal query might look
-            # QueryPart(type=QueryType.VOICE, content="https://example.com/audio/wa_vs_ga.mp3")
-        ])
-
-        # 4. Build the prompt data by calling the core logic method
-        print("--- Building Example of a Full Context Prompt ---")
-        prompt_object = context_manager.build_prompt_data(test_user_id, test_session_id, test_query) # type: ignore
-
-        # 5. Print the final JSON output using our custom encoder
-        print("\n--- Generated Prompt JSON ---")
-        print(json.dumps(asdict(prompt_object), indent=2, cls=CustomJSONEncoder))
+    # 5. Print the final JSON output
+    print("\n--- Generated Prompt JSON (Ready for LLM) ---")
+    print(json.dumps(asdict(prompt_object), indent=2, cls=CustomJSONEncoder))
 
 if __name__ == '__main__':
+    # Ensure you have saved the previous code as 'context_modules.py' and run this script.
     show_full_context_prompt_example()
