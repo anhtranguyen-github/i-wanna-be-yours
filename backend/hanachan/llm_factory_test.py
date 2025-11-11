@@ -18,4 +18,4 @@ router_llm_config = LLM_CONFIG['router_llm']
 router_llm = create_llm_instance(router_llm_config)
 
 
-router_llm.invoke("Hello ?")
+print(router_llm.invoke("Hello ?"))
