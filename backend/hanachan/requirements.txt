@@ -5,3 +5,12 @@ langchain
 langchain-community 
 langchain-core 
 langchain-ollama
+fastapi
+uvicorn[standard]
+pydantic
+python-dotenv
+dataclasses-json
+langchain-core
+langgraph
+qdrant-client
+openai

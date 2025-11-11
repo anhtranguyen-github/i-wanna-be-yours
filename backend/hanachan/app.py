@@ -2,72 +2,88 @@ import os
 import logging
 from flask import Flask, jsonify
 from flask_cors import CORS
+from flask_pymongo import PyMongo
 
+# ---------------------------------- Logging setup ----------------------------------------------
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s",
 )
+logger = logging.getLogger("flask-ai-agent")
 
+# ---------------------------------- Flask initialization ----------------------------------------
 app = Flask(__name__)
-CORS(app)
+CORS(app)  # Cho phép CORS từ mọi domain (frontend gọi API dễ dàng)
 
-# Database configuration (placeholder for when you need it)
-# app.config["MONGO_URI_hanachan"] = "mongodb://localhost:27017/hanachanDB"
-# mongo_hanachanDB = PyMongo(app, uri="mongodb://localhost:27017/hanachanDB")
+# ---------------------------------- Database configuration --------------------------------------
+app.config["MONGO_URI_FLASKAIAGENTDATABASE"] = "mongodb://localhost:27017/flaskAiAgentDB"
+mongo_flaskAiAgentDB = PyMongo(app, uri="mongodb://localhost:27017/flaskAiAgentDB")
 
-# ---------------------------------- Global vars ----------------------------------------------
+# ---------------------------------- Environment & Ports -----------------------------------------
+flask_port = 5400  # chạy ở port 5400 cho service AI Agent
+env = os.getenv("APP_ENV", "dev")  # dev hoặc prod
+host = "host.docker.internal" if env == "prod" else "localhost"
+logger.info(f"Running Flask AI Agent in {env} mode on port {flask_port}")
 
-hanachan_port = 5400
-
-# Determine the environment (dev or prod)
-# Reading environment variable with a default value of "dev"
-env = os.getenv("APP_ENV", "dev")
-
-# --- universal API endpoints ---- #
-
-# curl -X GET http://localhost:5400/hanachan/v1/health or http://127.0.0.1:5400/hanachan/v1/health
-@app.route("/hanachan/v1/health", methods=["GET"])
+# ---------------------------------- Global API Endpoints ----------------------------------------
+@app.route("/health", methods=["GET"])
 def health_check():
-    """Responds with a simple JSON message and a 200 OK status."""
-    app.logger.info("Health check endpoint was called.")
-    return jsonify({"status": "OK", "message": "hanachan service is running"}), 200
-
-# ---------------- Class imports ----------------- #
-
-from modules.context.user_profile import UserProfile
-from modules.context.conversation_history import ConversationHistory
-from modules.context.learning_goals import LearningGoals
-from modules.context.system_context import SystemContext
-from modules.context.retrieved_knowledge import RetrievedKnowledge
-from modules.context.context_manager import ContextManager
-
-# Instantiate and register the user profile component
-user_profile = UserProfile()
-user_profile.register_routes(app)
-
-# Instantiate and register context source components
-conversation_history = ConversationHistory()
-conversation_history.register_routes(app)
-
-learning_goals = LearningGoals()
-learning_goals.register_routes(app)
-
-system_context = SystemContext()
-system_context.register_routes(app)
-
-retrieved_knowledge = RetrievedKnowledge()
-# retrieved_knowledge has no web routes to register yet.
+    """Health check endpoint."""
+    return jsonify({"message": "OK"}), 200
 
 
-# Instantiate the main hanachan orchestrator (ContextManager) with its dependencies
-context_manager = ContextManager(user_profile, conversation_history, learning_goals, system_context, retrieved_knowledge)
-context_manager.register_routes(app)
+# ---------------------------------- Class Imports (Modules) -------------------------------------
+# Dưới đây là nơi bạn import và đăng ký các modules cho AI Agent.
+# Giống như flashcard server, mỗi module có method register_routes(app).
 
-# --------------- End of Class imports ---------------- #
+try:
+    from modules.context.combined_context import (
+        ContextManager,
+        UserProfile,
+        ConversationHistory,
+        SystemContext,
+        RetrievedKnowledge,
+        ToolContext,
+        ConversationGoalTracker
+    )
 
-if __name__ == '__main__':
-    # debug=True will reload the server on code changes
-    # and provide more detailed error messages.
-    # In a production environment using Gunicorn, debug should be False.
-    app.logger.info(f"Starting hanachan service in {env} mode on port {hanachan_port}")
-    app.run(debug=True, host="0.0.0.0", port=hanachan_port)
+    # --- Initialize context components ---
+    logger.info("Initializing AI Agent context components...")
+
+    user_profile_service = UserProfile()
+    conversation_history_service = ConversationHistory()
+    conversation_goal_tracker_service = ConversationGoalTracker()
+    system_context_service = SystemContext()
+    retrieved_knowledge_service = RetrievedKnowledge()
+    tool_context_service = ToolContext()
+
+    context_manager = ContextManager(
+        user_profile=user_profile_service,
+        conversation_history=conversation_history_service,
+        system_context=system_context_service,
+        retrieved_knowledge=retrieved_knowledge_service,
+        tool_context=tool_context_service,
+        conversation_goal_tracker=conversation_goal_tracker_service,
+    )
+
+    logger.info("AI Agent ContextManager initialized successfully.")
+
+except ImportError as e:
+    logger.warning(f"Some context modules not found: {e}")
+    context_manager = None
+
+
+try:
+    from modules.agent_module import AgentModule
+    agent_module = AgentModule(context_manager)
+    agent_module.register_routes(app)
+    logger.info("Registered AgentModule successfully.")
+except ModuleNotFoundError:
+    logger.warning("modules/agent_module.py not found — skipping route registration.")
+except Exception as e:
+    logger.exception(f"Error registering AgentModule: {e}")
+
+
+# ---------------------------------- Run Flask App -----------------------------------------------
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0", port=flask_port)
