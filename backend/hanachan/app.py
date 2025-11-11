@@ -34,52 +34,20 @@ def health_check():
 
 # ---------------------------------- Class Imports (Modules) -------------------------------------
 # Dưới đây là nơi bạn import và đăng ký các modules cho AI Agent.
-# Giống như flashcard server, mỗi module có method register_routes(app).
 
 try:
-    from modules.context.combined_context import (
-        ContextManager,
-        UserProfile,
-        ConversationHistory,
-        SystemContext,
-        RetrievedKnowledge,
-        ToolContext,
-        ConversationGoalTracker
-    )
+    from modules.context import ContextManager
+    from modules.agent_module import AgentModule
 
-    # --- Initialize context components ---
-    logger.info("Initializing AI Agent context components...")
-
-    user_profile_service = UserProfile()
-    conversation_history_service = ConversationHistory()
-    conversation_goal_tracker_service = ConversationGoalTracker()
-    system_context_service = SystemContext()
-    retrieved_knowledge_service = RetrievedKnowledge()
-    tool_context_service = ToolContext()
-
-    context_manager = ContextManager(
-        user_profile=user_profile_service,
-        conversation_history=conversation_history_service,
-        system_context=system_context_service,
-        retrieved_knowledge=retrieved_knowledge_service,
-        tool_context=tool_context_service,
-        conversation_goal_tracker=conversation_goal_tracker_service,
-    )
-
-    logger.info("AI Agent ContextManager initialized successfully.")
+    # The AgentModule will now be responsible for initializing the ContextManager
+    # on a per-request basis, as user_id and session_id are request-specific.
+    agent_module = AgentModule()
+    agent_module.register_routes(app)
+    
+    logger.info("Registered AgentModule successfully.")
 
 except ImportError as e:
-    logger.warning(f"Some context modules not found: {e}")
-    context_manager = None
-
-
-try:
-    from modules.agent_module import AgentModule
-    agent_module = AgentModule(context_manager)
-    agent_module.register_routes(app)
-    logger.info("Registered AgentModule successfully.")
-except ModuleNotFoundError:
-    logger.warning("modules/agent_module.py not found — skipping route registration.")
+    logger.warning(f"Could not import modules: {e}")
 except Exception as e:
     logger.exception(f"Error registering AgentModule: {e}")
 
