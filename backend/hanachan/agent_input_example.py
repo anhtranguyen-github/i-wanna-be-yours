@@ -28,12 +28,11 @@ def generate_specific_hanachan_input_json():
     # for better readability and clarity, even if they might be imported by other modules.
     from modules.data_models import UserProfile as UserProfileModel, LearningGoal, GoalStatus, RetrievedKnowledgeItem, KnowledgeType, UserQuery, QueryType, QueryPart
 
-    from modules.context.user_profile import UserProfile
-    from modules.context.conversation_history import ConversationHistory
-    from modules.context.learning_goals import LearningGoals
-    from modules.context.system_context import SystemContext
-    from modules.context.retrieved_knowledge import RetrievedKnowledge
-    from modules.context.context_manager import ContextManager
+    from modules.context import UserProfile
+    from modules.context import ConversationHistory
+    from modules.context import Lear
+    from modules.context import SystemContext
+    from modules.context import RetrievedKnowledge
 
     # Create an application context to make 'app.logger' and other Flask globals available
     with app.app_context():
