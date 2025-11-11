@@ -1,0 +1,11 @@
+
+llm_config:
+  # Configuration for the lightweight router/planner model
+  router_llm:
+    provider: ollama
+    model_name: qwen3:1.7b
+    temperature: 0.0
+    host: http://localhost:11434
+    # For Ollama models, you would add: host: http://localhost:11434
+
+tool_config: {}

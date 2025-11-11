@@ -1,0 +1,19 @@
+# config.yaml
+
+llm_config:
+  # Configuration for the lightweight router/planner model
+  router_llm:
+    provider: openai
+    model_name: gpt-4o-mini
+    temperature: 0.0
+    # For Ollama models, you would add: host: http://localhost:11434
+
+  # Configuration for the powerful reasoning/synthesizer model
+  reasoning_llm:
+    provider: openai
+    model_name: gpt-4o
+    temperature: 0.2
+  
+tool_config:
+  # Identifier for the external tool used by the Retriever node
+  default_retriever: Tavily Search API

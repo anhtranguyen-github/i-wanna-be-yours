@@ -1,0 +1,67 @@
+# llm_factory.py
+
+import os
+import yaml
+from typing import Dict, Any, Literal
+from pydantic import BaseModel
+from langchain_core.language_models import BaseChatModel
+
+# --- CORRECTED IMPORTS ---
+from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama 
+# Note: Ensure 'langchain-ollama' is installed (pip install langchain-ollama)
+# If using older setups, you might need 'langchain-community' instead. 
+
+# --- Pydantic Schema for Type Safety (No Change) ---
+
+class LLMConfigModel(BaseModel):
+    """Schema for a single LLM entry in the YAML file."""
+    provider: Literal["openai", "ollama", "anthropic"]
+    model_name: str
+    temperature: float
+    host: str = None 
+
+class ConfigModel(BaseModel):
+    """Schema for the entire YAML configuration."""
+    llm_config: Dict[str, LLMConfigModel]
+    tool_config: Dict[str, Any]
+
+# --- Configuration Loader (No Change) ---
+
+def load_config_from_yaml(file_path: str = "config.yaml") -> ConfigModel:
+    """
+    Loads configuration from a YAML file and validates it using Pydantic.
+    """
+    try:
+        with open(file_path, 'r') as f:
+            raw_config = yaml.safe_load(f)
+        return ConfigModel(**raw_config)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Configuration file not found at: {file_path}. Please create a 'config.yaml' file.")
+    except Exception as e:
+        raise ValueError(f"Error loading or validating configuration: {e}")
+
+
+# --- Factory Function (Corrected Ollama Initialization) ---
+
+def create_llm_instance(llm_config: LLMConfigModel) -> BaseChatModel:
+    """
+    Dynamically creates an LLM instance based on a Pydantic configuration object.
+    """
+    if llm_config.provider == "openai":
+        return ChatOpenAI(
+            model=llm_config.model_name,
+            temperature=llm_config.temperature
+        )
+    
+    elif llm_config.provider == "ollama":
+        # Uses the direct langchain_ollama import
+        params = {"model": llm_config.model_name, "temperature": llm_config.temperature}
+        if llm_config.host:
+             # Ollama models use base_url for host specification
+             params["base_url"] = llm_config.host 
+        
+        return ChatOllama(**params)
+    
+    else:
+        raise ValueError(f"Unsupported LLM provider: {llm_config.provider}")
