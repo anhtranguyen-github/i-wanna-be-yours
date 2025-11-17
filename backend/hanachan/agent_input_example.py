@@ -26,19 +26,29 @@ def generate_specific_hanachan_input_json():
     from app import app
     # It's good practice to import the data models you're working with directly
     # for better readability and clarity, even if they might be imported by other modules.
-    from modules.data_models import UserProfile as UserProfileModel, LearningGoal, GoalStatus, RetrievedKnowledgeItem, KnowledgeType, UserQuery, QueryType, QueryPart
+    from modules.data_models import (
+        UserProfileModel, LearningGoal, GoalStatus, RetrievedKnowledgeItem, 
+        KnowledgeType, Turn, Speaker, CurrentConversationGoal
+    )
 
-    from modules.context import UserProfile
-    from modules.context import ConversationHistory
-    from modules.context import Lear
-    from modules.context import SystemContext
-    from modules.context import RetrievedKnowledge
+    from modules.context import (
+        UserProfile, ConversationHistory, SystemContext, RetrievedKnowledge, 
+        ContextManager, ConversationGoalTracker
+    )
 
     # Create an application context to make 'app.logger' and other Flask globals available
     with app.app_context():
         # 1. Define the specific data for this example
-        specific_user_profile = UserProfileModel(id="user123", name="Alex Doe", native_language="English", target_language="Japanese", proficiency_level="N4", interests=["food", "travel"])
         specific_learning_goal = LearningGoal(goal_id="goal789", topic="N3 Vocabulary", status=GoalStatus.ACTIVE, proficiency_target="N3", start_date=date(2023, 10, 1))
+        specific_user_profile = UserProfileModel(
+            id="user123", 
+            name="Alex Doe", 
+            native_language="English", 
+            target_language="Japanese", 
+            proficiency_level="N4", 
+            interests=["food", "travel"],
+            learning_goals=[specific_learning_goal]
+        )
         
         retrieved_knowledge_content = """ 
                 chữ gốc: 海（うみ）
@@ -63,32 +73,39 @@ def generate_specific_hanachan_input_json():
                 chữ gần giống: 草, 茶, 英, 菜
         """
         specific_knowledge = [RetrievedKnowledgeItem(type=KnowledgeType.DOCUMENT, content=retrieved_knowledge_content, source="internal_grammar_db:doc_ordering_food")]
+        
+        specific_history = [
+            Turn(speaker=Speaker.USER, text="Hello!"),
+            Turn(speaker=Speaker.AGENT, text="Hi there! How can I help you learn today?")
+        ]
+        specific_goal = CurrentConversationGoal(
+            goal_id="chat_session456",
+            goal_description="Generate a kanji quiz.",
+            is_completed=False
+        )
+        specific_instructions = {
+            "system_prompt": "You are a helpful and encouraging language learning assistant. Your goal is to help the user achieve their current conversation goal and overall learning goals. Be sure to reference the retrieved knowledge where applicable.",
+        }
 
         # 2. Use unittest.mock.patch to temporarily override the data-fetching methods
         with patch.object(UserProfile, '_get_profile_data', return_value=specific_user_profile), \
-             patch.object(LearningGoals, '_get_goals_data', return_value=specific_learning_goal), \
+             patch.object(ConversationHistory, '_get_history_data', return_value=specific_history), \
+             patch.object(ConversationGoalTracker, '_get_current_goal_data', return_value=specific_goal), \
+             patch.object(SystemContext, '_get_instructions_data', return_value=specific_instructions), \
              patch.object(RetrievedKnowledge, 'search', return_value=specific_knowledge):
 
-            # 3. Instantiate all the necessary components
-            user_profile = UserProfile()
-            conversation_history = ConversationHistory()
-            learning_goals = LearningGoals()
-            system_context = SystemContext()
-            retrieved_knowledge = RetrievedKnowledge()
-
-            # 4. Instantiate the ContextManager with its dependencies
-            context_manager = ContextManager(user_profile, conversation_history, learning_goals, system_context, retrieved_knowledge)
-
-            # 5. Define the inputs for our synthetic prompt
+            # 3. Define the inputs for our synthetic prompt
             test_user_id = "user123"
             test_session_id = "session456"
-            # This query is relevant to the user's interest (food) and the patched knowledge.
-            test_query = UserQuery(parts=[QueryPart(type=QueryType.TEXT, content="Generate quiz with format: Meaning of 1 kanji, 4 options which 1 right answer and 3 wrong answers but have similarity with right answer")])
+            test_query_text = "Generate quiz with format: Meaning of 1 kanji, 4 options which 1 right answer and 3 wrong answers but have similarity with right answer"
 
-            # 6. Build the prompt data by calling the core logic method
-            prompt_object = context_manager.build_prompt_data(test_user_id, test_session_id, test_query)
+            # 4. Instantiate the ContextManager
+            context_manager = ContextManager(user_id=test_user_id, session_id=test_session_id)
 
-            # 7. Print the final JSON output using our custom encoder
+            # 5. Build the prompt data by calling the core logic method
+            prompt_object = context_manager.assemble_prompt(test_query_text)
+
+            # 6. Print the final JSON output using our custom encoder
             print(json.dumps(asdict(prompt_object), indent=2, cls=CustomJSONEncoder))
 
 if __name__ == '__main__':

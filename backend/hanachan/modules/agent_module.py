@@ -271,5 +271,5 @@ class AgentModule:
             return jsonify({"response": final_state.get("final_agent_response")})
 
 
-app = create_mas_workflow()
+
 

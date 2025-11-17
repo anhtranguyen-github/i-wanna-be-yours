@@ -6,13 +6,14 @@ from typing import Dict, Any, Literal
 from pydantic import BaseModel
 from langchain_core.language_models import BaseChatModel
 
-# --- CORRECTED IMPORTS ---
+
 from langchain_openai import ChatOpenAI
 from langchain_ollama import ChatOllama 
-# Note: Ensure 'langchain-ollama' is installed (pip install langchain-ollama)
-# If using older setups, you might need 'langchain-community' instead. 
 
-# --- Pydantic Schema for Type Safety (No Change) ---
+
+class MCPServerConfigModel(BaseModel):
+    host: str
+    port: int
 
 class LLMConfigModel(BaseModel):
     """Schema for a single LLM entry in the YAML file."""
@@ -23,6 +24,8 @@ class LLMConfigModel(BaseModel):
 
 class ConfigModel(BaseModel):
     """Schema for the entire YAML configuration."""
+    system_prompt: str
+    mcp_server_config: MCPServerConfigModel
     llm_config: Dict[str, LLMConfigModel]
     tool_config: Dict[str, Any]
 
