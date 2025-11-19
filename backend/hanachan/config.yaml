@@ -1,0 +1,31 @@
+models:
+  default:
+    provider: ollama
+    model_name: qwen3:1.7b
+    temperature: 0.0
+    base_url: http://localhost:11434
+
+tools:
+  mcp_servers:
+    qdrant:
+      command: uvx
+      args: 
+        - mcp-server-qdrant
+      env:
+        QDRANT_LOCAL_PATH: ~/.hanachan/qdrant_db
+        COLLECTION_NAME: hanachan_grammar
+        EMBEDDING_MODEL: sentence-transformers/all-MiniLM-L6-v2
+      transport: stdio
+
+prompts:
+  system_prompt: |
+    You are a Japanese grammar tutor assistant.
+    You have access to a grammar database with explanations and examples.
+    Help users learn Japanese grammar patterns clearly and educationally.
+
+agents:
+  default_agent:
+    model: default
+    tools:
+      - qdrant
+    system_prompt: system_prompt

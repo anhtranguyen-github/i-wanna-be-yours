@@ -2,7 +2,6 @@ import os
 import logging
 from flask import Flask, jsonify
 from flask_cors import CORS
-from flask_pymongo import PyMongo
 
 # ---------------------------------- Logging setup ----------------------------------------------
 logging.basicConfig(
@@ -13,45 +12,46 @@ logger = logging.getLogger("flask-ai-agent")
 
 # ---------------------------------- Flask initialization ----------------------------------------
 app = Flask(__name__)
-CORS(app)  # Cho phép CORS từ mọi domain (frontend gọi API dễ dàng)
-
-# ---------------------------------- Database configuration --------------------------------------
-app.config["MONGO_URI_FLASKAIAGENTDATABASE"] = "mongodb://localhost:27017/flaskAiAgentDB"
-mongo_flaskAiAgentDB = PyMongo(app, uri="mongodb://localhost:27017/flaskAiAgentDB")
+CORS(app)  # Allow CORS for all domains
 
 # ---------------------------------- Environment & Ports -----------------------------------------
-flask_port = 5400  # chạy ở port 5400 cho service AI Agent
-env = os.getenv("APP_ENV", "dev")  # dev hoặc prod
-host = "host.docker.internal" if env == "prod" else "localhost"
+flask_port = int(os.getenv("FLASK_PORT", 5400))
+env = os.getenv("APP_ENV", "dev")
 logger.info(f"Running Flask AI Agent in {env} mode on port {flask_port}")
 
 # ---------------------------------- Global API Endpoints ----------------------------------------
 @app.route("/health", methods=["GET"])
 def health_check():
     """Health check endpoint."""
-    return jsonify({"message": "OK"}), 200
+    return jsonify({"message": "OK", "status": "healthy"}), 200
 
+@app.route("/", methods=["GET"])
+def index():
+    """Serve the UI."""
+    return app.send_static_file("ui.html")
 
-# ---------------------------------- Class Imports (Modules) -------------------------------------
-# Dưới đây là nơi bạn import và đăng ký các modules cho AI Agent.
-
+# ---------------------------------- Module Registration -----------------------------------------
+# Register Chat Routes (Main Agent)
 try:
-    from modules.context import ContextManager
-    from modules.agent_module import AgentModule
+    from chat import register_routes as register_chat_routes
+    register_chat_routes(app)
+    logger.info("✅ Registered chat routes successfully.")
+except ImportError as e:
+    logger.error(f"❌ Could not import chat routes: {e}")
+except Exception as e:
+    logger.exception(f"❌ Error registering chat routes: {e}")
 
-    # The AgentModule will now be responsible for initializing the ContextManager
-    # on a per-request basis, as user_id and session_id are request-specific.
+# Register other modules (Optional/Legacy)
+try:
+    from modules.agent_module import AgentModule
     agent_module = AgentModule()
     agent_module.register_routes(app)
-    
-    logger.info("Registered AgentModule successfully.")
-
-except ImportError as e:
-    logger.warning(f"Could not import modules: {e}")
+    logger.info("✅ Registered AgentModule successfully.")
+except ImportError:
+    logger.info("ℹ️ AgentModule not found, skipping.")
 except Exception as e:
-    logger.exception(f"Error registering AgentModule: {e}")
-
+    logger.warning(f"⚠️ Error registering AgentModule: {e}")
 
 # ---------------------------------- Run Flask App -----------------------------------------------
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=flask_port)
+    app.run(debug=(env == "dev"), host="0.0.0.0", port=flask_port)

@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>MCP Chat Tester</title>
+<style>
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:24px;color:#111}
+h1{font-size:18px;margin:0 0 16px}
+label{display:block;margin:8px 0}
+input[type=text]{width:100%;padding:10px;font-size:14px;border:1px solid #ccc;border-radius:6px}
+button{padding:10px 14px;margin-right:8px;border:0;border-radius:6px;background:#111;color:#fff;font-size:14px;cursor:pointer}
+button.secondary{background:#eee;color:#111}
+fieldset{border:1px solid #ddd;border-radius:8px;padding:12px;margin:16px 0}
+.output{border:1px solid #ddd;border-radius:8px;padding:12px;min-height:160px;white-space:pre-wrap;background:#fafafa}
+.controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.small{font-size:12px;color:#666}
+</style>
+</head>
+<body>
+<h1>MCP Chat Tester</h1>
+<div>
+<label>Backend URL (optional, default same origin)
+<input id="baseUrl" type="text" placeholder="http://localhost:5400">
+</label>
+<label>Query
+<input id="query" type="text" placeholder="Explain ～ば～ほど">
+</label>
+<fieldset>
+<legend>Mode</legend>
+<div class="controls">
+<label><input type="radio" name="mode" value="stream" checked> Stream</label>
+<label><input type="radio" name="mode" value="complete"> Complete</label>
+<label><input id="thinking" type="checkbox"> Thinking</label>
+</div>
+</fieldset>
+<div class="controls">
+<button id="send">Send</button>
+<button id="stop" class="secondary">Stop</button>
+</div>
+<div class="small" id="status"></div>
+<div class="output" id="output"></div>
+</div>
+<script>
+const queryEl=document.getElementById('query');
+const baseUrlEl=document.getElementById('baseUrl');
+const thinkingEl=document.getElementById('thinking');
+const outputEl=document.getElementById('output');
+const statusEl=document.getElementById('status');
+const sendBtn=document.getElementById('send');
+const stopBtn=document.getElementById('stop');
+let controller=null;
+function getBase(){const v=baseUrlEl.value.trim();return v||window.location.origin}
+function getMode(){const m=document.querySelector('input[name="mode"]:checked');return m?m.value:'stream'}
+function setStatus(t){statusEl.textContent=t}
+function clear(){outputEl.textContent=''}
+async function runComplete(q,t){
+  const url=getBase()+'/chat/complete'+(t?'?thinking=true':'');
+  const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:q,thinking:t})});
+  if(!res.ok){outputEl.textContent='Error '+res.status;return}
+  const data=await res.json();
+  outputEl.textContent=data.response||''
+}
+async function runStream(q,t){
+  controller=new AbortController();
+  const url=getBase()+'/chat/stream'+(t?'?thinking=true':'');
+  const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:q,thinking:t}),signal:controller.signal});
+  if(!res.ok){outputEl.textContent='Error '+res.status;return}
+  const reader=res.body.getReader();
+  const decoder=new TextDecoder();
+  while(true){
+    const {done,value}=await reader.read();
+    if(done)break;
+    const text=decoder.decode(value,{stream:true});
+    outputEl.textContent+=text;
+  }
+}
+sendBtn.onclick=async ()=>{
+  const q=queryEl.value.trim();
+  const t=thinkingEl.checked;
+  if(!q){setStatus('Enter a query');return}
+  clear();
+  setStatus('Sending...');
+  try{
+    if(getMode()==='stream'){await runStream(q,t)}else{await runComplete(q,t)}
+    setStatus('Done');
+  }catch(e){setStatus('Error');outputEl.textContent=String(e)}
+};
+stopBtn.onclick=()=>{if(controller){controller.abort();setStatus('Stopped')}};
+</script>
+</body>
+</html>
