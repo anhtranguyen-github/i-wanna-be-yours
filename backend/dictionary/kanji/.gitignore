@@ -1,1 +1,43 @@
-artefacts/
+# Python
+__pycache__/
+*.pyc
+*.pyd
+*.pyo
+.Python/
+.venv/
+venv/
+env/
+pip-log.txt
+pip-delete-this-arg.txt
+*.egg-info/
+.coverage
+.pytest_cache/
+htmlcov/
+dist/
+build/
+
+# Environment variables
+.env        # For the .env file
+.env/       # For a directory named .env (if it exists)
+.flaskenv
+
+# Node.js (if applicable, given node_modules was already present)
+node_modules/
+yarn-error.log*
+.pnp/
+.pnp.js
+
+# IDEs
+.idea/
+.vscode/
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Databases
+*.sqlite
+*.db
