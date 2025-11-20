@@ -66,3 +66,8 @@ EXPOSE 5200
 
 # start mongo, seed static data, start express server wrapper daemon
 CMD ["sh", "-c", "mongod --dbpath /data/db --bind_ip_all --fork --logpath /var/log/mongodb/mongod.log && node seed_jmdict_data.js && sleep 2 && node main_server.js"]
+
+# mongod --dbpath /data/db --bind_ip_all --fork --logpath /var/log/mongodb/mongod.log \
+#   && node seed_jmdict_data.js \
+#   && sleep 2 \
+#   && node main_server.js

@@ -61,3 +61,5 @@ EXPOSE 8000
 
 # start mongo, seed static data, start express server wrapper daemon
 CMD ["sh", "-c", "mongod --dbpath /data/db --bind_ip_all --fork --logpath /var/log/mongodb/mongod.log && ./seed_db_wrapper.sh"]
+
+
