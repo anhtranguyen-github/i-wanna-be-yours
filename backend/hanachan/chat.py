@@ -105,7 +105,7 @@ class AgentFactory:
         
         llm = ChatOllama(
             model=model_conf.get("model_name", "qwen3:1.7b"),
-            temperature=model_conf.get("temperature", 0.0),
+            temperature=model_conf.get("temperature", 0.5),
             base_url=model_conf.get("base_url", "http://localhost:11434")
         )
 
@@ -172,6 +172,28 @@ class ChatService:
         messages = []
         if system_prompt:
             messages.append(SystemMessage(content=system_prompt))
+        
+        # Check for /think command in user input to toggle mode
+        if "/think" in user_input:
+            show_thinking = True
+            user_input = user_input.replace("/think", "").strip()
+
+        # Append /think to user input if enabled
+        # We do NOT modify system_prompt as it might be used for multi-turn chat
+        if show_thinking:
+            user_input = f"/think {user_input}"
+            
+            # Add explicit instruction about tags to the messages if needed, 
+            # or rely on the model understanding /think. 
+            # The user's prompt implies /think is enough to "bring it back".
+            # But adding a system instruction for the tags format is helpful for the UI parsing.
+            messages.append(SystemMessage(content="You MUST think step by step inside <think> tags before answering. Example: <think>I need to...</think> Answer."))
+
+        # Log for debugging
+        logger.info(f"Thinking Mode: {show_thinking}")
+        logger.info(f"System Prompt: {system_prompt}")
+        logger.info(f"User Input: {user_input}")
+
         messages.append(HumanMessage(content=user_input))
 
         while True:
@@ -184,17 +206,23 @@ class ChatService:
                 else:
                     final_ai_message += chunk
                 
+                # Always stream thinking tags if they exist in the content (e.g. from reasoning models)
+                if chunk.content:
+                    # Check for <think> tags which might come from reasoning models
+                    if "<think>" in chunk.content or "</think>" in chunk.content:
+                         yield chunk.content
+                    elif show_thinking:
+                         yield chunk.content
+                    else:
+                         # Even if not showing thinking, if the model generates it, yield it.
+                         yield chunk.content
+
                 if show_thinking:
                     # Check for tool call chunks (LangChain specific)
                     if hasattr(chunk, 'tool_call_chunks') and chunk.tool_call_chunks:
                         for tc_chunk in chunk.tool_call_chunks:
                             if tc_chunk.get('name'):
-                                yield f"\n[Thinking: Calling tool '{tc_chunk['name']}'...]\n"
-                    
-                    if chunk.content:
-                        yield chunk.content
-                elif chunk.content:
-                    yield chunk.content
+                                yield f"<thinking>Calling tool '{tc_chunk['name']}'...\n</thinking>"
             
             if not final_ai_message:
                 break
@@ -207,6 +235,8 @@ class ChatService:
             tool_messages = []
             for tool_call in final_ai_message.tool_calls:
                 tool_output_message = await self.execute_tool_call(tool_call, tools)
+                if show_thinking:
+                    yield f"<thinking>\nTool Output: {tool_output_message.content}\n</thinking>"
                 tool_messages.append(tool_output_message)
             
             messages.extend(tool_messages)
@@ -287,7 +317,6 @@ async def main():
     print(f"✅ Loaded {len(tools)} tools")
     print(f"📝 System Prompt: {prompt[:50]}...")
     print("\nAsk me about Japanese grammar!")
-    print('Controls: Type "exit" to quit, or "!thinking" to toggle internal thoughts.')
     print("=" * 60 + "\n")
     
     show_thinking = False

@@ -1,91 +1,271 @@
 <!doctype html>
 <html>
+
 <head>
-<meta charset="utf-8">
-<title>MCP Chat Tester</title>
-<style>
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:24px;color:#111}
-h1{font-size:18px;margin:0 0 16px}
-label{display:block;margin:8px 0}
-input[type=text]{width:100%;padding:10px;font-size:14px;border:1px solid #ccc;border-radius:6px}
-button{padding:10px 14px;margin-right:8px;border:0;border-radius:6px;background:#111;color:#fff;font-size:14px;cursor:pointer}
-button.secondary{background:#eee;color:#111}
-fieldset{border:1px solid #ddd;border-radius:8px;padding:12px;margin:16px 0}
-.output{border:1px solid #ddd;border-radius:8px;padding:12px;min-height:160px;white-space:pre-wrap;background:#fafafa}
-.controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-.small{font-size:12px;color:#666}
-</style>
+  <meta charset="utf-8">
+  <title>MCP Chat Tester</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      margin: 24px;
+      color: #111
+    }
+
+    h1 {
+      font-size: 18px;
+      margin: 0 0 16px
+    }
+
+    label {
+      display: block;
+      margin: 8px 0
+    }
+
+    input[type=text] {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px
+    }
+
+    button {
+      padding: 10px 14px;
+      margin-right: 8px;
+      border: 0;
+      border-radius: 6px;
+      background: #111;
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer
+    }
+
+    button.secondary {
+      background: #eee;
+      color: #111
+    }
+
+    fieldset {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 12px;
+      margin: 16px 0
+    }
+
+    .output {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 12px;
+      min-height: 160px;
+      white-space: pre-wrap;
+      background: #fafafa
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap
+    }
+
+    .small {
+      font-size: 12px;
+      color: #666
+    }
+
+    .thinking-cell {
+      border: 1px solid #444;
+      background: #222;
+      color: #ddd;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .thinking-header {
+      background: #333;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: bold;
+      color: #aaa;
+      border-bottom: 1px solid #444;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .thinking-content {
+      padding: 12px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 13px;
+      white-space: pre-wrap;
+      max-height: 300px;
+      overflow-y: auto;
+      line-height: 1.4;
+    }
+  </style>
 </head>
+
 <body>
-<h1>MCP Chat Tester</h1>
-<div>
-<label>Backend URL (optional, default same origin)
-<input id="baseUrl" type="text" placeholder="http://localhost:5400">
-</label>
-<label>Query
-<input id="query" type="text" placeholder="Explain ～ば～ほど">
-</label>
-<fieldset>
-<legend>Mode</legend>
-<div class="controls">
-<label><input type="radio" name="mode" value="stream" checked> Stream</label>
-<label><input type="radio" name="mode" value="complete"> Complete</label>
-<label><input id="thinking" type="checkbox"> Thinking</label>
-</div>
-</fieldset>
-<div class="controls">
-<button id="send">Send</button>
-<button id="stop" class="secondary">Stop</button>
-</div>
-<div class="small" id="status"></div>
-<div class="output" id="output"></div>
-</div>
-<script>
-const queryEl=document.getElementById('query');
-const baseUrlEl=document.getElementById('baseUrl');
-const thinkingEl=document.getElementById('thinking');
-const outputEl=document.getElementById('output');
-const statusEl=document.getElementById('status');
-const sendBtn=document.getElementById('send');
-const stopBtn=document.getElementById('stop');
-let controller=null;
-function getBase(){const v=baseUrlEl.value.trim();return v||window.location.origin}
-function getMode(){const m=document.querySelector('input[name="mode"]:checked');return m?m.value:'stream'}
-function setStatus(t){statusEl.textContent=t}
-function clear(){outputEl.textContent=''}
-async function runComplete(q,t){
-  const url=getBase()+'/chat/complete'+(t?'?thinking=true':'');
-  const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:q,thinking:t})});
-  if(!res.ok){outputEl.textContent='Error '+res.status;return}
-  const data=await res.json();
-  outputEl.textContent=data.response||''
-}
-async function runStream(q,t){
-  controller=new AbortController();
-  const url=getBase()+'/chat/stream'+(t?'?thinking=true':'');
-  const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:q,thinking:t}),signal:controller.signal});
-  if(!res.ok){outputEl.textContent='Error '+res.status;return}
-  const reader=res.body.getReader();
-  const decoder=new TextDecoder();
-  while(true){
-    const {done,value}=await reader.read();
-    if(done)break;
-    const text=decoder.decode(value,{stream:true});
-    outputEl.textContent+=text;
-  }
-}
-sendBtn.onclick=async ()=>{
-  const q=queryEl.value.trim();
-  const t=thinkingEl.checked;
-  if(!q){setStatus('Enter a query');return}
-  clear();
-  setStatus('Sending...');
-  try{
-    if(getMode()==='stream'){await runStream(q,t)}else{await runComplete(q,t)}
-    setStatus('Done');
-  }catch(e){setStatus('Error');outputEl.textContent=String(e)}
-};
-stopBtn.onclick=()=>{if(controller){controller.abort();setStatus('Stopped')}};
-</script>
+  <h1>MCP Chat Tester</h1>
+  <div>
+    <label>Backend URL (optional, default same origin)
+      <input id="baseUrl" type="text" placeholder="http://localhost:5400">
+    </label>
+    <label>Query
+      <input id="query" type="text" placeholder="Explain ～ば～ほど">
+    </label>
+    <fieldset>
+      <legend>Mode</legend>
+      <div class="controls">
+        <label><input type="radio" name="mode" value="stream" checked> Stream</label>
+        <label><input type="radio" name="mode" value="complete"> Complete</label>
+        <label><input id="thinking" type="checkbox"> Thinking</label>
+      </div>
+    </fieldset>
+    <div class="controls">
+      <button id="send">Send</button>
+      <button id="stop" class="secondary">Stop</button>
+    </div>
+    <div class="small" id="status"></div>
+
+    <!-- New Thinking Cell -->
+    <div id="thinking-box" class="thinking-cell" style="display:none;">
+      <div class="thinking-header">Thinking Process</div>
+      <div id="thinking-content" class="thinking-content"></div>
+    </div>
+
+    <div class="output" id="output"></div>
+  </div>
+  <script>
+    const queryEl = document.getElementById('query');
+    const baseUrlEl = document.getElementById('baseUrl');
+    const thinkingEl = document.getElementById('thinking');
+
+    const thinkingBox = document.getElementById('thinking-box');
+    const thinkingContent = document.getElementById('thinking-content');
+    const outputEl = document.getElementById('output');
+    const statusEl = document.getElementById('status');
+    const sendBtn = document.getElementById('send');
+    const stopBtn = document.getElementById('stop');
+    let controller = null;
+    function getBase() { const v = baseUrlEl.value.trim(); return v || window.location.origin }
+    function getMode() { const m = document.querySelector('input[name="mode"]:checked'); return m ? m.value : 'stream' }
+    function setStatus(t) { statusEl.textContent = t }
+    function clear() {
+      outputEl.textContent = '';
+      thinkingContent.textContent = '';
+      thinkingBox.style.display = 'none';
+    }
+    async function runComplete(q, t) {
+      const url = getBase() + '/chat/complete' + (t ? '?thinking=true' : '');
+      const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query: q, thinking: t }) });
+      if (!res.ok) { outputEl.textContent = 'Error ' + res.status; return }
+      const data = await res.json();
+      const text = data.response || '';
+
+      // Parse thinking tags if present in complete response
+      const thinkMatch = text.match(/<think>([\s\S]*?)<\/think>/) || text.match(/<thinking>([\s\S]*?)<\/thinking>/);
+      if (thinkMatch) {
+        thinkingBox.style.display = 'block';
+        thinkingContent.textContent = thinkMatch[1];
+        outputEl.textContent = text.replace(thinkMatch[0], '').trim();
+      } else {
+        outputEl.textContent = text;
+      }
+    }
+
+    async function runStream(q, t) {
+      controller = new AbortController();
+      const url = getBase() + '/chat/stream' + (t ? '?thinking=true' : '');
+      const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query: q, thinking: t }), signal: controller.signal });
+      if (!res.ok) { outputEl.textContent = 'Error ' + res.status; return }
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let inThinking = false;
+      let thinkTag = null; // Store which tag we are currently in (<thinking> or <think>)
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const text = decoder.decode(value, { stream: true });
+        buffer += text;
+
+        while (true) {
+          if (!inThinking) {
+            // Check for both tag types
+            const startThinking = buffer.indexOf('<thinking>');
+            const startThink = buffer.indexOf('<think>');
+
+            let startIdx = -1;
+            if (startThinking !== -1 && (startThink === -1 || startThinking < startThink)) {
+              startIdx = startThinking;
+              thinkTag = 'thinking';
+            } else if (startThink !== -1) {
+              startIdx = startThink;
+              thinkTag = 'think';
+            }
+
+            if (startIdx !== -1) {
+              outputEl.textContent += buffer.substring(0, startIdx);
+              buffer = buffer.substring(startIdx + (thinkTag === 'thinking' ? 10 : 7));
+              inThinking = true;
+              thinkingBox.style.display = 'block';
+            } else {
+              // Check if buffer ends with a partial tag
+              const lastOpen = buffer.lastIndexOf('<');
+              if (lastOpen !== -1 && buffer.length - lastOpen < 10) {
+                outputEl.textContent += buffer.substring(0, lastOpen);
+                buffer = buffer.substring(lastOpen);
+                break; // Wait for more data
+              } else {
+                outputEl.textContent += buffer;
+                buffer = '';
+                break;
+              }
+            }
+          } else {
+            const endTag = thinkTag === 'thinking' ? '</thinking>' : '</think>';
+            const endIdx = buffer.indexOf(endTag);
+            if (endIdx !== -1) {
+              thinkingContent.textContent += buffer.substring(0, endIdx);
+              thinkingContent.scrollTop = thinkingContent.scrollHeight; // Auto-scroll
+              buffer = buffer.substring(endIdx + endTag.length);
+              inThinking = false;
+              thinkTag = null;
+            } else {
+              // Check for partial end tag
+              const lastOpen = buffer.lastIndexOf('<');
+              if (lastOpen !== -1 && buffer.length - lastOpen < 11) {
+                thinkingContent.textContent += buffer.substring(0, lastOpen);
+                thinkingContent.scrollTop = thinkingContent.scrollHeight; // Auto-scroll
+                buffer = buffer.substring(lastOpen);
+                break;
+              } else {
+                thinkingContent.textContent += buffer;
+                thinkingContent.scrollTop = thinkingContent.scrollHeight; // Auto-scroll
+                buffer = '';
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+    sendBtn.onclick = async () => {
+      const q = queryEl.value.trim();
+      const t = thinkingEl.checked;
+      if (!q) { setStatus('Enter a query'); return }
+      clear();
+      setStatus('Sending...');
+      try {
+        // Force stream if thinking is enabled
+        if (t || getMode() === 'stream') { await runStream(q, t) } else { await runComplete(q, t) }
+        setStatus('Done');
+      } catch (e) { setStatus('Error'); outputEl.textContent = String(e) }
+    };
+    stopBtn.onclick = () => { if (controller) { controller.abort(); setStatus('Stopped') } };
+  </script>
 </body>
+
 </html>
