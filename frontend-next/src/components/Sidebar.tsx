@@ -311,27 +311,6 @@ export default function Sidebar() {
               Japanese Reading
             </Link> */}
 
-            {/* Korean Section */}
-            <div className="text-sm font-bold mt-4 mb-1 ml-3 text-gray-800 dark:text-gray-200">
-              Korean
-            </div>
-            <hr />
-            <Link href="/langs/korean/grammarlist" className="dashboardOption">
-              Korean Grammar
-            </Link>
-
-            {/* Other */}
-            <div className="text-sm font-bold mt-4 mb-1 ml-3 text-gray-800 dark:text-gray-200">
-              Other
-            </div>
-            <hr />
-            <Link href="/downloads" className="dashboardOption">
-              Downloads
-            </Link>
-            <Link href="/about" className="dashboardOption">
-              About
-            </Link>
-
             {/* Experimental */}
             <div className="text-sm font-bold mt-4 mb-1 ml-3 text-gray-800 dark:text-gray-200">
               Experimental
@@ -344,32 +323,6 @@ export default function Sidebar() {
             <br></br>
             <br></br>
 
-            {/* <Link href="/blog" className="dashboardOption">
-              Blog
-            </Link> */}
-
-            {/* <Link
-              href="/langs/mandarin/grammarlist"
-              className="dashboardOption"
-            >
-              Chinese Grammar
-            </Link> */}
-
-            {/* <Link
-              href="/langs/vietnamese/grammarlist"
-              className="dashboardOption"
-            >
-              Vietnamese Grammar
-            </Link>
-            <Link
-              href="/langs/mandarin/grammarlist"
-              className="dashboardOption"
-            >
-              Chinese Grammar
-            </Link>
-            <Link href="/langs/thai/grammarlist" className="dashboardOption">
-              Thai Grammar
-            </Link> */}
           </div>
         </div>
         <div>
@@ -548,14 +501,6 @@ export default function Sidebar() {
             Japanese Grammar List{" "}
           </Link>
 
-          <Link
-            onClick={showMenu}
-            className="border-b py-2 text-black dark:text-white"
-            href="/langs/korean/grammarlist"
-          >
-            {" "}
-            Korean Grammar List{" "}
-          </Link>
 
           {/* <Link
             onClick={showMenu}
