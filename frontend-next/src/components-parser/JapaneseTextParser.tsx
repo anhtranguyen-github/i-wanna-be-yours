@@ -17,10 +17,10 @@ interface WordDetails {
 }
 
 interface JapaneseTextParserProps {
-  inputText: String | null;
-  inputMode: String;
-  revisionCount: Number;
-  userId: String;
+  inputText: string | null;
+  inputMode: string;
+  revisionCount: number;
+  userId: string | null;
   setClickedWord: React.Dispatch<React.SetStateAction<string | null>>;
   setClickedWordDictForm: React.Dispatch<React.SetStateAction<string | null>>;
   setHoveredWord: React.Dispatch<React.SetStateAction<string | null>>;
@@ -50,15 +50,15 @@ const JapaneseTextParser: React.FC<JapaneseTextParserProps> = ({
   //const [userId] = useState("testuserId"); // Define userId
 
 
-console.log('userId:')
-console.log(userId)
+  console.log('userId:')
+  console.log(userId)
 
   // --- text enhancement --- //
 
   useEffect(() => {
     const fetchData = async () => {
       //if (!inputText) return;
-      if (!inputText || !userId.trim()) return; // Guard clause for inputText and userId
+      if (!inputText || !userId || !userId.trim()) return; // Guard clause for inputText and userId
 
       try {
         const response = await fetch(mecabApiUrl, {
