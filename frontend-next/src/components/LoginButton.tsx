@@ -1,101 +1,57 @@
-"use client";
+'use client';
 
-import React from "react";
-import { useUser } from "@/context/UserContext";
+import React, { useState } from 'react';
+import { useUser } from '@/context/UserContext';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
-export default function LoginButton() {
-  const { loggedIn, handleLogin, handleLogout } = useUser();
+const LoginButton = () => {
+  const { user, logout } = useUser();
+  const [showDropdown, setShowDropdown] = useState(false);
+  const router = useRouter();
+
+  if (user) {
+    return (
+      <div className="relative">
+        <button
+          onClick={() => setShowDropdown(!showDropdown)}
+          className="flex items-center space-x-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-md transition-colors"
+        >
+          <span>{user.email}</span>
+        </button>
+
+        {showDropdown && (
+          <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50 ring-1 ring-black ring-opacity-5">
+            <Link
+              href="/user-dashboard"
+              className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+              onClick={() => setShowDropdown(false)}
+            >
+              Dashboard
+            </Link>
+            <button
+              onClick={() => {
+                logout();
+                setShowDropdown(false);
+              }}
+              className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              Logout
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
-    <div className="flex items-center space-x-2">
-      {loggedIn ? (
-        <button
-          onClick={handleLogout}
-          className="px-4 py-2 bg-red-500 text-white font-bold text-lg rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition duration-150 ease-in-out"
-        >
-          Logout
-        </button>
-      ) : (
-        <button
-          onClick={handleLogin}
-          className="px-4 py-2 bg-slate-500 text-white font-bold text-lg rounded hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-150 ease-in-out"
-        >
-          Login
-        </button>
-      )}
-    </div>
+    <Link
+      href="/login"
+      className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full font-medium transition-colors"
+    >
+      Login
+    </Link>
   );
-}
+};
 
-
-
-// ------------------------------------------
-
-// "use client";
-
-// import React from "react";
-// import { useUser } from "../context/UserContext";
-// import Cookies from "js-cookie";
-
-// const LoginButton: React.FC = () => {
-//   const { userName, setUserName } = useUser();
-
-//   const handleLogin = () => {
-//     const newName = "NewUser";
-//     // Write the cookie
-//     Cookies.set("userName", newName, { path: "/" });
-//     // Update the React Context
-//     setUserName(newName);
-//   };
-
-//   const handleLogout = () => {
-//     // Remove the cookie
-//     Cookies.remove("userName", { path: "/" });
-//     // Clear the React Context
-//     setUserName(null);
-//   };
-
-//   if (userName) {
-//     // If a user is logged in, show the Logout button
-//     return <button onClick={handleLogout}>Logout</button>;
-//   }
-
-//   // Otherwise, show the Login button
-//   return <button onClick={handleLogin}>Login</button>;
-// };
-
-// export default LoginButton;
-
-
-
-
-
-
-
-
-
-
-
-// ---------------------------------------------
-
-// "use client";
-
-// import React from "react";
-// import { useUser } from "../context/UserContext";
-// import Cookies from "js-cookie";
-
-// const LoginButton: React.FC = () => {
-//   const { setUserName } = useUser();
-
-//   const handleLogin = () => {
-//     const newName = "NewUser";
-//     // Write the cookie
-//     Cookies.set("userName", newName, { path: "/" });
-//     // Update the React Context
-//     setUserName(newName);
-//   };
-
-//   return <button onClick={handleLogin}>Login</button>;
-// };
-
-// export default LoginButton;
+export default LoginButton;

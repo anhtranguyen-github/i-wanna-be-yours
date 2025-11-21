@@ -42,17 +42,34 @@ const LearningProgress: FC<LearningProgressProps> = ({
   useEffect(() => {
     const fetchProgressData = async () => {
       try {
-        const response = await axios.get<ProgressData[]>(
-          `/f-api/v1/flashcard/${userId}?collectionName=${collectionName}&p_tag=${p_tag}&s_tag=${s_tag}`
+        let endpoint = "";
+        if (collectionName === "kanji") {
+          endpoint = "/f-api/v1/combine-flashcard-data-kanji";
+        } else if (collectionName === "words") {
+          endpoint = "/f-api/v1/combine-flashcard-data-words";
+        } else if (collectionName === "grammars") {
+          endpoint = "/f-api/v1/combine-flashcard-data-grammars";
+        } else {
+          console.error("Unknown collection name:", collectionName);
+          return;
+        }
+
+        const response = await axios.get(
+          `${endpoint}?userId=${userId}&collectionName=${collectionName}&p_tag=${p_tag}&s_tag=${s_tag}`
         );
-        setProgressData(response.data);
+
+        if (collectionName === "words" && response.data.words) {
+          setProgressData(response.data.words);
+        } else {
+          setProgressData(response.data);
+        }
       } catch (error) {
         console.log("Failed to fetch learning progress data:", error);
       }
     };
 
     fetchProgressData();
-  }, [userId]);
+  }, [userId, collectionName, p_tag, s_tag]);
 
   useEffect(() => {
     const countDifficultyOccurrences = () => {

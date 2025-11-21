@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useEffect } from "react";
 import { useUser } from "@/context/UserContext";
+import { useRouter } from "next/navigation";
 
 // import LoginStreakGraph from "@/components/LoginStreakGraph";
 // import LearningProgressFlask from "@/components/LearningProgressFlask";
@@ -47,12 +48,8 @@ const loginData = [
 ];
 
 export default function Home() {
-  // const [darkMode, setDarkMode] = useState(false);
-  //const [loggedIn, setLoggedIn] = useState(false);
-  //const [userId, setuserId] = useState(""); // TODO: take it from the cookies/provider
-  //const [userId, setuserId] = useState(null);
-  // Access user context
-  const { userId, loggedIn } = useUser();
+  const { user, loading } = useUser();
+  const router = useRouter();
 
   const [loginStreakData, setLoginStreakData] = useState<LoginData[]>([]);
   const [loginHistory, setLoginHistory] = useState<LoginData[]>([]);
@@ -63,15 +60,13 @@ export default function Home() {
   const [showEssentialSuruVerbs, setShowEssentialSuruVerbs] = useState(false);
   const [showGrammar, setShowGrammar] = useState(false);
 
+  const userId = user?.id?.toString(); // Adapt to existing component expectations
 
-  // useEffect(() => {
-  //   const fetchuserId = async () => {
-  //     const { userId, jwt } = getUserFromCookies();
-  //     setuserId(userId);
-  //   };
-
-  //   fetchuserId();
-  // }, []);
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/login');
+    }
+  }, [user, loading, router]);
 
   useEffect(() => {
     // Exit the hook if userId is null, undefined, or an empty string
@@ -126,6 +121,9 @@ export default function Home() {
   //     console.error("Error fetching the longest streak:", error);
   //   }
   // };
+
+  if (loading) return <div>Loading...</div>;
+  if (!user) return null;
 
   return (
     <div className="bg-gray-100 text-black dark:bg-gray-900 dark:text-white">
@@ -293,41 +291,41 @@ export default function Home() {
           </div>
 
 
-{/* Grammar Section */}
-<div className="w-full mt-4">
-  <button
-    onClick={() => setShowGrammar(!showGrammar)}
-    className="w-full text-left px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md"
-  >
-    <span className="text-xl font-bold">Grammar JLPT</span>
-    <span className="float-right">{showGrammar ? "▲" : "▼"}</span>
-  </button>
+          {/* Grammar Section */}
+          <div className="w-full mt-4">
+            <button
+              onClick={() => setShowGrammar(!showGrammar)}
+              className="w-full text-left px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md"
+            >
+              <span className="text-xl font-bold">Grammar JLPT</span>
+              <span className="float-right">{showGrammar ? "▲" : "▼"}</span>
+            </button>
 
-  <a
-    href="/japanese/flashcards"
-    className="text-blue-500 hover:text-blue-700 transition duration-300 p-2"
-  >
-    Flashcards - JLPT Grammar
-  </a>
+            <a
+              href="/japanese/flashcards"
+              className="text-blue-500 hover:text-blue-700 transition duration-300 p-2"
+            >
+              Flashcards - JLPT Grammar
+            </a>
 
-  {showGrammar && (
-    <div className="flex flex-wrap justify-center gap-4 p-4 w-full">
-      {["JLPT_N5","JLPT_N4","JLPT_N3","JLPT_N2","JLPT_N1",].map((part, index) => (
-        <div
-          key={index}
-          className="w-full max-w-xs p-2 bg-white dark:bg-gray-800 shadow-md rounded-lg"
-        >
-          <LearningProgressFlask
-            userId={userId}
-            collectionName="grammars"
-            p_tag={part}
-            s_tag="all"
-          />
-        </div>
-      ))}
-    </div>
-  )}
-</div>
+            {showGrammar && (
+              <div className="flex flex-wrap justify-center gap-4 p-4 w-full">
+                {["JLPT_N5", "JLPT_N4", "JLPT_N3", "JLPT_N2", "JLPT_N1",].map((part, index) => (
+                  <div
+                    key={index}
+                    className="w-full max-w-xs p-2 bg-white dark:bg-gray-800 shadow-md rounded-lg"
+                  >
+                    <LearningProgressFlask
+                      userId={userId}
+                      collectionName="grammars"
+                      p_tag={part}
+                      s_tag="all"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
 
 
 
