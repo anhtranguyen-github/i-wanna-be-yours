@@ -16,8 +16,6 @@ services:
     networks:
       - hanabira-network
 
-
-
   # hanachan-service:
   #   build:
   #     context: ./backend/hanachan
@@ -53,6 +51,23 @@ services:
     networks:
       - hanabira-network
 
+  mysql-db:
+    image: mysql:8.0
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: hanabira_auth
+      MYSQL_USER: hanabira_user
+      MYSQL_PASSWORD: hanabira_password
+    ports:
+      - '127.0.0.1:3307:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql_init:/docker-entrypoint-initdb.d
+    networks:
+      - hanabira-network
+
   dictionary-db:
     build:
       context: ./backend/dictionary
@@ -77,6 +92,8 @@ services:
 
 volumes:
   user_db:
+  mysql_data:
+
 
 networks:
   hanabira-network:
