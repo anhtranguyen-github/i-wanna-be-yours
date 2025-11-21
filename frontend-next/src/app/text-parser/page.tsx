@@ -105,7 +105,8 @@ function HomeComponent() {
   //const [userId] = useState("testUser"); // Define userId
   //const [userId, setUserId] = useState(null);
   //const [userId, setUserId] = useState('tempUserBeforeMCompMount');
-  const { userId, loggedIn } = useUser();
+  const { user } = useUser();
+  const userId = user?.id ? user.id.toString() : null;
 
   // useEffect(() => {
   //   const fetchuserId = async () => {
@@ -359,11 +360,10 @@ function HomeComponent() {
   return (
     <div className="h-full w-full">
       <div
-        className={`flex ${
-          isHorizontal
+        className={`flex ${isHorizontal
             ? "h-full flex-col md:flex-row"
             : "h-full w-full flex-col"
-        } min-h-screen`}
+          } min-h-screen`}
       >
         <div
           ref={leftPaneRef}
@@ -412,7 +412,7 @@ function HomeComponent() {
               <h1 className="text-3xl font-bold text-slate-600">
                 YouTube video subtitle analyzer
               </h1>
-              
+
               <SubtitleInfo />
               <ExampleVideos />
               <br />
@@ -431,7 +431,7 @@ function HomeComponent() {
               )}
 
               {/* <SubtitleUploader url={finalInputUrl}/> */}
-              <SubtitleUploader url={inputUrl}/>
+              <SubtitleUploader url={inputUrl} />
 
               <h1 className="mt-2">
                 Current japanese subtitle (sentence mining, MECAB tokenizer):
@@ -556,9 +556,8 @@ function HomeComponent() {
 
         <div
           ref={dividerRef}
-          className={`w-1 md:w-1 bg-gray-300 cursor-${
-            isHorizontal ? "col" : "row"
-          }-resize ${isHorizontal ? "h-full" : "w-full"}`}
+          className={`w-1 md:w-1 bg-gray-300 cursor-${isHorizontal ? "col" : "row"
+            }-resize ${isHorizontal ? "h-full" : "w-full"}`}
         ></div>
 
         <div
