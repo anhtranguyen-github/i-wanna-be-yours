@@ -161,7 +161,7 @@ export default function Sidebar() {
             <Link href="/content" className="dashboardOption">
               Content
             </Link> */}
-              <Link href="/user-dashboard" className="dashboardOption">
+              <Link href={loggedIn ? "/user-dashboard" : "/login"} className="dashboardOption">
                 User Dashboard
               </Link>
 
@@ -547,7 +547,7 @@ export default function Sidebar() {
             <Link
               onClick={showMenu}
               className="border-b py-2 text-black dark:text-white"
-              href="/user-dashboard"
+              href={loggedIn ? "/user-dashboard" : "/login"}
             >
               {" "}
               User Dashboard{" "}
