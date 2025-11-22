@@ -14,3 +14,4 @@ langgraph
 qdrant-client
 openai
 langchain_mcp_adapters
+pymongo
