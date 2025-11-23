@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import { aiTutorService, Conversation, Resource, Message } from "@/services/aiTutorService";
+import { v4 as uuidv4 } from 'uuid';
 import {
   MessageSquare,
   Search,
@@ -20,6 +20,173 @@ import {
 } from "lucide-react";
 
 import { AIResponseDisplay } from "@/components/AIResponseDisplay";
+
+export interface Message {
+  id: string;
+  role: 'user' | 'ai';
+  text: string;
+  timestamp?: number;
+}
+
+export interface Conversation {
+  _id: string;
+  title: string;
+  messages: Message[];
+  updated_at: number;
+  tags?: string[];
+}
+
+export interface Resource {
+  _id: string;
+  type: 'note' | 'link' | 'document';
+  content: string;
+  title: string;
+  created_at: number;
+}
+
+const API_BASE_URL = 'http://localhost:5400';
+
+class AITutorService {
+  // --- Conversations (LocalStorage) ---
+
+  async getConversations(search?: string, tag?: string): Promise<Conversation[]> {
+    const stored = localStorage.getItem('hanabira_conversations');
+    let convos: Conversation[] = stored ? JSON.parse(stored) : [];
+
+    // Sort by updated_at desc
+    convos.sort((a, b) => b.updated_at - a.updated_at);
+
+    if (search) {
+      const lower = search.toLowerCase();
+      convos = convos.filter(c => c.title.toLowerCase().includes(lower));
+    }
+    // Tag filtering could be implemented here if tags were fully supported
+    return convos;
+  }
+
+  async getConversation(id: string): Promise<Conversation> {
+    const convos = await this.getConversations();
+    const found = convos.find(c => c._id === id);
+    if (!found) throw new Error('Conversation not found');
+    return found;
+  }
+
+  async createConversation(title: string, initialMessage?: string): Promise<Conversation> {
+    const messages: Message[] = [];
+    if (initialMessage) {
+      messages.push({
+        id: uuidv4(),
+        role: 'user',
+        text: initialMessage,
+        timestamp: Date.now(),
+      });
+    }
+    const newConvo: Conversation = {
+      _id: uuidv4(),
+      title,
+      messages,
+      updated_at: Date.now(),
+    };
+    const convos = await this.getConversations();
+    convos.unshift(newConvo);
+    this._saveConversations(convos);
+    return newConvo;
+  }
+
+  async deleteConversation(id: string): Promise<void> {
+    let convos = await this.getConversations();
+    convos = convos.filter(c => c._id !== id);
+    this._saveConversations(convos);
+  }
+
+  async addMessage(convoId: string, role: 'user' | 'ai', text: string): Promise<Message> {
+    const convos = await this.getConversations();
+    const idx = convos.findIndex(c => c._id === convoId);
+    if (idx === -1) throw new Error('Conversation not found');
+
+    const msg: Message = {
+      id: uuidv4(),
+      role,
+      text,
+      timestamp: Date.now(),
+    };
+
+    convos[idx].messages.push(msg);
+    convos[idx].updated_at = Date.now();
+    this._saveConversations(convos);
+    return msg;
+  }
+
+  private _saveConversations(convos: Conversation[]) {
+    localStorage.setItem('hanabira_conversations', JSON.stringify(convos));
+  }
+
+  // --- Resources (LocalStorage) ---
+
+  async getResources(): Promise<Resource[]> {
+    const stored = localStorage.getItem('hanabira_resources');
+    return stored ? JSON.parse(stored) : [];
+  }
+
+  async createResource(type: 'note' | 'link' | 'document', content: string, title: string): Promise<Resource> {
+    const res: Resource = {
+      _id: uuidv4(),
+      type,
+      content,
+      title,
+      created_at: Date.now(),
+    };
+    const list = await this.getResources();
+    list.unshift(res);
+    this._saveResources(list);
+    return res;
+  }
+
+  async deleteResource(id: string): Promise<void> {
+    let list = await this.getResources();
+    list = list.filter(r => r._id !== id);
+    this._saveResources(list);
+  }
+
+  async uploadFile(file: File): Promise<{ url: string }> {
+    // Mock upload - in real app, upload to server/S3
+    // For now, we'll just use a fake local URL or base64 if small enough, 
+    // but let's just return a placeholder to satisfy the UI.
+    console.log('Uploading file:', file.name);
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve({ url: `[File: ${file.name}]` });
+      }, 500);
+    });
+  }
+
+  private _saveResources(list: Resource[]) {
+    localStorage.setItem('hanabira_resources', JSON.stringify(list));
+  }
+
+  // --- Chat API (Backend) ---
+
+  async streamChat(query: string, thinking: boolean = false): Promise<ReadableStreamDefaultReader<Uint8Array>> {
+    const response = await fetch(`${API_BASE_URL}/chat/stream`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query,
+        thinking,
+      }),
+    });
+
+    if (!response.ok || !response.body) {
+      throw new Error('Failed to connect to chat stream');
+    }
+
+    return response.body.getReader();
+  }
+}
+
+const aiTutorService = new AITutorService();
 
 export default function AITutor() {
   // State
@@ -70,10 +237,7 @@ export default function AITutor() {
     }
   }, [activeConvoId, conversations]);
 
-  // Auto-scroll
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isStreaming]);
+
 
   // Data Loading
   const loadConversations = async () => {
@@ -128,14 +292,29 @@ export default function AITutor() {
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() && selectedResources.length === 0) return;
+
     if (!activeConvoId) {
-      // Create conversation if none exists
-      const newConvo = await aiTutorService.createConversation(input.slice(0, 30) + "...");
+      // Construct context from selected resources
+      let context = "";
+      if (selectedResources.length > 0) {
+        const attached = resources.filter(r => selectedResources.includes(r._id));
+        context = "\n\n[Attached Resources]:\n" + attached.map(r => `- ${r.title} (${r.type}): ${r.content}`).join("\n");
+        setSelectedResources([]); // Clear selection
+      }
+      const fullQuery = input + context;
+      setInput("");
+
+      // Create conversation with initial message
+      const newConvo = await aiTutorService.createConversation("New Chat", fullQuery);
       setConversations([newConvo, ...conversations]);
       setActiveConvoId(newConvo._id);
-      // Wait a bit for state to settle? No, just proceed.
-      // Actually, we need the ID.
-      await sendMessageToId(newConvo._id, input);
+
+      // Stream response
+      try {
+        await streamResponse(newConvo._id, fullQuery);
+      } catch (error) {
+        console.error("Error streaming response", error);
+      }
     } else {
       await sendMessageToId(activeConvoId, input);
     }
@@ -144,10 +323,6 @@ export default function AITutor() {
   const sendMessageToId = async (convoId: string, text: string) => {
     const userMsgText = text;
     setInput("");
-
-    // Optimistic update
-    const tempUserMsg: Message = { id: Date.now().toString(), role: 'user', text: userMsgText };
-    setMessages(prev => [...prev, tempUserMsg]);
 
     // Construct context from selected resources
     let context = "";
@@ -159,19 +334,38 @@ export default function AITutor() {
 
     const fullQuery = userMsgText + context;
 
+    // Optimistic update
+    const tempUserMsg: Message = { id: Date.now().toString(), role: 'user', text: fullQuery };
+    setMessages(prev => [...prev, tempUserMsg]);
+
+    // Update conversations state
+    setConversations(prev => prev.map(c =>
+      c._id === convoId
+        ? { ...c, messages: [...(c.messages || []), tempUserMsg], updated_at: Date.now() }
+        : c
+    ));
+
     try {
       // Save user message to backend
       await aiTutorService.addMessage(convoId, 'user', fullQuery);
+      await streamResponse(convoId, fullQuery);
+    } catch (error) {
+      console.error("Error sending message", error);
+      setMessages(prev => [...prev, { id: Date.now().toString(), role: 'ai', text: "Error: Failed to get response." }]);
+    }
+  };
 
-      // Stream AI response
+  const streamResponse = async (convoId: string, query: string) => {
+    try {
       setIsStreaming(true);
-      const reader = await aiTutorService.streamChat(fullQuery, isThinking);
+      const reader = await aiTutorService.streamChat(query, isThinking);
 
       let aiText = "";
       const aiMsgId = (Date.now() + 1).toString();
 
       // Add placeholder AI message
-      setMessages(prev => [...prev, { id: aiMsgId, role: 'ai', text: "" }]);
+      const aiMsg: Message = { id: aiMsgId, role: 'ai', text: "" };
+      setMessages(prev => [...prev, aiMsg]);
 
       const decoder = new TextDecoder();
       while (true) {
@@ -186,11 +380,17 @@ export default function AITutor() {
       }
 
       // Save AI message to backend (persistence)
-      await aiTutorService.addMessage(convoId, 'ai', aiText);
+      const finalAiMsg = await aiTutorService.addMessage(convoId, 'ai', aiText);
+
+      // Update conversations state with AI message
+      setConversations(prev => prev.map(c =>
+        c._id === convoId
+          ? { ...c, messages: [...(c.messages || []), finalAiMsg], updated_at: Date.now() }
+          : c
+      ));
 
     } catch (error) {
-      console.error("Error sending message", error);
-      setMessages(prev => [...prev, { id: Date.now().toString(), role: 'ai', text: "Error: Failed to get response." }]);
+      throw error;
     } finally {
       setIsStreaming(false);
     }
