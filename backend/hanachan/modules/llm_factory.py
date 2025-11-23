@@ -7,7 +7,11 @@ from pydantic import BaseModel
 from langchain_core.language_models import BaseChatModel
 
 
-from langchain_openai import ChatOpenAI
+try:
+    from langchain_openai import ChatOpenAI
+except ImportError:
+    ChatOpenAI = None
+
 from langchain_ollama import ChatOllama 
 
 
@@ -20,6 +24,7 @@ class LLMConfigModel(BaseModel):
     provider: Literal["openai", "ollama", "anthropic"]
     model_name: str
     temperature: float
+    base_url: str = None
     host: str = None 
 
 class ConfigModel(BaseModel):
@@ -52,6 +57,8 @@ def create_llm_instance(llm_config: LLMConfigModel) -> BaseChatModel:
     Dynamically creates an LLM instance based on a Pydantic configuration object.
     """
     if llm_config.provider == "openai":
+        if ChatOpenAI is None:
+            raise ImportError("langchain_openai is not installed. Please install it to use OpenAI models.")
         return ChatOpenAI(
             model=llm_config.model_name,
             temperature=llm_config.temperature
@@ -60,8 +67,10 @@ def create_llm_instance(llm_config: LLMConfigModel) -> BaseChatModel:
     elif llm_config.provider == "ollama":
         # Uses the direct langchain_ollama import
         params = {"model": llm_config.model_name, "temperature": llm_config.temperature}
-        if llm_config.host:
-             # Ollama models use base_url for host specification
+        if llm_config.base_url:
+             params["base_url"] = llm_config.base_url
+        elif llm_config.host:
+             # Fallback to host if base_url not present
              params["base_url"] = llm_config.host 
         
         return ChatOllama(**params)

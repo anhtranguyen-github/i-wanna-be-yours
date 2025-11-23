@@ -11,6 +11,7 @@ from langchain_ollama import ChatOllama
 from langchain_core.messages import HumanMessage, SystemMessage, ToolMessage, BaseMessage, AIMessage
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain_core.runnables import RunnableConfig
+from modules.llm_factory import create_llm_instance, LLMConfigModel
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -19,32 +20,47 @@ logger = logging.getLogger(__name__)
 class ConfigLoader:
     """Loads and provides access to configuration from config.yaml."""
     def __init__(self, config_path: str = "config.yaml"):
-        # Resolve absolute path if needed, or assume relative to CWD
+        # Resolve absolute path relative to this file if not absolute
+        if not os.path.isabs(config_path):
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            config_path = os.path.join(base_dir, config_path)
+            
         self.config_path = config_path
         self.config = self._load_config()
 
     def _load_config(self) -> Dict[str, Any]:
         if not os.path.exists(self.config_path):
-            logger.warning(f"Config file not found at {self.config_path}. Using defaults.")
-            return {}
+            raise FileNotFoundError(f"Config file not found at {self.config_path}")
         try:
             with open(self.config_path, "r", encoding="utf-8") as f:
-                return yaml.safe_load(f) or {}
+                config = yaml.safe_load(f)
+                if not config:
+                    raise ValueError("Config file is empty")
+                return config
         except Exception as e:
             logger.error(f"Error loading config file: {e}")
-            return {}
+            raise
 
     def get_model_config(self, model_name: str = "default") -> Dict[str, Any]:
-        return self.config.get("models", {}).get(model_name, {})
+        models = self.config.get("models", {})
+        if model_name not in models:
+            raise KeyError(f"Model configuration '{model_name}' not found in config")
+        return models[model_name]
 
     def get_tool_config(self) -> Dict[str, Any]:
         return self.config.get("tools", {})
 
     def get_agent_config(self, agent_name: str = "default_agent") -> Dict[str, Any]:
-        return self.config.get("agents", {}).get(agent_name, {})
+        agents = self.config.get("agents", {})
+        if agent_name not in agents:
+             raise KeyError(f"Agent configuration '{agent_name}' not found in config")
+        return agents[agent_name]
 
     def get_prompt(self, prompt_name: str) -> str:
-        return self.config.get("prompts", {}).get(prompt_name, "")
+        prompts = self.config.get("prompts", {})
+        if prompt_name not in prompts:
+            raise KeyError(f"Prompt '{prompt_name}' not found in config")
+        return prompts[prompt_name]
 
 class AgentFactory:
     """Creates agents (LLM + Tools) based on configuration."""
@@ -97,20 +113,21 @@ class AgentFactory:
 
     async def create_agent(self, agent_name: str = "default_agent"):
         agent_config = self.config_loader.get_agent_config(agent_name)
-        if not agent_config:
-            # Fallback or error
-            logger.warning(f"Agent configuration '{agent_name}' not found. Using defaults.")
-            agent_config = {}
-
+        
         # 1. Setup Model
-        model_key = agent_config.get("model", "default")
+        model_key = agent_config.get("model")
+        if not model_key:
+            raise KeyError(f"Agent '{agent_name}' missing 'model' reference")
+            
         model_conf = self.config_loader.get_model_config(model_key)
         
-        llm = ChatOllama(
-            model=model_conf.get("model_name", "qwen3:1.7b"),
-            temperature=model_conf.get("temperature", 0.5),
-            base_url=model_conf.get("base_url", "http://localhost:11434")
-        )
+        # Create LLM using the factory
+        try:
+            llm_config = LLMConfigModel(**model_conf)
+            llm = create_llm_instance(llm_config)
+        except Exception as e:
+            logger.error(f"Failed to create LLM instance: {e}")
+            raise ValueError(f"Invalid model configuration for '{model_key}': {e}")
 
         # 2. Setup Tools
         tools = await self.get_tools()
@@ -138,12 +155,18 @@ class ChatService:
         self.agent_factory = AgentFactory(self.config_loader)
         
         # Database setup
-        db_config = self.config_loader.config.get("database", {})
+        db_config = self.config_loader.config.get("database")
+        if not db_config:
+            raise KeyError("Database configuration missing")
+            
         self.db_client = pymongo.MongoClient(
-            host=db_config.get("host", "localhost"),
-            port=db_config.get("port", 27017)
+            host=db_config.get("host"),
+            port=db_config.get("port")
         )
-        self.db_name = db_config.get("name", "hanachan_db")
+        self.db_name = db_config.get("name")
+        if not self.db_name:
+            raise KeyError("Database name missing in config")
+            
         self.db = self.db_client[self.db_name]
         logger.info(f"Connected to MongoDB: {self.db_name}")
 
