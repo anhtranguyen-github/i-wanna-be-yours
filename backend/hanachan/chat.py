@@ -4,8 +4,11 @@ import asyncio
 import logging
 from typing import Dict, Any, Optional, AsyncGenerator, List
 from flask import Flask, request, Response, stream_with_context, jsonify
+import pymongo
+from datetime import datetime
+import uuid
 from langchain_ollama import ChatOllama
-from langchain_core.messages import HumanMessage, SystemMessage, ToolMessage, BaseMessage
+from langchain_core.messages import HumanMessage, SystemMessage, ToolMessage, BaseMessage, AIMessage
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain_core.runnables import RunnableConfig
 
@@ -133,6 +136,70 @@ class ChatService:
     def __init__(self, config_path: str = "config.yaml"):
         self.config_loader = ConfigLoader(config_path)
         self.agent_factory = AgentFactory(self.config_loader)
+        
+        # Database setup
+        db_config = self.config_loader.config.get("database", {})
+        self.db_client = pymongo.MongoClient(
+            host=db_config.get("host", "localhost"),
+            port=db_config.get("port", 27017)
+        )
+        self.db_name = db_config.get("name", "hanachan_db")
+        self.db = self.db_client[self.db_name]
+        logger.info(f"Connected to MongoDB: {self.db_name}")
+
+    def get_conversation_history(self, conversation_id: str) -> List[BaseMessage]:
+        """Fetches conversation history from MongoDB."""
+        if not conversation_id:
+            return []
+            
+        history = self.db.chat_history.find_one({"conversation_id": conversation_id})
+        if not history:
+            return []
+            
+        messages = []
+        for msg in history.get("messages", []):
+            if msg["speaker"] == "USER":
+                messages.append(HumanMessage(content=msg["text"]))
+            elif msg["speaker"] == "AGENT":
+                messages.append(AIMessage(content=msg["text"])) # Using AIMessage for compatibility
+        return messages
+
+    def get_history_json(self, conversation_id: str) -> List[Dict[str, Any]]:
+        """Fetches conversation history from MongoDB in JSON-serializable format."""
+        if not conversation_id:
+            return []
+            
+        history = self.db.chat_history.find_one({"conversation_id": conversation_id})
+        if not history:
+            return []
+            
+        return history.get("messages", [])
+
+    def save_message(self, conversation_id: str, user_id: str, speaker: str, text: str):
+        """Saves a message to MongoDB."""
+        if not conversation_id:
+            return
+
+        message_entry = {
+            "speaker": speaker,
+            "text": text,
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        # Upsert conversation
+        self.db.chat_history.update_one(
+            {"conversation_id": conversation_id},
+            {
+                "$push": {"messages": message_entry},
+                "$setOnInsert": {
+                    "conversation_id": conversation_id,
+                    "user_id": user_id,
+                    "created_at": datetime.now(),
+                    "title": "New Conversation" # Default title
+                }
+            },
+            upsert=True
+        )
 
     async def execute_tool_call(self, tool_call, tools):
         """Executes a single tool call."""
@@ -166,12 +233,17 @@ class ChatService:
             tool_call_id=tc_id,
         )
 
-    async def stream_answer(self, user_input: str, show_thinking: bool = False) -> AsyncGenerator[str, None]:
+    async def stream_answer(self, user_input: str, conversation_id: str = None, user_id: str = None, show_thinking: bool = False) -> AsyncGenerator[str, None]:
         llm_with_tools, tools, system_prompt = await self.agent_factory.create_agent()
         
         messages = []
         if system_prompt:
             messages.append(SystemMessage(content=system_prompt))
+        
+        # Load history
+        if conversation_id:
+            history_messages = self.get_conversation_history(conversation_id)
+            messages.extend(history_messages)
         
         # Check for /think command in user input to toggle mode
         if "/think" in user_input:
@@ -197,6 +269,10 @@ class ChatService:
         messages.append(HumanMessage(content=user_input))
 
         while True:
+            # Save user message first (only once)
+            if conversation_id and len(messages) == len(history_messages) + 2 + (1 if show_thinking else 0): # System + History + (Think) + User
+                 self.save_message(conversation_id, user_id, "USER", user_input)
+
             stream = llm_with_tools.astream(messages)
             final_ai_message = None
             
@@ -243,10 +319,14 @@ class ChatService:
         
         if not show_thinking:
             yield "\n"
+            
+        # Save AI response
+        if conversation_id and final_ai_message:
+             self.save_message(conversation_id, user_id, "AGENT", final_ai_message.content)
 
-    async def full_answer(self, user_input: str, show_thinking: bool = False) -> str:
+    async def full_answer(self, user_input: str, conversation_id: str = None, user_id: str = None, show_thinking: bool = False) -> str:
         chunks = []
-        async for piece in self.stream_answer(user_input, show_thinking):
+        async for piece in self.stream_answer(user_input, conversation_id, user_id, show_thinking):
             chunks.append(piece)
         return "".join(chunks)
 
@@ -259,6 +339,8 @@ def register_routes(app: Flask):
         data = request.get_json() or {}
         query = data.get('query') or data.get('text') or ''
         show_thinking = bool(data.get('thinking') or (request.args.get('thinking') in ['1','true','yes']))
+        conversation_id = data.get('conversation_id')
+        user_id = data.get('user_id')
         
         if not query:
             return jsonify({'error': "Missing 'query'"}), 400
@@ -273,7 +355,7 @@ def register_routes(app: Flask):
                 loop = asyncio.new_event_loop()
                 asyncio.set_event_loop(loop)
 
-            agen = chat_service.stream_answer(query, show_thinking)
+            agen = chat_service.stream_answer(query, conversation_id, user_id, show_thinking)
             
             while True:
                 try:
@@ -293,6 +375,8 @@ def register_routes(app: Flask):
         data = request.get_json() or {}
         query = data.get('query') or data.get('text') or ''
         show_thinking = bool(data.get('thinking') or (request.args.get('thinking') in ['1','true','yes']))
+        conversation_id = data.get('conversation_id')
+        user_id = data.get('user_id')
         
         if not query:
             return jsonify({'error': "Missing 'query'"}), 400
@@ -306,8 +390,17 @@ def register_routes(app: Flask):
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
 
-        text = loop.run_until_complete(chat_service.full_answer(query, show_thinking))
+        text = loop.run_until_complete(chat_service.full_answer(query, conversation_id, user_id, show_thinking))
         return jsonify({'response': text})
+
+    @app.route('/chat/history', methods=['GET'])
+    def get_history():
+        conversation_id = request.args.get('conversation_id')
+        if not conversation_id:
+            return jsonify({'error': "Missing 'conversation_id'"}), 400
+            
+        history = chat_service.get_history_json(conversation_id)
+        return jsonify({'history': history})
 
 async def main():
     print("\n=== Configuration Driven Chat Agent ===")
@@ -338,7 +431,7 @@ async def main():
         print(f"\n🤖 Assistant: ", end="", flush=True)
         
         # Use stream_answer to show progress
-        async for chunk in chat_service.stream_answer(user_input, show_thinking):
+        async for chunk in chat_service.stream_answer(user_input, show_thinking=show_thinking):
             print(chunk, end="", flush=True)
         print()
 

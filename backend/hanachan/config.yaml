@@ -5,6 +5,11 @@ models:
     temperature: 0.0
     base_url: http://localhost:11434
 
+database:
+  host: localhost
+  port: 27017
+  name: hanachan_db
+
 tools:
   mcp_servers:
     qdrant:

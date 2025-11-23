@@ -3,92 +3,162 @@
 
 <head>
   <meta charset="utf-8">
-  <title>MCP Chat Tester</title>
+  <title>Hanachan Chat</title>
   <style>
     body {
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      margin: 24px;
-      color: #111
+      margin: 0;
+      padding: 0;
+      color: #111;
+      background: #f4f4f9;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      background: #fff;
+      padding: 16px 24px;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     h1 {
-      font-size: 18px;
-      margin: 0 0 16px
+      font-size: 20px;
+      margin: 0;
     }
 
-    label {
-      display: block;
-      margin: 8px 0
+    .container {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
     }
 
-    input[type=text] {
-      width: 100%;
+    .sidebar {
+      width: 300px;
+      background: #fff;
+      border-right: 1px solid #ddd;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .main-chat {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      gap: 16px;
+      overflow: hidden;
+    }
+
+    .chat-history {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-right: 8px;
+    }
+
+    .message {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      line-height: 1.5;
+      position: relative;
+    }
+
+    .message.user {
+      align-self: flex-end;
+      background: #007bff;
+      color: #fff;
+      border-bottom-right-radius: 2px;
+    }
+
+    .message.agent {
+      align-self: flex-start;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-bottom-left-radius: 2px;
+    }
+
+    .input-area {
+      background: #fff;
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid #ddd;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    textarea {
+      flex: 1;
       padding: 10px;
       font-size: 14px;
       border: 1px solid #ccc;
-      border-radius: 6px
+      border-radius: 6px;
+      resize: none;
+      height: 40px;
+      font-family: inherit;
     }
 
     button {
-      padding: 10px 14px;
-      margin-right: 8px;
+      padding: 10px 16px;
       border: 0;
       border-radius: 6px;
       background: #111;
       color: #fff;
       font-size: 14px;
-      cursor: pointer
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    button:hover {
+      opacity: 0.9;
     }
 
     button.secondary {
       background: #eee;
-      color: #111
+      color: #111;
     }
 
-    fieldset {
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 12px;
-      margin: 16px 0
-    }
-
-    .output {
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 12px;
-      min-height: 160px;
-      white-space: pre-wrap;
-      background: #fafafa
-    }
-
-    .controls {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      flex-wrap: wrap
-    }
-
-    .small {
+    label {
       font-size: 12px;
-      color: #666
+      font-weight: bold;
+      color: #555;
+      margin-bottom: 4px;
+      display: block;
     }
 
-    .thinking-cell {
-      border: 1px solid #444;
+    input[type=text] {
+      width: 100%;
+      padding: 8px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+
+    .thinking-box {
       background: #222;
       color: #ddd;
       border-radius: 8px;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       overflow: hidden;
+      font-size: 12px;
+      display: none;
     }
 
     .thinking-header {
       background: #333;
       padding: 6px 12px;
-      font-size: 12px;
       font-weight: bold;
       color: #aaa;
-      border-bottom: 1px solid #444;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
@@ -96,175 +166,281 @@
     .thinking-content {
       padding: 12px;
       font-family: 'Courier New', Courier, monospace;
-      font-size: 13px;
       white-space: pre-wrap;
-      max-height: 300px;
+      max-height: 200px;
       overflow-y: auto;
-      line-height: 1.4;
+    }
+
+    .status {
+      font-size: 12px;
+      color: #666;
+      margin-top: 8px;
+      text-align: right;
     }
   </style>
 </head>
 
 <body>
-  <h1>MCP Chat Tester</h1>
-  <div>
-    <label>Backend URL (optional, default same origin)
-      <input id="baseUrl" type="text" placeholder="http://localhost:5400">
-    </label>
-    <label>Query
-      <input id="query" type="text" placeholder="Explain ～ば～ほど">
-    </label>
-    <fieldset>
-      <legend>Mode</legend>
-      <div class="controls">
-        <label><input type="radio" name="mode" value="stream" checked> Stream</label>
-        <label><input type="radio" name="mode" value="complete"> Complete</label>
-        <label><input id="thinking" type="checkbox"> Thinking</label>
+  <header>
+    <h1>Hanachan Chat</h1>
+    <div id="status" class="status">Ready</div>
+  </header>
+  <div class="container">
+    <div class="sidebar">
+      <div>
+        <label>User ID</label>
+        <input id="userId" type="text" value="user_001">
       </div>
-    </fieldset>
-    <div class="controls">
-      <button id="send">Send</button>
-      <button id="stop" class="secondary">Stop</button>
+      <div>
+        <label>Conversation ID</label>
+        <div style="display: flex; gap: 8px;">
+          <input id="conversationId" type="text" placeholder="UUID">
+          <button id="newConvBtn" class="secondary" style="padding: 8px;">+</button>
+        </div>
+      </div>
+      <div>
+        <button id="loadHistoryBtn" class="secondary" style="width: 100%;">Load History</button>
+      </div>
+      <div style="margin-top: auto;">
+        <label><input id="thinking" type="checkbox"> Show Thinking</label>
+      </div>
     </div>
-    <div class="small" id="status"></div>
+    <div class="main-chat">
+      <div id="chatHistory" class="chat-history">
+        <!-- Messages will appear here -->
+      </div>
 
-    <!-- New Thinking Cell -->
-    <div id="thinking-box" class="thinking-cell" style="display:none;">
-      <div class="thinking-header">Thinking Process</div>
-      <div id="thinking-content" class="thinking-content"></div>
+      <!-- Thinking Box (Global for current response) -->
+      <div id="thinking-box" class="thinking-box">
+        <div class="thinking-header">Thinking Process</div>
+        <div id="thinking-content" class="thinking-content"></div>
+      </div>
+
+      <div class="input-area">
+        <textarea id="query" placeholder="Type a message..."></textarea>
+        <button id="send">Send</button>
+        <button id="stop" class="secondary">Stop</button>
+      </div>
     </div>
-
-    <div class="output" id="output"></div>
   </div>
+
   <script>
     const queryEl = document.getElementById('query');
-    const baseUrlEl = document.getElementById('baseUrl');
+    const userIdEl = document.getElementById('userId');
+    const conversationIdEl = document.getElementById('conversationId');
     const thinkingEl = document.getElementById('thinking');
-
+    const chatHistoryEl = document.getElementById('chatHistory');
     const thinkingBox = document.getElementById('thinking-box');
     const thinkingContent = document.getElementById('thinking-content');
-    const outputEl = document.getElementById('output');
     const statusEl = document.getElementById('status');
     const sendBtn = document.getElementById('send');
     const stopBtn = document.getElementById('stop');
-    let controller = null;
-    function getBase() { const v = baseUrlEl.value.trim(); return v || window.location.origin }
-    function getMode() { const m = document.querySelector('input[name="mode"]:checked'); return m ? m.value : 'stream' }
-    function setStatus(t) { statusEl.textContent = t }
-    function clear() {
-      outputEl.textContent = '';
-      thinkingContent.textContent = '';
-      thinkingBox.style.display = 'none';
-    }
-    async function runComplete(q, t) {
-      const url = getBase() + '/chat/complete' + (t ? '?thinking=true' : '');
-      const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query: q, thinking: t }) });
-      if (!res.ok) { outputEl.textContent = 'Error ' + res.status; return }
-      const data = await res.json();
-      const text = data.response || '';
+    const newConvBtn = document.getElementById('newConvBtn');
+    const loadHistoryBtn = document.getElementById('loadHistoryBtn');
 
-      // Parse thinking tags if present in complete response
-      const thinkMatch = text.match(/<think>([\s\S]*?)<\/think>/) || text.match(/<thinking>([\s\S]*?)<\/thinking>/);
-      if (thinkMatch) {
-        thinkingBox.style.display = 'block';
-        thinkingContent.textContent = thinkMatch[1];
-        outputEl.textContent = text.replace(thinkMatch[0], '').trim();
-      } else {
-        outputEl.textContent = text;
+    let controller = null;
+
+    // Generate UUID
+    function uuidv4() {
+      return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
+        (+c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> +c / 4).toString(16)
+      );
+    }
+
+    // Initialize
+    if (!conversationIdEl.value) {
+      conversationIdEl.value = uuidv4();
+    }
+
+    function setStatus(t) { statusEl.textContent = t }
+
+    function appendMessage(role, text) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `message ${role.toLowerCase()}`;
+      msgDiv.textContent = text;
+      chatHistoryEl.appendChild(msgDiv);
+      chatHistoryEl.scrollTop = chatHistoryEl.scrollHeight;
+      return msgDiv;
+    }
+
+    async function loadHistory() {
+      const cid = conversationIdEl.value.trim();
+      if (!cid) return;
+
+      setStatus('Loading history...');
+      chatHistoryEl.innerHTML = ''; // Clear current view
+
+      try {
+        const res = await fetch(`/chat/history?conversation_id=${cid}`);
+        if (!res.ok) throw new Error('Failed to load history');
+        const data = await res.json();
+
+        (data.history || []).forEach(msg => {
+          appendMessage(msg.speaker === 'USER' ? 'user' : 'agent', msg.text);
+        });
+        setStatus('History loaded');
+      } catch (e) {
+        setStatus('Error loading history: ' + e.message);
       }
     }
 
-    async function runStream(q, t) {
-      controller = new AbortController();
-      const url = getBase() + '/chat/stream' + (t ? '?thinking=true' : '');
-      const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query: q, thinking: t }), signal: controller.signal });
-      if (!res.ok) { outputEl.textContent = 'Error ' + res.status; return }
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = '';
-      let inThinking = false;
-      let thinkTag = null; // Store which tag we are currently in (<thinking> or <think>)
+    newConvBtn.onclick = () => {
+      conversationIdEl.value = uuidv4();
+      chatHistoryEl.innerHTML = '';
+      setStatus('New conversation started');
+    };
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const text = decoder.decode(value, { stream: true });
-        buffer += text;
+    loadHistoryBtn.onclick = loadHistory;
+
+    async function runStream(q, t, cid, uid) {
+      controller = new AbortController();
+      const url = '/chat/stream' + (t ? '?thinking=true' : '');
+
+      // Create a placeholder for the AI response
+      let aiMsgDiv = null;
+      let buffer = '';
+
+      // Reset thinking box for new turn
+      thinkingContent.textContent = '';
+      thinkingBox.style.display = 'none';
+
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, thinking: t, conversation_id: cid, user_id: uid }),
+          signal: controller.signal
+        });
+
+        if (!res.ok) {
+          appendMessage('agent', 'Error ' + res.status);
+          return;
+        }
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+
+        let inThinking = false;
+        let thinkTag = null;
 
         while (true) {
-          if (!inThinking) {
-            // Check for both tag types
-            const startThinking = buffer.indexOf('<thinking>');
-            const startThink = buffer.indexOf('<think>');
+          const { done, value } = await reader.read();
+          if (done) break;
+          const text = decoder.decode(value, { stream: true });
+          buffer += text;
 
-            let startIdx = -1;
-            if (startThinking !== -1 && (startThink === -1 || startThinking < startThink)) {
-              startIdx = startThinking;
-              thinkTag = 'thinking';
-            } else if (startThink !== -1) {
-              startIdx = startThink;
-              thinkTag = 'think';
-            }
+          // Process buffer
+          while (true) {
+            if (!inThinking) {
+              const startThinking = buffer.indexOf('<thinking>');
+              const startThink = buffer.indexOf('<think>');
 
-            if (startIdx !== -1) {
-              outputEl.textContent += buffer.substring(0, startIdx);
-              buffer = buffer.substring(startIdx + (thinkTag === 'thinking' ? 10 : 7));
-              inThinking = true;
-              thinkingBox.style.display = 'block';
-            } else {
-              // Check if buffer ends with a partial tag
-              const lastOpen = buffer.lastIndexOf('<');
-              if (lastOpen !== -1 && buffer.length - lastOpen < 10) {
-                outputEl.textContent += buffer.substring(0, lastOpen);
-                buffer = buffer.substring(lastOpen);
-                break; // Wait for more data
-              } else {
-                outputEl.textContent += buffer;
-                buffer = '';
-                break;
+              let startIdx = -1;
+              if (startThinking !== -1 && (startThink === -1 || startThinking < startThink)) {
+                startIdx = startThinking;
+                thinkTag = 'thinking';
+              } else if (startThink !== -1) {
+                startIdx = startThink;
+                thinkTag = 'think';
               }
-            }
-          } else {
-            const endTag = thinkTag === 'thinking' ? '</thinking>' : '</think>';
-            const endIdx = buffer.indexOf(endTag);
-            if (endIdx !== -1) {
-              thinkingContent.textContent += buffer.substring(0, endIdx);
-              thinkingContent.scrollTop = thinkingContent.scrollHeight; // Auto-scroll
-              buffer = buffer.substring(endIdx + endTag.length);
-              inThinking = false;
-              thinkTag = null;
-            } else {
-              // Check for partial end tag
-              const lastOpen = buffer.lastIndexOf('<');
-              if (lastOpen !== -1 && buffer.length - lastOpen < 11) {
-                thinkingContent.textContent += buffer.substring(0, lastOpen);
-                thinkingContent.scrollTop = thinkingContent.scrollHeight; // Auto-scroll
-                buffer = buffer.substring(lastOpen);
-                break;
+
+              if (startIdx !== -1) {
+                // Content before thinking tag is part of the message
+                const content = buffer.substring(0, startIdx);
+                if (content) {
+                  if (!aiMsgDiv) aiMsgDiv = appendMessage('agent', '');
+                  aiMsgDiv.textContent += content;
+                  chatHistoryEl.scrollTop = chatHistoryEl.scrollHeight;
+                }
+
+                buffer = buffer.substring(startIdx + (thinkTag === 'thinking' ? 10 : 7));
+                inThinking = true;
+                thinkingBox.style.display = 'block';
               } else {
-                thinkingContent.textContent += buffer;
-                thinkingContent.scrollTop = thinkingContent.scrollHeight; // Auto-scroll
-                buffer = '';
-                break;
+                // Check for partial tag at end
+                const lastOpen = buffer.lastIndexOf('<');
+                if (lastOpen !== -1 && buffer.length - lastOpen < 10) {
+                  // Content before partial tag
+                  const content = buffer.substring(0, lastOpen);
+                  if (content) {
+                    if (!aiMsgDiv) aiMsgDiv = appendMessage('agent', '');
+                    aiMsgDiv.textContent += content;
+                    chatHistoryEl.scrollTop = chatHistoryEl.scrollHeight;
+                  }
+                  buffer = buffer.substring(lastOpen);
+                  break; // Wait for more data
+                } else {
+                  // All content is message
+                  if (buffer) {
+                    if (!aiMsgDiv) aiMsgDiv = appendMessage('agent', '');
+                    aiMsgDiv.textContent += buffer;
+                    chatHistoryEl.scrollTop = chatHistoryEl.scrollHeight;
+                  }
+                  buffer = '';
+                  break;
+                }
+              }
+            } else {
+              const endTag = thinkTag === 'thinking' ? '</thinking>' : '</think>';
+              const endIdx = buffer.indexOf(endTag);
+
+              if (endIdx !== -1) {
+                thinkingContent.textContent += buffer.substring(0, endIdx);
+                thinkingContent.scrollTop = thinkingContent.scrollHeight;
+                buffer = buffer.substring(endIdx + endTag.length);
+                inThinking = false;
+                thinkTag = null;
+              } else {
+                // Check for partial end tag
+                const lastOpen = buffer.lastIndexOf('<');
+                if (lastOpen !== -1 && buffer.length - lastOpen < 11) {
+                  thinkingContent.textContent += buffer.substring(0, lastOpen);
+                  thinkingContent.scrollTop = thinkingContent.scrollHeight;
+                  buffer = buffer.substring(lastOpen);
+                  break;
+                } else {
+                  thinkingContent.textContent += buffer;
+                  thinkingContent.scrollTop = thinkingContent.scrollHeight;
+                  buffer = '';
+                  break;
+                }
               }
             }
           }
         }
+      } catch (e) {
+        if (e.name !== 'AbortError') {
+          appendMessage('agent', 'Error: ' + e.message);
+        }
       }
     }
+
     sendBtn.onclick = async () => {
       const q = queryEl.value.trim();
       const t = thinkingEl.checked;
-      if (!q) { setStatus('Enter a query'); return }
-      clear();
+      const cid = conversationIdEl.value.trim();
+      const uid = userIdEl.value.trim();
+
+      if (!q) return;
+      if (!cid) { alert('Please enter a Conversation ID'); return; }
+
+      appendMessage('user', q);
+      queryEl.value = '';
       setStatus('Sending...');
-      try {
-        // Force stream if thinking is enabled
-        if (t || getMode() === 'stream') { await runStream(q, t) } else { await runComplete(q, t) }
-        setStatus('Done');
-      } catch (e) { setStatus('Error'); outputEl.textContent = String(e) }
+
+      await runStream(q, t, cid, uid);
+      setStatus('Ready');
     };
-    stopBtn.onclick = () => { if (controller) { controller.abort(); setStatus('Stopped') } };
+
+    stopBtn.onclick = () => { if (controller) { controller.abort(); setStatus('Stopped'); } };
+
+    // Allow Enter to send
+    queryEl.onkeydown = (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendBtn.click();
+      }
+    };
   </script>
 </body>
 
