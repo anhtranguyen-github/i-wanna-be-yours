@@ -7,13 +7,9 @@ __pycache__/
 
 # C extensions
 *.so
-
-# Virtual environment
-venv/
+.venv/
 env/
 ENV/
-.venv/
-.env/
 
 # Distribution / packaging
 build/
@@ -67,8 +63,6 @@ instance/
 # Flask secrets or config files
 config.py
 config_local.py
-.env
-.env.*
 
 # ------------------------------
 # Editor & OS files

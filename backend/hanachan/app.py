@@ -31,15 +31,26 @@ def index():
     return app.send_static_file("ui.html")
 
 # ---------------------------------- Module Registration -----------------------------------------
-# Register Chat Routes (Main Agent)
+from dotenv import load_dotenv
+load_dotenv()
+
+chat_service_type = os.getenv("CHAT_SERVICE_TYPE", "standard")
+logger.info(f"Using Chat Service: {chat_service_type}")
+
 try:
-    from chat import register_routes as register_chat_routes
-    register_chat_routes(app)
-    logger.info("✅ Registered chat routes successfully.")
+    if chat_service_type == "mas":
+        from mas_service import register_routes as register_mas_routes
+        register_mas_routes(app)
+        logger.info("✅ Registered MAS routes successfully.")
+    else:
+        from chat import register_routes as register_chat_routes
+        register_chat_routes(app)
+        logger.info("✅ Registered Standard Chat routes successfully.")
+
 except ImportError as e:
-    logger.error(f"❌ Could not import chat routes: {e}")
+    logger.error(f"❌ Could not import routes: {e}")
 except Exception as e:
-    logger.exception(f"❌ Error registering chat routes: {e}")
+    logger.exception(f"❌ Error registering routes: {e}")
 
 # Register other modules (Optional/Legacy)
 try:
