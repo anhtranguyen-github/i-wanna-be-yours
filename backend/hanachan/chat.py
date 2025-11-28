@@ -3,7 +3,7 @@ import yaml
 import asyncio
 import logging
 from typing import Dict, Any, Optional, AsyncGenerator, List
-from flask import Flask, request, Response, stream_with_context, jsonify
+from flask import Flask, request, Response, stream_with_context, jsonify, g
 import pymongo
 from datetime import datetime
 import uuid
@@ -356,14 +356,18 @@ class ChatService:
 # Global service instance
 chat_service = ChatService()
 
+from modules.auth_middleware import require_auth
+
 def register_routes(app: Flask):
     @app.route('/chat/stream', methods=['POST'])
+    @require_auth
     def mcp_stream():
         data = request.get_json() or {}
         query = data.get('query') or data.get('text') or ''
         show_thinking = bool(data.get('thinking') or (request.args.get('thinking') in ['1','true','yes']))
         conversation_id = data.get('conversation_id')
-        user_id = data.get('user_id')
+        # user_id is now available in g.user from the token
+        user_id = g.user.get('userId') if hasattr(g, 'user') else data.get('user_id')
         
         if not query:
             return jsonify({'error': "Missing 'query'"}), 400
@@ -394,12 +398,13 @@ def register_routes(app: Flask):
         return Response(stream_with_context(generate()), mimetype='text/plain')
 
     @app.route('/chat/complete', methods=['POST'])
+    @require_auth
     def mcp_complete():
         data = request.get_json() or {}
         query = data.get('query') or data.get('text') or ''
         show_thinking = bool(data.get('thinking') or (request.args.get('thinking') in ['1','true','yes']))
         conversation_id = data.get('conversation_id')
-        user_id = data.get('user_id')
+        user_id = g.user.get('userId') if hasattr(g, 'user') else data.get('user_id')
         
         if not query:
             return jsonify({'error': "Missing 'query'"}), 400
@@ -417,6 +422,7 @@ def register_routes(app: Flask):
         return jsonify({'response': text})
 
     @app.route('/chat/history', methods=['GET'])
+    @require_auth
     def get_history():
         conversation_id = request.args.get('conversation_id')
         if not conversation_id:

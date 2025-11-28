@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { v4 as uuidv4 } from 'uuid';
+import Cookies from 'js-cookie';
 import {
   MessageSquare,
   Search,
@@ -167,11 +168,18 @@ class AITutorService {
   // --- Chat API (Backend) ---
 
   async streamChat(query: string, thinking: boolean = false): Promise<ReadableStreamDefaultReader<Uint8Array>> {
+    const token = Cookies.get('accessToken');
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
     const response = await fetch(`${API_BASE_URL}/chat/stream`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers,
       body: JSON.stringify({
         query,
         thinking,
