@@ -170,12 +170,37 @@ class ChatService:
         self.db = self.db_client[self.db_name]
         logger.info(f"Connected to MongoDB: {self.db_name}")
 
-    def get_conversation_history(self, conversation_id: str) -> List[BaseMessage]:
+    def get_user_conversations(self, user_id: str) -> List[Dict[str, Any]]:
+        """Fetches all conversations for a specific user."""
+        if not user_id:
+            return []
+        
+        cursor = self.db.chat_history.find(
+            {"user_id": user_id},
+            {"messages": 0} # Exclude messages to keep it light
+        ).sort("updated_at", -1)
+        
+        conversations = []
+        for doc in cursor:
+            doc["_id"] = str(doc["_id"]) # Convert ObjectId to string if needed, though conversation_id is usually UUID
+            conversations.append(doc)
+        return conversations
+
+    def delete_conversation(self, conversation_id: str, user_id: str) -> bool:
+        """Deletes a conversation if it belongs to the user."""
+        result = self.db.chat_history.delete_one({"conversation_id": conversation_id, "user_id": user_id})
+        return result.deleted_count > 0
+
+    def get_conversation_history(self, conversation_id: str, user_id: str = None) -> List[BaseMessage]:
         """Fetches conversation history from MongoDB."""
         if not conversation_id:
             return []
             
-        history = self.db.chat_history.find_one({"conversation_id": conversation_id})
+        query = {"conversation_id": conversation_id}
+        if user_id:
+            query["user_id"] = user_id
+            
+        history = self.db.chat_history.find_one(query)
         if not history:
             return []
             
@@ -184,21 +209,25 @@ class ChatService:
             if msg["speaker"] == "USER":
                 messages.append(HumanMessage(content=msg["text"]))
             elif msg["speaker"] == "AGENT":
-                messages.append(AIMessage(content=msg["text"])) # Using AIMessage for compatibility
+                messages.append(AIMessage(content=msg["text"]))
         return messages
 
-    def get_history_json(self, conversation_id: str) -> List[Dict[str, Any]]:
+    def get_history_json(self, conversation_id: str, user_id: str = None) -> List[Dict[str, Any]]:
         """Fetches conversation history from MongoDB in JSON-serializable format."""
         if not conversation_id:
             return []
             
-        history = self.db.chat_history.find_one({"conversation_id": conversation_id})
+        query = {"conversation_id": conversation_id}
+        if user_id:
+            query["user_id"] = user_id
+
+        history = self.db.chat_history.find_one(query)
         if not history:
             return []
             
         return history.get("messages", [])
 
-    def save_message(self, conversation_id: str, user_id: str, speaker: str, text: str):
+    def save_message(self, conversation_id: str, user_id: str, speaker: str, text: str, title: str = None):
         """Saves a message to MongoDB."""
         if not conversation_id:
             return
@@ -209,20 +238,53 @@ class ChatService:
             "timestamp": datetime.now().isoformat()
         }
         
-        # Upsert conversation
+        update_fields = {
+            "$push": {"messages": message_entry},
+            "$set": {"updated_at": datetime.now()},
+            "$setOnInsert": {
+                "conversation_id": conversation_id,
+                "user_id": user_id,
+                "created_at": datetime.now(),
+                "title": title or "New Conversation"
+            }
+        }
+        
+        # If title is provided explicitly (e.g. on creation), update it
+        if title:
+             update_fields["$set"]["title"] = title
+
         self.db.chat_history.update_one(
             {"conversation_id": conversation_id},
-            {
-                "$push": {"messages": message_entry},
-                "$setOnInsert": {
-                    "conversation_id": conversation_id,
-                    "user_id": user_id,
-                    "created_at": datetime.now(),
-                    "title": "New Conversation" # Default title
-                }
-            },
+            update_fields,
             upsert=True
         )
+
+    # --- Resource Management ---
+    def create_resource(self, user_id: str, type: str, content: str, title: str) -> Dict[str, Any]:
+        resource_id = str(uuid.uuid4())
+        resource = {
+            "resource_id": resource_id,
+            "user_id": user_id,
+            "type": type,
+            "content": content,
+            "title": title,
+            "created_at": datetime.now().isoformat()
+        }
+        self.db.resources.insert_one(resource)
+        resource.pop("_id")
+        return resource
+
+    def get_user_resources(self, user_id: str) -> List[Dict[str, Any]]:
+        cursor = self.db.resources.find({"user_id": user_id}).sort("created_at", -1)
+        resources = []
+        for doc in cursor:
+            doc.pop("_id")
+            resources.append(doc)
+        return resources
+
+    def delete_resource(self, resource_id: str, user_id: str) -> bool:
+        result = self.db.resources.delete_one({"resource_id": resource_id, "user_id": user_id})
+        return result.deleted_count > 0
 
     async def execute_tool_call(self, tool_call, tools):
         """Executes a single tool call."""
@@ -425,11 +487,63 @@ def register_routes(app: Flask):
     @require_auth
     def get_history():
         conversation_id = request.args.get('conversation_id')
+        user_id = g.user.get('userId')
         if not conversation_id:
             return jsonify({'error': "Missing 'conversation_id'"}), 400
             
-        history = chat_service.get_history_json(conversation_id)
+        history = chat_service.get_history_json(conversation_id, user_id)
         return jsonify({'history': history})
+
+    @app.route('/chat/conversations', methods=['GET'])
+    @require_auth
+    def get_conversations():
+        user_id = g.user.get('userId')
+        conversations = chat_service.get_user_conversations(user_id)
+        return jsonify({'conversations': conversations})
+
+    @app.route('/chat/conversations/<conversation_id>', methods=['DELETE'])
+    @require_auth
+    def delete_conversation(conversation_id):
+        user_id = g.user.get('userId')
+        success = chat_service.delete_conversation(conversation_id, user_id)
+        if success:
+            return jsonify({'message': 'Conversation deleted'})
+        return jsonify({'error': 'Conversation not found or not authorized'}), 404
+
+    # --- Resource Routes ---
+
+    @app.route('/resources', methods=['GET'])
+    @require_auth
+    def get_resources():
+        user_id = g.user.get('userId')
+        resources = chat_service.get_user_resources(user_id)
+        return jsonify({'resources': resources})
+
+    @app.route('/resources', methods=['POST'])
+    @require_auth
+    def create_resource():
+        user_id = g.user.get('userId')
+        data = request.get_json() or {}
+        
+        if not all(k in data for k in ('type', 'content', 'title')):
+            return jsonify({'error': 'Missing required fields'}), 400
+            
+        resource = chat_service.create_resource(
+            user_id, 
+            data['type'], 
+            data['content'], 
+            data['title']
+        )
+        return jsonify({'resource': resource})
+
+    @app.route('/resources/<resource_id>', methods=['DELETE'])
+    @require_auth
+    def delete_resource(resource_id):
+        user_id = g.user.get('userId')
+        success = chat_service.delete_resource(resource_id, user_id)
+        if success:
+            return jsonify({'message': 'Resource deleted'})
+        return jsonify({'error': 'Resource not found or not authorized'}), 404
 
 async def main():
     print("\n=== Configuration Driven Chat Agent ===")

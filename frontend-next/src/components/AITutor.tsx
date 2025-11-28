@@ -48,105 +48,161 @@ export interface Resource {
 const API_BASE_URL = 'http://localhost:5400';
 
 class AITutorService {
-  // --- Conversations (LocalStorage) ---
+  // --- Conversations (Backend) ---
+
+  private getHeaders() {
+    const token = Cookies.get('accessToken');
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': token ? `Bearer ${token}` : '',
+    };
+  }
 
   async getConversations(search?: string, tag?: string): Promise<Conversation[]> {
-    const stored = localStorage.getItem('hanabira_conversations');
-    let convos: Conversation[] = stored ? JSON.parse(stored) : [];
-
-    // Sort by updated_at desc
-    convos.sort((a, b) => b.updated_at - a.updated_at);
+    const res = await fetch(`${API_BASE_URL}/chat/conversations`, {
+      headers: this.getHeaders()
+    });
+    if (!res.ok) throw new Error('Failed to fetch conversations');
+    const data = await res.json();
+    let convos: Conversation[] = data.conversations || [];
 
     if (search) {
       const lower = search.toLowerCase();
       convos = convos.filter(c => c.title.toLowerCase().includes(lower));
     }
-    // Tag filtering could be implemented here if tags were fully supported
     return convos;
   }
 
   async getConversation(id: string): Promise<Conversation> {
+    // First try to get metadata from list
     const convos = await this.getConversations();
     const found = convos.find(c => c._id === id);
-    if (!found) throw new Error('Conversation not found');
-    return found;
+
+    // Then fetch full history
+    const res = await fetch(`${API_BASE_URL}/chat/history?conversation_id=${id}`, {
+      headers: this.getHeaders()
+    });
+
+    if (!res.ok) throw new Error('Failed to fetch history');
+    const data = await res.json();
+
+    // Map backend messages to frontend format
+    const messages: Message[] = (data.history || []).map((m: any) => ({
+      id: uuidv4(), // Backend might not send ID, generate one for React key
+      role: m.speaker === 'USER' ? 'user' : 'ai',
+      text: m.text,
+      timestamp: new Date(m.timestamp).getTime()
+    }));
+
+    if (found) {
+      return { ...found, messages };
+    }
+
+    // If not found in list (rare), return minimal object
+    return {
+      _id: id,
+      title: 'Conversation',
+      messages,
+      updated_at: Date.now()
+    };
   }
 
   async createConversation(title: string, initialMessage?: string): Promise<Conversation> {
-    const messages: Message[] = [];
-    if (initialMessage) {
-      messages.push({
-        id: uuidv4(),
-        role: 'user',
-        text: initialMessage,
-        timestamp: Date.now(),
-      });
-    }
+    // In this backend design, conversations are created implicitly when the first message is sent.
+    // However, for the UI "New Chat" button, we might just return a local placeholder
+    // or we can't really "create" an empty one on backend easily without a message.
+    // So we'll return a local placeholder that will be persisted on first message.
+
     const newConvo: Conversation = {
       _id: uuidv4(),
       title,
-      messages,
+      messages: [],
       updated_at: Date.now(),
     };
-    const convos = await this.getConversations();
-    convos.unshift(newConvo);
-    this._saveConversations(convos);
+
+    if (initialMessage) {
+      newConvo.messages.push({
+        id: uuidv4(),
+        role: 'user',
+        text: initialMessage,
+        timestamp: Date.now()
+      });
+    }
+
     return newConvo;
   }
 
   async deleteConversation(id: string): Promise<void> {
-    let convos = await this.getConversations();
-    convos = convos.filter(c => c._id !== id);
-    this._saveConversations(convos);
+    await fetch(`${API_BASE_URL}/chat/conversations/${id}`, {
+      method: 'DELETE',
+      headers: this.getHeaders()
+    });
   }
 
   async addMessage(convoId: string, role: 'user' | 'ai', text: string): Promise<Message> {
-    const convos = await this.getConversations();
-    const idx = convos.findIndex(c => c._id === convoId);
-    if (idx === -1) throw new Error('Conversation not found');
+    // Messages are added via the stream endpoint mostly.
+    // But if we need to manually add one (like for non-streaming), we might need an endpoint.
+    // For now, the stream endpoint handles saving user messages.
+    // This method might be redundant for 'user' messages if stream handles it.
+    // But for 'ai' messages, the backend also saves them.
+    // So this might just be for local optimistic UI updates if we don't have a specific add-message endpoint.
 
-    const msg: Message = {
+    // Actually, looking at the previous code, this was used to update local storage.
+    // Since backend handles persistence during chat/stream, we don't need to explicitly "save" here
+    // unless we are doing something else.
+
+    return {
       id: uuidv4(),
       role,
       text,
       timestamp: Date.now(),
     };
-
-    convos[idx].messages.push(msg);
-    convos[idx].updated_at = Date.now();
-    this._saveConversations(convos);
-    return msg;
   }
 
-  private _saveConversations(convos: Conversation[]) {
-    localStorage.setItem('hanabira_conversations', JSON.stringify(convos));
-  }
-
-  // --- Resources (LocalStorage) ---
+  // --- Resources (Backend) ---
 
   async getResources(): Promise<Resource[]> {
-    const stored = localStorage.getItem('hanabira_resources');
-    return stored ? JSON.parse(stored) : [];
+    const res = await fetch(`${API_BASE_URL}/resources`, {
+      headers: this.getHeaders()
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+
+    // Map backend fields to frontend
+    return (data.resources || []).map((r: any) => ({
+      _id: r.resource_id,
+      type: r.type,
+      content: r.content,
+      title: r.title,
+      created_at: new Date(r.created_at).getTime()
+    }));
   }
 
   async createResource(type: 'note' | 'link' | 'document', content: string, title: string): Promise<Resource> {
-    const res: Resource = {
-      _id: uuidv4(),
-      type,
-      content,
-      title,
-      created_at: Date.now(),
+    const res = await fetch(`${API_BASE_URL}/resources`, {
+      method: 'POST',
+      headers: this.getHeaders(),
+      body: JSON.stringify({ type, content, title })
+    });
+
+    if (!res.ok) throw new Error('Failed to create resource');
+    const data = await res.json();
+    const r = data.resource;
+
+    return {
+      _id: r.resource_id,
+      type: r.type,
+      content: r.content,
+      title: r.title,
+      created_at: new Date(r.created_at).getTime()
     };
-    const list = await this.getResources();
-    list.unshift(res);
-    this._saveResources(list);
-    return res;
   }
 
   async deleteResource(id: string): Promise<void> {
-    let list = await this.getResources();
-    list = list.filter(r => r._id !== id);
-    this._saveResources(list);
+    await fetch(`${API_BASE_URL}/resources/${id}`, {
+      method: 'DELETE',
+      headers: this.getHeaders()
+    });
   }
 
   async uploadFile(file: File): Promise<{ url: string }> {
@@ -159,10 +215,6 @@ class AITutorService {
         resolve({ url: `[File: ${file.name}]` });
       }, 500);
     });
-  }
-
-  private _saveResources(list: Resource[]) {
-    localStorage.setItem('hanabira_resources', JSON.stringify(list));
   }
 
   // --- Chat API (Backend) ---
