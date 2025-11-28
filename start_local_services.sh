@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Updated script to start services in parallel with exception handling
+# Updated script to start all backend and frontend services with robust exception handling
+# Usage: ./start_local_services.sh [stop|close|down]
 set -e # Exit immediately if a command exits with a non-zero status
 
 PROJECT_ROOT="$(pwd)"
@@ -9,6 +10,7 @@ MONGO_LOG="$LOG_ROOT/mongo/mongo.log"
 
 # Array to hold background process IDs for cleanup
 PIDS=()
+DB_PIDS=()
 
 # --- Utility Functions ---
 
@@ -30,21 +32,102 @@ on_error() {
     return 0 # Indicate success
 }
 
+# Check if a port is in use and kill the process using it
+# Usage: check_port_and_kill <port> <service_name>
+check_port_and_kill() {
+    local port="$1"
+    local service="$2"
+    local pid
+
+    pid=$(lsof -t -i:"$port" 2>/dev/null || true)
+    if [ -n "$pid" ]; then
+        log "⚠️  Port $port ($service) is in use by PID $pid. Killing it..."
+        kill -9 "$pid" 2>/dev/null || true
+        sleep 1
+        log "✅ Port $port freed."
+    else
+        log "✅ Port $port is free."
+    fi
+}
+
+# Cleanup function to kill all background jobs upon script exit/interrupt
 # Cleanup function to kill all background jobs upon script exit/interrupt
 cleanup() {
     log "Initiating cleanup..."
+    local stopped_count=0
+
     # Kill services started in the background
     if [ ${#PIDS[@]} -gt 0 ]; then
-        log "Killing background processes: ${PIDS[*]}"
-        kill -9 "${PIDS[@]}" 2>/dev/null || true
+        log "Killing ${#PIDS[@]} background processes..."
+        for pid in "${PIDS[@]}"; do
+            log "🛑 Killing background process PID: $pid"
+            kill -9 "$pid" 2>/dev/null || true
+            stopped_count=$((stopped_count + 1))
+        done
     fi
-    # Kill services by port (as a fallback)
-    log "Killing services by port: 8000, 5100, 5200"
-    kill -9 $(lsof -t -i:8000 -i:5100 -i:5200 2>/dev/null) || true
-    # Kill MongoDB (only if we started it, but safe to killall)
-    # log "Attempting to stop mongod..."
-    # killall mongod 2>/dev/null || true
-    log "Cleanup complete."
+    
+    # Kill services by port (fallback)
+    log "Checking for leftover services on ports..."
+    # Ports: 3000 (Next), 8000 (Express), 5100 (Flask), 5200 (Dict), 5400 (Hanachan)
+    pids=$(lsof -t -i:3000 -i:8000 -i:5100 -i:5200 -i:5400 2>/dev/null || true)
+    if [ -n "$pids" ]; then
+        for pid in $pids; do
+            log "🛑 Killing leftover process PID: $pid"
+            kill -9 "$pid" 2>/dev/null || true
+            stopped_count=$((stopped_count + 1))
+        done
+    else
+        log "✅ No leftover services found on ports."
+    fi
+    
+    log "Cleanup complete. Stopped $stopped_count services/processes."
+}
+
+# Full shutdown function
+shutdown_all() {
+    log "🛑 Shutting down ALL services..."
+    
+    # 1. Kill processes and ports
+    cleanup
+    
+    # 2. Stop Infrastructure in Parallel
+    log "🛑 Stopping infrastructure services in parallel..."
+    
+    # Stop MongoDB
+    (
+        if pgrep mongod > /dev/null; then
+            log "🛑 Stopping MongoDB..."
+            killall mongod 2>/dev/null || true
+            log "✅ MongoDB stopped."
+        else
+            log "✅ MongoDB is not running."
+        fi
+    ) &
+    
+    # Stop MySQL
+    (
+        log "🛑 Stopping MySQL Docker container..."
+        if docker compose stop mysql-db >/dev/null 2>&1; then
+            log "✅ MySQL container stopped."
+        else
+            log "⚠️  Failed to stop MySQL container (or it wasn't running)."
+        fi
+    ) &
+
+    # Stop Ollama
+    (
+        log "🛑 Stopping Ollama..."
+        if docker stop ollama_fixed >/dev/null 2>&1; then
+            log "✅ Ollama stopped."
+        else
+            log "⚠️  Failed to stop Ollama (or it wasn't running)."
+        fi
+    ) &
+    
+    wait
+    
+    log "👋 All services have been stopped."
+    exit 0
 }
 
 # Trap signals for robust cleanup
@@ -52,113 +135,210 @@ trap cleanup EXIT INT TERM
 
 # --- Setup Directories ---
 mkdir -p "$LOG_ROOT/mongo" "$DB_ROOT"
-mkdir -p "$LOG_ROOT/express-db" "$LOG_ROOT/flask-dynamic-db" "$LOG_ROOT/dictionary-db"
+mkdir -p "$LOG_ROOT/express-db" "$LOG_ROOT/flask-dynamic-db" "$LOG_ROOT/dictionary-db" "$LOG_ROOT/hanachan" "$LOG_ROOT/frontend"
+
+# --- Argument Parsing ---
+SHOULD_SEED=false
+
+for arg in "$@"; do
+    if [[ "$arg" == "stop" || "$arg" == "close" || "$arg" == "down" ]]; then
+        shutdown_all
+    fi
+    if [[ "$arg" == "seed" || "$arg" == "--seed" ]]; then
+        SHOULD_SEED=true
+    fi
+done
 
 # --- Main Logic ---
 log "=== Initializing Startup Script ==="
 
 # ======================================================================
-# 1. Start ONE MongoDB Instance for ALL services
-# (Must be sequential as other services depend on it)
+# 0. Pre-flight Checks: Ports
 # ======================================================================
-log "=== Starting main MongoDB instance ==="
+log "=== Checking Ports (Parallel) ==="
+check_port_and_kill 8000 "express-db" &
+check_port_and_kill 5100 "flask-dynamic-db" &
+check_port_and_kill 5200 "dictionary-db" &
+check_port_and_kill 5400 "hanachan" &
+check_port_and_kill 3000 "frontend-next" &
+wait
+log "✅ All ports checked/freed."
 
-if pgrep mongod > /dev/null; then
-    log "MongoDB already running. Skipping start."
-else
-    mongod --dbpath "$DB_ROOT" \
-           --bind_ip_all \
-           --fork \
-           --logpath "$MONGO_LOG"
-    if ! on_error "MongoDB" $?; then
-        exit 1 # Fatal: cannot proceed without MongoDB
+# ======================================================================
+# 1. Database Initialization (Mongo & MySQL)
+# ======================================================================
+# ======================================================================
+# 1. Database & Infrastructure Initialization (Parallel)
+# ======================================================================
+log "=== Initializing Databases & Infrastructure in Parallel ==="
+
+# --- MongoDB ---
+(
+    if pgrep mongod > /dev/null; then
+        log "✅ MongoDB is already running."
+    else
+        log "🚀 Starting MongoDB..."
+        mongod --dbpath "$DB_ROOT" \
+               --bind_ip_all \
+               --fork \
+               --logpath "$MONGO_LOG" >/dev/null 2>&1
+        if ! on_error "MongoDB" $?; then
+            exit 1
+        fi
+        log "✅ MongoDB started."
     fi
-    log "MongoDB started (dbpath: $DB_ROOT)"
-fi
+) &
+DB_PIDS+=($!)
+
+# --- MySQL (Docker) ---
+(
+    # Check if MySQL port 3307 is listening
+    if lsof -i:3307 >/dev/null 2>&1; then
+        log "✅ MySQL (port 3307) is already running."
+    else
+        log "🚀 MySQL not found on port 3307. Attempting to start via Docker Compose..."
+        if docker compose up -d mysql-db >/dev/null 2>&1; then
+            log "⏳ Waiting for MySQL to be ready..."
+            # Simple wait loop
+            for i in {1..30}; do
+                if lsof -i:3307 >/dev/null 2>&1; then
+                    log "✅ MySQL is listening on port 3307."
+                    break
+                fi
+                sleep 1
+            done
+        else
+            log "❌ Failed to start MySQL via Docker Compose."
+            exit 1
+        fi
+    fi
+) &
+DB_PIDS+=($!)
+
+# --- Ollama ---
+(
+    if docker ps --format '{{.Names}}' | grep -q "^ollama_fixed$"; then
+        log "✅ Ollama is already running."
+    else
+        log "🚀 Starting Ollama..."
+        if docker start ollama_fixed >/dev/null 2>&1; then
+            log "✅ Ollama started."
+        else
+            log "❌ Failed to start Ollama."
+            exit 1
+        fi
+    fi
+) &
+DB_PIDS+=($!)
+
+# Wait for all DB/Infra tasks to complete
+for pid in "${DB_PIDS[@]}"; do
+    wait "$pid"
+    if [ $? -ne 0 ]; then
+        log "❌ A database/infrastructure service failed to start. Aborting."
+        exit 1
+    fi
+done
+log "✅ All databases and infrastructure services are ready."
 
 # ======================================================================
 # 2. Start Services in Parallel
 # ======================================================================
-log "=== Starting all web services in parallel ==="
+log "=== Starting all services in parallel ==="
 
 # --- Start EXPRESS-DB (port 8000) ---
 (
-    log "Starting express-db (port 8000) in background..."
+    log "🚀 Starting express-db (port 8000)..."
     cd backend/express || exit 1
-
+    
     # Seeding
-    log "Seeding express-db..."
-    ./seed_db_wrapper.sh > "$LOG_ROOT/express-db/seed.log" 2>&1 || true
+    if [ "$SHOULD_SEED" = true ]; then
+        log "🌱 Seeding express-db..."
+        ./seed_db_wrapper.sh > "$LOG_ROOT/express-db/seed.log" 2>&1 || true
+    else
+        log "ℹ️  Skipping express-db seeding (use 'seed' arg to enable)"
+    fi
 
     # Launch API
     PORT=8000 node my_server.js > "$LOG_ROOT/express-db/express_8000.log" 2>&1
     on_error "express-db" $?
 ) &
-PIDS+=($!) # Store the process ID of the subshell
+pid=$!
+PIDS+=($pid)
+log "✅ Started express-db (PID: $pid)"
 
 # --- Start FLASK-DYNAMIC-DB (port 5100) ---
 (
-    log "Starting flask-dynamic-db (port 5100) in background..."
+    log "🚀 Starting flask-dynamic-db (port 5100)..."
     cd backend/flask || exit 1
     
-    # Check for venv activation/existence and activate
     if [ -f .venv/bin/activate ]; then
         . .venv/bin/activate
     else
-        log "WARNING: Flask virtual environment not found. Launching without activation."
+        log "⚠️  Flask venv not found. Running without activation."
     fi
 
-    # Launch API
     ./.venv/bin/gunicorn -w 4 -b 0.0.0.0:5100 server:app \
     > "$LOG_ROOT/flask-dynamic-db/flask_5100.log" 2>&1
     on_error "flask-dynamic-db" $?
-
-    # Deactivate venv if it was activated
+    
     [ -n "$VIRTUAL_ENV" ] && deactivate
 ) &
-PIDS+=($!)
+pid=$!
+PIDS+=($pid)
+log "✅ Started flask-dynamic-db (PID: $pid)"
 
 # --- Start DICTIONARY-DB (port 5200) ---
 (
-    log "Starting dictionary-db (port 5200) in background..."
+    log "🚀 Starting dictionary-db (port 5200)..."
     cd backend/dictionary || exit 1
 
-    # Seeding
-    log "Seeding dictionary (JMDict)..."
-    node seed_jmdict_data.js > "$LOG_ROOT/dictionary-db/dict_seed.log" 2>&1 || true
+    if [ "$SHOULD_SEED" = true ]; then
+        log "🌱 Seeding dictionary..."
+        node seed_jmdict_data.js > "$LOG_ROOT/dictionary-db/dict_seed.log" 2>&1 || true
+    else
+        log "ℹ️  Skipping dictionary seeding (use 'seed' arg to enable)"
+    fi
 
-    # Launch API
     PORT=5200 node main_server.js \
     > "$LOG_ROOT/dictionary-db/dict_5200.log" 2>&1
     on_error "dictionary-db" $?
 ) &
-PIDS+=($!)
+pid=$!
+PIDS+=($pid)
+log "✅ Started dictionary-db (PID: $pid)"
 
-# Wait for all background services to finish their startup logs/processes
-log "Waiting for all parallel services to initialize..."
+# --- Start HANACHAN (port 5400) ---
+(
+    log "🚀 Starting hanachan (port 5400)..."
+    cd backend/hanachan || exit 1
+    
+    if [ -f .venv/bin/activate ]; then
+        . .venv/bin/activate
+    fi
+
+    # Assuming app.py is the entry point and it uses FLASK_PORT env var
+    export FLASK_PORT=5400
+    python3 app.py > "$LOG_ROOT/hanachan/hanachan_5400.log" 2>&1
+    on_error "hanachan" $?
+) &
+pid=$!
+PIDS+=($pid)
+log "✅ Started hanachan (PID: $pid)"
+
+# --- Start FRONTEND-NEXT (port 3000) ---
+(
+    log "🚀 Starting frontend-next (port 3000)..."
+    cd frontend-next || exit 1
+    
+    npm run dev > "$LOG_ROOT/frontend/next_3000.log" 2>&1
+    on_error "frontend-next" $?
+) &
+pid=$!
+PIDS+=($pid)
+log "✅ Started frontend-next (PID: $pid)"
+
+# Wait for all background services
+log "⏳ Waiting for services to initialize..."
+log "🎉 Successfully started ${#PIDS[@]} services in the background."
 wait
-
-log "All parallel startup processes completed."
-
-# ======================================================================
-# Summary
-# ======================================================================
-echo ""
-echo "🎉 All services *attempted* to start with ONE MongoDB instance!"
-echo "------------------------------------------------"
-echo " express-db:        http://localhost:8000"
-echo " flask-dynamic-db:  http://localhost:5100"
-echo " dictionary-db:     http://localhost:5200"
-echo "------------------------------------------------"
-echo "MongoDB dbpath: $DB_ROOT"
-echo "All logs stored in: logs/"
-echo ""
-echo "To stop everything, the 'trap cleanup' mechanism should handle it."
-echo "Alternatively, manually run:"
-echo "  kill -9 \$(lsof -t -i:8000 -i:5100 -i:5200 2>/dev/null)"
-echo "  killall mongod"
-echo ""
-
-# The cleanup function is automatically called now due to 'trap cleanup EXIT'
-#  kill -9 $(lsof -t -i:8000 -i:5100 -i:5200 2>/dev/null)
-# sudo kill -9 $(pgrep mongod)
