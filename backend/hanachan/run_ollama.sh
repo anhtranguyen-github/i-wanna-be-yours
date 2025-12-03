@@ -28,3 +28,5 @@ docker exec -it ollama ollama pull bge-m3
 docker exec -it ollama ollama pull xitao/bge-reranker-v2-m3
 
 docker exec -it 2f7e55b055f3 ollama run qwen3:1.7b
+
+
