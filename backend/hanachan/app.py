@@ -34,18 +34,10 @@ def index():
 from dotenv import load_dotenv
 load_dotenv()
 
-chat_service_type = os.getenv("CHAT_SERVICE_TYPE", "standard")
-logger.info(f"Using Chat Service: {chat_service_type}")
-
 try:
-    if chat_service_type == "mas":
-        from mas_service import register_routes as register_mas_routes
-        register_mas_routes(app)
-        logger.info("✅ Registered MAS routes successfully.")
-    else:
-        from chat import register_routes as register_chat_routes
-        register_chat_routes(app)
-        logger.info("✅ Registered Standard Chat routes successfully.")
+    from chat_service import register_routes as register_chat_routes
+    register_chat_routes(app)
+    logger.info("✅ Registered Chat Service routes successfully.")
 
 except ImportError as e:
     logger.error(f"❌ Could not import routes: {e}")
