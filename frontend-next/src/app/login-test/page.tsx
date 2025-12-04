@@ -8,7 +8,9 @@ import { useUser } from "@/context/UserContext";
 
 const HomePage: React.FC = () => {
   // Access user context
-  const { userId, loggedIn } = useUser();
+  const { user } = useUser();
+  const userId = user?.id;
+  const loggedIn = !!user;
 
   return (
     <>
@@ -16,11 +18,11 @@ const HomePage: React.FC = () => {
       <UserDisplay />
       <div className="mt-4 text-center">
         {loggedIn ? (
-          <p className="text-lg font-semibold text-green-500">
+          <p className="text-lg font-bold text-brand-green">
             User ID: {userId}
           </p>
         ) : (
-          <p className="text-lg font-semibold text-red-500">
+          <p className="text-lg font-bold text-brand-peach">
             No User ID Available
           </p>
         )}

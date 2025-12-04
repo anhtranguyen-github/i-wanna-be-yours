@@ -2,15 +2,17 @@
 
 // pages/index.js
 
-import Head from 'next/head';
+import type { Metadata } from 'next';
 import MotivationForm from '@/components/MotivationForm';
+
+export const metadata: Metadata = {
+  title: 'Japanese Learning Dashboard',
+};
 
 export default function Home() {
   return (
     <div>
-      <Head>
-        <title>Japanese Learning Dashboard</title>
-      </Head>
+
 
       <main>
         <MotivationForm />

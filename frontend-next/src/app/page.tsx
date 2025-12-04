@@ -15,7 +15,7 @@
   ```
 */
 
-import Head from "next/head";
+import type { Metadata } from "next";
 
 import { ChevronRightIcon, StarIcon } from "@heroicons/react/20/solid";
 import {
@@ -38,6 +38,12 @@ import hanabira_github from "@public/img/screenshots/hanabira_github.png";
 import hanabira_grammar_graph from "@public/img/screenshots/hanabira_grammar_graph.png";
 //import hanabira_word_relations from "@public/img/screenshots/hanabira_word_relations.png";
 import hanabira_word_relations from "@public/img/screenshots/hanabira_word_relations_dark.png";
+
+export const metadata: Metadata = {
+  title: "Hanabira.org - Free Open-Source Japanese Learning Portal with Immersion",
+  description:
+    "Hanabira.org is a Japanese learning portal focused on immersive learning experiences. Join us to enhance your Japanese language skills through effective immersion techniques. Free, Open-Source, allows for Self-Hosting.",
+};
 
 // client component w form, so we can have parent SSR
 import EmailForm from "@/components/EmailForm";
@@ -373,21 +379,12 @@ const metrics = [
 export default function Example() {
   return (
     <div className="bg-white">
-      <Head>
-        <title>
-          Hanabira.org - Free Open-Source Japanese Learning Portal with
-          Immersion
-        </title>
-        <meta
-          name="description"
-          content="Hanabira.org is a Japanese learning portal focused on immersive learning experiences. Join us to enhance your Japanese language skills through effective immersion techniques. Free, Open-Source, allows for Self-Hosting."
-        />
-      </Head>
+
 
       <main>
         {/* Hero section */}
         {/* <div className="overflow-hidden pt-8 sm:pt-12 lg:relative lg:py-48"> */}
-        <div className="overflow-hidden pt-8 sm:pt-12 lg:relative lg:py-18">
+        <div className="overflow-hidden pt-8 sm:pt-12 lg:relative lg:py-18 bg-brand-cream">
           <div className="mx-auto max-w-md px-6 sm:max-w-3xl lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-24 lg:px-8">
             <div>
               {/* <div className="text-4xl font-semibold text-slate-600 text-opacity-60">
@@ -439,7 +436,7 @@ export default function Example() {
                     <span className="rounded bg-rose-50 px-2.5 py-1 text-sm font-semibold text-rose-800">
                       What is new
                     </span>
-                    <span className="inline-flex items-center space-x-1 text-sm font-medium text-rose-800">
+                    <span className="inline-flex items-center space-x-1 text-sm font-bold text-brand-dark">
                       <span>Just shipped Public Alpha v0.3.8</span>
                       <ChevronRightIcon
                         className="h-5 w-5"
@@ -450,7 +447,7 @@ export default function Example() {
                 </div>
 
                 <div className="mt-6 sm:max-w-xl">
-                  <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+                  <h1 className="text-4xl font-extrabold tracking-tight text-brand-dark sm:text-6xl text-shadow-sm">
                     Your path to Japanese & Korean comprehension
                   </h1>
 
@@ -474,51 +471,49 @@ export default function Example() {
                 <div className="mt-6">
                   <div className="inline-flex items-center divide-x divide-gray-300">
                     <div className="min-w-0 flex-1 py-1 pl-5 text-sm text-gray-500 sm:py-3">
-                      <span className="font-semibold text-gray-900">
+                      <span className="font-bold text-brand-dark text-lg bg-brand-peach px-2 py-1 rounded border-2 border-brand-dark shadow-hard-sm">
                         Features:
                       </span>
-                      <ul className="list-disc pl-5 mt-2 space-y-2">
-                        <li>
-                          <span className="font-bold text-blue-600">
+                      <ul className="mt-6 space-y-4">
+                        <li className="clay-card p-4 bg-white">
+                          <span className="font-bold text-brand-dark bg-brand-blue/30 px-1 rounded">
                             YouTube Immersion
                           </span>{" "}
                           - Enhance learning with engaging video content.
                         </li>
-                        <li>
-                          <span className="font-bold text-green-600">
+                        <li className="clay-card p-4 bg-white">
+                          <span className="font-bold text-brand-dark bg-brand-green/30 px-1 rounded">
                             Text Parser
                           </span>{" "}
                           - Easily split and tokenize custom texts.
                         </li>
-                        <li>
-                          <span className="font-semibold text-gray-800">
+                        <li className="clay-card p-4 bg-white">
+                          <span className="font-bold text-brand-dark bg-brand-peach/30 px-1 rounded">
                             Grammar Explanation
                           </span>{" "}
                           - Quick and clear grammar points with examples.
                         </li>
-                        <li>
-                          <span className="font-semibold text-gray-800">
+                        <li className="clay-card p-4 bg-white">
+                          <span className="font-bold text-brand-dark bg-brand-cream border border-brand-dark px-1 rounded">
                             Vocabulary SRS Cards
                           </span>{" "}
                           - Effective spaced repetition flashcards with audio.
                         </li>
-                        <li>
-                          <span className="font-medium text-gray-700">
+                        <li className="clay-card p-4 bg-white">
+                          <span className="font-bold text-brand-dark bg-brand-blue/30 px-1 rounded">
                             Vocabulary and Sentence Mining
                           </span>{" "}
                           - Discover new words and sentences seamlessly.
                         </li>
-                        {/* <li><span className="font-medium text-gray-700">Kanji Mnemonics</span> <em>(in development)</em> - Simplified kanji learning techniques.</li>
-                        <li><span className="font-medium text-gray-700">Kanji Animation and Drawing Canvas</span> <em>(in development)</em> - Interactive kanji practice tools.</li> */}
-                        <li className="hidden md:list-item">
-                          <span className="font-medium text-gray-700">
+                        <li className="hidden md:list-item clay-card p-4 bg-white">
+                          <span className="font-bold text-brand-dark bg-brand-peach/30 px-1 rounded">
                             Kanji Mnemonics
                           </span>
                           <em> (in development)</em> - Simplified kanji learning
                           techniques.
                         </li>
-                        <li className="hidden md:list-item">
-                          <span className="font-medium text-gray-700">
+                        <li className="hidden md:list-item clay-card p-4 bg-white">
+                          <span className="font-bold text-brand-dark bg-brand-green/30 px-1 rounded">
                             Kanji Animation and Drawing Canvas
                           </span>
                           <em> (in development)</em> - Interactive kanji
@@ -858,7 +853,7 @@ export default function Example() {
               </div>
               <div className="relative mx-auto max-w-md px-6 sm:max-w-3xl lg:max-w-none lg:px-0 lg:py-20">
                 {/* Testimonial card*/}
-                <div className="relative overflow-hidden rounded-2xl pb-10 pt-64 shadow-xl">
+                <div className="clay-card relative overflow-hidden pb-10 pt-64 bg-brand-cream border-2 border-brand-dark">
                   <Image
                     className="transform transition duration-300 ease-in-out hover:scale-105 absolute inset-0 h-full w-full object-cover"
                     src={hanabira_text_parser_tokenization}
@@ -906,7 +901,7 @@ export default function Example() {
                 <div className="mt-6">
                   <a
                     href="/text-parser"
-                    className="inline-flex rounded-md border border-transparent bg-gradient-to-r from-purple-600 to-indigo-600 bg-origin-border px-4 py-2 text-base font-medium text-white shadow-sm hover:from-purple-700 hover:to-indigo-700"
+                    className="clay-button inline-flex bg-brand-green px-6 py-3 text-base font-bold text-brand-dark hover:bg-brand-green/90"
                   >
                     Get started
                   </a>
@@ -1068,7 +1063,7 @@ export default function Example() {
                   <div className="mt-6">
                     <a
                       href="/text-parser?type=youtube"
-                      className="inline-flex rounded-md border border-transparent bg-gradient-to-r from-purple-600 to-indigo-600 bg-origin-border px-4 py-2 text-base font-medium text-white shadow-sm hover:from-purple-700 hover:to-indigo-700"
+                      className="clay-button inline-flex bg-brand-blue px-6 py-3 text-base font-bold text-brand-dark hover:bg-brand-blue/90"
                     >
                       Get started
                     </a>
@@ -1099,18 +1094,18 @@ export default function Example() {
                 loading="lazy"
               />
 
-{/* Small link below the image */}
-<div className="mt-3 text-center text-sm text-gray-700">
-  Screenshot from{' '}
-  <a
-    href="https://www.youtube.com/@the_bitesize_japanese_podcast"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="text-slate-600 hover:text-slate-800"
-  >
-    Bite Size Japanese YouTube Channel
-  </a>
-</div>
+              {/* Small link below the image */}
+              <div className="mt-3 text-center text-sm text-gray-700">
+                Screenshot from{' '}
+                <a
+                  href="https://www.youtube.com/@the_bitesize_japanese_podcast"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-slate-600 hover:text-slate-800"
+                >
+                  Bite Size Japanese YouTube Channel
+                </a>
+              </div>
 
 
 
@@ -1211,9 +1206,9 @@ export default function Example() {
               <div className="mx-auto max-w-xl px-6 lg:mx-0 lg:max-w-none lg:px-0 lg:py-16">
                 <div>
                   <div>
-                    <span className="flex h-12 w-12 items-center justify-center rounded-md bg-gradient-to-r from-purple-600 to-indigo-600">
+                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-peach border-2 border-brand-dark shadow-hard-sm transform rotate-3">
                       <InboxIcon
-                        className="h-6 w-6 text-white"
+                        className="h-6 w-6 text-brand-dark"
                         aria-hidden="true"
                       />
                     </span>
@@ -1249,7 +1244,7 @@ export default function Example() {
                     <div className="mt-6">
                       <a
                         href="/grammar-graph"
-                        className="inline-flex rounded-md border border-transparent bg-gradient-to-r from-purple-600 to-indigo-600 bg-origin-border px-4 py-2 text-base font-medium text-white shadow-sm hover:from-purple-700 hover:to-indigo-700"
+                        className="clay-button inline-flex bg-brand-peach px-6 py-3 text-base font-bold text-brand-dark hover:bg-brand-peach/90"
                       >
                         Go to Grammar Graph
                       </a>
@@ -1298,9 +1293,9 @@ export default function Example() {
               <div className="mx-auto max-w-xl px-6 lg:mx-0 lg:max-w-none lg:px-0 lg:py-16">
                 <div>
                   <div>
-                    <span className="flex h-12 w-12 items-center justify-center rounded-md bg-gradient-to-r from-purple-600 to-indigo-600">
+                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-blue border-2 border-brand-dark shadow-hard-sm transform -rotate-3">
                       <InboxIcon
-                        className="h-6 w-6 text-white"
+                        className="h-6 w-6 text-brand-dark"
                         aria-hidden="true"
                       />
                     </span>
@@ -1386,7 +1381,7 @@ export default function Example() {
                     <div className="mt-6">
                       <a
                         href="/word-relations"
-                        className="inline-flex rounded-md border border-transparent bg-gradient-to-r from-purple-600 to-indigo-600 bg-origin-border px-4 py-2 text-base font-medium text-white shadow-sm hover:from-purple-700 hover:to-indigo-700"
+                        className="clay-button inline-flex bg-brand-blue px-6 py-3 text-base font-bold text-brand-dark hover:bg-brand-blue/90"
                       >
                         Go to Word Relations
                       </a>
@@ -1433,9 +1428,9 @@ export default function Example() {
               <div className="mx-auto max-w-xl px-6 lg:mx-0 lg:max-w-none lg:px-0 lg:py-16">
                 <div>
                   <div>
-                    <span className="flex h-12 w-12 items-center justify-center rounded-md bg-gradient-to-r from-purple-600 to-indigo-600">
+                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-green border-2 border-brand-dark shadow-hard-sm transform rotate-2">
                       <InboxIcon
-                        className="h-6 w-6 text-white"
+                        className="h-6 w-6 text-brand-dark"
                         aria-hidden="true"
                       />
                     </span>
@@ -1460,7 +1455,7 @@ export default function Example() {
                     <div className="mt-6">
                       <a
                         href="/japanese/quick_vocab"
-                        className="inline-flex rounded-md border border-transparent bg-gradient-to-r from-purple-600 to-indigo-600 bg-origin-border px-4 py-2 text-base font-medium text-white shadow-sm hover:from-purple-700 hover:to-indigo-700"
+                        className="clay-button inline-flex bg-brand-green px-6 py-3 text-base font-bold text-brand-dark hover:bg-brand-green/90"
                       >
                         Get started - Quick Vocabulary
                       </a>
@@ -1508,9 +1503,9 @@ export default function Example() {
               <div className="mx-auto max-w-xl px-6 lg:col-start-2 lg:mx-0 lg:max-w-none lg:px-0 lg:py-32">
                 <div>
                   <div>
-                    <span className="flex h-12 w-12 items-center justify-center rounded-md bg-gradient-to-r from-purple-600 to-indigo-600">
+                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-peach border-2 border-brand-dark shadow-hard-sm transform -rotate-2">
                       <SparklesIcon
-                        className="h-6 w-6 text-white"
+                        className="h-6 w-6 text-brand-dark"
                         aria-hidden="true"
                       />
                     </span>
@@ -1536,7 +1531,7 @@ export default function Example() {
                     <div className="mt-6">
                       <a
                         href="/japanese/quick_kanji"
-                        className="inline-flex rounded-md border border-transparent bg-gradient-to-r from-purple-600 to-indigo-600 bg-origin-border px-4 py-2 text-base font-medium text-white shadow-sm hover:from-purple-700 hover:to-indigo-700"
+                        className="clay-button inline-flex bg-brand-peach px-6 py-3 text-base font-bold text-brand-dark hover:bg-brand-peach/90"
                       >
                         Get started - Quick Kanji
                       </a>
@@ -1569,9 +1564,9 @@ export default function Example() {
               <div className="mx-auto max-w-xl px-6 lg:mx-0 lg:max-w-none lg:px-0 lg:py-16">
                 <div>
                   <div>
-                    <span className="flex h-12 w-12 items-center justify-center rounded-md bg-gradient-to-r from-purple-600 to-indigo-600">
+                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-green border-2 border-brand-dark shadow-hard-sm transform rotate-3">
                       <InboxIcon
-                        className="h-6 w-6 text-white"
+                        className="h-6 w-6 text-brand-dark"
                         aria-hidden="true"
                       />
                     </span>

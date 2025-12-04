@@ -19,14 +19,14 @@ const Tabs: React.FC<TabsProps> = ({ children, activeTabIndex }) => {
   }, [activeTabIndex]);
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-5 border border-gray-200 text-black">
-      <div className="flex border-b border-gray-200 mb-4">
+    <div className="bg-white rounded-xl border-2 border-brand-dark shadow-hard p-5 text-brand-dark clay-card">
+      <div className="flex border-b-2 border-brand-dark mb-4 overflow-x-auto">
         {children.map((tab, index) => (
           <button
             key={index}
-            className={`text-xs px-2 py-2 -mb-px border-t border-l border-r rounded-t ${activeTab === index
-              ? "text-blue-700 border-blue-700 bg-white"
-              : "text-gray-500 border-transparent hover:text-blue-700 hover:border-gray-300"
+            className={`text-sm font-bold px-4 py-3 -mb-[2px] border-2 rounded-t-xl mr-2 transition-all duration-200 ${activeTab === index
+              ? "text-white bg-brand-blue border-brand-dark border-b-brand-blue z-10"
+              : "text-brand-dark bg-brand-cream border-transparent hover:bg-brand-blue/10 hover:border-brand-dark/50"
               }`}
             onClick={() => setActiveTab(index)}
           >
@@ -34,7 +34,7 @@ const Tabs: React.FC<TabsProps> = ({ children, activeTabIndex }) => {
           </button>
         ))}
       </div>
-      <div className="p-6 border border-gray-200 rounded-b">
+      <div className="p-6 border-2 border-brand-dark rounded-xl bg-white">
         {children.map((tab, index) =>
           activeTab === index ? <div key={index}>{tab}</div> : null
         )}

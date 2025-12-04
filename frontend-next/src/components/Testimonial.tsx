@@ -57,19 +57,19 @@ export default function Testimonial() {
 
 function Card({ img, title, detail, name }: cardProps) {
   return (
-    <div className="border p-7 flex items-center justify-center flex-col lg:items-start lg:text-left   ">
-      <h1 className="text-3xl text-primary font-bold">{title}</h1>
-      <p className="text-gray-500 mt-3 lg:mt-5">{detail}</p>
+    <div className="border-2 border-brand-dark p-7 flex items-center justify-center flex-col lg:items-start lg:text-left rounded-xl bg-white clay-card">
+      <h1 className="text-3xl text-brand-dark font-bold">{title}</h1>
+      <p className="text-brand-dark mt-3 lg:mt-5">{detail}</p>
       <div className="mt-5 flex flex-col lg:flex-row items-center">
         <img src={img} className="h-12" alt="" />
         <div className="mt-3 lg:mt-0 lg:ml-3">
-          <h1 className="font-semibold">{name}</h1>
+          <h1 className="font-semibold text-brand-dark">{name}</h1>
           <div className="flex items-center mt-1">
-            <StarIcon className="h-5 text-green" />
-            <StarIcon className="h-5 text-green" />
-            <StarIcon className="h-5 text-green" />
-            <StarIcon className="h-5 text-green" />
-            <StarIcon className="h-5 text-green" />
+            <StarIcon className="h-5 text-brand-green" />
+            <StarIcon className="h-5 text-brand-green" />
+            <StarIcon className="h-5 text-brand-green" />
+            <StarIcon className="h-5 text-brand-green" />
+            <StarIcon className="h-5 text-brand-green" />
           </div>
         </div>
       </div>

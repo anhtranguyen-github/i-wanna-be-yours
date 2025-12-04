@@ -4,12 +4,15 @@ import React from "react";
 import { useUser } from "@/context/UserContext";
 
 export default function UserDisplay() {
-  const { loggedIn, userName, userId } = useUser();
+  const { user } = useUser();
+  const loggedIn = !!user;
+  const userName = user?.email;
+  const userId = user?.id;
 
   if (!loggedIn) {
     return (
       <div className="text-center">
-        <p className="text-sm font-bold text-red-500 dark:text-red-400 space-y-4 mt-4 mb-2">
+        <p className="text-sm font-bold text-brand-peach space-y-4 mt-4 mb-2">
           You are not logged in.
         </p>
       </div>
@@ -18,13 +21,13 @@ export default function UserDisplay() {
 
   return (
     <div className="text-center ">
-      <p className="text-lg font-bold text-primary dark:text-white mb-2 space-y-4 mt-4">
+      <p className="text-lg font-bold text-brand-dark mb-2 space-y-4 mt-4">
         Welcome, {userName}!
       </p>
-      <p className="text-xs font-bold text-primary dark:text-white mb-2">
+      <p className="text-xs font-bold text-brand-dark mb-2">
         userName: {userName}
       </p>
-      <p className="text-xs font-bold text-primary dark:text-white mb-2">
+      <p className="text-xs font-bold text-brand-dark mb-2">
         userId: {userId}
       </p>
     </div>

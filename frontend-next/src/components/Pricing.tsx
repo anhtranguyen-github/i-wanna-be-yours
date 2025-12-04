@@ -36,12 +36,12 @@ export default function Pricing() {
         </div>
         <div className="mt-10 w-full grid lg:grid-cols-2 gap-5 lg:gap-10">
           {/* Monthly Card */}
-          <div className="p-7 border">
+          <div className="p-7 border-2 border-brand-dark rounded-xl bg-white clay-card">
             <div className="flex text-center lg:text-left lg:flex-row flex-col items-center ">
               <img src="/img/Wallet.png" className="h-24" alt="" />
               <div className="mt-5 lg:mt-0 lg:ml-5">
-                <h1 className="text-4xl font-bold">Monthly Plan</h1>
-                <p className="mt-2 text-gray-500">
+                <h1 className="text-4xl font-bold text-brand-dark">Monthly Plan</h1>
+                <p className="mt-2 text-brand-dark">
                   Full access to all content and features on LTL while your
                   subscription is active.
                 </p>
@@ -52,16 +52,15 @@ export default function Pricing() {
               c2="Full access to dashboard"
               c3="Full access to dashboard"
               c4="Full access to dashboard"
-              checkTextColor="gray-500"
+              checkTextColor="brand-dark"
               rate="$35/mon"
-              btnBg="primary"
-              textColor="white"
+              btnClassName="bg-brand-blue text-white hover:bg-brand-blue/80"
               link="/"
             />
           </div>
 
           {/* Yearly Card */}
-          <div className="bg-primary text-white p-7">
+          <div className="bg-brand-blue text-white p-7 rounded-xl clay-card">
             <div className="flex text-center lg:text-left lg:flex-row flex-col items-center ">
               <img src="/img/Wallet.png" className="h-24" alt="" />
               <div className="mt-5 lg:mt-0 lg:ml-5">
@@ -78,8 +77,7 @@ export default function Pricing() {
               c3="Full access to dashboard"
               c4="Full access to dashboard"
               rate="$120/yearly"
-              btnBg="white"
-              textColor="secondary"
+              btnClassName="bg-white text-brand-blue hover:bg-gray-100"
               checkTextColor="white"
               link="/"
             />
@@ -96,11 +94,10 @@ function Card({
   c3,
   c4,
   rate,
-  textColor,
-  btnBg,
+  btnClassName,
   link,
   checkTextColor,
-}: cardProps) {
+}: any) {
   return (
     <div>
       <div className={`mt-7 grid lg:grid-cols-2 gap-5 text-${checkTextColor}`}>
@@ -113,7 +110,7 @@ function Card({
         <h1 className="text-3xl font-bold">{rate}</h1>
         <Link
           href={link}
-          className={`mt-4 lg:mt-0 py-3 px-6 border text-${textColor} bg-${btnBg} font-medium rounded-md`}
+          className={`mt-4 lg:mt-0 py-3 px-6 border-2 border-transparent font-bold rounded-xl clay-button ${btnClassName}`}
         >
           Try Now
         </Link>
@@ -125,8 +122,8 @@ function Card({
 function Check({ text }: checkProps) {
   return (
     <div className="flex items-center">
-      <div className="flex items-center mr-2 p-2 bg-gray-100 rounded-full w-7 h-7  ">
-        <CheckIcon className="text-primary h-5" />
+      <div className="flex items-center mr-2 p-2 bg-brand-cream rounded-full w-7 h-7  ">
+        <CheckIcon className="text-brand-dark h-5" />
       </div>
       {text}
     </div>

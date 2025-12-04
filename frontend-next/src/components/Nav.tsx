@@ -21,13 +21,13 @@ export default function Nav() {
   };
 
   return (
-    <div className="hidden lg:block py-1 lg:p-1 flex flex-col items-center w-full bg-white dark:bg-zinc-400 sticky top-0 z-50 mr-0 bg-opacity-95">
+    <div className="hidden lg:block py-1 lg:p-1 flex flex-col items-center w-full bg-brand-cream border-b-2 border-brand-dark sticky top-0 z-50 mr-0 bg-opacity-95">
       <div className="w-12/12 flex items-center justify-between">
         <div className="flex items-center">
           <div className="hidden lg:flex ml-20">
             <Link
               href="/"
-              className="mr-10 hover:text-gray-800 dark:hover:text-gray-600 font-medium"
+              className="mr-10 text-brand-dark font-bold hover:text-brand-blue transition-colors"
             >
               {" "}
               Home{" "}
@@ -36,7 +36,7 @@ export default function Nav() {
 
             <Link
               href="/content"
-              className="mr-10 hover:text-gray-800 dark:hover:text-gray-600 font-medium"
+              className="mr-10 text-brand-dark font-bold hover:text-brand-blue transition-colors"
             >
               {" "}
               Content{" "}
@@ -61,7 +61,7 @@ export default function Nav() {
 
             <Link
               href="/learning-workspace"
-              className="mr-10 hover:text-gray-800 dark:hover:text-gray-600 font-medium"
+              className="mr-10 text-brand-dark font-bold hover:text-brand-blue transition-colors"
             >
               {" "}
               Learning Workspace{" "}
@@ -69,7 +69,7 @@ export default function Nav() {
 
             <Link
               href="/japanese/kana"
-              className="mr-10 hover:text-gray-800 dark:hover:text-gray-600 font-medium"
+              className="mr-10 text-brand-dark font-bold hover:text-brand-blue transition-colors"
             >
               {" "}
               Kana{" "}
@@ -77,7 +77,7 @@ export default function Nav() {
 
             <Link
               href="/radicals"
-              className="mr-10 hover:text-gray-800 dark:hover:text-gray-600 font-medium"
+              className="mr-10 text-brand-dark font-bold hover:text-brand-blue transition-colors"
             >
               {" "}
               Radicals{" "}
@@ -86,7 +86,7 @@ export default function Nav() {
 
             <Link
               href="/japanese/quick_kanji"
-              className="mr-10 hover:text-gray-800 dark:hover:text-gray-600 font-medium"
+              className="mr-10 text-brand-dark font-bold hover:text-brand-blue transition-colors"
             >
               {" "}
               Quick Kanji{" "}
@@ -94,7 +94,7 @@ export default function Nav() {
 
             <Link
               href="/japanese/quick_vocab"
-              className="mr-10 hover:text-gray-800 dark:hover:text-gray-600 font-medium"
+              className="mr-10 text-brand-dark font-bold hover:text-brand-blue transition-colors"
             >
               {" "}
               Quick JLPT Vocabulary{" "}
@@ -212,13 +212,13 @@ const MoonIcon = () => {
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
-      stroke-width="1.5"
+      strokeWidth={1.5}
       stroke="currentColor"
       className="w-6 h-6"
     >
       <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
         d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"
       />
     </svg>

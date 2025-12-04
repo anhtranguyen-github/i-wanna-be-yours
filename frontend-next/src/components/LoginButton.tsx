@@ -14,12 +14,12 @@ const LoginButton = () => {
   if (user) {
     return (
       <div className="flex items-center space-x-4">
-        <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
+        <span className="text-sm font-bold text-brand-dark">
           Welcome back ! {user.email}
         </span>
         <button
           onClick={() => logout()}
-          className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+          className="clay-button bg-brand-peach hover:bg-brand-peach/90 text-brand-dark px-4 py-2 text-sm font-bold"
         >
           Log out
         </button>
@@ -29,12 +29,12 @@ const LoginButton = () => {
 
   return (
     <div className="flex items-center space-x-4">
-      <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+      <span className="text-sm font-bold text-brand-dark/60">
         not log in
       </span>
       <Link
         href="/login"
-        className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full font-medium transition-colors"
+        className="clay-button bg-brand-green hover:bg-brand-green/90 text-brand-dark px-6 py-2 font-bold"
       >
         Log in
       </Link>

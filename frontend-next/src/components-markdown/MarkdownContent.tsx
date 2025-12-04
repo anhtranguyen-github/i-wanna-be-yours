@@ -39,7 +39,7 @@ function MarkdownContent({ lang, slug }: MarkdownContentProps) {
 
   // Construct the file path
   //const contentDirectory = path.join(process.cwd(), 'content');
-  
+
   // Determine the content directory based on the language
   let contentDirectory;
   if (lang === 'jap') {
@@ -50,8 +50,8 @@ function MarkdownContent({ lang, slug }: MarkdownContentProps) {
     contentDirectory = path.join(process.cwd(), 'content', 'markdown_grammar_mandarin');
   } else {
     contentDirectory = path.join(process.cwd(), 'content'); // default path if needed
-  }  
-  
+  }
+
   const markdownFilePath = path.join(contentDirectory, fileName);
 
   // Resolve the file path and ensure it is within the content directory
@@ -71,11 +71,11 @@ function MarkdownContent({ lang, slug }: MarkdownContentProps) {
   const fileContents = fs.readFileSync(resolvedPath, 'utf8');
 
   // Convert Markdown to HTML
-  const rawContent = marked(fileContents);
+  const rawContent = marked(fileContents) as string;
 
   // Set up DOMPurify with jsdom
   const window = new JSDOM('').window as unknown as Window;
-  const DOMPurifyInstance = DOMPurify(window);
+  const DOMPurifyInstance = DOMPurify(window as any);
 
   // Sanitize the HTML
   const content = DOMPurifyInstance.sanitize(rawContent);

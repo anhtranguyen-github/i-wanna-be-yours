@@ -65,7 +65,7 @@ export default function EmailForm() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="block w-full rounded-md border border-gray-300 px-5 py-3 text-base text-gray-900 placeholder-gray-500 shadow-sm focus:border-rose-500 focus:ring-rose-500"
+            className="block w-full rounded-xl border-2 border-brand-dark px-5 py-3 text-base text-brand-dark placeholder-gray-500 shadow-hard-sm focus:border-brand-blue focus:ring-brand-blue bg-white"
             placeholder="Enter your email"
             required
           />
@@ -73,7 +73,7 @@ export default function EmailForm() {
         <div className="mt-4 sm:ml-3 sm:mt-0">
           <button
             type="submit"
-            className="block w-full rounded-md border border-transparent bg-rose-500 px-5 py-3 text-base font-medium text-white shadow hover:bg-rose-600 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 sm:px-10"
+            className="clay-button block w-full bg-brand-peach px-5 py-3 text-base font-bold text-brand-dark hover:bg-brand-peach/80 focus:outline-none focus:ring-2 focus:ring-brand-dark focus:ring-offset-2 sm:px-10"
           >
             Notify me
           </button>

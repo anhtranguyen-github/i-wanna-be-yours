@@ -126,8 +126,8 @@ export default function Home() {
   if (!user) return null;
 
   return (
-    <div className="bg-gray-100 text-black dark:bg-gray-900 dark:text-white">
-      <div className="bg-gray-100 dark:bg-gray-900 min-h-screen relative p-10">
+    <div className="bg-brand-cream text-brand-dark min-h-screen">
+      <div className="bg-brand-cream min-h-screen relative p-10">
         {/* <br />
         <button onClick={fetchLoginHistory}>Show Login History</button>
         <div>
@@ -159,15 +159,15 @@ export default function Home() {
           <div className="w-full">
             <button
               onClick={() => setShowKanjiGraphs(!showKanjiGraphs)}
-              className="w-full text-left px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md"
+              className="clay-button w-full text-left px-4 py-2 bg-white hover:bg-brand-blue/20 focus:outline-none focus:ring-2 focus:ring-brand-blue"
             >
-              <span className="text-xl font-bold">Kanji</span>
-              <span className="float-right">{showKanjiGraphs ? "▲" : "▼"}</span>
+              <span className="text-xl font-bold text-brand-dark">Kanji</span>
+              <span className="float-right text-brand-dark">{showKanjiGraphs ? "▲" : "▼"}</span>
             </button>
 
             <a
               href="/japanese/flashcards"
-              className="text-blue-500 hover:text-blue-700 transition duration-300 p-2"
+              className="text-brand-blue hover:text-brand-dark font-bold transition duration-300 p-2 block mt-2"
             >
               Flashcards - Kanji
             </a>
@@ -184,7 +184,7 @@ export default function Home() {
                 ].map((part, index) => (
                   <div
                     key={index}
-                    className="w-full max-w-xs p-2 bg-white dark:bg-gray-800 shadow-md rounded-lg"
+                    className="w-full max-w-xs p-2 bg-white clay-card"
                   >
                     <LearningProgressFlask
                       userId={userId}
@@ -202,17 +202,17 @@ export default function Home() {
           <div className="w-full mt-4">
             <button
               onClick={() => setShowEssentialVerbs(!showEssentialVerbs)}
-              className="w-full text-left px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md"
+              className="clay-button w-full text-left px-4 py-2 bg-white hover:bg-brand-blue/20 focus:outline-none focus:ring-2 focus:ring-brand-blue"
             >
-              <span className="text-xl font-bold">Essential Verbs</span>
-              <span className="float-right">
+              <span className="text-xl font-bold text-brand-dark">Essential Verbs</span>
+              <span className="float-right text-brand-dark">
                 {showEssentialVerbs ? "▲" : "▼"}
               </span>
             </button>
 
             <a
               href="/japanese/flashcards"
-              className="text-blue-500 hover:text-blue-700 transition duration-300 p-2"
+              className="text-brand-blue hover:text-brand-dark font-bold transition duration-300 p-2 block mt-2"
             >
               Flashcards - Essential Verbs
             </a>
@@ -231,7 +231,7 @@ export default function Home() {
                 ].map((part, index) => (
                   <div
                     key={index}
-                    className="w-full max-w-xs p-2 bg-white dark:bg-gray-800 shadow-md rounded-lg"
+                    className="w-full max-w-xs p-2 bg-white clay-card"
                   >
                     <LearningProgressFlask
                       userId={userId}
@@ -249,17 +249,17 @@ export default function Home() {
           <div className="w-full mt-4">
             <button
               onClick={() => setShowEssentialSuruVerbs(!showEssentialSuruVerbs)}
-              className="w-full text-left px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md"
+              className="clay-button w-full text-left px-4 py-2 bg-white hover:bg-brand-blue/20 focus:outline-none focus:ring-2 focus:ring-brand-blue"
             >
-              <span className="text-xl font-bold">Essential Suru Verbs</span>
-              <span className="float-right">
+              <span className="text-xl font-bold text-brand-dark">Essential Suru Verbs</span>
+              <span className="float-right text-brand-dark">
                 {showEssentialSuruVerbs ? "▲" : "▼"}
               </span>
             </button>
 
             <a
               href="/japanese/flashcards"
-              className="text-blue-500 hover:text-blue-700 transition duration-300 p-2"
+              className="text-brand-blue hover:text-brand-dark font-bold transition duration-300 p-2 block mt-2"
             >
               Flashcards - Essential Suru Verbs
             </a>
@@ -276,7 +276,7 @@ export default function Home() {
                 ].map((part, index) => (
                   <div
                     key={index}
-                    className="w-full max-w-xs p-2 bg-white dark:bg-gray-800 shadow-md rounded-lg"
+                    className="w-full max-w-xs p-2 bg-white clay-card"
                   >
                     <LearningProgressFlask
                       userId={userId}
@@ -295,15 +295,15 @@ export default function Home() {
           <div className="w-full mt-4">
             <button
               onClick={() => setShowGrammar(!showGrammar)}
-              className="w-full text-left px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md"
+              className="clay-button w-full text-left px-4 py-2 bg-white hover:bg-brand-blue/20 focus:outline-none focus:ring-2 focus:ring-brand-blue"
             >
-              <span className="text-xl font-bold">Grammar JLPT</span>
-              <span className="float-right">{showGrammar ? "▲" : "▼"}</span>
+              <span className="text-xl font-bold text-brand-dark">Grammar JLPT</span>
+              <span className="float-right text-brand-dark">{showGrammar ? "▲" : "▼"}</span>
             </button>
 
             <a
               href="/japanese/flashcards"
-              className="text-blue-500 hover:text-blue-700 transition duration-300 p-2"
+              className="text-brand-blue hover:text-brand-dark font-bold transition duration-300 p-2 block mt-2"
             >
               Flashcards - JLPT Grammar
             </a>
@@ -313,7 +313,7 @@ export default function Home() {
                 {["JLPT_N5", "JLPT_N4", "JLPT_N3", "JLPT_N2", "JLPT_N1",].map((part, index) => (
                   <div
                     key={index}
-                    className="w-full max-w-xs p-2 bg-white dark:bg-gray-800 shadow-md rounded-lg"
+                    className="w-full max-w-xs p-2 bg-white clay-card"
                   >
                     <LearningProgressFlask
                       userId={userId}

@@ -9,7 +9,9 @@ import { useUser } from "@/context/UserContext";
 const SentenceMiningTable = () => {
   const [data, setData] = useState([]);
   //const [userId, setUserId] = useState(null);
-  const { userId, loggedIn } = useUser();
+  const { user } = useUser();
+  const userId = user?.id;
+  const loggedIn = !!user;
 
   // useEffect(() => {
   //   const { userId } = getUserFromCookies();
@@ -58,28 +60,30 @@ const SentenceMiningTable = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Sentence Mining</h1>
-      <table className="min-w-full bg-white border border-gray-300">
+    <div className="bg-brand-cream min-h-screen p-4">
+      <div className="container mx-auto">
+      <h1 className="text-3xl font-extrabold mb-8 text-brand-dark text-center">Sentence Mining</h1>
+      <div className="overflow-x-auto rounded-xl border-2 border-brand-dark shadow-hard clay-card">
+      <table className="min-w-full bg-white">
         <thead>
-          <tr>
-            <th className="py-2 px-4 border-b border-gray-300">ID</th>
-            <th className="py-2 px-4 border-b border-gray-300">Japanese Vocabulary</th>
-            <th className="py-2 px-4 border-b border-gray-300">Simplified Vocabulary</th>
-            <th className="py-2 px-4 border-b border-gray-300">English Vocabulary</th>
-            {/* <th className="py-2 px-4 border-b border-gray-300">Audio</th> */}
-            <th className="py-2 px-4 border-b border-gray-300">Sentences</th>
-            <th className="py-2 px-4 border-b border-gray-300">Notes</th>
-            <th className="py-2 px-4 border-b border-gray-300">Actions</th>
+          <tr className="bg-brand-blue text-white">
+            <th className="py-4 px-6 text-left font-bold border-b-2 border-brand-dark">ID</th>
+            <th className="py-4 px-6 text-left font-bold border-b-2 border-brand-dark">Japanese Vocabulary</th>
+            <th className="py-4 px-6 text-left font-bold border-b-2 border-brand-dark">Simplified Vocabulary</th>
+            <th className="py-4 px-6 text-left font-bold border-b-2 border-brand-dark">English Vocabulary</th>
+            {/* <th className="py-4 px-6 text-left font-bold border-b-2 border-brand-dark">Audio</th> */}
+            <th className="py-4 px-6 text-left font-bold border-b-2 border-brand-dark">Sentences</th>
+            <th className="py-4 px-6 text-left font-bold border-b-2 border-brand-dark">Notes</th>
+            <th className="py-4 px-6 text-left font-bold border-b-2 border-brand-dark">Actions</th>
           </tr>
         </thead>
         <tbody>
           {data.map((word, index) => (
-            <tr key={index} className="hover:bg-gray-100">
-              <td className="py-2 px-4 border-b border-gray-300">{word.id}</td>
-              <td className="py-2 px-4 border-b border-gray-300">{word.vocabulary_original}</td>
-              <td className="py-2 px-4 border-b border-gray-300">{word.vocabulary_simplified}</td>
-              <td className="py-2 px-4 border-b border-gray-300">{word.vocabulary_english}</td>
+            <tr key={index} className="hover:bg-brand-blue/10 transition-colors duration-150 border-b border-brand-dark/20 last:border-b-0">
+              <td className="py-4 px-6 text-brand-dark font-medium">{word.id}</td>
+              <td className="py-4 px-6 text-brand-dark font-bold text-lg">{word.vocabulary_original}</td>
+              <td className="py-4 px-6 text-brand-dark">{word.vocabulary_simplified}</td>
+              <td className="py-4 px-6 text-brand-dark">{word.vocabulary_english}</td>
               {/* <td className="py-2 px-4 border-b border-gray-300">
                 <button
                   onClick={() => {
@@ -96,19 +100,19 @@ const SentenceMiningTable = () => {
                   <source src={word.vocabulary_audio} type="audio/mp3" />
                 </audio>
               </td> */}
-              <td className="py-2 px-4 border-b border-gray-300">
+              <td className="py-4 px-6">
                 {word.sentences.map((sentence, sIndex) => (
                   <div key={sIndex} className="mb-2">
-                    <p>{sentence.sentence_original}</p>
-                    <p className="text-gray-500">{sentence.sentence_english}</p>
+                    <p className="text-brand-dark font-bold">{sentence.sentence_original}</p>
+                    <p className="text-brand-dark/70 text-sm">{sentence.sentence_english}</p>
                   </div>
                 ))}
               </td>
-              <td className="py-2 px-4 border-b border-gray-300">{word.notes}</td>
-              <td className="py-2 px-4 border-b border-gray-300">
+              <td className="py-4 px-6 text-brand-dark">{word.notes}</td>
+              <td className="py-4 px-6">
                 <button
                   onClick={() => deleteWord(word.id)}
-                  className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-700"
+                  className="clay-button bg-brand-peach text-brand-dark py-2 px-4 rounded-xl font-bold hover:bg-brand-peach/80 transition-all duration-200"
                 >
                   Delete
                 </button>
@@ -117,6 +121,8 @@ const SentenceMiningTable = () => {
           ))}
         </tbody>
       </table>
+      </div>
+      </div>
     </div>
   );
 };

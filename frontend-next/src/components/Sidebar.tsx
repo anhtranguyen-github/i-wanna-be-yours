@@ -67,11 +67,11 @@ export default function Sidebar() {
 
   return (
     <>
-      <div className="flex flex-col items-center p-1 border-r border-gray-200 dark:border-gray-600 fixed w-full bg-slate-100 dark:bg-gray-800 lg:sticky top-0 z-20">
+      <div className="flex flex-col items-center p-1 border-r-2 border-brand-dark fixed w-full bg-brand-cream lg:sticky top-0 z-20 h-screen overflow-y-auto">
         <div className="flex lg:flex-col items-center justify-between w-full p-1 px-4 lg:p-0">
           <div className="text-center lg:mt-3">
-            <Link href="/" className="dashboardOption">
-              <h1 className="text-blue-900 dark:text-blue-300 text-3xl font-bold">
+            <Link href="/" className="dashboardOption justify-center mb-4">
+              <h1 className="text-brand-dark text-3xl font-extrabold text-shadow-sm">
                 Hanabira
               </h1>
               {/* <h1 className="text-blue-900 dark:text-blue-300 text-3xl font-bold">
@@ -98,13 +98,13 @@ export default function Sidebar() {
             {/* <h2 className=" text-blue-900 dark:text-blue-300 text-xl  text-left ml-3">
               花びら
             </h2> */}
-            <p className="hidden lg:flex ml-3 text-blue-900/90 dark:text-blue-300/60">
+            <p className="hidden lg:flex ml-3 text-brand-dark/70 font-bold">
               hanabira.org
             </p>
-            <p className=" lg:flex ml-3 text-blue-900/90 dark:text-blue-300/60 text-left text-xs">
+            <p className=" lg:flex ml-3 text-brand-dark/70 text-left text-xs font-bold">
               Public Alpha v0.3.8
             </p>
-            <p className=" lg:flex ml-3 text-blue-900/90 dark:text-blue-300/60 text-left text-xs">
+            <p className=" lg:flex ml-3 text-brand-dark/70 text-left text-xs font-bold">
               Free Open-Source
             </p>
             {/* <p className="lg:hidden mt-2 ml-3 text-sm text-blue-900/60 dark:text-blue-300/60">
@@ -166,7 +166,7 @@ export default function Sidebar() {
               </Link>
 
               {/* Tools */}
-              <div className="text-sm font-bold mt-4 mb-1 ml-3 text-gray-800 dark:text-gray-200">
+              <div className="text-sm font-extrabold mt-6 mb-2 ml-3 text-brand-dark uppercase tracking-wider">
                 Tools
               </div>
               <hr />
@@ -187,7 +187,7 @@ export default function Sidebar() {
               </Link>
 
               {/* Library */}
-              <div className="text-sm font-bold mt-4 mb-1 ml-3 text-gray-800 dark:text-gray-200">
+              <div className="text-sm font-extrabold mt-6 mb-2 ml-3 text-brand-dark uppercase tracking-wider">
                 Library
               </div>
               <Link href="/podcasts" className="dashboardOption">
@@ -204,7 +204,7 @@ export default function Sidebar() {
               </Link>
 
               {/* Japanese Section */}
-              <div className="text-sm font-bold mt-4 mb-1 ml-3 text-gray-800 dark:text-gray-200">
+              <div className="text-sm font-extrabold mt-6 mb-2 ml-3 text-brand-dark uppercase tracking-wider">
                 Japanese
               </div>
               <hr />
@@ -245,7 +245,7 @@ export default function Sidebar() {
             </Link> */}
 
               {/* Experimental */}
-              <div className="text-sm font-bold mt-4 mb-1 ml-3 text-gray-800 dark:text-gray-200">
+              <div className="text-sm font-extrabold mt-6 mb-2 ml-3 text-brand-dark uppercase tracking-wider">
                 Experimental
               </div>
               {/* <hr /> */}
@@ -262,12 +262,12 @@ export default function Sidebar() {
             {/* Conditionally render login/logout button based on login status */}
             {loggedIn ? (
               <div>
-                <p className="block text-primary dark:text-white text-lg font-bold lg:hidden focus:outline-none">
+                <p className="block text-brand-dark text-lg font-bold lg:hidden focus:outline-none">
                   {userName}
                 </p>
                 <button
                   onClick={handleLogout}
-                  className="block text-primary dark:text-white text-lg font-bold lg:hidden focus:outline-none"
+                  className="block text-brand-dark text-lg font-bold lg:hidden focus:outline-none clay-button bg-brand-peach px-4 py-2 mt-2"
                 >
                   Logout
                 </button>
@@ -275,7 +275,7 @@ export default function Sidebar() {
             ) : (
               <button
                 onClick={handleLogin}
-                className="block text-primary dark:text-white text-lg font-bold lg:hidden focus:outline-none"
+                className="block text-brand-dark text-lg font-bold lg:hidden focus:outline-none clay-button bg-brand-green px-4 py-2"
               >
                 Login
               </button>
@@ -284,7 +284,7 @@ export default function Sidebar() {
           <div>
             <button
               onClick={showMenu}
-              className="block text-primary dark:text-white text-lg font-bold lg:hidden focus:outline-none"
+              className="block text-brand-dark text-lg font-bold lg:hidden focus:outline-none clay-button bg-brand-blue px-4 py-2 ml-2"
             >
               {active ? "CLOSE" : "MENU"}
             </button>
@@ -587,13 +587,13 @@ const MoonIcon = () => {
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
-      stroke-width="1.5"
+      strokeWidth={1.5}
       stroke="currentColor"
       className="w-6 h-6"
     >
       <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
         d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"
       />
     </svg>

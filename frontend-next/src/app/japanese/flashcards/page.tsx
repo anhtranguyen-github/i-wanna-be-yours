@@ -18,7 +18,9 @@ export default function Home() {
   const [darkMode, setDarkMode] = useState(false);
 
   //const [userId, setuserId] = useState(null);
-  const { userId, loggedIn, loading } = useUser();
+  const { user, loading } = useUser();
+  const userId = user?.id ? String(user.id) : "";
+  const loggedIn = !!user;
 
   useEffect(() => {
     if (darkMode) {
@@ -230,10 +232,10 @@ export default function Home() {
 
 
   return (
-    <div className="bg-gray-100 text-black dark:bg-gray-900 dark:text-white min-h-screen p-4">
+    <div className="bg-brand-cream text-brand-dark dark:bg-gray-900 dark:text-white min-h-screen p-4">
       {/* Sentence Mining Section */}
       <section className="mb-12">
-        <h2 className="text-xl font-semibold mb-4">
+        <h2 className="text-2xl font-extrabold mb-4 text-brand-dark">
           My Sentence Mining Flashcards
         </h2>
         <div className="">
@@ -248,7 +250,7 @@ export default function Home() {
 
       {/* Grammar JLPT N3 Section */}
       <section className="mb-12">
-        <h2 className="text-xl font-semibold mb-4">Grammar Flashcards</h2>
+        <h2 className="text-2xl font-extrabold mb-4 text-brand-dark">Grammar Flashcards</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {["JLPT_N5", "JLPT_N4", "JLPT_N3", "JLPT_N2", "JLPT_N1"].map(
             (part, index) => (
@@ -267,7 +269,7 @@ export default function Home() {
 
       {/* Kanji JLPT N3 Section */}
       <section className="mb-12">
-        <h2 className="text-xl font-semibold mb-4">
+        <h2 className="text-2xl font-extrabold mb-4 text-brand-dark">
           Kanji JLPT N3 (with one reading)
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
@@ -288,7 +290,7 @@ export default function Home() {
 
       {/* Kanji JLPT N4 Section */}
       <section className="mb-12">
-        <h2 className="text-xl font-semibold mb-4">
+        <h2 className="text-2xl font-extrabold mb-4 text-brand-dark">
           Kanji JLPT N4 (with one reading)
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -307,7 +309,7 @@ export default function Home() {
 
       {/* Kanji JLPT N5 Section */}
       <section className="mb-12">
-        <h2 className="text-xl font-semibold mb-4">
+        <h2 className="text-2xl font-extrabold mb-4 text-brand-dark">
           Kanji JLPT N5 (with one reading)
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -326,7 +328,7 @@ export default function Home() {
 
       {/* Essential Japanese Verbs Section */}
       <section className="mb-12">
-        <h2 className="text-xl font-semibold mb-4">Essential Japanese Verbs</h2>
+        <h2 className="text-2xl font-extrabold mb-4 text-brand-dark">Essential Japanese Verbs</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
           {[
             "verbs-1",
@@ -352,7 +354,7 @@ export default function Home() {
 
       {/* Essential Suru Japanese Verbs Section */}
       <section className="mb-12">
-        <h2 className="text-xl font-semibold mb-4">
+        <h2 className="text-2xl font-extrabold mb-4 text-brand-dark">
           Essential Suru Japanese Verbs
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
@@ -381,34 +383,34 @@ export default function Home() {
 
 
       {/* Clone JLPT Collections Section */}
-      <section className="mb-12">
-        <h1 className="text-2xl font-bold mb-6">Clone JLPT Collections</h1>
-        <p>
+      <section className="mb-12 border-t-2 border-brand-dark pt-8">
+        <h1 className="text-3xl font-extrabold mb-6 text-brand-dark">Clone JLPT Collections</h1>
+        <p className="text-brand-dark mb-2">
           Cloning means that we just assign knowledge level tracking tags for
           given kanji/vocab/grammar for given user.
         </p>
-        <p>So this is type of curriculum indexing for given user.</p>
+        <p className="text-brand-dark mb-8">So this is type of curriculum indexing for given user.</p>
 
 
 
 
-      {/* New “Clone All Collections” Button */}
-      <section className="mb-12">
-        <h2 className="text-2xl font-bold mt-4 mb-4">Clone Everything</h2>
-        <button
-          onClick={handleCloneAll}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Clone All Collections
-        </button>
-      </section>
+        {/* New “Clone All Collections” Button */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-extrabold mt-4 mb-4 text-brand-dark">Clone Everything</h2>
+          <button
+            onClick={handleCloneAll}
+            className="clay-button bg-brand-green hover:bg-brand-green/80 text-brand-dark font-bold py-3 px-6 rounded-xl transition-all duration-200"
+          >
+            Clone All Collections
+          </button>
+        </section>
 
 
 
 
 
 
-        <p className="mt-4">Clone Kanji</p>
+        <p className="mt-4 text-xl font-bold text-brand-dark">Clone Kanji</p>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-4 mb-8">
           {["JLPT_N5", "JLPT_N4", "JLPT_N3", "JLPT_N2", "JLPT_N1"].map(
             (level) => (
@@ -422,8 +424,8 @@ export default function Home() {
           )}
         </div>
 
-        <p>Clone Vocabulary</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <p className="text-xl font-bold text-brand-dark">Clone Vocabulary</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
           {["essential_600_verbs", "suru_essential_600_verbs"].map((level) => (
             <CloneButton
               key={level}
@@ -434,7 +436,7 @@ export default function Home() {
           ))}
         </div>
 
-        <p>Clone Grammar</p>
+        <p className="text-xl font-bold text-brand-dark">Clone Grammar</p>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-4 mb-8">
           {["JLPT_N5", "JLPT_N4", "JLPT_N3", "JLPT_N2", "JLPT_N1"].map(
             (level) => (

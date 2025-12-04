@@ -7,7 +7,7 @@
 // https://www.dreamslandlyrics.com/2020/04/yorushika-hana-ni-bourei-lyrics.html
 
 import React, { useState, useEffect, useRef } from "react";
-import Head from "next/head";
+
 
 import { useSearchParams } from "next/navigation";
 
@@ -361,8 +361,8 @@ function HomeComponent() {
     <div className="h-full w-full">
       <div
         className={`flex ${isHorizontal
-            ? "h-full flex-col md:flex-row"
-            : "h-full w-full flex-col"
+          ? "h-full flex-col md:flex-row"
+          : "h-full w-full flex-col"
           } min-h-screen`}
       >
         <div
@@ -371,12 +371,12 @@ function HomeComponent() {
             width: isHorizontal ? leftWidth : "100%",
             height: isHorizontal ? "100%" : leftHeight,
           }}
-          className="flex-shrink-0 bg-slate-100 text-gray-800 overflow-auto p-4"
+          className="flex-shrink-0 bg-brand-cream text-brand-dark overflow-auto p-4"
         >
           {/* <p> This is the left div, taking full width on mobile and 2/3 of the space on wider screens. </p> */}
 
-          <p className="text-xl">userId: {userId}</p>
-          <h1 className="text-3xl font-bold mr-5">
+          <p className="text-xl font-bold">userId: {userId}</p>
+          <h1 className="text-3xl font-extrabold mr-5 text-brand-dark">
             Japanese Reading/YouTube Assistant
           </h1>
           <br />
@@ -396,12 +396,12 @@ function HomeComponent() {
                 <textarea
                   value={inputText}
                   onChange={handleInputChange}
-                  className="w-full h-40 p-2 mt-4 mb-2 rounded-md resize text-black"
+                  className="w-full h-40 p-2 mt-4 mb-2 rounded-xl border-2 border-brand-dark resize text-brand-dark focus:border-brand-blue focus:ring-brand-blue"
                   placeholder="Enter Japanese text here..."
                 />
                 <button
                   type="submit"
-                  className="bg-slate-500 text-white px-4 py-2 rounded-md hover:bg-slate-600"
+                  className="clay-button bg-brand-blue text-white px-4 py-2 font-bold hover:bg-brand-blue/80"
                 >
                   Submit
                 </button>
@@ -409,7 +409,7 @@ function HomeComponent() {
             </Tab>
 
             <Tab label="YouTube video subtitle parser">
-              <h1 className="text-3xl font-bold text-slate-600">
+              <h1 className="text-3xl font-extrabold text-brand-dark">
                 YouTube video subtitle analyzer
               </h1>
 
@@ -556,7 +556,7 @@ function HomeComponent() {
 
         <div
           ref={dividerRef}
-          className={`w-1 md:w-1 bg-gray-300 cursor-${isHorizontal ? "col" : "row"
+          className={`w-1 md:w-1 bg-brand-dark cursor-${isHorizontal ? "col" : "row"
             }-resize ${isHorizontal ? "h-full" : "w-full"}`}
         ></div>
 
@@ -566,7 +566,7 @@ function HomeComponent() {
             width: isHorizontal ? "100%" : "100%",
             height: isHorizontal ? "100%" : `calc(100% - ${leftHeight})`,
           }}
-          className="flex-1 flex-shrink-0 bg-zinc-100 flex flex-col justify-start items-center text-gray-600 overflow-y-auto p-2"
+          className="flex-1 flex-shrink-0 bg-brand-cream flex flex-col justify-start items-center text-brand-dark overflow-y-auto p-2"
         >
           {/* <p className="fixed top-50"> This is the right div, taking full width on mobile and 1/3 of the space on wider screens. </p> */}
 

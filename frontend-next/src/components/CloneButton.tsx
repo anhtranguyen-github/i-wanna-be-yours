@@ -6,12 +6,12 @@ interface CloneButtonProps {
   userId: string;
 }
 
-const CloneButton: React.FC<CloneButtonProps> = ({collection, level, userId }) => {
+const CloneButton: React.FC<CloneButtonProps> = ({ collection, level, userId }) => {
   const handleButtonClick = async () => {
 
     // const host = "localhost";
     // const port = 5100;
-  
+
     // let baseUrl: string;
     // if (process.env.REACT_APP_HOST_IP) {
     //   baseUrl = `http://${process.env.REACT_APP_HOST_IP}`;
@@ -39,7 +39,7 @@ const CloneButton: React.FC<CloneButtonProps> = ({collection, level, userId }) =
         return; // Exit the function if the collection type is not recognized
     }
 
-    
+
     const data = {
       userId: userId,
       collection: collection,
@@ -71,7 +71,7 @@ const CloneButton: React.FC<CloneButtonProps> = ({collection, level, userId }) =
   return (
     <button
       onClick={handleButtonClick}
-      className="bg-gray-500 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded m-2"
+      className="clay-button bg-brand-blue hover:bg-brand-blue/80 text-white font-bold py-2 px-4 rounded-xl m-2 transition-all duration-200"
     >
       Clone {level}
     </button>

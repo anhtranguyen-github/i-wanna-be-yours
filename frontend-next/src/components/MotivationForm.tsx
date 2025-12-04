@@ -166,32 +166,32 @@ import { useEffect } from 'react';
 
 export function useLocalStorage(key, initialValue) {
     const [storedValue, setStoredValue] = useState(() => {
-      if (typeof window !== 'undefined') {
-        try {
-          const item = window.localStorage.getItem(key);
-          return item ? JSON.parse(item) : initialValue;
-        } catch (error) {
-          console.warn(error);
-          return initialValue;
-        }
-      }
-      return initialValue;
-    });
-  
-    const setValue = (value) => {
-      try {
-        setStoredValue(value);
         if (typeof window !== 'undefined') {
-          window.localStorage.setItem(key, JSON.stringify(value));
+            try {
+                const item = window.localStorage.getItem(key);
+                return item ? JSON.parse(item) : initialValue;
+            } catch (error) {
+                console.warn(error);
+                return initialValue;
+            }
         }
-      } catch (error) {
-        console.warn(error);
-      }
+        return initialValue;
+    });
+
+    const setValue = (value) => {
+        try {
+            setStoredValue(value);
+            if (typeof window !== 'undefined') {
+                window.localStorage.setItem(key, JSON.stringify(value));
+            }
+        } catch (error) {
+            console.warn(error);
+        }
     };
-  
+
     return [storedValue, setValue];
-  }
-  
+}
+
 
 
 
@@ -219,7 +219,7 @@ function MotivationForm() {
             {/* Accordion Header */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-full flex justify-between items-center p-4 bg-slate-500 text-white font-semibold rounded-md focus:outline-none"
+                className="clay-button w-full flex justify-between items-center p-4 bg-brand-blue text-white font-bold rounded-xl focus:outline-none"
             >
                 <span>Learning Journey Form</span>
                 <svg
@@ -233,7 +233,7 @@ function MotivationForm() {
                 </svg>
             </button>
 
-            <p className="text-sm p-4"> Learning Japanese is long term commitment.
+            <p className="text-sm p-4 text-brand-dark"> Learning Japanese is long term commitment.
                 Above form might help you to consider multiple aspects of your learning journey
                 and hopefully to assist you to stay on your learning track.
                 Form data is stored in web browser Local Storage. Data is not sent to hanabira.org server.</p>
@@ -242,33 +242,33 @@ function MotivationForm() {
             {isOpen && (
 
                 <div className="border p-4 rounded-b-md mt-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {fields.map((field) => (
-                    <div key={field.key}>
-                      <label className="block text-gray-700 font-medium mb-2">
-                        {field.label}
-                      </label>
-                      {field.type === 'textarea' ? (
-                        <textarea
-                          value={formData[field.key] || ''}
-                          onChange={(e) => handleChange(field.key, e.target.value)}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                          placeholder={field.placeholder}
-                          rows={4}
-                        />
-                      ) : (
-                        <input
-                          type={field.type}
-                          value={formData[field.key] || ''}
-                          onChange={(e) => handleChange(field.key, e.target.value)}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                          placeholder={field.placeholder}
-                        />
-                      )}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {fields.map((field) => (
+                            <div key={field.key}>
+                                <label className="block text-brand-dark font-bold mb-2">
+                                    {field.label}
+                                </label>
+                                {field.type === 'textarea' ? (
+                                    <textarea
+                                        value={formData[field.key] || ''}
+                                        onChange={(e) => handleChange(field.key, e.target.value)}
+                                        className="w-full px-4 py-2 border-2 border-brand-dark rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-blue bg-white text-brand-dark"
+                                        placeholder={field.placeholder}
+                                        rows={4}
+                                    />
+                                ) : (
+                                    <input
+                                        type={field.type}
+                                        value={formData[field.key] || ''}
+                                        onChange={(e) => handleChange(field.key, e.target.value)}
+                                        className="w-full px-4 py-2 border-2 border-brand-dark rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-blue bg-white text-brand-dark"
+                                        placeholder={field.placeholder}
+                                    />
+                                )}
+                            </div>
+                        ))}
                     </div>
-                  ))}
                 </div>
-              </div>
 
             )}
         </div>

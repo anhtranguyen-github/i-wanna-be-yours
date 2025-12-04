@@ -11,7 +11,9 @@ import { useUser } from "@/context/UserContext";
 
 const JapaneseTexts = () => {
   //const [userId, setUserId] = useState(null);
-  const { userId, loggedIn } = useUser();
+  const { user } = useUser();
+  const userId = user?.id;
+  const loggedIn = !!user;
 
 
 
@@ -28,14 +30,10 @@ const JapaneseTexts = () => {
   const [selectedText, setSelectedText] = useState(null);
 
   useEffect(() => {
-    const fetchuserId = async () => {
-      //const { userId, userName, jwt } = getUserFromCookies();
-      //setUserId(userId);
-      setNewText((prev) => ({ ...prev, userId })); // Update newText with userId
-    };
-
-    fetchuserId();
-  }, []);
+    if (userId) {
+      setNewText((prev) => ({ ...prev, userId: userId.toString() }));
+    }
+  }, [userId]);
 
   useEffect(() => {
     fetchTexts(userId);
@@ -49,7 +47,7 @@ const JapaneseTexts = () => {
       console.error("Error fetching texts:", error);
     }
   };
-  
+
 
 
 
@@ -69,7 +67,7 @@ const JapaneseTexts = () => {
         actualText: "",
         p_tag: "text",
         s_tag: "text",
-        userId: userId,
+        userId: userId ? userId.toString() : "",
         lang: "jp",
       });
     } catch (error) {
@@ -98,18 +96,18 @@ const JapaneseTexts = () => {
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
+    <div className="p-6 bg-brand-cream min-h-screen">
+      <h1 className="text-3xl font-extrabold text-brand-dark mb-6 text-center">
         Add Custom Japanese Text
       </h1>
 
       <form
         onSubmit={handleSubmit}
-        className="space-y-6 bg-white p-6 rounded-md shadow-md mb-12 max-w-4xl"
+        className="space-y-6 bg-white p-6 rounded-xl border-2 border-brand-dark shadow-hard mb-12 max-w-4xl clay-card"
       >
         <div className="space-y-4">
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-bold text-brand-dark">
               Topic
             </label>
             <input
@@ -117,13 +115,13 @@ const JapaneseTexts = () => {
               name="topic"
               value={newText.topic}
               onChange={handleInputChange}
-              className="block w-full border border-gray-300 rounded-md p-2 focus:ring-gray-500 focus:border-gray-500 sm:text-sm"
+              className="block w-full border-2 border-brand-dark rounded-xl p-3 focus:ring-brand-blue focus:border-brand-blue sm:text-sm bg-white text-brand-dark"
               required
             />
           </div>
 
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-bold text-brand-dark">
               Source Link
             </label>
             <input
@@ -131,20 +129,20 @@ const JapaneseTexts = () => {
               name="sourceLink"
               value={newText.sourceLink}
               onChange={handleInputChange}
-              className="block w-full border border-gray-300 rounded-md p-2 focus:ring-gray-500 focus:border-gray-500 sm:text-sm"
+              className="block w-full border-2 border-brand-dark rounded-xl p-3 focus:ring-brand-blue focus:border-brand-blue sm:text-sm bg-white text-brand-dark"
               required
             />
           </div>
 
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-bold text-brand-dark">
               Actual Text
             </label>
             <textarea
               name="actualText"
               value={newText.actualText}
               onChange={handleInputChange}
-              className="block w-full border border-gray-300 rounded-md p-2 focus:ring-gray-500 focus:border-gray-500 sm:text-sm"
+              className="block w-full border-2 border-brand-dark rounded-xl p-3 focus:ring-brand-blue focus:border-brand-blue sm:text-sm bg-white text-brand-dark"
               rows={5}
               required
             />
@@ -153,7 +151,7 @@ const JapaneseTexts = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-bold text-brand-dark">
               Parent Tag
             </label>
             <input
@@ -161,12 +159,12 @@ const JapaneseTexts = () => {
               name="p_tag"
               value={newText.p_tag}
               onChange={handleInputChange}
-              className="block w-full border border-gray-300 rounded-md p-2 focus:ring-gray-500 focus:border-gray-500 sm:text-sm"
+              className="block w-full border-2 border-brand-dark rounded-xl p-3 focus:ring-brand-blue focus:border-brand-blue sm:text-sm bg-white text-brand-dark"
               required
             />
           </div>
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-bold text-brand-dark">
               Sub Tag
             </label>
             <input
@@ -174,7 +172,7 @@ const JapaneseTexts = () => {
               name="s_tag"
               value={newText.s_tag}
               onChange={handleInputChange}
-              className="block w-full border border-gray-300 rounded-md p-2 focus:ring-gray-500 focus:border-gray-500 sm:text-sm"
+              className="block w-full border-2 border-brand-dark rounded-xl p-3 focus:ring-brand-blue focus:border-brand-blue sm:text-sm bg-white text-brand-dark"
               required
             />
           </div>
@@ -182,7 +180,7 @@ const JapaneseTexts = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-bold text-brand-dark">
               User ID
             </label>
             <input
@@ -190,12 +188,12 @@ const JapaneseTexts = () => {
               name="userId"
               value={newText.userId}
               onChange={handleInputChange}
-              className="block w-full border border-gray-300 rounded-md p-2 focus:ring-gray-500 focus:border-gray-500 sm:text-sm"
+              className="block w-full border-2 border-brand-dark rounded-xl p-3 focus:ring-brand-blue focus:border-brand-blue sm:text-sm bg-white text-brand-dark"
               required
             />
           </div>
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-bold text-brand-dark">
               Language
             </label>
             <input
@@ -203,7 +201,7 @@ const JapaneseTexts = () => {
               name="lang"
               value={newText.lang}
               onChange={handleInputChange}
-              className="block w-full border border-gray-300 rounded-md p-2 focus:ring-gray-500 focus:border-gray-500 sm:text-sm"
+              className="block w-full border-2 border-brand-dark rounded-xl p-3 focus:ring-brand-blue focus:border-brand-blue sm:text-sm bg-white text-brand-dark"
               required
             />
           </div>
@@ -212,41 +210,41 @@ const JapaneseTexts = () => {
         <div className="flex justify-end">
           <button
             type="submit"
-            className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+            className="clay-button px-6 py-3 bg-brand-dark text-white font-bold rounded-xl hover:bg-brand-dark/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-dark transition-all duration-200"
           >
             Add Text
           </button>
         </div>
       </form>
 
-      <h2 className="text-xl font-semibold mb-4 text-gray-800">
+      <h2 className="text-2xl font-extrabold mb-6 text-brand-dark">
         Stored Japanese Texts
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
         {texts.map((text) => (
           <div
             key={text._id}
-            className="p-4 bg-gray-50 rounded-md shadow-sm cursor-pointer hover:bg-gray-100 flex flex-col justify-between"
+            className="p-4 bg-white rounded-xl border-2 border-brand-dark shadow-hard cursor-pointer hover:bg-brand-blue/10 flex flex-col justify-between clay-card transition-all duration-200"
             onClick={() => handleCardClick(text)}
           >
             <div>
-              <h3 className="text-lg font-medium text-gray-900">
+              <h3 className="text-lg font-bold text-brand-dark">
                 {text.topic}
               </h3>
-              <p className="text-sm text-gray-500">ID: {text._id}</p>
-              <p className="text-gray-700 mt-2 max-h-16 overflow-hidden text-ellipsis">
+              <p className="text-sm text-brand-dark/70">ID: {text._id}</p>
+              <p className="text-brand-dark mt-2 max-h-16 overflow-hidden text-ellipsis">
                 {text.actualText}
               </p>
-              <p className="text-sm text-gray-500 mt-2">
+              <p className="text-sm text-brand-dark/70 mt-2">
                 Source:{" "}
-                <a href={text.sourceLink} className="text-blue-500 underline">
+                <a href={text.sourceLink} className="text-brand-blue font-bold underline hover:text-brand-dark">
                   {text.sourceLink}
                 </a>
               </p>
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-sm text-brand-dark/70 mt-1">
                 Parent Tag: {text.p_tag} | Sub Tag: {text.s_tag}
               </p>
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-sm text-brand-dark/70 mt-1">
                 User ID: {text.userId} | Language: {text.lang}
               </p>
             </div>
@@ -255,7 +253,7 @@ const JapaneseTexts = () => {
                 e.stopPropagation(); // Prevent the card click from triggering when delete is clicked
                 handleDelete(text._id);
               }}
-              className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+              className="mt-4 clay-button px-4 py-2 bg-brand-peach text-brand-dark font-bold rounded-xl hover:bg-brand-peach/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-peach transition-all duration-200"
             >
               Delete
             </button>
@@ -284,37 +282,37 @@ const TextModal = ({ textData, onClose, onDelete }) => {
   if (!textData) return null;
 
   return (
-    <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 max-w-lg w-full">
-        <h2 className="text-xl font-bold mb-4">{textData.topic}</h2>
-        <div className="mb-4 max-h-[50vh] overflow-y-auto">
-          <p className="text-gray-700 whitespace-pre-line">
+    <div className="fixed inset-0 bg-brand-dark/50 flex items-center justify-center z-50 backdrop-blur-sm">
+      <div className="bg-white rounded-xl border-2 border-brand-dark shadow-hard p-6 max-w-lg w-full clay-card">
+        <h2 className="text-2xl font-extrabold mb-4 text-brand-dark">{textData.topic}</h2>
+        <div className="mb-4 max-h-[50vh] overflow-y-auto custom-scrollbar">
+          <p className="text-brand-dark whitespace-pre-line">
             {textData.actualText}
           </p>
         </div>
-        <p className="text-sm text-gray-500">ID: {textData._id}</p>
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-brand-dark/70">ID: {textData._id}</p>
+        <p className="text-sm text-brand-dark/70">
           Source:{" "}
-          <a href={textData.sourceLink} className="text-blue-500 underline">
+          <a href={textData.sourceLink} className="text-brand-blue font-bold underline hover:text-brand-dark">
             {textData.sourceLink}
           </a>
         </p>
-        <p className="text-sm text-gray-500 mt-2">
+        <p className="text-sm text-brand-dark/70 mt-2">
           Parent Tag: {textData.p_tag} | Sub Tag: {textData.s_tag}
         </p>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-sm text-brand-dark/70 mt-1">
           User ID: {textData.userId} | Language: {textData.lang}
         </p>
         <div className="mt-6 flex justify-between">
           <button
             onClick={() => onDelete(textData._id)}
-            className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+            className="clay-button px-4 py-2 bg-brand-peach text-brand-dark font-bold rounded-xl hover:bg-brand-peach/80 transition-all duration-200"
           >
             Delete
           </button>
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700"
+            className="clay-button px-4 py-2 bg-brand-dark text-white font-bold rounded-xl hover:bg-brand-dark/80 transition-all duration-200"
           >
             Close
           </button>

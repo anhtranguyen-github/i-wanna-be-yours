@@ -20,7 +20,7 @@ export default function Footer() {
 
   return (
     <div
-      className="flex flex-col items-center justify-center py-5 lg:py-20 w-full border-t border-gray-200 dark:border-gray-600  bg-gray-50 dark:bg-gray-800"
+      className="flex flex-col items-center justify-center py-5 lg:py-20 w-full border-t-2 border-brand-dark bg-brand-cream"
     // style={{ backgroundColor: backgroundColor, backgroundImage: svgPattern }}
     >
       <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-1 w-10/12 lg:w-9/12">
@@ -28,11 +28,11 @@ export default function Footer() {
           <div>
             <Link
               href="/"
-              className="text-3xl font-bold text-gray-800 dark:text-gray-200"
+              className="text-3xl font-extrabold text-brand-dark"
             >
               hanabira.org
             </Link>
-            <p className="mt-3 font-medium text-lg text-gray-700 dark:text-gray-300">
+            <p className="mt-3 font-medium text-lg text-brand-dark">
               Ace your Japanese JLPT N5-N1 preparation.
             </p>
 
@@ -158,7 +158,7 @@ export default function Footer() {
                 . This site is currently undergoing active development. You may (will)
                 encounter bugs, inconsistencies, or limited functionality. Lots
                 of sentences might not sound natural. We are progressively
-                addressing these issues with native speakers. 
+                addressing these issues with native speakers.
               </p>
             </div>
 
@@ -188,10 +188,10 @@ export default function Footer() {
             <FeaturesBanner />
 
 
-        <div className="flex justify-center gap-4 text-blue-600">
-          <a href="/privacy-policy" className="hover:underline">Privacy Policy</a>
-          <a href="/terms-of-service" className="hover:underline">Terms of Service</a>
-        </div>
+            <div className="flex justify-center gap-4 text-blue-600">
+              <a href="/privacy-policy" className="hover:underline">Privacy Policy</a>
+              <a href="/terms-of-service" className="hover:underline">Terms of Service</a>
+            </div>
 
 
 

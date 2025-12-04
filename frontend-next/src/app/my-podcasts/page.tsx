@@ -20,9 +20,11 @@ const Home = () => {
     lang: "jp", // New field with default value
   });
 
-  const { userId, loggedIn } = useUser();
+  const { user } = useUser();
+  const userId = user?.id ? String(user.id) : "";
+  const loggedIn = !!user;
 
- 
+
   useEffect(() => {
     //const { userId, jwt } = getUserFromCookies();
     setNewVideo((prev) => ({ ...prev, userId }));
@@ -77,56 +79,59 @@ const Home = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      {/* Form to add new custom video */}
-      <h1 className="text-2xl font-bold mb-8">Add Your Custom YouTube Video</h1>
-      <form onSubmit={handleSubmit} className="mb-8">
-        {/* YouTube Video URL */}
-        <div className="mb-4">
-          <label className="block text-gray-700">YouTube Video URL:</label>
-          <input
-            type="text"
-            name="url"
-            value={newVideo.url}
-            onChange={handleInputChange}
-            className="mt-1 p-2 w-full border rounded-md"
-            required
-          />
-        </div>
-        {/* Custom Title */}
-        <div className="mb-4">
-          <label className="block text-gray-700">Custom Title:</label>
-          <input
-            type="text"
-            name="customTitle"
-            value={newVideo.customTitle}
-            onChange={handleInputChange}
-            className="mt-1 p-2 w-full border rounded-md"
-          />
-        </div>
-        {/* Custom Description */}
-        <div className="mb-4">
-          <label className="block text-gray-700">Custom Description:</label>
-          <textarea
-            name="customDescription"
-            value={newVideo.customDescription}
-            onChange={handleInputChange}
-            className="mt-1 p-2 w-full border rounded-md"
-          />
-        </div>
-        {/* Submit Button */}
-        <button type="submit" className="bg-blue-500 text-white p-2 rounded-md">
-          Add Video
-        </button>
-      </form>
+    <div className="bg-brand-cream min-h-screen p-4">
+      <div className="container mx-auto">
+        {/* Form to add new custom video */}
+        <h1 className="text-3xl font-extrabold mb-8 text-brand-dark text-center">Add Your Custom YouTube Video</h1>
+        <form onSubmit={handleSubmit} className="mb-12 bg-white p-6 rounded-xl border-2 border-brand-dark shadow-hard clay-card max-w-2xl mx-auto">
+          {/* YouTube Video URL */}
+          <div className="mb-4">
+            <label className="block text-brand-dark font-bold mb-2">YouTube Video URL:</label>
+            <input
+              type="text"
+              name="url"
+              value={newVideo.url}
+              onChange={handleInputChange}
+              className="mt-1 p-3 w-full border-2 border-brand-dark rounded-xl focus:ring-brand-blue focus:border-brand-blue bg-white text-brand-dark"
+              required
+            />
+          </div>
+          {/* Custom Title */}
+          <div className="mb-4">
+            <label className="block text-brand-dark font-bold mb-2">Custom Title:</label>
+            <input
+              type="text"
+              name="customTitle"
+              value={newVideo.customTitle}
+              onChange={handleInputChange}
+              className="mt-1 p-3 w-full border-2 border-brand-dark rounded-xl focus:ring-brand-blue focus:border-brand-blue bg-white text-brand-dark"
+            />
+          </div>
+          {/* Custom Description */}
+          <div className="mb-4">
+            <label className="block text-brand-dark font-bold mb-2">Custom Description:</label>
+            <textarea
+              name="customDescription"
+              value={newVideo.customDescription}
+              onChange={handleInputChange}
+              className="mt-1 p-3 w-full border-2 border-brand-dark rounded-xl focus:ring-brand-blue focus:border-brand-blue bg-white text-brand-dark"
+              rows={3}
+            />
+          </div>
+          {/* Submit Button */}
+          <button type="submit" className="clay-button bg-brand-blue text-white font-bold p-3 rounded-xl w-full hover:bg-brand-blue/80 transition-all duration-200">
+            Add Video
+          </button>
+        </form>
 
-      {/* Custom Videos Section */}
-      <h1 className="text-2xl font-bold mb-8">Custom YouTube Videos</h1>
-      <VideoSection
-        title="Custom Videos"
-        videos={customVideos}
-        onDelete={handleDelete}
-      />
+        {/* Custom Videos Section */}
+        <h1 className="text-3xl font-extrabold mb-8 text-brand-dark text-center">Custom YouTube Videos</h1>
+        <VideoSection
+          title="Custom Videos"
+          videos={customVideos}
+          onDelete={handleDelete}
+        />
+      </div>
     </div>
   );
 };
@@ -164,13 +169,12 @@ const VideoSection = ({
       {/* Collapsible Header */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex justify-between items-center w-full text-left text-xl font-bold mb-4 p-4 bg-gray-100 hover:bg-gray-200 rounded-md focus:outline-none"
+        className="clay-button flex justify-between items-center w-full text-left text-xl font-bold mb-4 p-4 bg-white border-2 border-brand-dark rounded-xl hover:bg-brand-blue/10 focus:outline-none text-brand-dark"
       >
         <span>{title}</span>
         <svg
-          className={`w-6 h-6 transform transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`w-6 h-6 transform transition-transform duration-200 ${isOpen ? "rotate-180" : ""
+            }`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -190,7 +194,7 @@ const VideoSection = ({
           {videos.map((video) => (
             <div
               key={video.id}
-              className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-200"
+              className="bg-white rounded-xl border-2 border-brand-dark shadow-hard overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-200 clay-card"
             >
               <Link href={video.internalLink}>
                 <div>
@@ -200,8 +204,8 @@ const VideoSection = ({
                     className="w-full h-48 object-cover"
                   />
                   <div className="p-4">
-                    <h3 className="text-lg font-semibold">{video.title}</h3>
-                    <p className="text-gray-600">{video.description}</p>
+                    <h3 className="text-lg font-bold text-brand-dark">{video.title}</h3>
+                    <p className="text-brand-dark/70">{video.description}</p>
                   </div>
                 </div>
               </Link>
@@ -209,7 +213,7 @@ const VideoSection = ({
                 <div className="p-4">
                   <button
                     onClick={() => onDelete(video.id)}
-                    className="mt-2 bg-red-500 text-white p-2 rounded-md w-full"
+                    className="mt-2 clay-button bg-brand-peach text-brand-dark font-bold p-2 rounded-xl w-full hover:bg-brand-peach/80 transition-all duration-200"
                   >
                     Delete
                   </button>
@@ -235,9 +239,8 @@ const CollapsibleSection = ({ title, children, initialOpen = false }) => {
       >
         <span>{title}</span>
         <svg
-          className={`w-6 h-6 transform transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`w-6 h-6 transform transition-transform duration-200 ${isOpen ? "rotate-180" : ""
+            }`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
