@@ -26,6 +26,7 @@ class LLMConfigModel(BaseModel):
     temperature: float
     base_url: str = None
     host: str = None 
+    num_ctx: int = None # Added for vision models
 
 class ConfigModel(BaseModel):
     """Schema for the entire YAML configuration."""
@@ -72,6 +73,9 @@ def create_llm_instance(llm_config: LLMConfigModel) -> BaseChatModel:
         elif llm_config.host:
              # Fallback to host if base_url not present
              params["base_url"] = llm_config.host 
+        
+        if llm_config.num_ctx:
+            params["num_ctx"] = llm_config.num_ctx
         
         return ChatOllama(**params)
     

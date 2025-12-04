@@ -1,3 +1,6 @@
+app:
+  use_single_mode: true
+
 models:
   default:
     provider: ollama
@@ -5,19 +8,26 @@ models:
     temperature: 0.0
     base_url: http://localhost:11434
 
+  default_vl:
+    provider: ollama
+    model_name: qwen3-vl:2b
+    temperature: 0.0
+    base_url: http://localhost:11434
+    num_ctx: 2048
+
 database:
   host: localhost
   port: 27017
   name: hanachan_db
 
 tools:
-  mcp_servers:
-    qdrant:
-      command: uvx
-      args: 
-        - mcp-server-qdrant
-      env:
-        QDRANT_LOCAL_PATH: ~/.hanachan/qdrant_db
-        COLLECTION_NAME: hanachan_grammar
-        EMBEDDING_MODEL: sentence-transformers/all-MiniLM-L6-v2
-      transport: stdio
+#   mcp_servers:
+#     qdrant:
+#       command: uvx
+#       args: 
+#         - mcp-server-qdrant
+#       env:
+#         QDRANT_LOCAL_PATH: ~/.hanachan/qdrant_db
+#         COLLECTION_NAME: hanachan_grammar
+#         EMBEDDING_MODEL: sentence-transformers/all-MiniLM-L6-v2
+#       transport: stdio

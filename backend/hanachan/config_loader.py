@@ -33,16 +33,16 @@ class ConfigLoader:
             raise
 
     def get_model_config(self, model_name: str = "default") -> Dict[str, Any]:
-        models = self.config.get("models", {})
+        models = self.config.get("models") or {}
         if model_name not in models:
             raise KeyError(f"Model configuration '{model_name}' not found in config")
         return models[model_name]
 
     def get_tool_config(self) -> Dict[str, Any]:
-        return self.config.get("tools", {})
+        return self.config.get("tools") or {}
 
     def get_agent_config(self, agent_name: str = "default_agent") -> Dict[str, Any]:
-        agents = self.agents_config.get("agents", {})
+        agents = self.agents_config.get("agents") or {}
         if agent_name not in agents:
              raise KeyError(f"Agent configuration '{agent_name}' not found in agents config")
         return agents[agent_name]

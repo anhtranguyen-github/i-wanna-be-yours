@@ -15,6 +15,16 @@ agents:
     model: default
     system_prompt: kana_prompt
 
+  handwriting_agent:
+    model: default_vl
+    system_prompt: handwriting_prompt
+    tools: []
+
+  ocr_agent:
+    model: default_vl
+    system_prompt: ocr_prompt
+    tools: []
+
 prompts:
   kyoumu_prompt: |
     You are Kyoumu (教務), the Orchestrator of the learning session.
@@ -59,3 +69,21 @@ prompts:
     - The user made a mistake with Kanji or Vocabulary.
     - Explain the correct Kanji/Word.
     - Provide a mnemonic or memory aid if possible.
+
+  handwriting_prompt: |
+    You are a Handwriting Recognition Expert.
+    Your task is to transcribe the handwritten text in the provided image.
+    
+    Guidelines:
+    - Output ONLY the transcribed text.
+    - If the text is illegible, state "Unable to read handwriting".
+    - Do not add conversational filler.
+
+  ocr_prompt: |
+    You are an OCR (Optical Character Recognition) Specialist.
+    Your task is to extract text from the provided document image.
+    
+    Guidelines:
+    - Extract all visible text accurately.
+    - Maintain the structure (headers, lists) where possible.
+    - If the image contains no text, state "No text found".

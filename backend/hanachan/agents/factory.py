@@ -79,15 +79,26 @@ class AgentFactory:
             raise ValueError(f"Invalid model configuration for '{model_key}': {e}")
 
         # 2. Setup Tools
-        tools = await self.get_tools()
+        all_tools = await self.get_tools()
         
-        # Filter tools if agent_config specifies a subset (optional implementation)
-        # agent_tools = agent_config.get("tools", [])
-        # if agent_tools: ...
+        # Filter tools if agent_config specifies a subset
+        # If "tools" key is present, only include tools listed there.
+        # If "tools" is [], no tools will be bound.
+        # If "tools" is missing, all tools are bound (default behavior).
+        if "tools" in agent_config:
+            allowed_tool_names = agent_config["tools"]
+            tools = [t for t in all_tools if t.name in allowed_tool_names]
+        else:
+            tools = all_tools
 
         # Bind tools to LLM
         if tools:
-            llm_with_tools = llm.bind_tools(tools)
+            # Check if the LLM supports tool binding (Ollama usually does, but good to be safe)
+            if hasattr(llm, "bind_tools"):
+                llm_with_tools = llm.bind_tools(tools)
+            else:
+                logger.warning(f"Model for agent '{agent_name}' does not support bind_tools. Ignoring tools.")
+                llm_with_tools = llm
         else:
             llm_with_tools = llm
 
