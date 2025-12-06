@@ -3,9 +3,10 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 
-import Nav from "@/components/Nav";
-import DashboardNav from "@/components/DashboardNav";
-import Sidebar from "@/components/Sidebar";
+// import Nav from "@/components/Nav";
+// import DashboardNav from "@/components/DashboardNav";
+// import Sidebar from "@/components/Sidebar";
+import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CookieConsent from "@/components/CookieConsent";
 
@@ -61,30 +62,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <html lang="en">
         {/* Head tags removed; see metadata above */}
         <body className={inter.className}>
-          {/* Google Analytics Scripts */}
-          {/* <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){window.dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${GA_MEASUREMENT_ID}');
-          `}
-        </Script> */}
 
-          {/* Page Layout */}
-          <div className="h-full grid lg:grid-cols-body overflow-auto">
-            <Sidebar />
-            <div className="flex flex-col h-full">
-              <Nav />
-              <DashboardNav />
+          {/* Page Layout - Redesigned: Single Column with Top Header */}
+          <div className="flex flex-col h-screen overflow-hidden">
+            <Header />
+            <div className="flex-1 overflow-auto bg-brand-cream/30 dark:bg-gray-950">
               {children}
+              <Footer />
             </div>
           </div>
-          <Footer />
           <CookieConsent />
           <GoogleAnalytics gaId={GA_MEASUREMENT_ID} />
           {/* <GoogleTagManager gtmId={GA_MEASUREMENT_ID} /> */}

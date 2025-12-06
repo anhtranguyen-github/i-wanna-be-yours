@@ -385,7 +385,7 @@ export default function Example() {
         {/* Hero section */}
         {/* <div className="overflow-hidden pt-8 sm:pt-12 lg:relative lg:py-48"> */}
         <div className="overflow-hidden pt-8 sm:pt-12 lg:relative lg:py-18 bg-brand-cream">
-          <div className="mx-auto max-w-md px-6 sm:max-w-3xl lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-24 lg:px-8">
+          <div className="container mx-auto px-4 lg:grid lg:grid-cols-2 lg:gap-24">
             <div>
               {/* <div className="text-4xl font-semibold text-slate-600 text-opacity-60">
                 <img

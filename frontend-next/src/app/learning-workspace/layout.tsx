@@ -32,32 +32,11 @@ export default function LearningWorkspaceLayout({ children }: { children: React.
 
   // Nav and view logic
   return (
-    <div className="min-h-screen flex flex-col bg-neutral-50 dark:bg-gray-100">
-      {/* Top bar with back arrow and nav */}
-      <header className="sticky top-0 z-40 bg-white/90 shadow flex items-center px-4 h-14 border-b border-gray-200">
-        <button onClick={() => router.push("/")} aria-label="Back to site" className="mr-2 rounded-lg text-indigo-500 hover:bg-indigo-50 px-2 py-1 text-2xl font-bold">←</button>
-        <nav className="flex gap-2 ml-1">
-          <button
-            className={`px-4 py-2 rounded font-semibold transition-colors text-gray-700 hover:text-indigo-800 ${mode === 'ai-tutor' ? "bg-indigo-100 text-indigo-700" : ""}`}
-            onClick={() => router.push("/learning-workspace")}
-            aria-current={mode === 'ai-tutor' ? "page" : undefined}
-          >AI Tutor</button>
-          <button
-            className={`px-4 py-2 rounded font-semibold transition-colors text-gray-700 hover:text-indigo-800 ${mode === 'auto-task' ? "bg-indigo-100 text-indigo-700" : ""}`}
-            onClick={() => router.push("/learning-workspace/auto-task")}
-            aria-current={mode === 'auto-task' ? "page" : undefined}
-          >Auto Task</button>
-          <button
-            className={`px-4 py-2 rounded font-semibold transition-colors text-gray-700 hover:text-indigo-800 ${mode === 'play-games' ? "bg-indigo-100 text-indigo-700" : ""}`}
-            onClick={() => router.push("/learning-workspace/play-games")}
-            aria-current={mode === 'play-games' ? "page" : undefined}
-          >Play Games</button>
-        </nav>
-      </header>
+    <div className="min-h-screen flex flex-col">
       {/* Main flex layout: main content only */}
       <div className="flex flex-1 min-h-0">
         {/* Main view */}
-        <main className="flex-1 px-0 md:px-6 py-6 md:py-10 flex flex-col">{children}</main>
+        <main className="flex-1 p-6 md:p-10 flex flex-col">{children}</main>
       </div>
     </div>
   );

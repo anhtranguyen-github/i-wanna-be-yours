@@ -257,28 +257,12 @@ Description: A sans-serif font with a condensed design, offering a more compact 
   }
 }
 
-/* Custom Scrollbar */
+/* Hide Scrollbar globally */
 ::-webkit-scrollbar {
-  width: 16px;
-  height: 16px;
+  display: none;
 }
 
-::-webkit-scrollbar-track {
-  background-color: theme('colors.brand.cream');
-  border-left: 2px solid theme('colors.brand.dark');
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: theme('colors.brand.blue');
-  border: 2px solid theme('colors.brand.dark');
-  border-radius: 9999px;
-  box-shadow: inset 2px 2px 0px rgba(255, 255, 255, 0.5);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background-color: theme('colors.vibrant.cyan');
-}
-
-::-webkit-scrollbar-corner {
-  background-color: theme('colors.brand.cream');
+* {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
