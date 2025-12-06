@@ -1,252 +1,12 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
-import { v4 as uuidv4 } from 'uuid';
-import Cookies from 'js-cookie';
-import {
-  MessageSquare,
-  Search,
-  Plus,
-  Trash2,
-  FileText,
-  Link as LinkIcon,
-  Paperclip,
-  Send,
-  Menu,
-  X,
-  MoreVertical,
-  StickyNote,
-  Brain,
-  ChevronDown,
-  ChevronRight
-} from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Conversation, Message, Resource } from "@/types/aiTutorTypes";
+import { aiTutorService } from "@/services/aiTutorService";
 
-import { AIResponseDisplay } from "@/components/AIResponseDisplay";
-
-export interface Message {
-  id: string;
-  role: 'user' | 'ai';
-  text: string;
-  timestamp?: number;
-}
-
-export interface Conversation {
-  _id: string;
-  title: string;
-  messages: Message[];
-  updated_at: number;
-  tags?: string[];
-}
-
-export interface Resource {
-  _id: string;
-  type: 'note' | 'link' | 'document';
-  content: string;
-  title: string;
-  created_at: number;
-}
-
-const API_BASE_URL = 'http://localhost:5400';
-
-class AITutorService {
-  // --- Conversations (Backend) ---
-
-  private getHeaders() {
-    const token = Cookies.get('accessToken');
-    return {
-      'Content-Type': 'application/json',
-      'Authorization': token ? `Bearer ${token}` : '',
-    };
-  }
-
-  async getConversations(search?: string, tag?: string): Promise<Conversation[]> {
-    const res = await fetch(`${API_BASE_URL}/chat/conversations`, {
-      headers: this.getHeaders()
-    });
-    if (!res.ok) throw new Error('Failed to fetch conversations');
-    const data = await res.json();
-    let convos: Conversation[] = data.conversations || [];
-
-    if (search) {
-      const lower = search.toLowerCase();
-      convos = convos.filter(c => c.title.toLowerCase().includes(lower));
-    }
-    return convos;
-  }
-
-  async getConversation(id: string): Promise<Conversation> {
-    // First try to get metadata from list
-    const convos = await this.getConversations();
-    const found = convos.find(c => c._id === id);
-
-    // Then fetch full history
-    const res = await fetch(`${API_BASE_URL}/chat/history?conversation_id=${id}`, {
-      headers: this.getHeaders()
-    });
-
-    if (!res.ok) throw new Error('Failed to fetch history');
-    const data = await res.json();
-
-    // Map backend messages to frontend format
-    const messages: Message[] = (data.history || []).map((m: any) => ({
-      id: uuidv4(), // Backend might not send ID, generate one for React key
-      role: m.speaker === 'USER' ? 'user' : 'ai',
-      text: m.text,
-      timestamp: new Date(m.timestamp).getTime()
-    }));
-
-    if (found) {
-      return { ...found, messages };
-    }
-
-    // If not found in list (rare), return minimal object
-    return {
-      _id: id,
-      title: 'Conversation',
-      messages,
-      updated_at: Date.now()
-    };
-  }
-
-  async createConversation(title: string, initialMessage?: string): Promise<Conversation> {
-    // In this backend design, conversations are created implicitly when the first message is sent.
-    // However, for the UI "New Chat" button, we might just return a local placeholder
-    // or we can't really "create" an empty one on backend easily without a message.
-    // So we'll return a local placeholder that will be persisted on first message.
-
-    const newConvo: Conversation = {
-      _id: uuidv4(),
-      title,
-      messages: [],
-      updated_at: Date.now(),
-    };
-
-    if (initialMessage) {
-      newConvo.messages.push({
-        id: uuidv4(),
-        role: 'user',
-        text: initialMessage,
-        timestamp: Date.now()
-      });
-    }
-
-    return newConvo;
-  }
-
-  async deleteConversation(id: string): Promise<void> {
-    await fetch(`${API_BASE_URL}/chat/conversations/${id}`, {
-      method: 'DELETE',
-      headers: this.getHeaders()
-    });
-  }
-
-  async addMessage(convoId: string, role: 'user' | 'ai', text: string): Promise<Message> {
-    // Messages are added via the stream endpoint mostly.
-    // But if we need to manually add one (like for non-streaming), we might need an endpoint.
-    // For now, the stream endpoint handles saving user messages.
-    // This method might be redundant for 'user' messages if stream handles it.
-    // But for 'ai' messages, the backend also saves them.
-    // So this might just be for local optimistic UI updates if we don't have a specific add-message endpoint.
-
-    // Actually, looking at the previous code, this was used to update local storage.
-    // Since backend handles persistence during chat/stream, we don't need to explicitly "save" here
-    // unless we are doing something else.
-
-    return {
-      id: uuidv4(),
-      role,
-      text,
-      timestamp: Date.now(),
-    };
-  }
-
-  // --- Resources (Backend) ---
-
-  async getResources(): Promise<Resource[]> {
-    const res = await fetch(`${API_BASE_URL}/resources`, {
-      headers: this.getHeaders()
-    });
-    if (!res.ok) return [];
-    const data = await res.json();
-
-    // Map backend fields to frontend
-    return (data.resources || []).map((r: any) => ({
-      _id: r.resource_id,
-      type: r.type,
-      content: r.content,
-      title: r.title,
-      created_at: new Date(r.created_at).getTime()
-    }));
-  }
-
-  async createResource(type: 'note' | 'link' | 'document', content: string, title: string): Promise<Resource> {
-    const res = await fetch(`${API_BASE_URL}/resources`, {
-      method: 'POST',
-      headers: this.getHeaders(),
-      body: JSON.stringify({ type, content, title })
-    });
-
-    if (!res.ok) throw new Error('Failed to create resource');
-    const data = await res.json();
-    const r = data.resource;
-
-    return {
-      _id: r.resource_id,
-      type: r.type,
-      content: r.content,
-      title: r.title,
-      created_at: new Date(r.created_at).getTime()
-    };
-  }
-
-  async deleteResource(id: string): Promise<void> {
-    await fetch(`${API_BASE_URL}/resources/${id}`, {
-      method: 'DELETE',
-      headers: this.getHeaders()
-    });
-  }
-
-  async uploadFile(file: File): Promise<{ url: string }> {
-    // Mock upload - in real app, upload to server/S3
-    // For now, we'll just use a fake local URL or base64 if small enough, 
-    // but let's just return a placeholder to satisfy the UI.
-    console.log('Uploading file:', file.name);
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve({ url: `[File: ${file.name}]` });
-      }, 500);
-    });
-  }
-
-  // --- Chat API (Backend) ---
-
-  async streamChat(query: string, thinking: boolean = false): Promise<ReadableStreamDefaultReader<Uint8Array>> {
-    const token = Cookies.get('accessToken');
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-    };
-
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
-
-    const response = await fetch(`${API_BASE_URL}/chat/stream`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({
-        query,
-        thinking,
-      }),
-    });
-
-    if (!response.ok || !response.body) {
-      throw new Error('Failed to connect to chat stream');
-    }
-
-    return response.body.getReader();
-  }
-}
-
-const aiTutorService = new AITutorService();
+// Components
+import { ChatSidebar } from "./ai-tutor/ChatSidebar";
+import { ResourcesSidebar } from "./ai-tutor/ResourcesSidebar";
+import { ChatArea } from "./ai-tutor/ChatArea";
 
 export default function AITutor() {
   // State
@@ -269,10 +29,6 @@ export default function AITutor() {
   const [newResContent, setNewResContent] = useState("");
   const [newResTitle, setNewResTitle] = useState("");
   const [selectedResources, setSelectedResources] = useState<string[]>([]); // IDs of resources to attach
-
-  // Refs
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Initial Load
   useEffect(() => {
@@ -297,7 +53,24 @@ export default function AITutor() {
     }
   }, [activeConvoId, conversations]);
 
+  // Handle mobile responsive layout defaults
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1024) {
+        setSidebarOpen(false);
+        setResourcesOpen(false);
+      } else {
+        setSidebarOpen(true);
+        setResourcesOpen(true);
+      }
+    };
 
+    // Set initial state based on width
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Data Loading
   const loadConversations = async () => {
@@ -332,6 +105,8 @@ export default function AITutor() {
       const newConvo = await aiTutorService.createConversation("New Conversation");
       setConversations([newConvo, ...conversations]);
       setActiveConvoId(newConvo._id);
+      // Close sidebar on mobile after creating
+      if (window.innerWidth < 1024) setSidebarOpen(false);
     } catch (error) {
       console.error("Failed to create conversation", error);
     }
@@ -494,270 +269,57 @@ export default function AITutor() {
     }
   };
 
-  // Render Helpers
-  const renderResourceIcon = (type: string) => {
-    switch (type) {
-      case 'note': return <StickyNote size={16} className="text-yellow-500" />;
-      case 'link': return <LinkIcon size={16} className="text-blue-500" />;
-      case 'document': return <FileText size={16} className="text-red-500" />;
-      default: return <FileText size={16} />;
-    }
-  };
-
   return (
-    <div className="flex h-[calc(100vh-4rem)] bg-gray-50 dark:bg-gray-900 overflow-hidden">
+    <div className="flex h-[calc(100vh-4rem)] bg-brand-cream dark:bg-gray-900 overflow-hidden font-sans relative">
 
-      {/* --- Left Sidebar: History --- */}
-      <div className={`${sidebarOpen ? "w-64" : "w-0"} transition-all duration-300 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col`}>
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-          <h2 className="font-bold text-lg text-gray-800 dark:text-white truncate">History</h2>
-          <button onClick={() => setSidebarOpen(false)} className="lg:hidden"><X size={20} /></button>
-        </div>
+      <ChatSidebar
+        conversations={conversations}
+        activeConvoId={activeConvoId}
+        setActiveConvoId={setActiveConvoId}
+        onNewChat={handleNewConversation}
+        onDeleteChat={handleDeleteConversation}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        tagFilter={tagFilter}
+        setTagFilter={setTagFilter}
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
 
-        <div className="p-2">
-          <button
-            onClick={handleNewConversation}
-            className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-md transition-colors"
-          >
-            <Plus size={18} /> New Chat
-          </button>
-        </div>
+      <ChatArea
+        activeConvo={conversations.find(c => c._id === activeConvoId)}
+        messages={messages}
+        input={input}
+        setInput={setInput}
+        isThinking={isThinking}
+        setIsThinking={setIsThinking}
+        isStreaming={isStreaming}
+        resources={resources}
+        selectedResources={selectedResources}
+        setSelectedResources={setSelectedResources}
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+        resourcesOpen={resourcesOpen}
+        setResourcesOpen={setResourcesOpen}
+        onSendMessage={handleSendMessage}
+      />
 
-        <div className="px-2 pb-2">
-          <div className="relative">
-            <Search className="absolute left-2 top-2.5 text-gray-400" size={16} />
-            <input
-              type="text"
-              placeholder="Search..."
-              className="w-full pl-8 pr-2 py-2 bg-gray-100 dark:bg-gray-700 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-
-          <div className="mt-2 flex gap-1 overflow-x-auto no-scrollbar pb-1">
-            {['', 'Grammar', 'Vocab', 'JLPT N3', 'Conversation'].map(tag => (
-              <button
-                key={tag || 'all'}
-                onClick={() => setTagFilter(tag)}
-                className={`text-xs px-2 py-1 rounded-full whitespace-nowrap transition-colors ${tagFilter === tag
-                  ? "bg-indigo-600 text-white"
-                  : "bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500"
-                  }`}
-              >
-                {tag || 'All'}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="flex-1 overflow-y-auto">
-          {conversations.map(convo => (
-            <div
-              key={convo._id}
-              onClick={() => setActiveConvoId(convo._id)}
-              className={`group flex items-center justify-between p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${activeConvoId === convo._id ? "bg-indigo-50 dark:bg-indigo-900/20 border-r-4 border-indigo-500" : ""}`}
-            >
-              <div className="flex items-center gap-3 overflow-hidden">
-                <MessageSquare size={18} className="text-gray-500 flex-shrink-0" />
-                <div className="truncate">
-                  <div className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">{convo.title}</div>
-                  <div className="text-xs text-gray-500 truncate">{new Date(convo.updated_at).toLocaleDateString()}</div>
-                </div>
-              </div>
-              <button
-                onClick={(e) => handleDeleteConversation(e, convo._id)}
-                className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-opacity"
-              >
-                <Trash2 size={16} />
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* --- Main Chat Area --- */}
-      <div className="flex-1 flex flex-col min-w-0 relative">
-        {/* Header */}
-        <div className="h-14 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 flex items-center justify-between px-4">
-          <div className="flex items-center gap-2">
-            {!sidebarOpen && (
-              <button onClick={() => setSidebarOpen(true)} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
-                <Menu size={20} className="text-gray-600 dark:text-gray-300" />
-              </button>
-            )}
-            <h1 className="font-semibold text-gray-800 dark:text-white">
-              {conversations.find(c => c._id === activeConvoId)?.title || "AI Tutor"}
-            </h1>
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300 cursor-pointer select-none">
-              <input
-                type="checkbox"
-                checked={isThinking}
-                onChange={(e) => setIsThinking(e.target.checked)}
-                className="rounded text-indigo-600 focus:ring-indigo-500"
-              />
-              Thinking Mode
-            </label>
-            {!resourcesOpen && (
-              <button onClick={() => setResourcesOpen(true)} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
-                <Paperclip size={20} className="text-gray-600 dark:text-gray-300" />
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-gray-900">
-          {messages.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center text-gray-400">
-              <MessageSquare size={48} className="mb-4 opacity-20" />
-              <p>Start a conversation with your AI Tutor</p>
-            </div>
-          ) : (
-            messages.map((msg, idx) => (
-              <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[80%] rounded-lg p-3 shadow-sm ${msg.role === 'user'
-                  ? 'bg-indigo-600 text-white'
-                  : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700'
-                  }`}>
-                  <div className="whitespace-pre-wrap text-sm leading-relaxed">
-                    {msg.role === 'ai' ? (
-                      <AIResponseDisplay text={msg.text} />
-                    ) : (
-                      msg.text
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))
-          )}
-          <div ref={messagesEndRef} />
-        </div>
-
-        {/* Input Area */}
-        <div className="p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-          {selectedResources.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-2">
-              {selectedResources.map(id => {
-                const r = resources.find(res => res._id === id);
-                if (!r) return null;
-                return (
-                  <span key={id} className="flex items-center gap-1 text-xs bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 px-2 py-1 rounded-full">
-                    {renderResourceIcon(r.type)}
-                    <span className="truncate max-w-[100px]">{r.title}</span>
-                    <button onClick={() => setSelectedResources(prev => prev.filter(x => x !== id))} className="hover:text-red-500"><X size={12} /></button>
-                  </span>
-                );
-              })}
-            </div>
-          )}
-          <form onSubmit={handleSendMessage} className="flex gap-2">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Type your message..."
-              className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50 dark:bg-gray-700 dark:text-white"
-              disabled={isStreaming}
-            />
-            <button
-              type="submit"
-              disabled={(!input.trim() && selectedResources.length === 0) || isStreaming}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              <Send size={20} />
-            </button>
-          </form>
-        </div>
-      </div>
-
-      {/* --- Right Sidebar: Resources --- */}
-      <div className={`${resourcesOpen ? "w-80" : "w-0"} transition-all duration-300 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 flex flex-col`}>
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-          <h2 className="font-bold text-lg text-gray-800 dark:text-white">Resources</h2>
-          <button onClick={() => setResourcesOpen(false)}><X size={20} className="text-gray-500" /></button>
-        </div>
-
-        {/* Add Resource Form */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
-          <div className="flex gap-2 mb-2">
-            <button onClick={() => setNewResType('note')} className={`flex-1 py-1 text-xs rounded ${newResType === 'note' ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}>Note</button>
-            <button onClick={() => setNewResType('link')} className={`flex-1 py-1 text-xs rounded ${newResType === 'link' ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}>Link</button>
-            <button onClick={() => setNewResType('document')} className={`flex-1 py-1 text-xs rounded ${newResType === 'document' ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}>Doc</button>
-          </div>
-
-          <input
-            type="text"
-            placeholder="Title"
-            value={newResTitle}
-            onChange={(e) => setNewResTitle(e.target.value)}
-            className="w-full mb-2 px-2 py-1 text-sm border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-          />
-
-          {newResType === 'document' ? (
-            <div className="mb-2">
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileUpload}
-                className="text-sm text-gray-500 dark:text-gray-400 file:mr-2 file:py-1 file:px-2 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
-              />
-            </div>
-          ) : (
-            <textarea
-              placeholder={newResType === 'link' ? "https://..." : "Content..."}
-              value={newResContent}
-              onChange={(e) => setNewResContent(e.target.value)}
-              className="w-full mb-2 px-2 py-1 text-sm border rounded h-20 resize-none dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-            />
-          )}
-
-          <button
-            onClick={handleCreateResource}
-            disabled={!newResTitle || !newResContent}
-            className="w-full py-1 bg-indigo-600 text-white text-sm rounded hover:bg-indigo-700 disabled:opacity-50"
-          >
-            Add Resource
-          </button>
-        </div>
-
-        {/* Resource List */}
-        <div className="flex-1 overflow-y-auto p-2 space-y-2">
-          {resources.map(res => (
-            <div key={res._id} className="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 group">
-              <div className="flex justify-between items-start mb-1">
-                <div className="flex items-center gap-2">
-                  {renderResourceIcon(res.type)}
-                  <span className="font-medium text-sm text-gray-800 dark:text-gray-200">{res.title}</span>
-                </div>
-                <button onClick={() => handleDeleteResource(res._id)} className="text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Trash2 size={14} />
-                </button>
-              </div>
-
-              <div className="text-xs text-gray-500 dark:text-gray-400 mb-2 truncate">
-                {res.type === 'link' ? (
-                  <a href={res.content} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">{res.content}</a>
-                ) : (
-                  res.content
-                )}
-              </div>
-
-              <button
-                onClick={() => setSelectedResources(prev => prev.includes(res._id) ? prev.filter(x => x !== res._id) : [...prev, res._id])}
-                className={`w-full py-1 text-xs rounded border transition-colors ${selectedResources.includes(res._id)
-                  ? "bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 border-indigo-300"
-                  : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
-                  }`}
-              >
-                {selectedResources.includes(res._id) ? "Attached" : "Attach to Chat"}
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
+      <ResourcesSidebar
+        resources={resources}
+        selectedResources={selectedResources}
+        newResType={newResType}
+        setNewResType={setNewResType}
+        newResTitle={newResTitle}
+        setNewResTitle={setNewResTitle}
+        newResContent={newResContent}
+        setNewResContent={setNewResContent}
+        onCreateResource={handleCreateResource}
+        onDeleteResource={handleDeleteResource}
+        onToggleSelectResource={(id) => setSelectedResources(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])}
+        onFileUpload={handleFileUpload}
+        isOpen={resourcesOpen}
+        onClose={() => setResourcesOpen(false)}
+      />
 
     </div>
   );
