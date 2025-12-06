@@ -8,7 +8,7 @@ def get_llm(model_name: str):
         # Strip "ollama/" prefix
         actual_model = model_name.replace("ollama/", "")
         base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-        return ChatOllama(model=actual_model, temperature=0, num_ctx=2048, base_url=base_url)
+        return ChatOllama(model=actual_model, temperature=0, num_ctx=512, base_url=base_url)
     # Add other providers as needed (OpenAI, Google, etc mapping to existing config)
     else:
         # Default fallback or Mock

@@ -4,16 +4,16 @@ app:
 models:
   default:
     provider: ollama
-    model_name: qwen3:1.7b
+    model_name: qwen2.5:0.5b
     temperature: 0.0
     base_url: http://localhost:11434
 
   default_vl:
     provider: ollama
-    model_name: qwen3-vl:2b
+    model_name: qwen2.5:0.5b # Fallback to text-only model due to low memory
     temperature: 0.0
     base_url: http://localhost:11434
-    num_ctx: 2048
+    num_ctx: 1024 # Increased slightly as model is small
 
 database:
   host: localhost

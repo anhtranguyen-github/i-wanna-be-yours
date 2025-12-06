@@ -29,7 +29,8 @@ def register_routes(app):
                 loop = asyncio.new_event_loop()
                 asyncio.set_event_loop(loop)
 
-            agen = chat_service.stream_answer(query, conversation_id, user_id, show_thinking)
+            # Correct argument order: user_input, conversation_id, user_id, image_data, show_thinking
+            agen = chat_service.stream_answer(query, conversation_id, user_id, None, show_thinking)
             
             while True:
                 try:

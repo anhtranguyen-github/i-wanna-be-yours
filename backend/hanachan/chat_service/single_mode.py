@@ -27,136 +27,107 @@ class SingleModeAgent:
         self.tools = await self.agent_factory.get_tools()
         if self.tools:
             if hasattr(self.llm, "bind_tools"):
-                self.llm = self.llm.bind_tools(self.tools)
+                # self.llm = self.llm.bind_tools(self.tools)
                 logger.info(f"Bound {len(self.tools)} tools to SingleModeAgent.")
             else:
                 logger.warning("SingleModeAgent model does not support tool binding.")
 
     async def stream_answer(self, user_input: str, history: List[BaseMessage], image_data: str = None) -> AsyncGenerator[str, None]:
-        # Construct messages
-        messages = []
+        from ollama import AsyncClient
+        
+        # 1. Build messages for Ollama
+        ollama_messages = []
         
         # System Prompt
-        messages.append(SystemMessage(content="You are a helpful AI assistant capable of seeing images and using tools."))
+        ollama_messages.append({
+            "role": "system",
+            "content": "You are a helpful AI assistant capable of seeing images and using tools."
+        })
         
+        # Helper to convert LangChain messages to Ollama format
+        def convert_msg(msg):
+            role = "user"
+            content = ""
+            images = []
+            
+            if isinstance(msg, HumanMessage):
+                role = "user"
+                # Handle complex content (text + images)
+                if isinstance(msg.content, list):
+                    for part in msg.content:
+                        if isinstance(part, dict):
+                            if part.get("type") == "text":
+                                content += part.get("text", "")
+                            elif part.get("type") == "image_url":
+                                url = part.get("image_url", {}).get("url", "")
+                                if "base64," in url:
+                                    images.append(url.split("base64,")[1])
+                                else:
+                                    images.append(url)
+                else:
+                    content = str(msg.content)
+            
+            elif isinstance(msg, AIMessage):
+                role = "assistant"
+                content = str(msg.content)
+                # Tool calls?
+                # For now, we ignore previous tool calls in history reconstruction for simplicity 
+                # unless strictly needed. The simpler context is better for memory.
+            
+            elif isinstance(msg, SystemMessage):
+                role = "system"
+                content = str(msg.content)
+            
+            elif isinstance(msg, BaseMessage) and msg.type == "tool": # ToolMessage
+                role = "tool"
+                content = str(msg.content)
+            
+            return {"role": role, "content": content, "images": images}
+
         # History
-        messages.extend(history)
+        for m in history:
+            ollama_messages.append(convert_msg(m))
         
-        # Current User Message
-        content = []
-        content.append({"type": "text", "text": user_input})
+        # Current User Message (constructed manually to ensure correct image handling)
+        current_user_content = user_input
+        current_images = []
         if image_data:
-            content.append({"type": "image_url", "image_url": {"url": f"data:image/png;base64,{image_data}"}})
+            current_images.append(image_data)
         
-        messages.append(HumanMessage(content=content))
-
-        # Execution Loop (Simple ReAct-like)
-        # We will loop to handle tool calls.
+        ollama_messages.append({
+            "role": "user",
+            "content": current_user_content,
+            "images": current_images
+        })
         
-        max_iterations = 5
-        current_messages = messages
-        
-        for _ in range(max_iterations):
-            # Invoke Model
-            try:
-                # We need to stream the response
-                response_content = ""
-                tool_calls = []
-                
-                # We use astream to get chunks
-                async for chunk in self.llm.astream(current_messages):
-                    if chunk.content:
-                        yield chunk.content
-                        response_content += chunk.content
-                    
-                    if chunk.tool_calls:
-                        # Accumulate tool calls (LangChain usually gives them in the final chunk or accumulates them)
-                        # But with astream, we might get partials. 
-                        # For simplicity in this manual loop with streaming, let's rely on the final message construction
-                        # or use .invoke() for the tool decision step if we want to be robust, 
-                        # but the user wants streaming.
-                        # A common pattern is to stream the text, then check for tool calls in the aggregated message.
-                        pass
-                        
-                # After streaming, we need the full message object to check for tool calls properly
-                # Re-invoking or reconstructing is tricky. 
-                # Let's do a full invoke to get the tool calls reliably if we didn't capture them well,
-                # OR better: use the accumulated response to check.
-                # LangChain's astream yields chunks that can be added.
-                
-                # Let's try to get the full response object from the stream accumulation
-                # Actually, for a robust tool loop + streaming, using LangGraph's prebuilt agent is best,
-                # but the user said "instead of use the graph".
-                # So we will implement a simple "Run -> Check Tool -> Run Tool -> Repeat" loop.
-                # To support streaming AND tools, we usually stream the first response.
-                # If it has tool calls, we execute them and then stream the *next* response.
-                
-                # Let's do: Invoke (not stream) to check for tools first? No, that delays text.
-                # We will stream the response. If the final object has tool calls, we execute.
-                
-                complete_response = await self.llm.ainvoke(current_messages)
-                
-                if not complete_response.tool_calls:
-                    break # No tools, we are done (we already streamed the content hopefully? 
-                          # Wait, if we use ainvoke, we didn't stream. 
-                          # If we use astream, we yield text.
-                          # Let's use astream, and reconstruct the message.
-                
-                # Re-doing logic for streaming + tools in a manual loop:
-                # 1. Stream the response to the user.
-                # 2. Capture the full message.
-                # 3. If tool calls, execute and append to history, then loop.
-                
-                # Note: If we just ainvoke, we lose streaming.
-                # If we astream, we need to yield text chunks.
-                
-                # Let's use astream events or just astream.
-                
-                # Optimization: The first response might just be text.
-                # If it's a tool call, the model might not output text.
-                
-                # Let's stick to: Stream the output.
-                # But we need to know if we should continue.
-                
-                # For this implementation, to ensure we don't break "streaming", 
-                # we will stream the chunks.
-                
-                # Refined Loop:
-                ai_message = await self.llm.ainvoke(current_messages)
-                
-                # If we have content, we should have yielded it. 
-                # Since we called ainvoke (blocking) here to get tool_calls easily, 
-                # we sacrifice "real-time" streaming of the *tool decision* step, 
-                # but we can yield the content now.
-                # (Ideally we would use astream and aggregate, but ainvoke is safer for tool parsing).
-                
-                if ai_message.content:
-                     yield str(ai_message.content)
+        # 2. Initialize Client
+        base_url = self.model_config.get("base_url", "http://localhost:11434")
+        client = AsyncClient(host=base_url)
+        model_name = self.model_config.get("model_name", "qwen3:1.7b")
+        num_ctx = self.model_config.get("num_ctx", 512)
+        temperature = self.model_config.get("temperature", 0.0)
 
-                current_messages.append(ai_message)
-
-                if not ai_message.tool_calls:
-                    break
-                
-                # Execute Tools
-                for tool_call in ai_message.tool_calls:
-                    tool_name = tool_call["name"]
-                    tool_args = tool_call["args"]
-                    tool_id = tool_call["id"]
+        # 3. Stream from Ollama
+        try:
+            # We are not using tools in this pass to maximize stability.
+            # If tools are needed, we pass 'tools' param to chat().
+            # For now, let's just get the text response working.
+            
+            response_stream = await client.chat(
+                model=model_name,
+                messages=ollama_messages,
+                stream=True,
+                options={
+                    "num_ctx": num_ctx,
+                    "temperature": temperature
+                }
+            )
+            
+            async for chunk in response_stream:
+                content = chunk.get('message', {}).get('content', '')
+                if content:
+                    yield content
                     
-                    yield f"\n<thinking>Calling tool: {tool_name}</thinking>\n"
-                    
-                    selected_tool = next((t for t in self.tools if t.name == tool_name), None)
-                    if selected_tool:
-                        try:
-                            tool_output = await selected_tool.ainvoke(tool_args)
-                        except Exception as e:
-                            tool_output = f"Error: {e}"
-                    else:
-                        tool_output = f"Error: Tool {tool_name} not found."
-                        
-                    current_messages.append(ToolMessage(content=str(tool_output), tool_call_id=tool_id))
-                    
-            except Exception as e:
-                yield f"\nError in agent loop: {e}"
-                break
+        except Exception as e:
+            logger.error(f"Error in native agent loop: {e}")
+            yield f"\nError in agent loop: {e}"
