@@ -44,16 +44,15 @@ except ImportError as e:
 except Exception as e:
     logger.exception(f"❌ Error registering routes: {e}")
 
-# Register other modules (Optional/Legacy)
+
 try:
-    from modules.agent_module import AgentModule
-    agent_module = AgentModule()
-    agent_module.register_routes(app)
-    logger.info("✅ Registered AgentModule successfully.")
-except ImportError:
-    logger.info("ℹ️ AgentModule not found, skipping.")
+    from routers.agent_api import agent_api
+    app.register_blueprint(agent_api)
+    logger.info("✅ Registered Agent API routes successfully.")
+except ImportError as e:
+    logger.error(f"❌ Could not import Agent API routes: {e}")
 except Exception as e:
-    logger.warning(f"⚠️ Error registering AgentModule: {e}")
+    logger.exception(f"❌ Error registering Agent API routes: {e}")
 
 # ---------------------------------- Run Flask App -----------------------------------------------
 if __name__ == "__main__":
