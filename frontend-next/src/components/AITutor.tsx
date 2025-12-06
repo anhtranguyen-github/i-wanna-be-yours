@@ -283,54 +283,87 @@ export default function AITutor() {
   return (
     <div className="flex h-[calc(100vh-4rem)] bg-brand-cream dark:bg-gray-900 overflow-hidden font-sans relative">
 
-      <ChatSidebar
-        conversations={conversations}
-        activeConvoId={activeConvoId}
-        setActiveConvoId={setActiveConvoId}
-        onNewChat={handleNewConversation}
-        onDeleteChat={handleDeleteConversation}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        tagFilter={tagFilter}
-        setTagFilter={setTagFilter}
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-      />
+      {/* Left Sidebar - Fixed Width on Desktop */}
+      <div className={`
+        ${sidebarOpen ? 'w-72 lg:w-80' : 'w-0'}
+        flex-shrink-0 transition-all duration-300 ease-in-out border-r-2 border-brand-dark bg-brand-cream
+        lg:block absolute inset-y-0 left-0 z-30 lg:static
+      `}>
+        <ChatSidebar
+          conversations={conversations}
+          activeConvoId={activeConvoId}
+          setActiveConvoId={setActiveConvoId}
+          onNewChat={handleNewConversation}
+          onDeleteChat={handleDeleteConversation}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          tagFilter={tagFilter}
+          setTagFilter={setTagFilter}
+          isOpen={true} // Always "open" visually inside the container, visibility controlled by parent width
+          onClose={() => setSidebarOpen(false)}
+        />
+      </div>
 
-      <ChatArea
-        activeConvo={conversations.find(c => c._id === activeConvoId)}
-        messages={messages}
-        input={input}
-        setInput={setInput}
-        isThinking={isThinking}
-        setIsThinking={setIsThinking}
-        isStreaming={isStreaming}
-        resources={resources}
-        selectedResources={selectedResources}
-        setSelectedResources={setSelectedResources}
-        sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
-        resourcesOpen={resourcesOpen}
-        setResourcesOpen={setResourcesOpen}
-        onSendMessage={handleSendMessage}
-      />
+      {/* Main Chat Area - Flexible Width */}
+      <div className="flex-1 flex flex-col min-w-0 relative h-full">
+        <ChatArea
+          activeConvo={conversations.find(c => c._id === activeConvoId)}
+          messages={messages}
+          input={input}
+          setInput={setInput}
+          isThinking={isThinking}
+          setIsThinking={setIsThinking}
+          isStreaming={isStreaming}
+          resources={resources}
+          selectedResources={selectedResources}
+          setSelectedResources={setSelectedResources}
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+          resourcesOpen={resourcesOpen}
+          setResourcesOpen={setResourcesOpen}
+          onSendMessage={handleSendMessage}
+        />
+      </div>
 
-      <ResourcesSidebar
-        resources={resources}
-        selectedResources={selectedResources}
-        newResType={newResType}
-        setNewResType={setNewResType}
-        newResTitle={newResTitle}
-        setNewResTitle={setNewResTitle}
-        newResContent={newResContent}
-        setNewResContent={setNewResContent}
-        onCreateResource={handleCreateResource}
-        onDeleteResource={handleDeleteResource}
-        onToggleSelectResource={(id) => setSelectedResources(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])}
-        onFileUpload={handleFileUpload}
-        isOpen={resourcesOpen}
-        onClose={() => setResourcesOpen(false)}
-      />
+      {/* Right Resources Panel - Toggleable */}
+      <div className={`
+        ${resourcesOpen ? 'w-80' : 'w-0'}
+        flex-shrink-0 transition-all duration-300 ease-in-out border-l-2 border-brand-dark bg-brand-cream
+        absolute inset-y-0 right-0 z-30 lg:static overflow-hidden
+      `}>
+        <ResourcesSidebar
+          resources={resources}
+          selectedResources={selectedResources}
+          newResType={newResType}
+          setNewResType={setNewResType}
+          newResTitle={newResTitle}
+          setNewResTitle={setNewResTitle}
+          newResContent={newResContent}
+          setNewResContent={setNewResContent}
+          onCreateResource={handleCreateResource}
+          onDeleteResource={handleDeleteResource}
+          onToggleSelectResource={(id) => setSelectedResources(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])}
+          onFileUpload={handleFileUpload}
+          isOpen={true} // Controlled by parent width
+          onClose={() => setResourcesOpen(false)}
+        />
+      </div>
+
+      {/* Mobile Overlay for Sidebar */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-20 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Mobile Overlay for Resources */}
+      {resourcesOpen && window.innerWidth < 1024 && (
+        <div
+          className="fixed inset-0 bg-black/50 z-20 lg:hidden"
+          onClick={() => setResourcesOpen(false)}
+        />
+      )}
 
     </div>
   );
