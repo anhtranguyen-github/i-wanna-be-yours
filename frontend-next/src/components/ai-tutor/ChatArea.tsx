@@ -49,7 +49,9 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
 
     // Auto-scroll to bottom
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        if (messages.length > 0) {
+            messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }
     }, [messages]);
 
     const renderResourceIcon = (type: string) => {

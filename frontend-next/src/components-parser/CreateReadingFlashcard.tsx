@@ -87,12 +87,14 @@ const CreateReadingFlashcard: React.FC<CreateReadingFlashcardProps> = ({
     }
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (word) {
       fetchVocabularyData();
     }
   }, [word]); // Fetch vocabulary data whenever the 'word' changes
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     // Clear translated text when new sentence props are received
     setTranslatedText(null);

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useUser } from '@/context/UserContext';
 
 export default function LoginPage() {
@@ -11,6 +11,7 @@ export default function LoginPage() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const searchParams = useSearchParams();
     const { login } = useUser();
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -35,7 +36,8 @@ export default function LoginPage() {
 
             if (isLogin) {
                 login(data.user);
-                router.push('/user-dashboard');
+                const redirectUrl = searchParams.get('redirect') || '/user-dashboard';
+                router.push(redirectUrl);
             } else {
                 // After registration, switch to login or auto-login
                 setIsLogin(true);

@@ -1,6 +1,7 @@
 import { CheckIcon } from "@heroicons/react/24/solid";
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 type cardProps = {
   c1: any;
@@ -38,7 +39,7 @@ export default function Pricing() {
           {/* Monthly Card */}
           <div className="p-7 border-2 border-brand-dark rounded-xl bg-white clay-card">
             <div className="flex text-center lg:text-left lg:flex-row flex-col items-center ">
-              <img src="/img/Wallet.png" className="h-24" alt="" />
+              <Image src="/img/Wallet.png" width={96} height={96} className="h-24 w-auto" alt="Wallet" />
               <div className="mt-5 lg:mt-0 lg:ml-5">
                 <h1 className="text-4xl font-bold text-brand-dark">Monthly Plan</h1>
                 <p className="mt-2 text-brand-dark">
@@ -62,7 +63,7 @@ export default function Pricing() {
           {/* Yearly Card */}
           <div className="bg-brand-blue text-white p-7 rounded-xl clay-card">
             <div className="flex text-center lg:text-left lg:flex-row flex-col items-center ">
-              <img src="/img/Wallet.png" className="h-24" alt="" />
+              <Image src="/img/Wallet.png" width={96} height={96} className="h-24 w-auto" alt="Wallet" />
               <div className="mt-5 lg:mt-0 lg:ml-5">
                 <h1 className="text-4xl font-bold">Yearly Plan</h1>
                 <p className="mt-2">

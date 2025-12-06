@@ -20,7 +20,7 @@ export default function GlobalError({
                     <div className="max-w-md rounded-xl border-2 border-brand-dark bg-white p-8 shadow-hard">
                         <h2 className="mb-4 text-2xl font-black text-brand-dark">Critical Error</h2>
                         <p className="mb-6 font-medium text-brand-dark/70">
-                            Something went wrong, and we couldn't load the application.
+                            Something went wrong, and we couldn&apos;t load the application.
                         </p>
                         <button
                             onClick={() => reset()}

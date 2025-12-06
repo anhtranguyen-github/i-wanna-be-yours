@@ -18,7 +18,7 @@ export default function LearningWorkspaceLayout({ children }: { children: React.
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push("/login");
+      router.push(`/login?redirect=${encodeURIComponent(pathname || '/')}`);
     }
   }, [user, loading, router]);
 

@@ -31,10 +31,7 @@ export default function AITutor() {
   const [selectedResources, setSelectedResources] = useState<string[]>([]); // IDs of resources to attach
 
   // Initial Load
-  useEffect(() => {
-    loadConversations();
-    loadResources();
-  }, []);
+  // Initial Load handled by specific effects below
 
   // Effect to load messages when active conversation changes
   useEffect(() => {
@@ -73,34 +70,48 @@ export default function AITutor() {
   }, []);
 
   // Data Loading
-  const loadConversations = async () => {
+  const loadConversations = React.useCallback(async () => {
     try {
       const data = await aiTutorService.getConversations(searchQuery, tagFilter);
       setConversations(data);
     } catch (error) {
       console.error("Failed to load conversations", error);
     }
-  };
+  }, [searchQuery, tagFilter]);
 
-  const loadResources = async () => {
+  const loadResources = React.useCallback(async () => {
     try {
       const data = await aiTutorService.getResources();
       setResources(data);
     } catch (error) {
       console.error("Failed to load resources", error);
     }
-  };
+  }, []);
 
-  // Search Debounce
+  // Initial Load & Search Debounce
   useEffect(() => {
     const timer = setTimeout(() => {
       loadConversations();
     }, 500);
     return () => clearTimeout(timer);
-  }, [searchQuery, tagFilter]);
+  }, [loadConversations]);
+
+  // Initial Resource Load
+  useEffect(() => {
+    loadResources();
+  }, [loadResources]);
 
   // Actions
   const handleNewConversation = async () => {
+    // Check if there's already an empty conversation (local only/transient)
+    const existingEmpty = conversations.find(c => (!c.messages || c.messages.length === 0));
+
+    if (existingEmpty) {
+      setActiveConvoId(existingEmpty._id);
+      if (window.innerWidth < 1024) setSidebarOpen(false);
+      return;
+    }
+
     try {
       const newConvo = await aiTutorService.createConversation("New Conversation");
       setConversations([newConvo, ...conversations]);

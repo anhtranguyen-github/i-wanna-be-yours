@@ -55,6 +55,7 @@ const JapaneseTextParser: React.FC<JapaneseTextParserProps> = ({
 
   // --- text enhancement --- //
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const fetchData = async () => {
       //if (!inputText) return;

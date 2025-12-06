@@ -40,6 +40,7 @@ const KuroShiroPropsConverter: React.FC<Props> = ({ text, url }) => {
     }
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (text) handleSubmit(); // Only auto-convert when text is not empty
   }, [text]);
@@ -71,7 +72,7 @@ const KuroShiroPropsConverter: React.FC<Props> = ({ text, url }) => {
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-5 border border-gray-200 text-black">
-      
+
       {/* actually, conversion gets triggered automatically, no button really needed */}
       {/* <button
         onClick={handleSubmit}
