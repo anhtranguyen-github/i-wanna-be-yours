@@ -1,13 +1,16 @@
+"use client";
+
 import { useState } from "react";
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
+import ClayCard from "./ui/ClayCard";
 
 
-type Props = {
-  img: any;
-  title: any;
-  link: any;
-};
+// type Props = {
+//   img: any;
+//   title: any;
+//   link: any;
+// };
 
 export default function CategoriesHeader() {
   const [filter, setFilter] = useState("All");
@@ -31,17 +34,17 @@ export default function CategoriesHeader() {
     : items.filter(item => item.category === filter);
 
   return (
-    <div className="w-11/12 py-5 px-10 bg-gray-50 rounded-md hidden lg:block">
+    <div className="w-11/12 py-5 px-10 rounded-md hidden lg:block">
       <div className="w-full flex flex-col lg:flex-row items-center justify-between">
-        <h1 className="text-xl font-bold">Categories</h1>
+        <h1 className="text-xl font-bold" style={{ color: 'hsl(var(--primary))' }}>Categories</h1>
         <div className="flex space-x-2">
           {categories.map(cat => (
             <button
               key={cat}
               onClick={() => setFilter(cat)}
-              className={`px-4 py-2 rounded-full text-sm font-bold transition-colors ${filter === cat
-                ? "bg-brand-blue text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              className={`px-6 py-2 rounded-2xl text-sm font-bold transition-all duration-300 ${filter === cat
+                ? "bg-brand-blue text-white shadow-inner"
+                : "bg-white text-gray-700 hover:bg-gray-100 clay-button"
                 }`}
             >
               {cat}
@@ -49,29 +52,16 @@ export default function CategoriesHeader() {
           ))}
         </div>
       </div>
-      <div className="mt-5 w-full grid md:grid-cols-5 gap-5">
+      <div className="mt-8 w-full grid md:grid-cols-4 gap-6">
         {filteredItems.map((item) => (
-          <Card key={item.title} img={item.img} title={item.title} link={item.link} />
+          <Link href={item.link} key={item.title}>
+            <ClayCard className="h-full flex flex-col items-center justify-center text-center hover:-translate-y-1 transition-transform cursor-pointer">
+              {/* <Image src={item.img} className="h-12 mb-4" width={48} height={48} alt="" /> */}
+              <h3 className="text-lg font-bold">{item.title}</h3>
+            </ClayCard>
+          </Link>
         ))}
       </div>
-    </div>
-  );
-}
-
-// we would need better icons, maybe some kanji instead
-function Card({ img, title, link }: Props) {
-  return (
-    <div className="p-5 flex items-center text-center justify-center flex-col">
-      {/* <Image src={img} className="h-12" width={200} height={200} alt="" /> */}
-      <h1 className="text-xl font-bold mt-5">
-        {link ? (
-          <Link href={link} className="text-gray-600 hover:text-blue-800">
-            {title}
-          </Link>
-        ) : (
-          title
-        )}
-      </h1>
     </div>
   );
 }

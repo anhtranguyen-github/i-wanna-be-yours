@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image, { StaticImageData } from "next/image";
+import ClayCard from "./ui/ClayCard";
 
 // we need this for small logo in the card
 import jlpt_universal_01 from "@public/img/jlpt_universal_01.jpg";
@@ -27,73 +28,56 @@ const DashboardCardsWithHeader = ({
   headline,
 }: DashboardCardsWithHeaderProps) => {
   return (
-    <div className="bg-gray-50 p-5">
+    <div className="p-5 max-w-7xl mx-auto">
       <div>
-        <div className="flex items-end justify-between mb-12 header p-6">
+        <div className="mb-12 header p-6">
           <div className="title">
-            <p className="mb-4 text-4xl font-bold text-gray-800">
+            <h2 className="mb-4 text-4xl font-extrabold" style={{ color: 'hsl(var(--primary))' }}>
               {headline.title || ""}
-            </p>
-            <p className="text-2xl font-light text-gray-400">
+            </h2>
+            <p className="text-xl font-medium text-gray-500">
               {headline.subtitle || ""}
             </p>
           </div>
-          <div className="text-end"></div>
         </div>
       </div>
 
-      <div className="bg-white grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-6 overflow-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {cards.map((card) => (
-        
-        
-
-
-
-
-        
-
- <div
-key={card.id}
-className="min-w-300 bg-slate-100 shadow rounded-md flex p-6 hover:scale-100 ease-in duration-100 hover:bg-gray-200"
->
-<div className="w-2/3 p-4">
-  <Link href={card.link}>
-    <h3 className="text-lg font-medium text-gray-800">
-      {card.name}
-    </h3>
-  </Link>
-  <p className="mt-2 text-sm text-gray-500">{card.description}</p>
-  <div className="mt-4 flex justify-between">
-    <div className="flex items-center">
-      <Image
-        alt="profile"
-        className="h-8 w-8 object-cover rounded-full"
-        src={jlpt_universal_01}
-      />
-      <p className="ml-2 text-sm font-medium text-gray-700">
-        Hanabira
-      </p>
-    </div>
-    <Link href={card.link}>
-      <button className="bg-primary py-2 px-4 text-white rounded-md">
-        Learn More
-      </button>
-    </Link>
-  </div>
-</div>
-<div className="w-1/3">
-  <Image
-    alt="card image"
-    className="object-cover w-full h-full"
-    src={card.file}
-  />
-</div>
-</div> 
-          
-
-
-
-
+          <ClayCard
+            key={card.id}
+            className="group relative flex flex-col md:flex-row !p-0 overflow-hidden hover:scale-[1.02] transition-transform duration-300 min-h-[200px]"
+          >
+            <div className="w-full md:w-2/3 p-6 flex flex-col justify-between z-10 bg-inherit">
+              <div className="mb-4">
+                <Link href={card.link}>
+                  <h3 className="text-2xl font-bold leading-tight mb-2 hover:text-brand-blue transition-colors" style={{ color: 'hsl(var(--text-default))' }}>
+                    {card.name}
+                  </h3>
+                </Link>
+                {card.description && (
+                  <p className="text-sm text-gray-500 leading-relaxed line-clamp-2">{card.description}</p>
+                )}
+              </div>
+              
+              <div className="flex items-center pt-4">
+                <Link href={card.link}>
+                  <button className="px-5 py-2.5 bg-brand-blue text-white text-sm font-bold rounded-xl shadow-md hover:bg-brand-blue/90 hover:shadow-lg transition-all active:scale-95">
+                    Learn More
+                  </button>
+                </Link>
+              </div>
+            </div>
+            
+            <div className="w-full md:w-1/3 relative h-48 md:h-auto">
+              <Image
+                alt={card.name}
+                className="object-cover w-full h-full absolute inset-0 transition-transform duration-500 group-hover:scale-110"
+                src={card.file}
+              />
+              <div className="absolute inset-0 bg-gradient-to-l from-transparent to-black/5 md:hidden" />
+            </div>
+          </ClayCard>
         ))}
       </div>
     </div>

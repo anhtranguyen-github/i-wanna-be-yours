@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ClayCard from "./ui/ClayCard";
 
 interface BlogCardProps {
   id: string;
@@ -21,17 +22,17 @@ interface BlogCardsProps {
 
 
 const BlogCards = ({ cards, header }: BlogCardsProps) => {
-  
+
   return (
     <div className="flex flex-col">
       <div className="p-7">
         <div className="w-full p-12 bg-white">
           <div className="flex items-end justify-between mb-12 header">
             <div className="title">
-              <p className="mb-4 text-4xl font-bold text-gray-800">
+              <p className="mb-4 text-4xl font-bold" style={{ color: 'hsl(var(--text-default))' }}>
                 {header.title}
               </p>
-              <p className="text-2xl font-light text-gray-400">
+              <p className="text-2xl font-light text-gray-500">
                 {header.subtitle}
               </p>
             </div>
@@ -39,43 +40,45 @@ const BlogCards = ({ cards, header }: BlogCardsProps) => {
           </div>
           <div className="grid grid-cols-1 gap-12 md:grid-cols-2 xl:grid-cols-3">
             {cards.map((card) => (
-              <div
+              <ClayCard
                 key={card.id}
-                className="m-auto overflow-hidden rounded-lg shadow-lg cursor-pointer h-90 w-60 md:w-80"
+                className="m-auto !p-0 overflow-hidden flex flex-col h-full hover:scale-105 transition-transform duration-300 cursor-pointer"
               >
-                <Link href={card.link} className="block w-full h-full">
+                <Link href={card.link} className="block w-full h-48 relative overflow-hidden">
                   <img
                     alt="blog photo"
                     src={card.file}
-                    className="object-cover w-full max-h-40"
+                    className="object-cover w-full h-full hover:scale-110 transition-transform duration-500"
                   />
                 </Link>
-                <div className="w-full p-4 bg-white dark:bg-gray-800">
-                  <p className="font-medium text-indigo-500 text-md"></p>
-                  <p className="mb-2 text-xl font-medium text-gray-800 dark:text-white">
-                  <Link href={card.link}>{card.name}</Link>
-                  </p>
-                  <p className="mt-2 text-sm text-gray-500">
+                <div className="w-full p-6 flex flex-col flex-grow">
+                  <p className="font-medium text-brand-blue text-xs uppercase tracking-wider mb-2">ARTICLE</p>
+                  <Link href={card.link}>
+                    <h3 className="text-xl font-bold mb-3 hover:text-brand-blue transition-colors" style={{ color: 'hsl(var(--text-default))' }}>
+                      {card.name}
+                    </h3>
+                  </Link>
+                  <p className="mb-4 text-sm text-gray-500 line-clamp-3 flex-grow">
                     {card.description}
                   </p>
-                  <div className="flex items-center mt-4">
+                  <div className="flex items-center pt-4 border-t border-gray-100 mt-auto">
                     <Link href={card.link} className="relative block">
                       <img
                         alt="profile"
                         src="/img/cover.jpg"
-                        className="mx-auto object-cover rounded-full h-10 w-10 "
+                        className="mx-auto object-cover rounded-full h-10 w-10 border-2 border-white shadow-sm"
                       />
                     </Link>
                     {/* <Link href={card.link}>Read more</Link> */}
-                    <div className="flex flex-col justify-between ml-4 text-sm">
-                      <p className="text-gray-800 dark:text-white">hanabira</p>
+                    <div className="flex flex-col justify-between ml-4 text-xs">
+                      <p className="font-bold text-gray-700">Hanabira</p>
                       {/* <p className="text-gray-400 dark:text-gray-300">
                         20 mars 2029 - 6 min read
                       </p> */}
                     </div>
                   </div>
                 </div>
-              </div>
+              </ClayCard>
             ))}
           </div>
         </div>

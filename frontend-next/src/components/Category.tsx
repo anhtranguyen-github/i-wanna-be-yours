@@ -3,6 +3,7 @@ import { ChevronRightIcon } from "@heroicons/react/24/solid";
 // import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import Image from "next/image";
+import ClayCard from "./ui/ClayCard";
 
 
 import jlpt_universal_01 from "@public/img/jlpt_universal_01.jpg";
@@ -66,7 +67,7 @@ export default function Category({
   des,
 }: categoryProps) {
   return (
-    <div className="w-11/12 py-7 px-10 bg-gray-50 rounded-md mt-6">
+    <ClayCard className="w-11/12 mt-6 !p-10">
       {/* Header */}
       <CategoryHeader
         icon={icon}
@@ -221,7 +222,7 @@ export default function Category({
           seriesImg="/img/Ellipse_46.png"
         /> */}
       </div>
-    </div>
+    </ClayCard>
   );
 }
 
@@ -271,22 +272,22 @@ function Series({
   seriesLink,
 }: seriesProps) {
   return (
-    <div className="w-full grid lg:grid-cols-2 border-b">
-      <div className="flex flex-col lg:flex-row items-start lg:items-center py-7 mt-5">
+    <div className="w-full grid lg:grid-cols-2 bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-4 hover:shadow-md transition-shadow">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center">
         {/* <Image src={seriesImg} className="h-20 mr-5 mb-5 lg:mb-0" alt="Series" width={100%} layout="responsive" /> */}
         <Image
           src={seriesImg}
-          className="h-20 w-auto object-contain mr-5 mb-5 lg:mb-0"
+          className="h-16 w-auto object-contain mr-5 mb-5 lg:mb-0 rounded-lg"
           alt="zen-lingo.com"
         />
         <div>
           {/*<Link to="/categories">*/}
           <Link href={seriesLink}>
             {/*<h1 className="text-lg font-bold">JLPT N3 100 Master Hiragana & Katakana</h1>*/}
-            <h1 className="text-lg font-bold">{seriesHeader}</h1>
+            <h1 className="text-lg font-bold text-gray-800 hover:text-brand-blue transition-colors">{seriesHeader}</h1>
           </Link>
 
-          <p className="">
+          <p className="text-sm text-gray-500 mt-1">
             The Japanese written language is composed of three writing systems:
             kanji, hiragana, and katakana.
           </p>
@@ -294,18 +295,18 @@ function Series({
       </div>
       <div className="flex items-center mt-3 lg:mt-0 justify-between lg:justify-end">
         <div className="flex items-center flex-col text-center">
-          <h1 className="text-xl font-bold">Level</h1>
-          <h1>{level}</h1>
+          <h1 className="text-sm font-bold text-gray-400 uppercase tracking-wider">Level</h1>
+          <h1 className="font-bold text-gray-700">{level}</h1>
         </div>
-        <div className="flex items-center flex-col lg:ml-16 text-center">
-          <h1 className="text-xl font-bold">Courses</h1>
-          <h1>{seriesCourses}</h1>
+        <div className="flex items-center flex-col lg:ml-10 text-center">
+          <h1 className="text-sm font-bold text-gray-400 uppercase tracking-wider">Courses</h1>
+          <h1 className="font-bold text-gray-700">{seriesCourses}</h1>
         </div>
-        <div className="bg-gray-100 cursor-pointer hover:bg-gray-200 lg:ml-16 mt-3 lg:mt-0 h-16 w-16 rounded-full flex items-center justify-center">
+        <div className="bg-brand-blue/10 cursor-pointer hover:bg-brand-blue/20 lg:ml-10 mt-3 lg:mt-0 h-12 w-12 rounded-full flex items-center justify-center transition-colors">
           <Link href={seriesLink}>
             {/* <PlayIcon className="h-6 text-secondary" /> */}
             {/* <PlayIcon className="h-6 text-gray-400" /> */}
-            <ChevronRightIcon className="h-6 text-blue-600" />
+            <ChevronRightIcon className="h-5 text-brand-blue" />
           </Link>
         </div>
       </div>
