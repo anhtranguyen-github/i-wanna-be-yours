@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import '../theme/variables.css';
+
 /* Import Nunito for playful look */
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
 
@@ -166,11 +168,17 @@ Description: A sans-serif font with a condensed design, offering a more compact 
   }
 
   .btnPrimary {
-    @apply py-3 px-8 border text-white bg-primary font-medium border-primary rounded-md;
+    @apply py-3 px-8 text-white font-medium rounded-2xl transition-all duration-200 active:translate-y-[2px] active:shadow-none hover:-translate-y-[1px];
+    background-color: hsl(var(--primary));
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15), -4px -4px 8px rgba(255, 255, 255, 0.9);
   }
 
   .btnSecondary {
-    @apply py-3 px-8 mr-6 border text-primary font-medium border-primary rounded-md;
+    @apply py-3 px-8 mr-6 font-medium rounded-2xl transition-all duration-200 active:translate-y-[2px] active:shadow-none hover:-translate-y-[1px];
+    background-color: hsl(var(--surface-card));
+    color: hsl(var(--primary));
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1), -4px -4px 8px rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.5);
   }
 }
 
@@ -253,7 +261,8 @@ Description: A sans-serif font with a condensed design, offering a more compact 
   }
 
   body {
-    @apply bg-background text-foreground;
+    background-color: hsl(var(--background-default));
+    color: hsl(var(--text-default));
   }
 }
 
@@ -263,6 +272,8 @@ Description: A sans-serif font with a condensed design, offering a more compact 
 }
 
 * {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
