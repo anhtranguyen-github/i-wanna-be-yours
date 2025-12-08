@@ -61,6 +61,7 @@ export default function Header() {
             { label: "Kanji", href: "/content/kanji" },
             { label: "Radicals", href: "/content/radicals" },
             { label: "Kana", href: "/content/kana" },
+            { label: "View All", href: "/content" },
         ],
         experimental: [
             { label: "Songify Vocabulary", href: "/songify-vocabulary" },
@@ -68,7 +69,7 @@ export default function Header() {
     };
 
     return (
-        <header className="sticky top-0 z-50 w-full border-b-2 border-brand-dark bg-brand-cream dark:bg-gray-900 bg-opacity-95 backdrop-blur">
+        <header className="sticky top-0 z-50 w-full bg-opacity-90 backdrop-blur-md transition-colors duration-300" style={{ backgroundColor: 'hsla(var(--background-default), 0.8)' }}>
             <div className="container mx-auto px-4 h-16 grid grid-cols-[auto_1fr_auto] items-center gap-4">
                 {/* Left: Logo */}
                 <div className="flex justify-start">
