@@ -6,15 +6,15 @@ export default async function Page() {
     <div className="mx-auto max-w-screen-xl">
       {/* <p>{data.titles}</p> */}
 
-      <h1 className="text-3xl font-bold mb-4 text-gray-500 px-5">
+      <h1 className="text-3xl font-bold mb-4 px-5" style={{ color: 'hsl(var(--primary))' }}>
         Japanese grammar JLPT N5-N1:
       </h1>
 
-      <GrammarTitles lang="Japanese" pTag="JLPT_N5" slug="/japanese/grammarpoint"/>
-      <GrammarTitles lang="Japanese" pTag="JLPT_N4" slug="/japanese/grammarpoint"/>
-      <GrammarTitles lang="Japanese" pTag="JLPT_N3" slug="/japanese/grammarpoint"/>
-      <GrammarTitles lang="Japanese" pTag="JLPT_N2" slug="/japanese/grammarpoint"/>
-      <GrammarTitles lang="Japanese" pTag="JLPT_N1" slug="/japanese/grammarpoint"/>
+      <GrammarTitles lang="Japanese" pTag="JLPT_N5" slug="/japanese/grammarpoint" />
+      <GrammarTitles lang="Japanese" pTag="JLPT_N4" slug="/japanese/grammarpoint" />
+      <GrammarTitles lang="Japanese" pTag="JLPT_N3" slug="/japanese/grammarpoint" />
+      <GrammarTitles lang="Japanese" pTag="JLPT_N2" slug="/japanese/grammarpoint" />
+      <GrammarTitles lang="Japanese" pTag="JLPT_N1" slug="/japanese/grammarpoint" />
     </div>
   );
 }

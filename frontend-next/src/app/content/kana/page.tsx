@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import React from "react";
+import ClayCard from "@/components/ui/ClayCard";
 
 //import { useState } from "react";
 
@@ -181,25 +182,25 @@ export default function Home() {
     };
 
     return (
-      <div className="w-16 h-16" onClick={playAudio}>
+      <div className="w-16 h-16 group cursor-pointer" onClick={playAudio}>
         {/* Hover Control */}
         <div className="relative w-full h-full">
-          {/* Front Side */}
-          <div className="bg-slate-100 absolute inset-0 transition duration-75 ease-in-out transform hover:opacity-0 rounded-lg shadow-md flex items-center justify-center p-2 border border-gray-200">
-            <h5 className="text-2xl font-bold text-gray-900">{char}</h5>
-          </div>
-          {/* Back Side */}
-          <div className="bg-slate-300 absolute inset-0 transition duration-75 ease-in-out transform opacity-0 hover:opacity-100 rounded-lg shadow-md flex items-center justify-center p-2 border border-gray-200">
-            <h5 className="text-3xl text-gray-700">{romaji}</h5>
-          </div>
+          {/* Front Side - Visible by default, hidden on hover */}
+          <ClayCard className="absolute inset-0 transition-all duration-300 ease-in-out transform group-hover:opacity-0 group-hover:scale-75 !p-0 flex items-center justify-center border-none z-10">
+            <h5 className="text-2xl font-bold" style={{ color: 'hsl(var(--text-default))' }}>{char}</h5>
+          </ClayCard>
+          {/* Back Side - Hidden by default, visible on hover */}
+          <ClayCard className="absolute inset-0 transition-all duration-300 ease-in-out transform opacity-0 group-hover:opacity-100 !p-0 flex items-center justify-center border-none z-0" style={{ backgroundColor: 'hsl(var(--surface-sunken))' }}>
+            <h5 className="text-3xl font-light" style={{ color: 'hsl(var(--text-default))' }}>{romaji}</h5>
+          </ClayCard>
         </div>
       </div>
     );
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-4xl font-bold text-center mb-8 mt-8">
+    <div className="container mx-auto p-4 min-h-screen">
+      <h1 className="text-4xl font-bold text-center mb-8 mt-8" style={{ color: 'hsl(var(--primary))' }}>
         Learn Hiragana
       </h1>
       <div className="flex flex-wrap justify-center gap-4">
@@ -213,7 +214,7 @@ export default function Home() {
         ))}
       </div>
 
-      <h1 className="text-4xl font-bold text-center mb-8 mt-8">
+      <h1 className="text-4xl font-bold text-center mb-8 mt-8" style={{ color: 'hsl(var(--primary))' }}>
         Learn Katakana
       </h1>
       <div className="flex flex-wrap justify-center gap-4">
