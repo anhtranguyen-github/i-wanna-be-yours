@@ -7,10 +7,10 @@ interface TextFormattingOptionsProps {
 
 const TextFormattingOptions: React.FC<TextFormattingOptionsProps> = ({ inputMode, handleModeChange }) => {
   return (
-    <div className="p-4">
-      <p className="text-sm font-medium mb-2">Text Formatting Options</p>
-      <div className="flex space-x-2">
-        <label className="cursor-pointer">
+    <div className="flex flex-col space-y-2 mb-4">
+      <span className="text-sm font-bold text-brand-dark uppercase tracking-wider">Input Mode</span>
+      <div className="flex p-1 bg-brand-cream-dark/50 rounded-lg border-2 border-brand-dark w-fit">
+        <label className="cursor-pointer relative z-10">
           <input
             type="radio"
             value="book"
@@ -18,15 +18,18 @@ const TextFormattingOptions: React.FC<TextFormattingOptionsProps> = ({ inputMode
             onChange={handleModeChange}
             className="hidden"
           />
-          <span
-            className={`px-3 py-1 rounded-full transition-colors duration-300 ${
-              inputMode === 'book' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-800'
-            }`}
+          <div
+            className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-all duration-200 font-bold border-2 ${inputMode === 'book'
+                ? 'bg-brand-blue text-white border-brand-dark shadow-hard'
+                : 'bg-transparent text-brand-dark border-transparent hover:bg-black/5'
+              }`}
           >
-            Book/Paragraph
-          </span>
+            {/* Icon for Book can go here if imported */}
+            <span>Book / Paragraph</span>
+          </div>
         </label>
-        <label className="cursor-pointer">
+
+        <label className="cursor-pointer relative z-10 ml-2">
           <input
             type="radio"
             value="lyrics"
@@ -34,13 +37,15 @@ const TextFormattingOptions: React.FC<TextFormattingOptionsProps> = ({ inputMode
             onChange={handleModeChange}
             className="hidden"
           />
-          <span
-            className={`px-3 py-1 rounded-full transition-colors duration-300 ${
-              inputMode === 'lyrics' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-800'
-            }`}
+          <div
+            className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-all duration-200 font-bold border-2 ${inputMode === 'lyrics'
+                ? 'bg-brand-blue text-white border-brand-dark shadow-hard'
+                : 'bg-transparent text-brand-dark border-transparent hover:bg-black/5'
+              }`}
           >
-            Lyrics/Line by line
-          </span>
+            {/* Icon for Lyrics can go here */}
+            <span>Lyrics / Line by Line</span>
+          </div>
         </label>
       </div>
     </div>
