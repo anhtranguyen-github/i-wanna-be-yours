@@ -25,18 +25,22 @@ export default function Header() {
         setActive(!active);
     };
 
-    const menuItems = {
+    const menuItems: { [key: string]: MenuItem[] } = {
         tools: [
-            { label: "Text Parser", href: "/text-parser" },
-            { label: "YouTube Immersion", href: "/text-parser?type=youtube" },
-            { label: "Grammar Graph", href: "/grammar-graph" },
-            { label: "Translator", href: "/translate" },
-            { label: "Word Relations", href: "/word-relations" },
+            { label: "Text Parser", href: "/tools/text-parser" },
+            { label: "YouTube Immersion", href: "/tools/text-parser?type=youtube" },
+            { label: "Grammar Graph", href: "/tools/grammar-graph" },
+            { label: "Translator", href: "/tools/translate" },
+            { label: "Word Relations", href: "/tools/word-relations" },
+            { label: "Quick Kanji", href: "/tools/quick_kanji" },
+            { label: "Quick JLPT Vocab", href: "/tools/quick_vocab" },
         ],
         workspace: [
             { label: "AI Tutor", href: "/learning-workspace" },
             { label: "Auto Task", href: "/learning-workspace/auto-task" },
             { label: "Play Games", href: "/learning-workspace/play-games" },
+            { label: "Mnemonics", href: "/learning-workspace/kanji-mnemonics" },
+            { label: "SRS Flashcards", href: "/learning-workspace/flashcards" },
         ],
         library: [
             { label: "YouTube Library", href: "/podcasts" },
@@ -46,17 +50,17 @@ export default function Header() {
         ],
         content: [
             { label: "JLPT Grammar", href: "/content/grammarlist" },
-            { label: "Essential Verbs", href: "/content/vocabulary_selection/essential_verbs" },
-            { label: "JLPT N3 Vocab", href: "/content/vocabulary_selection/JLPT_N3" },
+            {
+                label: "Verbs",
+                href: "#",
+                subItems: [
+                    { label: "Essential Verbs", href: "/content/vocabulary_selection/essential_verbs" },
+                    { label: "JLPT N3 Vocab", href: "/content/vocabulary_selection/JLPT_N3" },
+                ]
+            },
             { label: "Kanji", href: "/content/kanji" },
             { label: "Radicals", href: "/content/radicals" },
-        ],
-        japanese: [
-            { label: "Mnemonics", href: "/japanese/kanji-mnemonics" },
-            { label: "SRS Flashcards", href: "/japanese/flashcards" },
-            { label: "Kana", href: "/japanese/kana" },
-            { label: "Quick Kanji", href: "/japanese/quick_kanji" },
-            { label: "Quick JLPT Vocab", href: "/japanese/quick_vocab" },
+            { label: "Kana", href: "/content/kana" },
         ],
         experimental: [
             { label: "Songify Vocabulary", href: "/songify-vocabulary" },
@@ -89,7 +93,6 @@ export default function Header() {
                         <Dropdown label="Workspace" items={menuItems.workspace} />
                         <Dropdown label="Tools" items={menuItems.tools} />
                         <Dropdown label="Library" items={menuItems.library} />
-                        <Dropdown label="Japanese" items={menuItems.japanese} />
                         <Dropdown label="Experimental" items={menuItems.experimental} />
 
                         <Link href={loggedIn ? "/user-dashboard" : "/login"} className="px-3 py-2 text-brand-dark hover:text-brand-blue hover:bg-brand-blue/10 rounded-md transition-colors">
@@ -164,7 +167,16 @@ export default function Header() {
                         <div className="border-t border-brand-dark/10 my-2"></div>
                         <p className="text-xs font-bold text-brand-dark/50 uppercase tracking-wider">Content</p>
                         {menuItems.content.map((item) => (
-                            <MobileLink key={item.href} href={item.href} onClick={showMenu}>{item.label}</MobileLink>
+                            item.subItems ? (
+                                <div key={item.label} className="pl-4 border-l-2 border-brand-dark/10 ml-1">
+                                    <p className="text-xs font-bold text-brand-dark/50 uppercase tracking-wider mb-1">{item.label}</p>
+                                    {item.subItems.map(sub => (
+                                        <MobileLink key={sub.href} href={sub.href} onClick={showMenu}>{sub.label}</MobileLink>
+                                    ))}
+                                </div>
+                            ) : (
+                                <MobileLink key={item.href} href={item.href} onClick={showMenu}>{item.label}</MobileLink>
+                            )
                         ))}
 
                         <MobileLink href={loggedIn ? "/user-dashboard" : "/login"} onClick={showMenu}>User Dashboard</MobileLink>
@@ -182,14 +194,9 @@ export default function Header() {
                         ))}
 
                         <div className="border-t border-brand-dark/10 my-2"></div>
+                        <div className="border-t border-brand-dark/10 my-2"></div>
                         <p className="text-xs font-bold text-brand-dark/50 uppercase tracking-wider">Library</p>
                         {menuItems.library.map((item) => (
-                            <MobileLink key={item.href} href={item.href} onClick={showMenu}>{item.label}</MobileLink>
-                        ))}
-
-                        <div className="border-t border-brand-dark/10 my-2"></div>
-                        <p className="text-xs font-bold text-brand-dark/50 uppercase tracking-wider">Japanese</p>
-                        {menuItems.japanese.map((item) => (
                             <MobileLink key={item.href} href={item.href} onClick={showMenu}>{item.label}</MobileLink>
                         ))}
 
@@ -209,7 +216,13 @@ export default function Header() {
     );
 }
 
-function Dropdown({ label, items }: { label: string; items: { label: string; href: string }[] }) {
+type MenuItem = {
+    label: string;
+    href: string;
+    subItems?: MenuItem[];
+};
+
+function Dropdown({ label, items }: { label: string; items: MenuItem[] }) {
     return (
         <DropdownMenu.Root>
             <DropdownMenu.Trigger className="font-bold text-brand-dark hover:text-brand-blue flex items-center space-x-1 outline-none">
@@ -222,14 +235,39 @@ function Dropdown({ label, items }: { label: string; items: { label: string; hre
             <DropdownMenu.Portal>
                 <DropdownMenu.Content className="min-w-[200px] bg-white dark:bg-gray-800 border-2 border-brand-dark rounded-lg p-2 shadow-xl z-50 animate-in fade-in slide-in-from-top-2 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=closed]:slide-out-to-top-2">
                     {items.map((item) => (
-                        <DropdownMenu.Item key={item.href} className="outline-none">
-                            <Link
-                                href={item.href}
-                                className="block px-3 py-2 text-sm font-medium text-brand-dark dark:text-gray-200 hover:bg-brand-blue/10 rounded transition-colors"
-                            >
-                                {item.label}
-                            </Link>
-                        </DropdownMenu.Item>
+                        item.subItems ? (
+                            <DropdownMenu.Sub key={item.label}>
+                                <DropdownMenu.SubTrigger className="flex w-full items-center justify-between px-3 py-2 text-sm font-medium text-brand-dark dark:text-gray-200 hover:bg-brand-blue/10 rounded transition-colors outline-none cursor-default">
+                                    {item.label}
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 ml-2">
+                                        <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
+                                    </svg>
+                                </DropdownMenu.SubTrigger>
+                                <DropdownMenu.Portal>
+                                    <DropdownMenu.SubContent className="min-w-[150px] bg-white dark:bg-gray-800 border-2 border-brand-dark rounded-lg p-2 shadow-xl z-50 animate-in fade-in slide-in-from-left-2 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=closed]:slide-out-to-left-2">
+                                        {item.subItems.map(subItem => (
+                                            <DropdownMenu.Item key={subItem.href} className="outline-none">
+                                                <Link
+                                                    href={subItem.href}
+                                                    className="block px-3 py-2 text-sm font-medium text-brand-dark dark:text-gray-200 hover:bg-brand-blue/10 rounded transition-colors"
+                                                >
+                                                    {subItem.label}
+                                                </Link>
+                                            </DropdownMenu.Item>
+                                        ))}
+                                    </DropdownMenu.SubContent>
+                                </DropdownMenu.Portal>
+                            </DropdownMenu.Sub>
+                        ) : (
+                            <DropdownMenu.Item key={item.href} className="outline-none">
+                                <Link
+                                    href={item.href}
+                                    className="block px-3 py-2 text-sm font-medium text-brand-dark dark:text-gray-200 hover:bg-brand-blue/10 rounded transition-colors"
+                                >
+                                    {item.label}
+                                </Link>
+                            </DropdownMenu.Item>
+                        )
                     ))}
                 </DropdownMenu.Content>
             </DropdownMenu.Portal>
