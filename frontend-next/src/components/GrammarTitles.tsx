@@ -7,7 +7,7 @@ interface GrammarTitlesProps {
   slug: string;
 }
 
-const GrammarTitles: React.FC<GrammarTitlesProps> = async ({ lang, pTag, slug}) => {
+const GrammarTitles: React.FC<GrammarTitlesProps> = async ({ lang, pTag, slug }) => {
   console.log(lang);
   console.log(pTag);
 
@@ -51,7 +51,7 @@ const GrammarTitles: React.FC<GrammarTitlesProps> = async ({ lang, pTag, slug}) 
           {titles.map((title: any, index: any) => (
             <Link
               key={index}
-              href={`${slug}/${encodeTitle(title)}`}
+              href={`/content/grammar_dashboard/${pTag}/${encodeTitle(title)}`}
               className="p-4 border rounded-md shadow-md bg-gray-100 hover:bg-blue-100 transition-all duration-300 ease-in-out transform hover:scale-105"
             >
               {title}
