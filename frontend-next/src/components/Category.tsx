@@ -112,7 +112,7 @@ export default function Category({
 
         <Series
           seriesHeader="JLPT N3 Grammar"
-          seriesLink="/japanese/grammar_selection/JLPT_N3"
+          seriesLink="/content/grammar_selection/JLPT_N3"
           level="Intermediate"
           seriesCourses="10"
           seriesImg={jlpt_n3_grammar}
@@ -120,21 +120,21 @@ export default function Category({
 
         <Series
           seriesHeader="JLPT N4 Grammar"
-          seriesLink="/japanese/grammar_selection/JLPT_N4"
+          seriesLink="/content/grammar_selection/JLPT_N4"
           level="Beginner"
           seriesCourses="2"
           seriesImg={jlpt_n4_grammar}
         />
         <Series
           seriesHeader="JLPT N5 Grammar"
-          seriesLink="/japanese/grammar_selection/JLPT_N5"
+          seriesLink="/content/grammar_selection/JLPT_N5"
           level="Elementary"
           seriesCourses="3"
           seriesImg={jlpt_n5_grammar}
         />
         <Series
           seriesHeader="JLPT N2 Grammar"
-          seriesLink="/japanese/grammar_selection/JLPT_N2"
+          seriesLink="/content/grammar_selection/JLPT_N2"
           level="Advanced"
           seriesCourses="2"
           seriesImg={jlpt_n2_grammar}
@@ -142,7 +142,7 @@ export default function Category({
 
         <Series
           seriesHeader="JLPT N1 Grammar"
-          seriesLink="/japanese/grammar_selection/JLPT_N1"
+          seriesLink="/content/grammar_selection/JLPT_N1"
           level="Expert"
           seriesCourses="2"
           seriesImg={jlpt_universal_02}
@@ -150,7 +150,7 @@ export default function Category({
 
         <Series
           seriesHeader="JLPT N3 Vocabulary"
-          seriesLink="/japanese/vocabulary_selection/JLPT_N3"
+          seriesLink="/content/vocabulary_selection/JLPT_N3"
           level="Intermediate"
           seriesCourses="5"
           seriesImg={jlpt_n3_vocabulary}
@@ -178,7 +178,7 @@ export default function Category({
 
         <Series
           seriesHeader="Essential Japanese JLPT Kanji"
-          seriesLink="/japanese/kanji"
+          seriesLink="/content/kanji"
           level="Intermediate"
           seriesCourses="5"
           seriesImg={jlpt_universal_07}
@@ -186,7 +186,7 @@ export default function Category({
 
         <Series
           seriesHeader="Essential Japanese Verbs"
-          seriesLink="/japanese/vocabulary_selection/essential_verbs"
+          seriesLink="/content/vocabulary_selection/essential_verbs"
           level="Intermediate"
           seriesCourses="5"
           seriesImg={jlpt_universal_01}

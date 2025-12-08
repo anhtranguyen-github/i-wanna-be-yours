@@ -44,15 +44,17 @@ export default function Header() {
             { label: "My Articles", href: "/custom-text" },
             { label: "My Vocabulary", href: "/my-vocabulary" },
         ],
+        content: [
+            { label: "JLPT Grammar", href: "/content/grammarlist" },
+            { label: "Essential Verbs", href: "/content/vocabulary_selection/essential_verbs" },
+            { label: "JLPT N3 Vocab", href: "/content/vocabulary_selection/JLPT_N3" },
+            { label: "Kanji", href: "/content/kanji" },
+            { label: "Radicals", href: "/content/radicals" },
+        ],
         japanese: [
-            { label: "JLPT Grammar", href: "/japanese/grammarlist" },
-            { label: "Essential Verbs", href: "/japanese/vocabulary_selection/essential_verbs" },
-            { label: "JLPT N3 Vocab", href: "/japanese/vocabulary_selection/JLPT_N3" },
-            { label: "Kanji", href: "/japanese/kanji" },
             { label: "Mnemonics", href: "/japanese/kanji-mnemonics" },
             { label: "SRS Flashcards", href: "/japanese/flashcards" },
             { label: "Kana", href: "/japanese/kana" },
-            { label: "Radicals", href: "/radicals" },
             { label: "Quick Kanji", href: "/japanese/quick_kanji" },
             { label: "Quick JLPT Vocab", href: "/japanese/quick_vocab" },
         ],
@@ -82,10 +84,8 @@ export default function Header() {
                         <Link href="/" className="px-3 py-2 text-brand-dark hover:text-brand-blue hover:bg-brand-blue/10 rounded-md transition-colors">
                             Home
                         </Link>
-                        <Link href="/content" className="px-3 py-2 text-brand-dark hover:text-brand-blue hover:bg-brand-blue/10 rounded-md transition-colors">
-                            Content
-                        </Link>
 
+                        <Dropdown label="Content" items={menuItems.content} />
                         <Dropdown label="Workspace" items={menuItems.workspace} />
                         <Dropdown label="Tools" items={menuItems.tools} />
                         <Dropdown label="Library" items={menuItems.library} />
@@ -160,7 +160,13 @@ export default function Header() {
                         </div>
 
                         <MobileLink href="/" onClick={showMenu}>Home</MobileLink>
-                        <MobileLink href="/content" onClick={showMenu}>Content</MobileLink>
+
+                        <div className="border-t border-brand-dark/10 my-2"></div>
+                        <p className="text-xs font-bold text-brand-dark/50 uppercase tracking-wider">Content</p>
+                        {menuItems.content.map((item) => (
+                            <MobileLink key={item.href} href={item.href} onClick={showMenu}>{item.label}</MobileLink>
+                        ))}
+
                         <MobileLink href={loggedIn ? "/user-dashboard" : "/login"} onClick={showMenu}>User Dashboard</MobileLink>
 
                         <div className="border-t border-brand-dark/10 my-2"></div>
