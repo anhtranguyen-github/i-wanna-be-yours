@@ -5,9 +5,10 @@ from services.conversation_service import ConversationService
 from models.message import ChatMessage
 from models.artifact import MessageArtifact
 from models.action import ProposedTask, Suggestion
-from models.content.flashcard import FlashcardSet
-from models.content.mindmap import Mindmap
+from models.content.flashcard import FlashcardSet, Flashcard
+from models.content.mindmap import Mindmap, MindmapNode
 from models.content.audio import AudioContent
+from models.content.vocabulary import VocabularySet, VocabularyItem
 from database.database import db
 
 class AgentService:
@@ -69,6 +70,7 @@ class AgentService:
         content_text = debug_response.get("content", "")
         tasks_data = debug_response.get("tasks", [])
         suggestions_data = debug_response.get("suggestions", [])
+        artifacts_data = debug_response.get("artifacts", [])
 
         # create assistant message container
         asst_msg = ChatMessage(
@@ -78,23 +80,119 @@ class AgentService:
         )
         db.session.add(asst_msg)
         db.session.commit()
-
-        # Mock Artifact (Flashcard)
-        # In real logic, this comes from LLM
-        # We map DB Artifact -> Pydantic ResponseItemDTO
         
+        response_items = [
+            ResponseItemDTO(
+                responseId=str(asst_msg.id),
+                type="text",
+                content=content_text
+            )
+        ]
+
+        # Process Artifacts
+        for art in artifacts_data:
+            a_type = art.get("type")
+            a_title = art.get("title")
+            a_data = art.get("data")
+            
+            new_artifact = MessageArtifact(
+                message_id=asst_msg.id,
+                type=a_type,
+                title=a_title
+            )
+            
+            content_dto = ArtifactContent(title=a_title)
+            
+            if a_type == "flashcard":
+                fc_set = FlashcardSet(title=a_title)
+                db.session.add(fc_set)
+                db.session.flush()
+                
+                cards_list = []
+                for c in a_data.get("cards", []):
+                    card = Flashcard(set_id=fc_set.id, front=c['front'], back=c['back'])
+                    db.session.add(card)
+                    cards_list.append(c)
+                
+                new_artifact.flashcard_set_id = fc_set.id
+                content_dto.flashcards = {"id": fc_set.id, "title": a_title, "cards": cards_list}
+
+            elif a_type == "mindmap":
+                mm = Mindmap(title=a_title)
+                db.session.add(mm)
+                db.session.flush()
+                
+                root_data = a_data.get("root", {})
+                root_node = MindmapNode(mindmap_id=mm.id, label=root_data.get("label", "Root"))
+                db.session.add(root_node)
+                db.session.flush()
+                
+                nodes_list = a_data.get("nodes", [])
+                children_dtos = []
+                for n in nodes_list:
+                    child = MindmapNode(mindmap_id=mm.id, label=n['label'], parent_node_id=root_node.id)
+                    db.session.add(child)
+                    children_dtos.append({'id': -1, 'label': n['label'], 'parentId': root_node.id, 'children': []})
+                
+                new_artifact.mindmap_id = mm.id
+                content_dto.mindmap = {
+                    "id": mm.id, 
+                    "title": a_title, 
+                    "nodes": [{
+                        "id": root_node.id, 
+                        "label": root_node.label, 
+                        "parentId": None,
+                        "children": children_dtos
+                    }]
+                }
+
+            elif a_type == "task":
+                from models.action import ProposedTask
+                t_data = a_data.get("task", {})
+                new_task = ProposedTask(
+                    message_id=asst_msg.id,
+                    title=t_data.get("title"),
+                    prompt=t_data.get("description"),
+                    task_external_id=f"task-{asst_msg.id}"
+                )
+                db.session.add(new_task)
+                db.session.flush()
+                
+                new_artifact.task_id = new_task.id
+                content_dto.task = new_task.to_dict()
+
+            elif a_type == "vocabulary":
+                vs = VocabularySet(title=a_title)
+                db.session.add(vs)
+                db.session.flush()
+                
+                items_list = []
+                for i in a_data.get("items", []):
+                    item = VocabularyItem(set_id=vs.id, word=i['word'], definition=i['definition'], example=i.get('example'))
+                    db.session.add(item)
+                    items_list.append(i)
+
+                new_artifact.vocabulary_set_id = vs.id
+                content_dto.vocabulary = {"id": vs.id, "title": a_title, "items": items_list}
+
+            db.session.add(new_artifact)
+            db.session.flush()
+            
+            resp_item = ResponseItemDTO(
+                responseId=str(new_artifact.id),
+                type=a_type,
+                content=content_dto
+            )
+            response_items.append(resp_item)
+
+        db.session.commit()
+
         # Return strict AgentResponse
         return AgentResponse(
             sessionId=request_data.session_id,
             userId=request_data.user_id,
             status="completed",
-            responses=[
-                ResponseItemDTO(
-                    responseId=str(asst_msg.id),
-                    type="text",
-                    content=content_text
-                )
-            ], 
+            responses=response_items, 
             proposedTasks=tasks_data,
             suggestions=suggestions_data
         )

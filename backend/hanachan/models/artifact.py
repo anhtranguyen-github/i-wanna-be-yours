@@ -3,6 +3,8 @@ from database.database import db
 import models.content.flashcard
 import models.content.mindmap
 import models.content.audio
+import models.content.vocabulary
+import models.action
 
 class MessageArtifact(db.Model):
     __tablename__ = 'message_artifacts'
@@ -10,13 +12,15 @@ class MessageArtifact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     message_id = db.Column(db.Integer, db.ForeignKey('chat_messages.id'), nullable=False)
     artifact_external_id = db.Column(db.String(120), nullable=True)
-    type = db.Column(db.String(50), nullable=True) # flashcard, mindmap, audio
+    type = db.Column(db.String(50), nullable=True) # flashcard, mindmap, audio, vocabulary, task
     
     # Content pointers (Composition approach)
     # Using string references for tables mostly solves order, but models must be registered
     flashcard_set_id = db.Column(db.Integer, db.ForeignKey('flashcard_sets.id'), nullable=True)
     mindmap_id = db.Column(db.Integer, db.ForeignKey('mindmaps.id'), nullable=True)
     audio_content_id = db.Column(db.Integer, db.ForeignKey('audio_content.id'), nullable=True)
+    vocabulary_set_id = db.Column(db.Integer, db.ForeignKey('vocabulary_sets.id'), nullable=True)
+    task_id = db.Column(db.Integer, db.ForeignKey('proposed_tasks.id'), nullable=True)
 
     # Legacy / Common fields
     title = db.Column(db.String(255), nullable=True)
@@ -26,6 +30,8 @@ class MessageArtifact(db.Model):
     flashcard_set = db.relationship('FlashcardSet', backref='artifacts', uselist=False)
     mindmap = db.relationship('Mindmap', backref='artifacts', uselist=False)
     audio_content = db.relationship('AudioContent', backref='artifacts', uselist=False)
+    vocabulary_set = db.relationship('VocabularySet', backref='artifacts', uselist=False)
+    task = db.relationship('ProposedTask', backref='artifacts', uselist=False)
 
     citations = db.relationship('Citation', backref='artifact', cascade="all, delete-orphan")
 
@@ -37,6 +43,10 @@ class MessageArtifact(db.Model):
             content_data['mindmap'] = self.mindmap.to_dict()
         if self.audio_content:
             content_data['audio'] = self.audio_content.to_dict()
+        if self.vocabulary_set:
+            content_data['vocabulary'] = self.vocabulary_set.to_dict()
+        if self.task:
+            content_data['task'] = self.task.to_dict()
         
         content_data['title'] = self.title
         content_data['summary'] = self.summary

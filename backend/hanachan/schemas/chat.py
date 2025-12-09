@@ -40,6 +40,8 @@ class ArtifactContent(BaseModel):
     flashcards: Optional[Dict[str, Any]] = None 
     mindmap: Optional[Dict[str, Any]] = None
     audio: Optional[List[Dict[str, str]]] = [] # List of {text, url}
+    vocabulary: Optional[Dict[str, Any]] = None
+    task: Optional[Dict[str, Any]] = None
 
 class ResponseItemDTO(BaseModel):
     responseId: Optional[str] = None
