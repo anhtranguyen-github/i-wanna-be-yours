@@ -6,7 +6,8 @@ import { Inter } from "next/font/google";
 // import Nav from "@/components/Nav";
 // import DashboardNav from "@/components/DashboardNav";
 // import Sidebar from "@/components/Sidebar";
-import Header from "@/components/Header";
+// import Header from "@/components/Header";
+import Sidebar from "@/components/Sidebar";
 import Footer from "@/components/Footer";
 import CookieConsent from "@/components/CookieConsent";
 
@@ -63,12 +64,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Head tags removed; see metadata above */}
         <body className={inter.className}>
 
-          {/* Page Layout - Redesigned: Single Column with Top Header */}
-          <div className="flex flex-col h-screen overflow-hidden">
-            <Header />
-            <div className="flex-1 overflow-auto bg-brand-cream/30 dark:bg-gray-950">
-              {children}
-              <Footer />
+          {/* Page Layout - Redesigned: Fixed Sidebar + Main Content */}
+          <div className="flex bg-brand-cream/30 dark:bg-gray-950 min-h-screen">
+            <Sidebar />
+            <div className="flex-1 ml-24 flex flex-col min-h-screen transition-all duration-300">
+              <div className="flex-1 overflow-auto">
+                {children}
+                <Footer />
+              </div>
             </div>
           </div>
           <CookieConsent />

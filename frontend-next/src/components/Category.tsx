@@ -3,7 +3,7 @@ import { ChevronRightIcon } from "@heroicons/react/24/solid";
 // import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import Image from "next/image";
-import ClayCard from "./ui/ClayCard";
+import { ClayCard } from "@/components/ui/clay-card";
 
 
 import jlpt_universal_01 from "@public/img/jlpt_universal_01.jpg";

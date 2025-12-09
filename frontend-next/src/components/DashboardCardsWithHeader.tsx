@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image, { StaticImageData } from "next/image";
-import ClayCard from "./ui/ClayCard";
+import { ClayCard } from "@/components/ui/clay-card";
 
 // we need this for small logo in the card
 import jlpt_universal_01 from "@public/img/jlpt_universal_01.jpg";
@@ -59,7 +59,7 @@ const DashboardCardsWithHeader = ({
                   <p className="text-sm text-gray-500 leading-relaxed line-clamp-2">{card.description}</p>
                 )}
               </div>
-              
+
               <div className="flex items-center pt-4">
                 <Link href={card.link}>
                   <button className="px-5 py-2.5 bg-brand-blue text-white text-sm font-bold rounded-xl shadow-md hover:bg-brand-blue/90 hover:shadow-lg transition-all active:scale-95">
@@ -68,7 +68,7 @@ const DashboardCardsWithHeader = ({
                 </Link>
               </div>
             </div>
-            
+
             <div className="w-full md:w-1/3 relative h-48 md:h-auto">
               <Image
                 alt={card.name}

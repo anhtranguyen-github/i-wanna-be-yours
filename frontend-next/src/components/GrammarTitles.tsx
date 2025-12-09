@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import ClayCard from "./ui/ClayCard";
+import { ClayCard } from "@/components/ui/clay-card";
 
 interface GrammarTitlesProps {
   lang: string;

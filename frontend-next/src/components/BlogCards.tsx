@@ -1,5 +1,5 @@
 import Link from "next/link";
-import ClayCard from "./ui/ClayCard";
+import { ClayCard } from "@/components/ui/clay-card";
 
 interface BlogCardProps {
   id: string;

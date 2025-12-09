@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import React from "react";
-import ClayCard from "@/components/ui/ClayCard";
+import { ClayCard } from "@/components/ui/clay-card";
 
 //import { useState } from "react";
 
