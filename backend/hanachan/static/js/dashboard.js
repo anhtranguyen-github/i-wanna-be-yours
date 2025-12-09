@@ -5,6 +5,7 @@ const state = {
     userId: 'user-default', // TODO: Auth?
     sessionId: null, // Current Conversation ID (Database ID)
     resources: [], // Array of {id, title}
+    artifacts: [], // Array of artifact objects
     isProcessing: false
 };
 
@@ -103,6 +104,18 @@ function setupEventListeners() {
     DOM.resourceSearch.addEventListener('input', debounce((e) => {
         searchResources(e.target.value);
     }, 300));
+
+    // History Search
+    document.getElementById('history-search').addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase();
+        document.querySelectorAll('.history-item').forEach(item => {
+            // Skip if it's the active class logic or resource item reuse
+            if (item.classList.contains('resource-item')) return;
+
+            const text = item.textContent.toLowerCase();
+            item.style.display = text.includes(query) ? 'block' : 'none';
+        });
+    });
 }
 
 // Debounce util
@@ -123,6 +136,8 @@ function debounce(func, wait) {
 function resetView() {
     state.sessionId = null;
     state.resources = [];
+    state.artifacts = [];
+    renderArtifactList(); // Clear list
     DOM.chatFeed.innerHTML = `
         <div class="empty-state">
             <h1>How can I help you today?</h1>
@@ -182,9 +197,21 @@ async function loadConversation(id) {
 
         // Render
         DOM.chatFeed.innerHTML = '';
+        state.artifacts = []; // Reset artifacts state
+
         data.history.forEach(msg => {
             appendMessage(msg.role, msg.content, false, msg.attachments);
+
+            // Collect artifacts from history
+            if (msg.artifacts && msg.artifacts.length > 0) {
+                msg.artifacts.forEach(a => {
+                    // Normalize structure if needed, backend sends formatted dict
+                    state.artifacts.push(a);
+                });
+            }
         });
+
+        renderArtifactList();
 
     } catch (err) {
         console.error("Failed to load conversation", err);
@@ -203,7 +230,7 @@ async function handleSend() {
 
     // Optimistic Render
     const currentResources = [...state.resources]; // Copy for processing
-    
+
     // Clear resources from tray IMMEDIATELY to prevent visual lag
     state.resources = [];
     updateResourceTray();
@@ -303,12 +330,22 @@ async function handleSend() {
         const invokeData = await invokeRes.json();
 
         // Extract text response
-        let aiText = "I'm sorry, I couldn't process that.";
-        let tasks = [];
-        let suggestions = [];
+        // Extract text response
+        let aiText = "";
+        let artifacts = [];
 
-        if (invokeData.responses && invokeData.responses.length > 0) {
-            aiText = invokeData.responses[0].content;
+        if (invokeData.responses) {
+            invokeData.responses.forEach(resp => {
+                if (resp.type === 'text') {
+                    aiText += (typeof resp.content === 'string' ? resp.content : JSON.stringify(resp.content)) + "\n\n";
+                } else {
+                    artifacts.push(resp);
+                }
+            });
+        }
+
+        if (!aiText && artifacts.length === 0) {
+            aiText = "I'm sorry, I couldn't process that.";
         }
 
         if (invokeData.proposedTasks) {
@@ -319,8 +356,37 @@ async function handleSend() {
             suggestions = invokeData.suggestions;
         }
 
-        // Simulate Streaming
-        await typeText(aiMessageDiv.querySelector('.message-content'), aiText);
+        await typeText(aiMessageDiv.querySelector('.message-content'), aiText.trim());
+
+        // Render Artifact Buttons
+        if (artifacts.length > 0) {
+            const msgContent = aiMessageDiv.querySelector('.message-content');
+            const artifactContainer = document.createElement('div');
+            artifactContainer.style.marginTop = '1rem';
+
+            artifacts.forEach(art => {
+                const btn = document.createElement('button');
+                btn.className = 'suggestion-btn'; // Reuse style
+                btn.textContent = `View ${art.type}: ${art.content.title || 'Untitled'}`;
+                btn.onclick = () => openArtifact(art);
+                btn.style.marginTop = '8px';
+                btn.style.marginRight = '8px';
+                btn.style.border = '1px solid var(--text-primary)';
+
+                artifactContainer.appendChild(btn);
+            });
+            msgContent.appendChild(artifactContainer);
+
+            // Auto open first artifact? No, let user explore list or click button.
+            // Just update list
+            artifacts.forEach(a => {
+                state.artifacts.push(a);
+            });
+            renderArtifactList();
+
+            // If sidebar is open, user sees new items. 
+            // If closed, they see the notification buttons in chat.
+        }
 
         // Render Tasks & Suggestions
         if (tasks.length > 0 || suggestions.length > 0) {
@@ -444,7 +510,7 @@ async function handleFiles(files) {
     // Show loading state in tray if generic logic allows, or just processing flag
     // For now, prompt user it's loading if needed, or rely on fast client-side read.
     // Let's add a visual placeholder to tray while reading.
-    
+
     // Create placeholders
     const placeholders = [];
     for (let i = 0; i < files.length; i++) {
@@ -457,45 +523,45 @@ async function handleFiles(files) {
     DOM.sendBtn.textContent = 'Reading...';
 
     for (const file of files) {
-    // Upload files to /resources/
-    // This is "Mock" logic mostly as we need to support file upload endpoints.
-    // But the requirement says "Resource Tray".
+        // Upload files to /resources/
+        // This is "Mock" logic mostly as we need to support file upload endpoints.
+        // But the requirement says "Resource Tray".
 
-    for (const file of files) {
-        try {
-            let content;
-            let type = 'document';
+        for (const file of files) {
+            try {
+                let content;
+                let type = 'document';
 
-            // Simple check for text files
-            if (file.type.startsWith('text/') || file.name.endsWith('.md') || file.name.endsWith('.txt')) {
-                content = await file.text();
-            } else {
-                // For images, PDF, etc., convert to Base64
-                content = await new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onload = () => resolve(reader.result);
-                    reader.onerror = reject;
-                    reader.readAsDataURL(file);
+                // Simple check for text files
+                if (file.type.startsWith('text/') || file.name.endsWith('.md') || file.name.endsWith('.txt')) {
+                    content = await file.text();
+                } else {
+                    // For images, PDF, etc., convert to Base64
+                    content = await new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result);
+                        reader.onerror = reject;
+                        reader.readAsDataURL(file);
+                    });
+                    type = file.type.startsWith('image/') ? 'image' : 'file';
+                }
+
+                // Defer upload: Store in state directly
+                state.resources.push({
+                    // Temporary ID or undefined ID indicates new
+                    isNew: true,
+                    title: file.name,
+                    type: type,
+                    content: content
                 });
-                type = file.type.startsWith('image/') ? 'image' : 'file';
+
+            } catch (err) {
+                console.error("Failed to read " + file.name, err);
+                alert(`Failed to read ${file.name}: ${err.message}`);
             }
-
-            // Defer upload: Store in state directly
-            state.resources.push({
-                // Temporary ID or undefined ID indicates new
-                isNew: true,
-                title: file.name,
-                type: type,
-                content: content
-            });
-
-        } catch (err) {
-            console.error("Failed to read " + file.name, err);
-            alert(`Failed to read ${file.name}: ${err.message}`);
         }
     }
-    }
-    
+
     DOM.sendBtn.disabled = false;
     DOM.sendBtn.textContent = 'send'; // Icon usually, but logic might vary. reset to original?
     // Actually sendBtn usually has an icon. Let's just reset disabled.
@@ -505,7 +571,7 @@ async function handleFiles(files) {
     DOM.sendBtn.innerHTML = '<span class="material-icons-round">arrow_upward</span>';
 
     updateResourceTray();
-    
+
     // Do NOT refresh sidebar list here as per requirement
     // await searchResources(DOM.resourceSearch.value || '');
 }
@@ -726,4 +792,244 @@ function renderRichContent(container, tasks, suggestions) {
 
     container.appendChild(richContainer);
     scrollToBottom();
+}
+
+
+// --- Right Sidebar Logic ---
+window.toggleLeftSidebar = () => {
+    const sb = document.querySelector('.sidebar');
+    sb.classList.toggle('collapsed');
+};
+
+window.toggleRightSidebar = () => {
+    const rs = document.getElementById('right-sidebar');
+    rs.classList.toggle('hidden');
+    // Default to list view on open if no specific intent?
+    if (!rs.classList.contains('hidden')) {
+        showArtifactList();
+    }
+};
+
+window.showArtifactList = () => {
+    document.getElementById('rs-list-view').classList.remove('hidden');
+    document.getElementById('rs-detail-view').classList.add('hidden');
+    document.getElementById('rs-back-btn').classList.add('hidden');
+    document.getElementById('rs-title').textContent = 'ARTIFACTS';
+};
+
+function renderArtifactList() {
+    const container = document.getElementById('rs-list-container');
+    const empty = document.getElementById('rs-empty-state');
+
+    container.innerHTML = '';
+
+    if (state.artifacts.length === 0) {
+        empty.style.display = 'block';
+        return;
+    }
+    empty.style.display = 'none';
+
+    // Reverse to show newest first? Or oldest? Newest usually better.
+    [...state.artifacts].reverse().forEach((art, index) => {
+        // Use original index for stability if needed, or object ref
+        const el = document.createElement('div');
+        el.className = 'rs-list-item';
+
+        let icon = 'article';
+        if (art.type === 'mindmap') icon = 'account_tree';
+        else if (art.type === 'flashcard') icon = 'style';
+        else if (art.type === 'vocabulary') icon = 'menu_book';
+        else if (art.type === 'task') icon = 'check_circle';
+
+        let title = art.content ? art.content.title : (art.title || 'Untitled');
+
+        el.innerHTML = `
+            <span class="material-icons-round">${icon}</span>
+            <div class="rs-list-info">
+                <div class="rs-list-title">${title}</div>
+                <div class="rs-list-type">${art.type}</div>
+            </div>
+            <span class="material-icons-round" style="font-size: 1rem;">chevron_right</span>
+        `;
+
+        el.onclick = () => openArtifact(art);
+        container.appendChild(el);
+    });
+}
+
+window.openArtifact = (artifact) => {
+    const rs = document.getElementById('right-sidebar');
+    const rsTitle = document.getElementById('rs-title');
+    const rsContent = document.getElementById('rs-detail-view');
+
+    // Ensure sidebar is open
+    rs.classList.remove('hidden');
+
+    // Switch to detail view
+    document.getElementById('rs-list-view').classList.add('hidden');
+    rsContent.classList.remove('hidden');
+    document.getElementById('rs-back-btn').classList.remove('hidden');
+
+    rsTitle.textContent = (artifact.type || 'Artifact').toUpperCase();
+
+    rsContent.innerHTML = ''; // Clear
+
+    // Render based on type
+    const data = artifact.content;
+    const type = artifact.type;
+
+    if (type === 'mindmap') { // Handle both backend DTO and raw mock structure if varied
+        renderMindmap(rsContent, data.mindmap || data);
+    } else if (type === 'flashcard') {
+        renderFlashcards(rsContent, data.flashcards || data);
+    } else if (type === 'vocabulary') {
+        renderVocabulary(rsContent, data.vocabulary || data);
+    } else if (type === 'task') {
+        renderTasksArtifact(rsContent, data.task || data);
+    } else {
+        rsContent.textContent = "Unsupported artifact type: " + type;
+    }
+};
+
+function renderMindmap(container, data) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'mindmap-container';
+    const title = document.createElement('h3');
+    title.textContent = data.title;
+    title.style.marginBottom = '10px';
+    wrapper.appendChild(title);
+
+    if (data.nodes) {
+        data.nodes.forEach(root => {
+            renderNodeRecursive(wrapper, root, true);
+        });
+    }
+    container.appendChild(wrapper);
+}
+
+function renderNodeRecursive(container, node, isRoot) {
+    const el = document.createElement('div');
+    el.className = `mindmap-node ${isRoot ? 'root' : 'child'}`;
+    el.textContent = node.label;
+    container.appendChild(el);
+
+    if (node.children) {
+        node.children.forEach(child => renderNodeRecursive(container, child, false));
+    }
+}
+
+function renderTasksArtifact(container, data) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'rs-task-item';
+
+    wrapper.innerHTML = `
+        <span class="material-icons-round rs-task-check">radio_button_unchecked</span>
+        <div class="rs-task-text">
+            <div style="font-weight: 500;">${data.title}</div>
+            <div style="font-size: 0.85rem; color: var(--text-secondary);">${data.prompt || ''}</div>
+        </div>
+    `;
+
+    const check = wrapper.querySelector('.rs-task-check');
+    check.onclick = () => {
+        if (check.textContent === 'radio_button_unchecked') {
+            check.textContent = 'check_circle';
+            check.classList.add('checked');
+        } else {
+            check.textContent = 'radio_button_unchecked';
+            check.classList.remove('checked');
+        }
+    };
+
+    container.appendChild(wrapper);
+}
+
+function renderFlashcards(container, data) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'flashcard-container';
+
+    // Add title
+    const title = document.createElement('h3');
+    title.textContent = data.title;
+    wrapper.appendChild(title);
+
+    if (data.cards) {
+        data.cards.forEach(card => {
+            const el = document.createElement('div');
+            el.className = 'flashcard';
+            // Flip logic simple: click to toggle text
+            el.innerHTML = `
+                <span class="flashcard-label">Front</span>
+                <div class="flashcard-content">${card.front}</div>
+            `;
+            el.onclick = () => {
+                const content = el.querySelector('.flashcard-content');
+                const label = el.querySelector('.flashcard-label');
+                if (label.textContent === 'Front') {
+                    label.textContent = 'Back';
+                    content.textContent = card.back;
+                    el.style.background = 'var(--bg-hover)';
+                } else {
+                    label.textContent = 'Front';
+                    content.textContent = card.front;
+                    el.style.background = 'var(--bg-composer)';
+                }
+            };
+            wrapper.appendChild(el);
+        });
+
+        // Actions
+        const actions = document.createElement('div');
+        actions.style.marginTop = 'var(--space-md)';
+        actions.style.display = 'flex';
+        actions.style.gap = 'var(--space-sm)';
+
+        const addBtn = document.createElement('button');
+        addBtn.className = 'btn-primary-icon';
+        addBtn.innerHTML = '<span class="material-icons-round">bookmark_add</span><span>Save to Library</span>';
+        addBtn.onclick = () => alert("Saved flashcard set to library!");
+
+        actions.appendChild(addBtn);
+        wrapper.appendChild(actions);
+    }
+
+    container.appendChild(wrapper);
+}
+
+function renderVocabulary(container, data) {
+    const wrapper = document.createElement('div');
+    wrapper.style.display = 'flex';
+    wrapper.style.flexDirection = 'column';
+    wrapper.style.gap = 'var(--space-sm)';
+
+    // Add title
+    const title = document.createElement('h3');
+    title.textContent = data.title;
+    wrapper.appendChild(title);
+
+    if (data.items) {
+        data.items.forEach(item => {
+            const el = document.createElement('div');
+            el.className = 'vocab-item';
+            el.innerHTML = `
+                <span class="vocab-word">${item.word}</span>
+                <span class="vocab-def">${item.definition}</span>
+                <span class="vocab-ex">"${item.example || ''}"</span>
+            `;
+            wrapper.appendChild(el);
+        });
+
+        // Actions
+        const actions = document.createElement('div');
+        actions.style.marginTop = 'var(--space-sm)';
+
+        const addBtn = document.createElement('button');
+        addBtn.className = 'btn-primary-icon';
+        addBtn.innerHTML = '<span class="material-icons-round">bookmark_add</span><span>Save Vocabulary</span>';
+        addBtn.onclick = () => alert("Saved vocabulary to library!");
+
+        actions.appendChild(addBtn);
+        wrapper.appendChild(actions);
+    }
+    container.appendChild(wrapper);
 }

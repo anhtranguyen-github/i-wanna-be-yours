@@ -36,6 +36,10 @@
                         <span class="material-icons-round arrow-icon">expand_more</span>
                     </div>
                     <div class="accordion-body">
+                        <div style="padding: 0 var(--space-sm) var(--space-sm) var(--space-sm);">
+                            <input type="text" id="history-search" placeholder="Search history..."
+                                style="width: 100%; padding: 8px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); background: var(--bg-app); color: var(--text-primary); font-size: 0.9rem;">
+                        </div>
                         <div class="history-container">
                             <div class="history-group">
                                 <div class="group-label">Today</div>
@@ -79,6 +83,16 @@
 
         <!-- Main Chat Area -->
         <main class="main-content">
+            <!-- Sidebar Toggles -->
+            <button id="toggle-left-sidebar" class="sidebar-toggle-btn left" onclick="toggleLeftSidebar()"
+                title="Toggle Sidebar">
+                <span class="material-icons-round">menu</span>
+            </button>
+            <button id="toggle-right-sidebar" class="sidebar-toggle-btn right" onclick="toggleRightSidebar()"
+                title="Toggle Artifacts">
+                <span class="material-icons-round">space_dashboard</span>
+            </button>
+
             <div id="drag-overlay" class="drag-overlay hidden">
                 <div class="drag-content">
                     <span class="material-icons-round">file_upload</span>
@@ -136,6 +150,33 @@
                 </div>
             </div>
         </main>
+
+        <!-- Right Sidebar (Dynamic) -->
+        <aside class="right-sidebar hidden" id="right-sidebar">
+            <div class="rs-header">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <button id="rs-back-btn" class="rs-close-btn hidden" onclick="showArtifactList()"
+                        title="Back to List">
+                        <span class="material-icons-round">arrow_back</span>
+                    </button>
+                    <span class="rs-title" id="rs-title">Artifacts</span>
+                </div>
+                <button class="rs-close-btn" onclick="toggleRightSidebar()">
+                    <span class="material-icons-round">close</span>
+                </button>
+            </div>
+
+            <!-- List View -->
+            <div class="rs-content" id="rs-list-view">
+                <div class="empty-resources" id="rs-empty-state">No artifacts generated yet.</div>
+                <div id="rs-list-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
+            </div>
+
+            <!-- Detail View -->
+            <div class="rs-content hidden" id="rs-detail-view">
+                <!-- Artifact content injected here -->
+            </div>
+        </aside>
     </div>
 
     <!-- Scripts -->
