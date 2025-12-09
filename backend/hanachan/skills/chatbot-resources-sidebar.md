@@ -43,6 +43,9 @@
     *   **Commit:** Context resources are only persisted to the database (and thus the Resources list) when the user sends the associated message.
     *   **UX:** This prevents "orphan" resources if a user uploads a file but then abandons the message.
     *   **Refresh:** The resource list sidebar is refreshed **after** the message send transaction is complete.
+*   **Latency Optimization:**
+    *   **Optimistic UI:** When sending a message, clear the "Resource Tray" *immediately* (before the API call completes) to prevent visual lag, especially with large files.
+    *   **Loading States:** Provide visual feedback (e.g., "Reading..." button state) during client-side file processing to indicate activity without blocking the UI.
 
 ## 4. Potential Failed Logics (Anti-Patterns)
 
