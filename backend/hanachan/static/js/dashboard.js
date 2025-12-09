@@ -203,6 +203,11 @@ async function handleSend() {
 
     // Optimistic Render
     const currentResources = [...state.resources]; // Copy for processing
+    
+    // Clear resources from tray IMMEDIATELY to prevent visual lag
+    state.resources = [];
+    updateResourceTray();
+
     appendMessage('user', content, false, currentResources);
 
     // 1.5 Process Pending Uploads (Save to DB now)
@@ -279,9 +284,7 @@ async function handleSend() {
     // 4. Invoke Agent
     const aiMessageDiv = appendMessage('ai', '', true); // Empty container for streaming
 
-    // Clear resources from tray after sending (they are now in the message)
-    state.resources = [];
-    updateResourceTray();
+    // Tray already cleared at step 1
 
     try {
         const invokeRes = await fetch('/agent/invoke', {
@@ -438,6 +441,22 @@ async function typeText(element, fullText) {
 
 // File Handling
 async function handleFiles(files) {
+    // Show loading state in tray if generic logic allows, or just processing flag
+    // For now, prompt user it's loading if needed, or rely on fast client-side read.
+    // Let's add a visual placeholder to tray while reading.
+    
+    // Create placeholders
+    const placeholders = [];
+    for (let i = 0; i < files.length; i++) {
+        placeholders.push({ title: `Loading ${files[i].name}...`, isLoading: true });
+    }
+    // We append placeholders to state temporarily? No, `state.resources` expects specific objects.
+    // Let's just disable send button during read.
+    const originalBtnText = DOM.sendBtn.textContent;
+    DOM.sendBtn.disabled = true;
+    DOM.sendBtn.textContent = 'Reading...';
+
+    for (const file of files) {
     // Upload files to /resources/
     // This is "Mock" logic mostly as we need to support file upload endpoints.
     // But the requirement says "Resource Tray".
@@ -475,8 +494,18 @@ async function handleFiles(files) {
             alert(`Failed to read ${file.name}: ${err.message}`);
         }
     }
-    updateResourceTray();
+    }
+    
+    DOM.sendBtn.disabled = false;
+    DOM.sendBtn.textContent = 'send'; // Icon usually, but logic might vary. reset to original?
+    // Actually sendBtn usually has an icon. Let's just reset disabled.
+    // Current HTML has <span class="material-icons-round">arrow_upward</span>
+    // Reverting text content is risky if it was an icon.
+    // Ideally we just toggle disabled.
+    DOM.sendBtn.innerHTML = '<span class="material-icons-round">arrow_upward</span>';
 
+    updateResourceTray();
+    
     // Do NOT refresh sidebar list here as per requirement
     // await searchResources(DOM.resourceSearch.value || '');
 }
