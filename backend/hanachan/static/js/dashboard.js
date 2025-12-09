@@ -205,6 +205,38 @@ async function handleSend() {
     const currentResources = [...state.resources]; // Copy for processing
     appendMessage('user', content, false, currentResources);
 
+    // 1.5 Process Pending Uploads (Save to DB now)
+    const validResourceIds = [];
+
+    for (const res of currentResources) {
+        if (res.isNew) {
+            try {
+                const uploadRes = await fetch('/resources/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        title: res.title,
+                        type: res.type,
+                        content: res.content
+                    })
+                });
+                if (uploadRes.ok) {
+                    const data = await uploadRes.json();
+                    validResourceIds.push(data.id);
+                } else {
+                    console.error("Failed to save pending resource", res.title);
+                }
+            } catch (err) {
+                console.error("Error saving resource", err);
+            }
+        } else {
+            validResourceIds.push(res.id);
+        }
+    }
+
+    // Refresh sidebar now that they are saved
+    searchResources(DOM.resourceSearch.value || '');
+
     // 2. Ensure Session Exists
     if (!state.sessionId) {
         try {
@@ -237,7 +269,7 @@ async function handleSend() {
             body: JSON.stringify({
                 role: 'user',
                 content: content,
-                attachmentIds: state.resources.map(r => r.id)
+                attachmentIds: validResourceIds
             })
         });
     } catch (err) {
@@ -260,7 +292,7 @@ async function handleSend() {
                 user_id: state.userId,
                 prompt: content,
                 context_config: {
-                    resource_ids: currentResources.map(r => r.id)
+                    resource_ids: validResourceIds
                 }
             })
         });
@@ -429,37 +461,24 @@ async function handleFiles(files) {
                 type = file.type.startsWith('image/') ? 'image' : 'file';
             }
 
-            const res = await fetch('/resources/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    title: file.name,
-                    type: type,
-                    content: content
-                })
-            });
-
-            if (!res.ok) {
-                const errData = await res.json();
-                throw new Error(errData.error || 'Upload failed');
-            }
-
-            const data = await res.json();
-
+            // Defer upload: Store in state directly
             state.resources.push({
-                id: data.id,
-                title: file.name
+                // Temporary ID or undefined ID indicates new
+                isNew: true,
+                title: file.name,
+                type: type,
+                content: content
             });
 
         } catch (err) {
-            console.error("Failed to upload " + file.name, err);
-            alert(`Failed to upload ${file.name}: ${err.message}`);
+            console.error("Failed to read " + file.name, err);
+            alert(`Failed to read ${file.name}: ${err.message}`);
         }
     }
     updateResourceTray();
 
-    // Refresh sidebar list
-    await searchResources(DOM.resourceSearch.value || '');
+    // Do NOT refresh sidebar list here as per requirement
+    // await searchResources(DOM.resourceSearch.value || '');
 }
 
 function updateResourceTray() {

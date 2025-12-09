@@ -38,8 +38,11 @@
 *   **Duplicate Prevention:**
     *   Before adding a resource to the active "Resource Tray" (staging), check against existing IDs in the local state.
     *   **Feedback:** Provide immediate feedback (e.g., console log or toast) if a user tries to add a duplicate. Do NOT fail silently.
-*   **Real-time Updates:**
-    *   **Critical:** When a new file is uploaded via drag-and-drop or file input, the `handleFiles` function **must** trigger a refresh of the resource list (call `searchResources('')`) immediately. Users should not have to refresh the page to see their uploads.
+*   **Deferred Persistence:**
+    *   **Staging:** Uploaded files are held in a client-side "Tray" state (`isNew: true`) and are **not** sent to the backend immediately.
+    *   **Commit:** Context resources are only persisted to the database (and thus the Resources list) when the user sends the associated message.
+    *   **UX:** This prevents "orphan" resources if a user uploads a file but then abandons the message.
+    *   **Refresh:** The resource list sidebar is refreshed **after** the message send transaction is complete.
 
 ## 4. Potential Failed Logics (Anti-Patterns)
 
