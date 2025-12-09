@@ -1,6 +1,7 @@
 "use client";
-import AITutor from "@/components/AITutor";
 
-export default function LearningWorkspaceHome() {
-  return <AITutor />;
+import ChatInterface from "@/components/hanachan/ChatInterface";
+
+export default function HanachanChatPage() {
+  return <ChatInterface />;
 }

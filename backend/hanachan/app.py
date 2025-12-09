@@ -1,8 +1,10 @@
 from flask import Flask
+from flask_cors import CORS
 from database.database import init_app, db
 
 def create_app(test_config=None):
     app = Flask(__name__)
+    CORS(app)
     
     if test_config:
         app.config.from_mapping(test_config)
@@ -37,6 +39,9 @@ def create_app(test_config=None):
         
     return app
 
+import os
+
 if __name__ == '__main__':
     app = create_app()
-    app.run(debug=True)
+    port = int(os.environ.get('FLASK_PORT', 5400))
+    app.run(debug=True, port=port)
