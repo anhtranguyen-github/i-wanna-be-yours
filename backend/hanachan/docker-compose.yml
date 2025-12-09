@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      # Pulls from .env file
+      - DATABASE_URL=${DATABASE_URL}
+    networks:
+      - app_network
+    depends_on:
+      db:
+        condition: service_healthy # Ensures DB is ready
+    volumes:
+      - .:/app
+
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      # Pulls from .env file
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    # Removed external ports for security
+    networks:
+      - app_network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      # Added healthcheck
+      test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+
+
+networks:
+  app_network:

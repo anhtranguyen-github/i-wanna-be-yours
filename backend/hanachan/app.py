@@ -1,59 +1,42 @@
-import os
-import logging
-from flask import Flask, jsonify
-from flask_cors import CORS
+from flask import Flask
+from database.database import init_app, db
 
-# ---------------------------------- Logging setup ----------------------------------------------
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s",
-)
-logger = logging.getLogger("flask-ai-agent")
+def create_app(test_config=None):
+    app = Flask(__name__)
+    
+    if test_config:
+        app.config.from_mapping(test_config)
+    
+    app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+    
+    # Initialize database
+    init_app(app)
+    
+    # Register blueprints
+    from routes.agent import bp as agent_bp
+    from routes.mcp import bp as mcp_bp
+    app.register_blueprint(agent_bp)
+    app.register_blueprint(mcp_bp)
+    
+    from routes.resource import bp as resource_bp
+    from routes.conversation import bp as conversation_bp
+    from routes.task import bp as task_bp
+    from routes.suggestion import bp as suggestion_bp
+    app.register_blueprint(resource_bp)
+    app.register_blueprint(conversation_bp)
+    app.register_blueprint(task_bp)
+    app.register_blueprint(suggestion_bp)
+    
+    @app.route('/health')
+    def health():
+        return 'OK'
 
-# ---------------------------------- Flask initialization ----------------------------------------
-app = Flask(__name__)
-CORS(app)  # Allow CORS for all domains
+    @app.route('/')
+    def index():
+        return app.send_static_file('dashboard.html')
+        
+    return app
 
-# ---------------------------------- Environment & Ports -----------------------------------------
-flask_port = int(os.getenv("FLASK_PORT", 5400))
-env = os.getenv("APP_ENV", "dev")
-logger.info(f"Running Flask AI Agent in {env} mode on port {flask_port}")
-
-# ---------------------------------- Global API Endpoints ----------------------------------------
-@app.route("/health", methods=["GET"])
-def health_check():
-    """Health check endpoint."""
-    return jsonify({"message": "OK", "status": "healthy"}), 200
-
-@app.route("/", methods=["GET"])
-def index():
-    """Serve the UI."""
-    return app.send_static_file("ui.html")
-
-# ---------------------------------- Module Registration -----------------------------------------
-from dotenv import load_dotenv
-load_dotenv()
-
-try:
-    from chat_service import register_routes as register_chat_routes
-    register_chat_routes(app)
-    logger.info("✅ Registered Chat Service routes successfully.")
-
-except ImportError as e:
-    logger.error(f"❌ Could not import routes: {e}")
-except Exception as e:
-    logger.exception(f"❌ Error registering routes: {e}")
-
-
-try:
-    from routers.agent_api import agent_api
-    app.register_blueprint(agent_api)
-    logger.info("✅ Registered Agent API routes successfully.")
-except ImportError as e:
-    logger.error(f"❌ Could not import Agent API routes: {e}")
-except Exception as e:
-    logger.exception(f"❌ Error registering Agent API routes: {e}")
-
-# ---------------------------------- Run Flask App -----------------------------------------------
-if __name__ == "__main__":
-    app.run(debug=(env == "dev"), host="0.0.0.0", port=flask_port)
+if __name__ == '__main__':
+    app = create_app()
+    app.run(debug=True)

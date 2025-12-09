@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat | Professional Interface</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <!-- Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <button id="new-chat-btn" class="btn-primary-icon">
+                    <span class="material-icons-round">add</span>
+                    <span>New Chat</span>
+                </button>
+            </div>
+
+            <div class="history-container">
+                <div class="history-group">
+                    <div class="group-label">Today</div>
+                    <!-- History items will be injected here -->
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="avatar">U</div>
+                    <div class="user-info">
+                        <span class="user-name">User</span>
+                        <span class="user-role">Pro Plan</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="main-content">
+            <div id="drag-overlay" class="drag-overlay hidden">
+                <div class="drag-content">
+                    <span class="material-icons-round">file_upload</span>
+                    <h3>Drop files to add to context</h3>
+                </div>
+            </div>
+
+            <div id="chat-feed" class="chat-feed">
+                <!-- Welcome / Empty State -->
+                <div class="empty-state">
+                    <h1>How can I help you today?</h1>
+                    <div class="capabilities">
+                        <div class="capability-card" onclick="setInput('Draft a technical implementation plan')">
+                            <span class="material-icons-round">code</span>
+                            <span>Draft a technical implementation plan</span>
+                        </div>
+                        <div class="capability-card" onclick="setInput('Explain quantum computing to a 5 year old')">
+                            <span class="material-icons-round">school</span>
+                            <span>Explain quantum computing</span>
+                        </div>
+                        <div class="capability-card"
+                            onclick="setInput('Create a marketing strategy for a new coffee brand')">
+                            <span class="material-icons-round">campaign</span>
+                            <span>Create a marketing strategy</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Messages will be injected here -->
+            </div>
+
+            <!-- Resource Tray (Collapsible) -->
+            <div id="resource-tray" class="resource-tray hidden">
+                <!-- Attached resources -->
+            </div>
+
+            <!-- Composer -->
+            <div class="composer-area">
+                <div class="composer-container">
+                    <div class="composer-tools">
+                        <button class="tool-btn" title="Attach File"
+                            onclick="document.getElementById('file-upload').click()">
+                            <span class="material-icons-round">attach_file</span>
+                        </button>
+                        <input type="file" id="file-upload" multiple hidden>
+                    </div>
+
+                    <textarea id="message-input" placeholder="Message AI..." rows="1"></textarea>
+
+                    <button id="send-btn" class="send-btn" disabled>
+                        <span class="material-icons-round">arrow_upward</span>
+                    </button>
+                </div>
+                <div class="footer-text">
+                    AI can make mistakes. Please verify important information.
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="/static/js/dashboard.js"></script>
+</body>
+
+</html>
