@@ -43,13 +43,62 @@ class MockAgent:
         # Mock Logic for Rich Content
         tasks = []
         suggestions = []
+        artifacts = []
         
-        if "task" in prompt.lower():
-            tasks.append({
-                "title": "Debug Task",
-                "description": "Verify system logs for detailed error tracking.",
-                "status": "pending"
-            })
+        lower_prompt = prompt.lower()
+        
+        tasks.append({
+            "title": "Debug Task",
+            "description": "Verify system logs for detailed error tracking.",
+            "status": "pending"
+        })
+        
+        # Always return all artifacts for debugging
+        artifacts.append({
+            "type": "task",
+            "title": "System Check Task",
+            "data": {
+                "task": {
+                    "title": "Debug Task",
+                    "description": "Verify system logs for detailed error tracking.",
+                    "status": "pending"
+                }
+            }
+        })
+        
+        artifacts.append({
+        "type": "mindmap",
+        "title": "Debug Mindmap",
+        "data": {
+            "root": {"id": "root", "label": "Central Concept"},
+            "nodes": [
+                {"id": "1", "label": "Branch A", "parent": "root"},
+                {"id": "2", "label": "Branch B", "parent": "root"}
+            ]
+        }
+        })
+
+        artifacts.append({
+            "type": "flashcard",
+            "title": "Debug Flashcards",
+            "data": {
+                "cards": [
+                    {"front": "Debug", "back": "Fixing code"},
+                    {"front": "Agent", "back": "Autonomous Actor"}
+                ]
+            }
+        })
+        
+        artifacts.append({
+            "type": "vocabulary",
+            "title": "Debug Vocabulary",
+            "data": {
+                    "items": [
+                    {"word": "Bug", "definition": "An error in a program", "example": "I found a bug."},
+                    {"word": "Feature", "definition": "A distinctive attribute", "example": "This is a new feature."}
+                    ]
+            }
+        })
             
         suggestions.append({"text": "Upload a log file"})
         suggestions.append({"text": "Check database status"})
@@ -57,5 +106,6 @@ class MockAgent:
         return {
             "content": debug_content,
             "tasks": tasks,
-            "suggestions": suggestions
+            "suggestions": suggestions,
+            "artifacts": artifacts
         }

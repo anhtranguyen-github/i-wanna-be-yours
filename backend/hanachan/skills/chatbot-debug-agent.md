@@ -25,6 +25,10 @@
 ### C. System Telemetry
 * **Persistence Confirmation:** If the system has a database, confirm the message was saved (e.g., display `Message ID`).
 * **Config Dump:** Reveal hidden parameters (temperature, model name, RAG toggle) that were active for the request.
+    
+### D. Artifact Generation Verification
+* **Keyword Triggers:** The agent must respond to keywords ("mindmap", "flashcard", "vocab") by generating corresponding mock artifacts.
+* **Structure Validation:** Ensure the returned artifacts adhere to the data schemas (MindmapNode, Flashcard, VocabularyItem).
 
 ---
 
