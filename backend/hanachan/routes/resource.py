@@ -31,3 +31,19 @@ def delete_resource(resource_id):
     if success:
         return jsonify({"status": "deleted"})
     return jsonify({"error": "Resource not found"}), 404
+
+@bp.route('/search', methods=['GET'])
+def search_resources():
+    query = request.args.get('q', '')
+    service = ResourceService()
+    resources = service.search_resources(query)
+    return jsonify(resources)
+
+@bp.route('/<int:resource_id>/summary', methods=['GET'])
+def get_resource_summary(resource_id):
+    service = ResourceService()
+    summary = service.get_resource_summary(resource_id)
+    if summary:
+        return jsonify(summary)
+    return jsonify({"error": "Resource or summary not found"}), 404
+

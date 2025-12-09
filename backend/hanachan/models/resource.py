@@ -8,6 +8,7 @@ class Resource(db.Model):
     title = db.Column(db.String(255), nullable=False)
     type = db.Column(db.String(50), nullable=False) # e.g., 'document', 'url', 'image'
     content = db.Column(db.Text, nullable=True) # Text content or URL
+    summary = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

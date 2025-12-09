@@ -26,3 +26,31 @@ class ResourceService:
 
     def delete_resource(self, resource_id: int) -> bool:
         return self.resource_repo.delete(resource_id)
+
+    def search_resources(self, query: str) -> list:
+        # MVP: Get all and filter in memory if repo doesn't support search
+        # Ideally: self.resource_repo.search(query)
+        # Let's assume we filter here for safety ensuring no crash
+        all_resources = self.resource_repo.get_all()
+        if not query:
+            return [r.to_dict() for r in all_resources]
+        
+        query_lower = query.lower()
+        return [
+            r.to_dict() for r in all_resources 
+            if query_lower in r.title.lower() or (r.content and query_lower in r.content.lower())
+        ]
+
+    def get_resource_summary(self, resource_id: int) -> dict:
+        resource = self.resource_repo.get_by_id(resource_id)
+        if not resource:
+            return None
+        
+        # If summary exists, return it
+        if resource.summary:
+            return {"id": resource.id, "summary": resource.summary}
+        
+        # Fallback: Generate simple truncation
+        content_preview = (resource.content[:200] + "...") if resource.content else "No content available."
+        return {"id": resource.id, "summary": content_preview}
+
