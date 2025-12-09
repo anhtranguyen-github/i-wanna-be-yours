@@ -900,7 +900,7 @@ export default function Example() {
 
                 <div className="mt-6">
                   <a
-                    href="/text-parser"
+                    href="/tools/text-parser"
                     className="clay-button inline-flex bg-brand-green px-6 py-3 text-base font-bold text-brand-dark hover:bg-brand-green/90"
                   >
                     Get started
@@ -1062,7 +1062,7 @@ export default function Example() {
 
                   <div className="mt-6">
                     <a
-                      href="/text-parser?type=youtube"
+                      href="/tools/text-parser/youtube"
                       className="clay-button inline-flex bg-brand-blue px-6 py-3 text-base font-bold text-brand-dark hover:bg-brand-blue/90"
                     >
                       Get started
@@ -1243,7 +1243,7 @@ export default function Example() {
 
                     <div className="mt-6">
                       <a
-                        href="/grammar-graph"
+                        href="/tools/grammar-graph"
                         className="clay-button inline-flex bg-brand-peach px-6 py-3 text-base font-bold text-brand-dark hover:bg-brand-peach/90"
                       >
                         Go to Grammar Graph
@@ -1380,7 +1380,7 @@ export default function Example() {
 
                     <div className="mt-6">
                       <a
-                        href="/word-relations"
+                        href="/tools/word-relations"
                         className="clay-button inline-flex bg-brand-blue px-6 py-3 text-base font-bold text-brand-dark hover:bg-brand-blue/90"
                       >
                         Go to Word Relations
@@ -1454,7 +1454,7 @@ export default function Example() {
                     </p>
                     <div className="mt-6">
                       <a
-                        href="/japanese/quick_vocab"
+                        href="/tools/quick-vocab"
                         className="clay-button inline-flex bg-brand-green px-6 py-3 text-base font-bold text-brand-dark hover:bg-brand-green/90"
                       >
                         Get started - Quick Vocabulary
@@ -1530,7 +1530,7 @@ export default function Example() {
                     </p>
                     <div className="mt-6">
                       <a
-                        href="/japanese/quick_kanji"
+                        href="/tools/quick-kanji"
                         className="clay-button inline-flex bg-brand-peach px-6 py-3 text-base font-bold text-brand-dark hover:bg-brand-peach/90"
                       >
                         Get started - Quick Kanji
@@ -1591,7 +1591,7 @@ export default function Example() {
                     </p>
                     <div className="mt-6">
                       <a
-                        href="/content"
+                        href="/knowledge-base/grammar"
                         className="inline-flex rounded-md border border-transparent bg-gradient-to-r from-purple-600 to-indigo-600 bg-origin-border px-4 py-2 text-base font-medium text-white shadow-sm hover:from-purple-700 hover:to-indigo-700"
                       >
                         Get started with Grammar
@@ -1668,7 +1668,7 @@ export default function Example() {
                     </p>
                     <div className="mt-6">
                       <a
-                        href="/japanese/flashcards-kanji"
+                        href="/game/flashcards"
                         className="inline-flex rounded-md border border-transparent bg-gradient-to-r from-purple-600 to-indigo-600 bg-origin-border px-4 py-2 text-base font-medium text-white shadow-sm hover:from-purple-700 hover:to-indigo-700"
                       >
                         Get started with Kanji
@@ -1728,7 +1728,7 @@ export default function Example() {
                     </p>
                     <div className="mt-6">
                       <a
-                        href="/japanese/flashcards-words"
+                        href="/game/flashcards"
                         className="inline-flex rounded-md border border-transparent bg-gradient-to-r from-purple-600 to-indigo-600 bg-origin-border px-4 py-2 text-base font-medium text-white shadow-sm hover:from-purple-700 hover:to-indigo-700"
                       >
                         Get started with SRS flashcards
@@ -1801,7 +1801,7 @@ export default function Example() {
                     </p>
                     <div className="mt-6">
                       <a
-                        href="/japanese/vocabulary_selection/essential_verbs"
+                        href="/knowledge-base/verbs/essential_verbs"
                         className="inline-flex rounded-md border border-transparent bg-gradient-to-r from-purple-600 to-indigo-600 bg-origin-border px-4 py-2 text-base font-medium text-white shadow-sm hover:from-purple-700 hover:to-indigo-700"
                       >
                         Get started with vocabulary

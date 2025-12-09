@@ -26,45 +26,45 @@ export default function Header() {
     };
 
     const menuItems: { [key: string]: MenuItem[] } = {
+        chat: [
+            { label: "AI Tutor", href: "/chat/ai-tutor" },
+        ],
         tools: [
             { label: "Text Parser", href: "/tools/text-parser" },
-            { label: "YouTube Immersion", href: "/tools/text-parser?type=youtube" },
+            { label: "YouTube Immersion", href: "/tools/text-parser/youtube" },
             { label: "Grammar Graph", href: "/tools/grammar-graph" },
             { label: "Translator", href: "/tools/translate" },
             { label: "Word Relations", href: "/tools/word-relations" },
-            { label: "Quick Kanji", href: "/tools/quick_kanji" },
-            { label: "Quick JLPT Vocab", href: "/tools/quick_vocab" },
+            { label: "Quick Kanji", href: "/tools/quick-kanji" },
+            { label: "Quick JLPT Vocab", href: "/tools/quick-vocab" },
+            { label: "Auto Task", href: "/tools/auto-task" },
         ],
-        workspace: [
-            { label: "AI Tutor", href: "/learning-workspace" },
-            { label: "Auto Task", href: "/learning-workspace/auto-task" },
-            { label: "Play Games", href: "/learning-workspace/play-games" },
-            { label: "Mnemonics", href: "/learning-workspace/kanji-mnemonics" },
-            { label: "SRS Flashcards", href: "/learning-workspace/flashcards" },
+        game: [
+            { label: "Play Games", href: "/game/play" },
+            { label: "SRS Flashcards", href: "/game/flashcards" },
+            { label: "Songify Vocabulary", href: "/game/songify-vocabulary" },
         ],
         library: [
-            { label: "YouTube Library", href: "/podcasts" },
-            { label: "My YouTube Library", href: "/my-podcasts" },
-            { label: "My Articles", href: "/custom-text" },
-            { label: "My Vocabulary", href: "/my-vocabulary" },
+            { label: "YouTube Library", href: "/library/podcasts" },
+            { label: "My YouTube Library", href: "/library/my-podcasts" },
+            { label: "My Articles", href: "/library/articles" },
+            { label: "My Vocabulary", href: "/library/my-vocabulary" },
+            { label: "Mnemonics", href: "/library/mnemonics" },
         ],
-        content: [
-            { label: "JLPT Grammar", href: "/content/grammarlist" },
+        knowledgeBase: [
+            { label: "JLPT Grammar", href: "/knowledge-base/grammar" },
             {
                 label: "Verbs",
                 href: "#",
                 subItems: [
-                    { label: "Essential Verbs", href: "/content/vocabulary_selection/essential_verbs" },
-                    { label: "JLPT N3 Vocab", href: "/content/vocabulary_selection/JLPT_N3" },
+                    { label: "Essential Verbs", href: "/knowledge-base/verbs/essential_verbs" },
+                    { label: "JLPT N3 Vocab", href: "/knowledge-base/verbs/JLPT_N3" },
                 ]
             },
-            { label: "Kanji", href: "/content/kanji" },
-            { label: "Radicals", href: "/content/radicals" },
-            { label: "Kana", href: "/content/kana" },
-            { label: "View All", href: "/content" },
-        ],
-        experimental: [
-            { label: "Songify Vocabulary", href: "/songify-vocabulary" },
+            { label: "Kanji", href: "/knowledge-base/kanji" },
+            { label: "Radicals", href: "/knowledge-base/radicals" },
+            { label: "Kana", href: "/knowledge-base/kana" },
+            { label: "View All", href: "/knowledge-base/all" },
         ],
     };
 
@@ -90,11 +90,11 @@ export default function Header() {
                             Home
                         </Link>
 
-                        <Dropdown label="Content" items={menuItems.content} />
-                        <Dropdown label="Workspace" items={menuItems.workspace} />
+                        <Dropdown label="Chat" items={menuItems.chat} />
                         <Dropdown label="Tools" items={menuItems.tools} />
+                        <Dropdown label="Game" items={menuItems.game} />
                         <Dropdown label="Library" items={menuItems.library} />
-                        <Dropdown label="Experimental" items={menuItems.experimental} />
+                        <Dropdown label="Knowledge Base" items={menuItems.knowledgeBase} />
 
                         <Link href={loggedIn ? "/user-dashboard" : "/login"} className="px-3 py-2 text-brand-dark hover:text-brand-blue hover:bg-brand-blue/10 rounded-md transition-colors">
                             Dashboard

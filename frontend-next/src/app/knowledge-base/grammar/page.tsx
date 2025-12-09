@@ -10,11 +10,11 @@ export default async function Page() {
         Japanese grammar JLPT N5-N1:
       </h1>
 
-      <GrammarTitles lang="Japanese" pTag="JLPT_N5" slug="/japanese/grammarpoint" />
-      <GrammarTitles lang="Japanese" pTag="JLPT_N4" slug="/japanese/grammarpoint" />
-      <GrammarTitles lang="Japanese" pTag="JLPT_N3" slug="/japanese/grammarpoint" />
-      <GrammarTitles lang="Japanese" pTag="JLPT_N2" slug="/japanese/grammarpoint" />
-      <GrammarTitles lang="Japanese" pTag="JLPT_N1" slug="/japanese/grammarpoint" />
+      <GrammarTitles lang="Japanese" pTag="JLPT_N5" slug="/knowledge-base/grammar" />
+      <GrammarTitles lang="Japanese" pTag="JLPT_N4" slug="/knowledge-base/grammar" />
+      <GrammarTitles lang="Japanese" pTag="JLPT_N3" slug="/knowledge-base/grammar" />
+      <GrammarTitles lang="Japanese" pTag="JLPT_N2" slug="/knowledge-base/grammar" />
+      <GrammarTitles lang="Japanese" pTag="JLPT_N1" slug="/knowledge-base/grammar" />
     </div>
   );
 }

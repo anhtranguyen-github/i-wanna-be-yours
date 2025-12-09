@@ -36,7 +36,7 @@ const GrammarTitles: React.FC<GrammarTitlesProps> = async ({ lang, pTag, slug })
           {titles.map((title: any, index: any) => (
             <Link
               key={index}
-              href={`/content/grammar_dashboard/${pTag}/${encodeTitle(title)}`}
+              href={`${slug}/${encodeTitle(title)}`}
               className="block hover:scale-[1.02] transition-transform duration-200"
             >
               <ClayCard className="h-full flex items-center justify-center !p-6 !py-8 hover:bg-opacity-80 transition-opacity">
