@@ -64,6 +64,14 @@ body {
     transition: transform 0.3s ease;
 }
 
+.sidebar-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: hidden; /* Accordions handle scroll */
+    gap: var(--space-sm);
+}
+
 .sidebar-header {
     margin-bottom: var(--space-lg);
 }
@@ -91,6 +99,77 @@ body {
 .history-container {
     flex: 1;
     overflow-y: auto;
+    max-height: 100%;
+}
+
+/* Accordion Styles */
+.accordion-item {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex-shrink: 0; /* Default collapsed items don't take space */
+}
+
+.accordion-item.active {
+    flex: 1; /* Active item fills space */
+    min-height: 0; /* Firefox flex fix */
+}
+
+.accordion-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-sm);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    transition: all 0.2s;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    user-select: none;
+}
+
+.accordion-header:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-hover);
+}
+
+.accordion-header .arrow-icon {
+    font-size: 1.2rem;
+    transition: transform 0.2s;
+}
+
+.accordion-item.active .accordion-header {
+    color: var(--text-primary);
+}
+
+.accordion-body {
+    display: none;
+    flex-direction: column;
+    /* transition? Height is hard with flex:1 */
+}
+
+.accordion-item.active .accordion-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    padding-top: var(--space-sm);
+}
+
+/* Resources List */
+.resources-list-container {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.empty-resources {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    padding: var(--space-sm);
+    text-align: center;
+    font-style: italic;
 }
 
 .group-label {

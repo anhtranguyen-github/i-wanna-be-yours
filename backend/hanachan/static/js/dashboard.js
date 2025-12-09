@@ -17,7 +17,9 @@ const DOM = {
     dragOverlay: document.getElementById('drag-overlay'),
     fileInput: document.getElementById('file-upload'),
     resourceTray: document.getElementById('resource-tray'),
-    newChatBtn: document.getElementById('new-chat-btn')
+    newChatBtn: document.getElementById('new-chat-btn'),
+    resourceList: document.getElementById('resources-list'),
+    resourceSearch: document.getElementById('resource-search')
 };
 
 // --- Initialization ---
@@ -28,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function init() {
     await loadHistory();
+    await searchResources(''); // Load initial resources
     // Start fresh
     resetView();
 }
@@ -95,6 +98,24 @@ function setupEventListeners() {
     DOM.fileInput.addEventListener('change', (e) => {
         handleFiles(e.target.files);
     });
+
+    // Resource Search
+    DOM.resourceSearch.addEventListener('input', debounce((e) => {
+        searchResources(e.target.value);
+    }, 300));
+}
+
+// Debounce util
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
 }
 
 // --- Core Logic ---
@@ -436,6 +457,9 @@ async function handleFiles(files) {
         }
     }
     updateResourceTray();
+
+    // Refresh sidebar list
+    await searchResources(DOM.resourceSearch.value || '');
 }
 
 function updateResourceTray() {
@@ -466,10 +490,151 @@ window.setInput = (text) => {
     DOM.messageInput.focus();
 };
 
+
 window.removeResource = (index) => {
     state.resources.splice(index, 1);
     updateResourceTray();
 };
+
+window.toggleAccordion = (id) => {
+    const item = document.getElementById(id);
+    if (!item) return;
+
+    // Optional: Auto-collapse others (exclusive accordion)
+    // For specific UI feel, let's make it exclusive so only one is big at a time
+    const allItems = document.querySelectorAll('.accordion-item');
+    allItems.forEach(el => {
+        if (el.id !== id) {
+            el.classList.remove('active');
+            const icon = el.querySelector('.arrow-icon');
+            if (icon) icon.textContent = 'chevron_right';
+        }
+    });
+
+    // Toggle clicked
+    const isActive = item.classList.contains('active');
+    if (isActive) {
+        // Don't allow collapsing the last one? Or allow?
+        // Let's allow but maybe it looks weird if both empty. 
+        // Let's just toggle.
+        // Actually, if we enforce one open, we just ensure 'add' and don't toggle off if already active
+        // But user might want to minimize side.
+        // Let's do standard toggle.
+        item.classList.remove('active');
+        const icon = item.querySelector('.arrow-icon');
+        if (icon) icon.textContent = 'chevron_right';
+    } else {
+        item.classList.add('active');
+        const icon = item.querySelector('.arrow-icon');
+        if (icon) icon.textContent = 'expand_more';
+    }
+};
+
+// --- Resource Logic ---
+
+async function searchResources(query) {
+    try {
+        const res = await fetch(`/resources/search?q=${encodeURIComponent(query)}`);
+        const resources = await res.json();
+        renderResourceList(resources);
+    } catch (err) {
+        console.error('Failed to search resources', err);
+    }
+}
+
+function renderResourceList(resources) {
+    DOM.resourceList.innerHTML = '';
+
+    if (!resources || resources.length === 0) {
+        DOM.resourceList.innerHTML = `
+            <div class="empty-resources">
+                <span>No resources found</span>
+            </div>`;
+        return;
+    }
+
+    resources.forEach(r => {
+        const item = document.createElement('div');
+        item.className = 'history-item resource-item'; // Reuse history item style for list
+        item.style.display = 'flex';
+        item.style.alignItems = 'center';
+        item.style.justifyContent = 'space-between';
+
+        const titleSpan = document.createElement('span');
+        titleSpan.textContent = r.title;
+        titleSpan.style.overflow = 'hidden';
+        titleSpan.style.textOverflow = 'ellipsis';
+        titleSpan.style.whiteSpace = 'nowrap';
+        titleSpan.style.flex = '1';
+
+        const actionsDiv = document.createElement('div');
+        actionsDiv.style.display = 'flex';
+        actionsDiv.style.gap = '4px';
+
+        // Summary Button
+        const summaryBtn = document.createElement('span');
+        summaryBtn.className = 'material-icons-round';
+        summaryBtn.textContent = 'info';
+        summaryBtn.style.fontSize = '16px';
+        summaryBtn.style.cursor = 'pointer';
+        summaryBtn.style.color = 'var(--text-secondary)';
+        summaryBtn.title = 'View Summary';
+        summaryBtn.onclick = (e) => { e.stopPropagation(); viewSummary(r.id); };
+
+        // Add Button
+        const addBtn = document.createElement('span');
+        addBtn.className = 'material-icons-round';
+        addBtn.textContent = 'add_circle';
+        addBtn.style.fontSize = '16px';
+        addBtn.style.cursor = 'pointer';
+        addBtn.style.color = 'var(--text-secondary)';
+        addBtn.title = 'Add to Chat';
+        addBtn.onclick = (e) => { e.stopPropagation(); addToChat(r); };
+
+        actionsDiv.appendChild(summaryBtn);
+        actionsDiv.appendChild(addBtn);
+
+        item.appendChild(titleSpan);
+        item.appendChild(actionsDiv);
+
+        DOM.resourceList.appendChild(item);
+    });
+}
+
+async function viewSummary(id) {
+    try {
+        const res = await fetch(`/resources/${id}/summary`);
+        const data = await res.json();
+        if (data.summary) {
+            alert(`Summary:\n${data.summary}`); // Simple alert for now as per plan
+        } else {
+            alert('No summary available.');
+        }
+    } catch (err) {
+        console.error('Failed to get summary', err);
+    }
+}
+
+function addToChat(resource) {
+    // Check duplicates
+    const exists = state.resources.find(r => r.id === resource.id);
+    if (exists) {
+        // Provide feedback?
+        // Flash the tray or alert?
+        console.log("Resource already in tray");
+        return;
+    }
+
+    state.resources.push({
+        id: resource.id,
+        title: resource.title
+    });
+    updateResourceTray();
+
+    // Auto-open tray if hidden? updateResourceTray handles it.
+}
+
+
 
 function renderRichContent(container, tasks, suggestions) {
     const richContainer = document.createElement('div');
