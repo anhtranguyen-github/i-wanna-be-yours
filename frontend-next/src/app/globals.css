@@ -15,18 +15,25 @@
 
 @layer utilities {
   .clay-card {
-    @apply bg-white border-2 border-brand-dark rounded-3xl transition-all duration-300;
-    box-shadow: 4px 4px 0px 0px #1e293b;
+    @apply bg-white rounded-3xl transition-all duration-300;
+    /* Soft Claymorphism shadow */
+    box-shadow:
+      5px 5px 15px rgba(0, 0, 0, 0.1),
+      -5px -5px 15px rgba(255, 255, 255, 0.9);
   }
 
   .clay-button {
-    @apply border-2 border-brand-dark rounded-2xl transition-all duration-200 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none;
-    box-shadow: 4px 4px 0px 0px #1e293b;
+    @apply rounded-2xl transition-all duration-200 active:translate-y-[2px] active:shadow-none hover:-translate-y-[1px];
+    box-shadow:
+      5px 5px 10px rgba(0, 0, 0, 0.1),
+      -5px -5px 10px rgba(255, 255, 255, 0.9);
   }
 
   .clay-inset {
-    @apply border-2 border-brand-dark rounded-xl bg-gray-50;
-    box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.05);
+    @apply rounded-xl bg-gray-50;
+    box-shadow:
+      inset 5px 5px 10px rgba(0, 0, 0, 0.05),
+      inset -5px -5px 10px rgba(255, 255, 255, 0.8);
   }
 
   .text-shadow-sm {
@@ -167,16 +174,25 @@ Description: A sans-serif font with a condensed design, offering a more compact 
     @apply flex flex-col items-center w-full;
   }
 
+  /* Claymorphism Theme Guide Implementation */
+  .clay-component {
+    background-color: var(--color-bg-component, #FFFFFF);
+    border-radius: 20px;
+    box-shadow:
+      5px 5px 15px rgba(0, 0, 0, 0.1),
+      -5px -5px 15px rgba(255, 255, 255, 0.9);
+  }
+
   .btnPrimary {
     @apply py-3 px-8 text-white font-medium rounded-2xl transition-all duration-200 active:translate-y-[2px] active:shadow-none hover:-translate-y-[1px];
-    background-color: hsl(var(--primary));
+    background-color: var(--color-primary-cta, #38B24C);
     box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15), -4px -4px 8px rgba(255, 255, 255, 0.9);
   }
 
   .btnSecondary {
     @apply py-3 px-8 mr-6 font-medium rounded-2xl transition-all duration-200 active:translate-y-[2px] active:shadow-none hover:-translate-y-[1px];
-    background-color: hsl(var(--surface-card));
-    color: hsl(var(--primary));
+    background-color: var(--color-secondary-cta, #87CEEB);
+    color: var(--color-text-primary, #1A202C);
     box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1), -4px -4px 8px rgba(255, 255, 255, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.5);
   }
@@ -184,6 +200,14 @@ Description: A sans-serif font with a condensed design, offering a more compact 
 
 @layer base {
   :root {
+    /* LearnHub Theme Variables */
+    --color-primary-cta: #38B24C;
+    --color-secondary-cta: #87CEEB;
+    --color-text-primary: #1A202C;
+    --color-text-highlight: #38B24C;
+    --color-bg-canvas: #F0F4F7;
+    --color-bg-component: #FFFFFF;
+
     --background: 44 100% 97%;
     --foreground: 217 33% 17%;
     --card: 0 0% 100%;

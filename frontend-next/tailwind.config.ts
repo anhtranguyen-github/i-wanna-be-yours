@@ -39,6 +39,10 @@ const config: Config = {
 					blue: '#bae6fd',
 					peach: '#fecaca',
 				},
+				'primary-cta': '#38B24C',
+				'secondary-cta': '#87CEEB',
+				'text-primary': '#1A202C',
+				'bg-canvas': '#F0F4F7',
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
 					foreground: 'hsl(var(--primary-foreground))'
