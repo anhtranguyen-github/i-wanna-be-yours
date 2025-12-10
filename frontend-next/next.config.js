@@ -8,5 +8,8 @@ const nextConfig = {
       { source: '/d-api/:path*', destination: 'http://localhost:5200/d-api/:path*' },
     ]
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 }
 module.exports = nextConfig

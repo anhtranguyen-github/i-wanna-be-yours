@@ -39,3 +39,7 @@ update.md
 
 
 mcp-builder/
+
+.agent/
+
+.shared/
