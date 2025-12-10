@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { ClayCard } from "@/components/ui/clay-card";
 import {
     Library,
     Mic,
     BookOpen,
     Headphones,
-    Brain
+    Brain,
+    Bookmark
 } from "lucide-react";
 
 const routes = [
@@ -16,47 +16,66 @@ const routes = [
         description: "Listen to Japanese podcasts.",
         href: "/library/podcasts",
         icon: <Headphones className="w-8 h-8 text-brand-blue" />,
+        color: "bg-brand-blue"
     },
     {
         title: "My Podcasts",
         description: "Your saved podcast library.",
         href: "/library/my-podcasts",
         icon: <Mic className="w-8 h-8 text-brand-green" />,
+        color: "bg-brand-green"
     },
     {
         title: "Articles",
         description: "Read interesting articles.",
         href: "/library/articles",
         icon: <BookOpen className="w-8 h-8 text-brand-peach" />,
+        color: "bg-brand-peach"
     },
     {
         title: "My Vocabulary",
         description: "Manage your personal vocabulary list.",
         href: "/library/my-vocabulary",
         icon: <Library className="w-8 h-8 text-purple-500" />,
+        color: "bg-purple-100"
     },
     {
         title: "Mnemonics",
         description: "Memory aids for Kanji and vocabulary.",
         href: "/library/mnemonics",
         icon: <Brain className="w-8 h-8 text-orange-500" />,
+        color: "bg-orange-100"
     },
 ];
 
 export default function LibraryPage() {
     return (
-        <div className="container mx-auto py-12 px-4">
-            <h1 className="text-4xl font-extrabold text-brand-dark mb-8 text-center">Library</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="container mx-auto py-12 px-4 max-w-7xl">
+            <h1 className="text-4xl font-display font-extrabold text-brand-dark mb-12 text-center text-shadow-clay">
+                My <span className="text-brand-softBlue">Library</span>
+            </h1>
+
+            <div className="clay-card bg-brand-softBlue/10 border-2 border-brand-softBlue/20 p-6 mb-12 flex flex-col sm:flex-row items-center justify-center gap-4 text-center sm:text-left">
+                <Bookmark className="w-10 h-10 text-brand-softBlue" />
+                <div>
+                    <h3 className="font-bold text-brand-dark text-lg">Save your progress!</h3>
+                    <p className="text-gray-600">All your saved articles, vocab, and podcasts live here.</p>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {routes.map((route) => (
                     <Link key={route.href} href={route.href} className="group">
-                        <ClayCard className="h-full hover:scale-105 transition-transform cursor-pointer flex flex-col items-center text-center p-8">
-                            <div className="mb-4 p-4 bg-brand-blue/10 rounded-full group-hover:bg-brand-blue/20 transition-colors">
+                        <div className="clay-card h-full hover:-translate-y-2 transition-transform cursor-pointer flex flex-col items-center text-center p-8 bg-white relative overflow-hidden">
+                            <div className={`mb-6 p-5 rounded-2xl shadow-inner ${route.color} bg-opacity-20 group-hover:bg-opacity-30 transition-all`}>
                                 {route.icon}
                             </div>
-                            <h2 className="text-2xl font-bold text-brand-dark mb-2">{route.title}</h2>
-                            <p className="text-gray-600">{route.description}</p>
-                        </ClayCard>
+                            <h2 className="text-2xl font-display font-bold text-brand-dark mb-3">{route.title}</h2>
+                            <p className="text-gray-500 font-medium leading-relaxed">{route.description}</p>
+
+                            {/* Decorative blur */}
+                            <div className={`absolute -bottom-10 -right-10 w-24 h-24 ${route.color} rounded-full blur-3xl opacity-20`} />
+                        </div>
                     </Link>
                 ))}
             </div>

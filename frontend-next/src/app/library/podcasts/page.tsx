@@ -137,7 +137,7 @@ const Home = () => {
         </p>
 
         <p>
-        Hailey _Your Korean Friend:{" "}
+          Hailey _Your Korean Friend:{" "}
           <a
             href="https://www.youtube.com/@koreanfriendhailey"
             className="text-blue-500 underline"
@@ -149,7 +149,7 @@ const Home = () => {
         </p>
 
         <p>
-        Dong Grammy Korean:{" "}
+          Dong Grammy Korean:{" "}
           <a
             href="https://www.youtube.com/@DongGrammyKorean"
             className="text-blue-500 underline"
@@ -247,13 +247,12 @@ const VideoSection = ({
       {/* Collapsible Header */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex justify-between items-center w-full text-left text-xl font-bold mb-4 p-4 bg-gray-100 hover:bg-gray-200 rounded-md focus:outline-none"
+        className="flex justify-between items-center w-full text-left text-xl font-display font-bold mb-4 p-4 bg-brand-cream rounded-xl shadow-clay-sm hover:shadow-clay transition-all focus:outline-none text-brand-dark"
       >
         <span>{title}</span>
         <svg
-          className={`w-6 h-6 transform transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`w-6 h-6 transform transition-transform duration-200 text-brand-indigo ${isOpen ? "rotate-180" : ""
+            }`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -269,30 +268,33 @@ const VideoSection = ({
 
       {/* Collapsible Content */}
       {isOpen && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {videos.map((video) => (
             <div
               key={video.id}
-              className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-200"
+              className="clay-card overflow-hidden cursor-pointer hover:-translate-y-1 bg-white relative group"
             >
               <Link href={video.internalLink}>
                 <div>
-                  <img
-                    src={video.thumbnail}
-                    alt={video.title}
-                    className="w-full h-48 object-cover"
-                  />
+                  <div className="relative">
+                    <img
+                      src={video.thumbnail}
+                      alt={video.title}
+                      className="w-full h-48 object-cover rounded-t-2xl"
+                    />
+                    <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-all" />
+                  </div>
                   <div className="p-4">
-                    <h3 className="text-lg font-semibold">{video.title}</h3>
-                    <p className="text-gray-600">{video.description}</p>
+                    <h3 className="text-lg font-bold font-display text-brand-dark leading-tight mb-2 line-clamp-2">{video.title}</h3>
+                    <p className="text-sm text-gray-500 line-clamp-3">{video.description}</p>
                   </div>
                 </div>
               </Link>
               {onDelete && (
-                <div className="p-4">
+                <div className="p-4 pt-0">
                   <button
                     onClick={() => onDelete(video.id)}
-                    className="mt-2 bg-red-500 text-white p-2 rounded-md w-full"
+                    className="mt-2 bg-red-100 text-red-600 font-bold p-2 rounded-xl w-full hover:bg-red-200 transition-colors"
                   >
                     Delete
                   </button>
@@ -311,16 +313,15 @@ const CollapsibleSection = ({ title, children, initialOpen = false }) => {
   const [isOpen, setIsOpen] = useState(initialOpen);
 
   return (
-    <div className="mb-8">
+    <div className="mb-12">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex justify-between items-center w-full text-left text-2xl font-bold mt-5 mb-5 p-4 bg-gray-100 hover:bg-gray-200 rounded-md focus:outline-none"
+        className="flex justify-between items-center w-full text-left text-2xl font-display font-bold mb-6 p-5 bg-white border-2 border-brand-indigo/10 rounded-2xl shadow-clay hover:shadow-clay-md transition-all focus:outline-none text-brand-dark"
       >
         <span>{title}</span>
         <svg
-          className={`w-6 h-6 transform transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`w-6 h-6 transform transition-transform duration-200 text-brand-indigo ${isOpen ? "rotate-180" : ""
+            }`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -335,7 +336,7 @@ const CollapsibleSection = ({ title, children, initialOpen = false }) => {
       </button>
 
       {/* Collapsible Content */}
-      {isOpen && <div>{children}</div>}
+      {isOpen && <div className="p-4 bg-brand-cream/50 rounded-2xl border border-brand-indigo/5">{children}</div>}
     </div>
   );
 };
