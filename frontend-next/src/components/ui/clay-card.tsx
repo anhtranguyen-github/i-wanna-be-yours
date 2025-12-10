@@ -11,7 +11,7 @@ const ClayCard = React.forwardRef<HTMLDivElement, ClayCardProps>(
             <div
                 ref={ref}
                 className={cn(
-                    "clay-component p-6 transition-all duration-300",
+                    "clay-card p-6 transition-all duration-300",
                     className
                 )}
                 style={{
