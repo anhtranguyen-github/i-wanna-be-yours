@@ -13,9 +13,20 @@ const config: Config = {
 	],
 	theme: {
 		extend: {
+			fontFamily: {
+				sans: ['Nunito', 'sans-serif'],
+				display: ['Fredoka', 'sans-serif'],
+				body: ['Nunito', 'sans-serif'],
+			},
 			boxShadow: {
 				'hard': '4px 4px 0px 0px #1e293b',
 				'hard-sm': '2px 2px 0px 0px #1e293b',
+				'clay': '8px 8px 16px rgba(165, 177, 198, 0.4), -8px -8px 16px rgba(255, 255, 255, 0.8)',
+				'clay-sm': '5px 5px 10px rgba(165, 177, 198, 0.4), -5px -5px 10px rgba(255, 255, 255, 0.8)',
+				'clay-md': '10px 10px 20px rgba(165, 177, 198, 0.4), -10px -10px 20px rgba(255, 255, 255, 0.8)',
+				'clay-lg': '15px 15px 30px rgba(165, 177, 198, 0.4), -15px -15px 30px rgba(255, 255, 255, 0.8)',
+				'clay-inner': 'inset 6px 6px 12px rgba(165, 177, 198, 0.6), inset -6px -6px 12px rgba(255, 255, 255, 0.9)',
+				'clay-inner-sm': 'inset 3px 3px 6px rgba(165, 177, 198, 0.6), inset -3px -3px 6px rgba(255, 255, 255, 0.9)',
 			},
 			minWidth: {
 				'250': '250px',
@@ -24,34 +35,46 @@ const config: Config = {
 			},
 			colors: {
 				vibrant: {
-					blue: '#4facfe',
-					cyan: '#00f2fe',
-					pink: '#ff7eb3',
-					purple: '#8e44ad',
-					yellow: '#ffd166',
-					green: '#06d6a0',
-					orange: '#ff9f43',
+					blue: '#87CEEB', // Sky Blue
+					cyan: '#AEEEEE', // Pale Turquoise
+					pink: '#FA8072', // Salmon
+					purple: '#B39DDB', // Pastel Purple
+					yellow: '#FDFD96', // Pastel Yellow
+					green: '#50C878', // Emerald
+					orange: '#FFB347',
 				},
 				brand: {
 					cream: '#FFFBF0',
-					green: '#22c55e',
-					dark: '#1e293b',
-					blue: '#bae6fd',
-					peach: '#fecaca',
+					green: '#50C878', // Emerald
+					dark: '#334155',  // Deep Slate (Text)
+					blue: '#87CEEB',  // Sky Blue
+					peach: '#FA8072', // Salmon
+					indigo: '#4F46E5', // Keep for compatibility or change to Sky
+					softBlue: '#AEEEEE',
+					orange: '#FA8072', // Map Orange to Salmon for now
+					salmon: '#FA8072',
+					sky: '#87CEEB',
+					emerald: '#50C878',
+					white: '#FFFFFF'
 				},
-				'primary-cta': '#38B24C',
-				'secondary-cta': '#87CEEB',
-				'text-primary': '#1A202C',
-				'bg-canvas': '#F0F4F7',
+				'primary-cta': '#FA8072', // Salmon
+				'secondary-cta': '#87CEEB', // Sky Blue
+				'text-primary': '#334155', // Deep Slate
+				'text-dark': '#334155',
+				'bg-canvas': '#FFFFFF', // White
 				primary: {
-					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
+					DEFAULT: '#FA8072', // Salmon
+					foreground: '#FFFFFF'
 				},
 				secondary: {
-					DEFAULT: 'hsl(var(--secondary))',
-					foreground: 'hsl(var(--secondary-foreground))'
+					DEFAULT: '#87CEEB', // Sky Blue
+					foreground: '#FFFFFF'
 				},
-				green: '#BDFF00',
+				accent: {
+					DEFAULT: '#50C878', // Emerald
+					foreground: '#FFFFFF'
+				},
+				green: '#50C878',
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				card: {
@@ -65,10 +88,6 @@ const config: Config = {
 				muted: {
 					DEFAULT: 'hsl(var(--muted))',
 					foreground: 'hsl(var(--muted-foreground))'
-				},
-				accent: {
-					DEFAULT: 'hsl(var(--accent))',
-					foreground: 'hsl(var(--accent-foreground))'
 				},
 				destructive: {
 					DEFAULT: 'hsl(var(--destructive))',
@@ -107,7 +126,8 @@ const config: Config = {
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
+				sm: 'calc(var(--radius) - 4px)',
+				'clay': '24px',
 			},
 			keyframes: {
 				'accordion-down': {

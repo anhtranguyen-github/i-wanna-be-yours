@@ -65,9 +65,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <body className={inter.className}>
 
           {/* Page Layout - Redesigned: Fixed Sidebar + Main Content */}
-          <div className="flex bg-brand-cream/30 dark:bg-gray-950 min-h-screen">
+          <div className="flex bg-slate-50 min-h-screen text-brand-dark">
             <Sidebar />
-            <div className="flex-1 ml-24 flex flex-col min-h-screen transition-all duration-300">
+            <div className="flex-1 ml-32 flex flex-col min-h-screen transition-all duration-300">
               <div className="flex-1 overflow-auto">
                 {children}
                 <Footer />
