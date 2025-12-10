@@ -16,9 +16,17 @@ import { usePathname } from "next/navigation";
 const Sidebar = () => {
     const pathname = usePathname();
     const { user, logout } = useUser();
+    const isChat = pathname?.startsWith('/chat');
 
     return (
-        <div className="fixed left-4 top-4 bottom-4 w-24 flex flex-col justify-between items-center py-8 z-50 clay-card bg-white text-brand-dark border-2 border-white">
+        <div className={`
+            fixed left-4 top-4 bottom-4 w-24 flex flex-col justify-between items-center py-8 z-50 
+            bg-white text-brand-dark border-2 border-white transition-all duration-300
+            ${isChat 
+                ? 'rounded-l-3xl rounded-r-none border-r-0 shadow-[8px_8px_20px_rgba(170,180,200,0.1),-8px_-8px_20px_rgba(255,255,255,1)] pr-0' 
+                : 'rounded-3xl clay-card'
+            }
+        `}>
             {/* Logo area */}
             <div className="flex flex-col items-center gap-2 mb-8">
                 <div className="w-12 h-12 bg-brand-salmon rounded-xl flex items-center justify-center shadow-inner text-2xl text-white">
