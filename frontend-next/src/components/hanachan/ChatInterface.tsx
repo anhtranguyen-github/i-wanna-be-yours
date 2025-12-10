@@ -5,14 +5,15 @@ import styles from "./Chat.module.css";
 import {
     MessageCircle, Wrench, Gamepad2, Library, Lightbulb, LogOut, User as UserIcon,
     Plus, ChevronRight, ChevronDown, CheckCircle, Search, FileText, Send,
-    Paperclip, Menu, ArrowRight, Info, X
+    Paperclip, Menu, ArrowRight, Info, X,
+    PanelLeftClose, PanelLeftOpen, PanelRightClose, PanelRightOpen
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
 // --- Types ---
 interface Artifact {
     id?: string;
-    type: "mindmap" | "flashcard" | "vocabulary" | "analysis" | "document" | "image" | "file";
+    type: "mindmap" | "flashcard" | "vocabulary" | "analysis" | "document" | "image" | "file" | "task";
     content: any; // Content structure varies by type
     title?: string;
 }
@@ -500,11 +501,20 @@ export default function ChatInterface() {
                 {/* Main Content */}
                 <main className={styles.mainContent}>
                     {/* Toggles */}
-                    <button className={`${styles.sidebarToggleBtn} ${styles.left}`} onClick={() => setLeftSidebarOpen(!leftSidebarOpen)}>
-                        <Menu size={24} />
+                    {/* Toggles */}
+                    <button
+                        className={`${styles.sidebarToggleBtn} ${styles.left}`}
+                        onClick={() => setLeftSidebarOpen(!leftSidebarOpen)}
+                        title={leftSidebarOpen ? "Collapse Sidebar" : "Expand Sidebar"}
+                    >
+                        {leftSidebarOpen ? <PanelLeftClose size={24} /> : <PanelLeftOpen size={24} />}
                     </button>
-                    <button className={`${styles.sidebarToggleBtn} ${styles.right}`} onClick={() => setRightSidebarOpen(!rightSidebarOpen)}>
-                        <Menu size={24} />
+                    <button
+                        className={`${styles.sidebarToggleBtn} ${styles.right}`}
+                        onClick={() => setRightSidebarOpen(!rightSidebarOpen)}
+                        title={rightSidebarOpen ? "Collapse Artifacts" : "Expand Artifacts"}
+                    >
+                        {rightSidebarOpen ? <PanelRightClose size={24} /> : <PanelRightOpen size={24} />}
                     </button>
 
                     <div className={styles.chatFeed} ref={chatFeedRef}>
