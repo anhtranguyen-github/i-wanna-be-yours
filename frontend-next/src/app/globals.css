@@ -12,28 +12,29 @@
     /* Pastel Sky Theme Variables */
     --background: 0 0% 100%;
     /* #FFFFFF */
-    --foreground: 215 25% 27%;
-    /* #334155 Deep Slate */
+    --foreground: 210 29% 24%;
+    /* #2C3E50 Navy */
 
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 27%;
+    --card-foreground: 210 29% 24%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 27%;
+    --popover-foreground: 210 29% 24%;
 
-    --primary: 6 93% 71%;
-    /* #FA8072 Salmon */
+    --primary: 138 61% 53%;
+    /* #38D468 Green */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 203 69% 73%;
-    /* #87CEEB Sky Blue */
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 348 90% 88%;
+    /* #FDC5D0 Pink */
+    --secondary-foreground: 210 29% 24%;
 
-    --muted: 210 40% 96%;
+    --muted: 186 52% 93%;
+    /* #E3F5F7 Surface */
     --muted-foreground: 215 16% 47%;
 
-    --accent: 140 52% 55%;
-    /* #50C878 Emerald */
+    --accent: 138 61% 53%;
+    /* #38D468 Green */
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
@@ -41,27 +42,27 @@
 
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 6 93% 71%;
-    /* Salmon ring */
+    --ring: 138 61% 53%;
+    /* Green ring */
 
     --radius: 1rem;
 
     /* Chart Colors */
-    --chart-1: 6 93% 71%;
-    --chart-2: 203 69% 73%;
+    --chart-1: 138 61% 53%;
+    --chart-2: 348 90% 88%;
     --chart-3: 140 52% 55%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
 
     /* Sidebar - Light */
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 215 25% 27%;
-    --sidebar-primary: 6 93% 71%;
+    --sidebar-foreground: 210 29% 24%;
+    --sidebar-primary: 138 61% 53%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 203 69% 73%;
-    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-accent: 348 90% 88%;
+    --sidebar-accent-foreground: 210 29% 24%;
     --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 6 93% 71%;
+    --sidebar-ring: 138 61% 53%;
   }
 
   .dark {

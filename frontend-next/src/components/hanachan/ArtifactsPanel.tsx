@@ -95,13 +95,13 @@ export default function ArtifactsPanel({
                             className={`
                                 flex items-start gap-4 p-4 rounded-xl transition-all border text-left group
                                 ${activeArtifact === artifact
-                                    ? 'bg-white border-brand-salmon/50 shadow-md ring-1 ring-brand-salmon/20'
-                                    : 'bg-white border-slate-200 hover:border-brand-salmon/30 hover:shadow-sm'}
+                                    ? 'bg-white border-brand-peach shadow-md ring-1 ring-brand-peach/20'
+                                    : 'bg-white border-slate-200 hover:border-brand-peach/50 hover:shadow-sm'}
                             `}
                         >
                             <div className={`
                                 p-3 rounded-lg flex-shrink-0 mt-1
-                                ${activeArtifact === artifact ? 'bg-brand-salmon text-white' : 'bg-slate-100 text-slate-500 group-hover:bg-brand-salmon/10 group-hover:text-brand-salmon'}
+                                ${activeArtifact === artifact ? 'bg-brand-peach text-brand-dark' : 'bg-slate-100 text-slate-500 group-hover:bg-brand-peach/20 group-hover:text-brand-dark'}
                             `}>
                                 {getArtifactIcon(artifact.type)}
                             </div>
@@ -138,7 +138,7 @@ export default function ArtifactsPanel({
                         </button>
 
                         <div className="font-bold text-brand-dark flex items-center gap-2 truncate">
-                            {activeArtifact && <span className="text-brand-salmon">{getArtifactIcon(activeArtifact.type)}</span>}
+                            {activeArtifact && <span className="text-brand-peach">{getArtifactIcon(activeArtifact.type)}</span>}
                             <span className="truncate text-lg">{activeArtifact?.content.title || "Artifact Details"}</span>
                         </div>
                     </div>

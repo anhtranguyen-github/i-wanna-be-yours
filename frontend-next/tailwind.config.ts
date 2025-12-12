@@ -45,22 +45,23 @@ const config: Config = {
 				},
 				brand: {
 					cream: '#FFFBF0',
-					green: '#50C878', // Emerald
-					dark: '#334155',  // Deep Slate (Text)
-					blue: '#87CEEB',  // Sky Blue
-					peach: '#FA8072', // Salmon
-					indigo: '#4F46E5', // Keep for compatibility or change to Sky
-					softBlue: '#AEEEEE',
-					orange: '#FA8072', // Map Orange to Salmon for now
-					salmon: '#FA8072',
-					sky: '#87CEEB',
-					emerald: '#50C878',
-					white: '#FFFFFF'
+					green: '#38D468', // Primary Green
+					dark: '#2C3E50',  // Deep Slate/Navy (Text)
+					blue: '#87CEEB',  // Keep as is or update if needed
+					peach: '#FDC5D0', // Pink
+					indigo: '#4F46E5',
+					softBlue: '#E3F5F7', // Surface
+					orange: '#FDC5D0',
+					salmon: '#38D468', // RE-MAPPED to Primary Green for instant theming
+					sky: '#FDC5D0', // RE-MAPPED to Secondary Pink
+					emerald: '#38D468',
+					white: '#FFFFFF',
+					surface: '#E3F5F7' // New surface color
 				},
-				'primary-cta': '#FA8072', // Salmon
-				'secondary-cta': '#87CEEB', // Sky Blue
-				'text-primary': '#334155', // Deep Slate
-				'text-dark': '#334155',
+				'primary-cta': '#38D468', // Green
+				'secondary-cta': '#FDC5D0', // Pink
+				'text-primary': '#2C3E50', // Navy
+				'text-dark': '#2C3E50',
 				'bg-canvas': '#FFFFFF', // White
 				primary: {
 					DEFAULT: '#FA8072', // Salmon

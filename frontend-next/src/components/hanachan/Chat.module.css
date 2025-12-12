@@ -1,12 +1,14 @@
 .root {
-    /* Playful Clay Theme Mapping - PASTEL SKY MODE */
+    /* Educational Theme - Green & Pink */
     --bg-app: #FFFFFF;
     --bg-sidebar: #FFFFFF;
-    --bg-message-user: #FA8072;
-    /* Salmon */
-    --bg-message-ai: #F0F9FF;
-    /* Alice Blue */
-    --text-primary: #334155;
+    --bg-message-user: #38D468;
+    /* Green */
+    --bg-message-ai: #E3F5F7;
+    /* Surface Blue */
+
+    --text-primary: #2C3E50;
+    /* Navy */
     --text-inverse: #ffffff;
     --text-secondary: #64748B;
 
@@ -90,8 +92,8 @@
 
 .message.user .messageAvatar {
     order: 2;
-    background: var(--bg-message-user);
-    color: white;
+    background: #FDC5D0;
+    color: var(--text-primary);
 }
 
 /* Artifacts Helper Styles (If still used) */
