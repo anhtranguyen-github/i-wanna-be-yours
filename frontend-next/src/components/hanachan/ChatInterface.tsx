@@ -179,8 +179,8 @@ export default function ChatInterface() {
     const renderArtifactSummary = (artifact: Artifact) => {
         let Icon = Library;
         let Label = "Artifact";
-        let Color = "text-brand-salmon";
-        let Bg = "bg-brand-salmon/10";
+        let Color = "text-brand-peach";
+        let Bg = "bg-brand-peach/10";
 
         if (artifact.type === 'flashcard') { Icon = Library; Label = "Flashcard"; Color = "text-brand-peach"; Bg = "bg-brand-peach/10"; }
         if (artifact.type === 'mindmap') { Icon = BrainCircuit; Label = "Mind Map"; Color = "text-brand-sky"; Bg = "bg-brand-sky/10"; }
@@ -309,7 +309,7 @@ export default function ChatInterface() {
                     {/* Composer */}
                     <div className="absolute bottom-8 left-8 right-8 max-w-4xl mx-auto w-full z-10">
                         <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-clay border border-white p-2 flex items-end gap-2 relative">
-                            <button className="p-3 text-slate-400 hover:text-brand-salmon hover:bg-slate-50 rounded-xl transition-colors">
+                            <button className="p-3 text-slate-400 hover:text-brand-green hover:bg-slate-50 rounded-xl transition-colors">
                                 <Paperclip size={20} />
                             </button>
                             <textarea
