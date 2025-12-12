@@ -42,7 +42,7 @@ export default function ChatNavigationPanel({
             <div className="mb-6 flex-shrink-0 p-4 pb-0 flex gap-2">
                 <button
                     onClick={onNewChat}
-                    className="flex-1 py-3 px-4 bg-brand-salmon text-white font-bold rounded-xl shadow-clay-sm hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2"
+                    className="flex-1 py-3 px-4 bg-brand-green text-white font-bold rounded-xl shadow-clay-sm hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2"
                 >
                     <Plus size={20} />
                     <span>New Chat</span>
