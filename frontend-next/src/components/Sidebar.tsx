@@ -22,8 +22,8 @@ const Sidebar = () => {
         <div className={`
             fixed left-4 top-4 bottom-4 w-24 flex flex-col justify-between items-center py-8 z-50 
             bg-white text-brand-dark border-2 border-white transition-all duration-300
-            ${isChat 
-                ? 'rounded-l-3xl rounded-r-none border-r-0 shadow-[8px_8px_20px_rgba(170,180,200,0.1),-8px_-8px_20px_rgba(255,255,255,1)] pr-0' 
+            ${isChat
+                ? 'rounded-l-3xl rounded-r-none border-r-0 shadow-[8px_8px_20px_rgba(170,180,200,0.1),-8px_-8px_20px_rgba(255,255,255,1)] pr-0'
                 : 'rounded-3xl clay-card'
             }
         `}>
@@ -84,10 +84,13 @@ const NavItem = ({ icon, label, href, active }: { icon: React.ReactNode, label: 
                 {icon}
             </div>
             {/* Tooltip */}
+            {/* Label */}
             <span className={`
-                absolute left-full ml-4 px-3 py-1 bg-white text-brand-dark text-sm font-bold rounded-lg shadow-clay
-                opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20 pointer-events-none
-                ${active ? 'opacity-100 bg-brand-salmon text-white' : ''}
+                text-[10px] font-extrabold mt-1 transition-all duration-300 text-center
+                ${active
+                    ? 'text-brand-salmon scale-105'
+                    : 'text-gray-400 group-hover:text-brand-salmon group-hover:scale-105'
+                }
             `}>
                 {label}
             </span>
