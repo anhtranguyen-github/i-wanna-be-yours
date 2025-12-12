@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Search, MessageCircle, FileText, ChevronDown, ChevronRight, Hash } from "lucide-react";
+import { Plus, Search, MessageCircle, FileText, ChevronDown, ChevronRight, Hash, ChevronLeft } from "lucide-react";
 import { Conversation, Resource } from "@/types/chat";
 
 interface ChatNavigationPanelProps {
@@ -11,6 +11,8 @@ interface ChatNavigationPanelProps {
     onNewChat: () => void;
     onSelectConversation: (id: string) => void;
     onSelectResource: (resource: Resource) => void;
+    isOpen: boolean;
+    onClose: () => void;
 }
 
 export default function ChatNavigationPanel({
@@ -19,7 +21,9 @@ export default function ChatNavigationPanel({
     activeSessionId,
     onNewChat,
     onSelectConversation,
-    onSelectResource
+    onSelectResource,
+    isOpen,
+    onClose
 }: ChatNavigationPanelProps) {
     const [historyOpen, setHistoryOpen] = useState(true);
     const [resourcesOpen, setResourcesOpen] = useState(true);
@@ -27,24 +31,34 @@ export default function ChatNavigationPanel({
     const [resourceSearch, setResourceSearch] = useState("");
 
     const filteredHistory = history.filter(h => h.title.toLowerCase().includes(historySearch.toLowerCase()));
-    // const filteredResources = resources.filter(r => r.title.toLowerCase().includes(resourceSearch.toLowerCase()));
 
     return (
-        <div className="fixed left-28 top-4 bottom-4 w-72 bg-white rounded-r-3xl rounded-l-none shadow-clay border-2 border-l-0 border-white z-40 flex flex-col p-4 overflow-hidden">
+        <div className={`
+            fixed left-28 top-4 bottom-4 bg-white rounded-r-3xl rounded-l-none shadow-clay border-2 border-l-0 border-white z-40 flex flex-col overflow-hidden
+            transition-all duration-300 ease-in-out
+            ${isOpen ? 'w-72 translate-x-0 opacity-100' : 'w-0 -translate-x-10 opacity-0 pointer-events-none border-0'}
+        `}>
             {/* Header / New Chat */}
-            <div className="mb-6 flex-shrink-0">
+            <div className="mb-6 flex-shrink-0 p-4 pb-0 flex gap-2">
                 <button
                     onClick={onNewChat}
-                    className="w-full py-3 px-4 bg-brand-salmon text-white font-bold rounded-xl shadow-clay-sm hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2"
+                    className="flex-1 py-3 px-4 bg-brand-salmon text-white font-bold rounded-xl shadow-clay-sm hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2"
                 >
                     <Plus size={20} />
                     <span>New Chat</span>
                 </button>
+                <button
+                    onClick={onClose}
+                    className="p-3 bg-slate-50 text-slate-400 rounded-xl hover:bg-slate-100 hover:text-brand-dark transition-colors"
+                    title="Collapse Sidebar"
+                >
+                    <ChevronLeft size={20} />
+                </button>
             </div>
 
             {/* Scrollable Content Area */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-4 -mr-2 pr-2">
-                
+            <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-4 px-4 pb-4">
+
                 {/* Chat History Section */}
                 <div className="flex flex-col">
                     <div
@@ -82,7 +96,7 @@ export default function ChatNavigationPanel({
                                             className={`
                                                 p-3 rounded-xl text-sm font-medium cursor-pointer transition-all border border-transparent
                                                 ${activeSessionId === conv.id
-                                                    ? 'bg-brand-salmon/10 text-brand-salmon border-brand-salmon/20'
+                                                    ? 'bg-brand-surface text-brand-dark border-brand-green/20 shadow-sm'
                                                     : 'text-gray-600 hover:bg-slate-50 hover:text-brand-dark'
                                                 }
                                             `}

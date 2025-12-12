@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import styles from "./Chat.module.css";
 import {
-    Send, Paperclip, Library, User as UserIcon, Keyboard, ChevronLeft, ArrowRight, BrainCircuit, StickyNote
+    Send, Paperclip, Library, User as UserIcon, Keyboard, ChevronLeft, ChevronRight, ArrowRight, BrainCircuit, StickyNote
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import ChatNavigationPanel from "./ChatNavigationPanel";
@@ -30,6 +30,7 @@ export default function ChatInterface() {
     const [resources, setResources] = useState<Resource[]>([]);
 
     // UI State
+    const [leftPanelOpen, setLeftPanelOpen] = useState(true);
     const [rightPanelState, setRightPanelState] = useState<PanelState>('minimized');
     const [activeArtifact, setActiveArtifact] = useState<Artifact | null>(null);
     const [sessionArtifacts, setSessionArtifacts] = useState<Artifact[]>([]); // Track session artifacts
@@ -181,7 +182,7 @@ export default function ChatInterface() {
         let Color = "text-brand-salmon";
         let Bg = "bg-brand-salmon/10";
 
-        if (artifact.type === 'flashcard') { Icon = Library; Label = "Flashcard"; Color = "text-brand-salmon"; Bg = "bg-brand-salmon/10"; }
+        if (artifact.type === 'flashcard') { Icon = Library; Label = "Flashcard"; Color = "text-brand-peach"; Bg = "bg-brand-peach/10"; }
         if (artifact.type === 'mindmap') { Icon = BrainCircuit; Label = "Mind Map"; Color = "text-brand-sky"; Bg = "bg-brand-sky/10"; }
         if (artifact.type === 'task') { Icon = StickyNote; Label = "Task"; Color = "text-brand-emerald"; Bg = "bg-brand-emerald/10"; }
 
@@ -219,10 +220,26 @@ export default function ChatInterface() {
                 onNewChat={startNewChat}
                 onSelectConversation={loadConversation}
                 onSelectResource={(r) => console.log(r)}
+                isOpen={leftPanelOpen}
+                onClose={() => setLeftPanelOpen(false)}
             />
 
+            {/* Left Panel Expansion Trigger */}
+            {!leftPanelOpen && (
+                <button
+                    onClick={() => setLeftPanelOpen(true)}
+                    className="fixed left-28 top-1/2 -translate-y-1/2 ml-2 bg-white p-2 rounded-r-xl shadow-clay border-y border-r border-slate-200 text-brand-salmon hover:scale-110 transition-transform z-30"
+                    title="Show Chat History"
+                >
+                    <ChevronRight size={20} />
+                </button>
+            )}
+
             {/* Layout Container: Shifts left based on left nav margin */}
-            <div className="flex-1 flex min-w-0 ml-[19rem]">
+            <div className={`
+                flex-1 flex min-w-0 transition-all duration-300
+                ${leftPanelOpen ? 'ml-[26rem]' : 'ml-[8rem]'}
+            `}>
 
                 {/* Main Content Area - Takes remaining space */}
                 <div className="flex-1 flex flex-col h-full relative min-w-0 transition-all duration-300">
