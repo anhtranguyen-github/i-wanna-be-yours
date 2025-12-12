@@ -228,7 +228,7 @@ export default function ChatInterface() {
             {!leftPanelOpen && (
                 <button
                     onClick={() => setLeftPanelOpen(true)}
-                    className="fixed left-28 top-1/2 -translate-y-1/2 ml-2 bg-white p-2 rounded-r-xl shadow-clay border-y border-r border-slate-200 text-brand-salmon hover:scale-110 transition-transform z-30"
+                    className="fixed left-28 top-1/2 -translate-y-1/2 ml-2 bg-white p-2 rounded-r-xl shadow-clay border-y border-r border-slate-200 text-brand-green hover:scale-110 transition-transform z-30"
                     title="Show Chat History"
                 >
                     <ChevronRight size={20} />
@@ -257,9 +257,9 @@ export default function ChatInterface() {
                                         <button
                                             key={idx}
                                             onClick={() => setInputValue(item.title + " ")}
-                                            className="p-6 bg-white rounded-2xl shadow-clay-sm border-2 border-transparent hover:border-brand-salmon/30 hover:shadow-clay transition-all text-left group"
+                                            className="p-6 bg-white rounded-2xl shadow-clay-sm border-2 border-transparent hover:border-brand-green/30 hover:shadow-clay transition-all text-left group"
                                         >
-                                            <div className="font-bold text-slate-700 group-hover:text-brand-salmon transition-colors">{item.title}</div>
+                                            <div className="font-bold text-slate-700 group-hover:text-brand-green transition-colors">{item.title}</div>
                                             <div className="text-sm text-slate-400">{item.subtitle}</div>
                                         </button>
                                     ))}
@@ -326,7 +326,7 @@ export default function ChatInterface() {
                                 className={`
                                     p-3 rounded-xl transition-all shadow-md flex items-center justify-center
                                     ${inputValue.trim()
-                                        ? 'bg-brand-salmon text-white hover:scale-105 active:scale-95'
+                                        ? 'bg-brand-green text-white hover:scale-105 active:scale-95'
                                         : 'bg-slate-200 text-slate-400 cursor-not-allowed'}
                                 `}
                             >
@@ -352,7 +352,7 @@ export default function ChatInterface() {
                 {rightPanelState === 'collapsed' && (
                     <button
                         onClick={() => setRightPanelState('minimized')}
-                        className="absolute right-0 top-1/2 -translate-y-1/2 bg-white p-2 rounded-l-xl shadow-clay border-y border-l border-slate-200 text-brand-salmon hover:scale-110 transition-transform z-30"
+                        className="absolute right-0 top-1/2 -translate-y-1/2 bg-white p-2 rounded-l-xl shadow-clay border-y border-l border-slate-200 text-brand-green hover:scale-110 transition-transform z-30"
                         title="Show Sidebar"
                     >
                         <ChevronLeft size={20} />
