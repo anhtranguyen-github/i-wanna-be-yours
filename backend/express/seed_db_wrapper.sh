@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # shell wrapper around DB seeder scripts
+# Japanese content only
 
 
 
@@ -16,8 +17,6 @@ sleep 2
 node ./seeding_scripts/seed_kanji_to_db.js 
 sleep 2 
 node ./seeding_scripts/seed_reading_to_db.js 
-sleep 2 
-node ./seeding_scripts/seed_grammar_to_db_other_langs.js 
 sleep 2 
 node ./my_server.js
 

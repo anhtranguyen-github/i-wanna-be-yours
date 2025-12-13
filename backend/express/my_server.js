@@ -14,22 +14,13 @@ const { Kanji } = require("./models/kanji");
 const { Reading } = require("./models/reading");
 
 const { Grammar } = require("./models/grammar"); // japanese
-const { VnGrammar } = require("./models/grammar_vn"); // vietnamese
-const { CnGrammar } = require("./models/grammar_cn"); // mandarin
-const { ThGrammar } = require("./models/grammar_th"); // vietnamese
-const { KrGrammar } = require("./models/grammar_kr"); // vietnamese
 
 const path = require("path");
 const cors = require("cors");
 
-// --- Map p_tag values to respective models ---
+// --- Map p_tag values to respective models (Japanese only) ---
 const modelMapping = {
   JLPT_: Grammar,
-  VIET: VnGrammar,
-  HSK_: CnGrammar,
-  KOREAN_: KrGrammar,
-  "CU-TFL_": ThGrammar,
-  // Add other mappings for different language models
 };
 
 // -----------  General prep and vars  ------------------ //
@@ -290,100 +281,7 @@ app.post("/e-api/v1/grammar-details", async (req, res) => {
   }
 });
 
-app.post("/e-api/v1/vietnamese/grammar-details", async (req, res) => {
-  try {
-    const { title } = req.body;
-
-    if (!title) {
-      return res.status(400).json({ error: "Title parameter is required." });
-    }
-
-    const grammar = await VnGrammar.findOne({ title });
-
-    if (!grammar) {
-      return res.status(404).json({ error: "Grammar not found." });
-    }
-
-    res.status(200).json({ grammar });
-  } catch (err) {
-    console.error(err);
-    res
-      .status(500)
-      .json({ error: "An error occurred while fetching grammar details." });
-  }
-});
-
-app.post("/e-api/v1/korean/grammar-details", async (req, res) => {
-  try {
-    const { title } = req.body;
-
-    if (!title) {
-      return res.status(400).json({ error: "Title parameter is required." });
-    }
-
-
-    // issues with slashes ruining my day here, google cannot index 350 addresses with /
-    // if in database we have slash, we need to have incoming POST payload with slash as well
-    const grammar = await KrGrammar.findOne({ title });
-
-    if (!grammar) {
-      return res.status(404).json({ error: "Grammar not found." });
-    }
-
-    res.status(200).json({ grammar });
-  } catch (err) {
-    console.error(err);
-    res
-      .status(500)
-      .json({ error: "An error occurred while fetching grammar details." });
-  }
-});
-
-app.post("/e-api/v1/thai/grammar-details", async (req, res) => {
-  try {
-    const { title } = req.body;
-
-    if (!title) {
-      return res.status(400).json({ error: "Title parameter is required." });
-    }
-
-    const grammar = await ThGrammar.findOne({ title });
-
-    if (!grammar) {
-      return res.status(404).json({ error: "Grammar not found." });
-    }
-
-    res.status(200).json({ grammar });
-  } catch (err) {
-    console.error(err);
-    res
-      .status(500)
-      .json({ error: "An error occurred while fetching grammar details." });
-  }
-});
-
-app.post("/e-api/v1/mandarin/grammar-details", async (req, res) => {
-  try {
-    const { title } = req.body;
-
-    if (!title) {
-      return res.status(400).json({ error: "Title parameter is required." });
-    }
-
-    const grammar = await CnGrammar.findOne({ title });
-
-    if (!grammar) {
-      return res.status(404).json({ error: "Grammar not found." });
-    }
-
-    res.status(200).json({ grammar });
-  } catch (err) {
-    console.error(err);
-    res
-      .status(500)
-      .json({ error: "An error occurred while fetching grammar details." });
-  }
-});
+// Other language endpoints removed - Japanese only
 
 // ------------ kanji ---------------
 
