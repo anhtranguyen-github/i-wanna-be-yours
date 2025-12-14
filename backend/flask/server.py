@@ -67,6 +67,9 @@ from modules.library import LibraryTexts
 library_texts_module = LibraryTexts()
 library_texts_module.register_routes(app)
 
+from modules.quiz import QuizModule
+quiz_module = QuizModule()
+quiz_module.register_routes(app)
 
 # --------------- End of Class imports ---------------- #
 
