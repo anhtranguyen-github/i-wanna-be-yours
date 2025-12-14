@@ -104,15 +104,7 @@ shutdown_all() {
         fi
     ) &
     
-    # Stop MySQL
-    (
-        log "🛑 Stopping MySQL Docker container..."
-        if docker compose stop mysql-db >/dev/null 2>&1; then
-            log "✅ MySQL container stopped."
-        else
-            log "⚠️  Failed to stop MySQL container (or it wasn't running)."
-        fi
-    ) &
+    # MySQL Removed
 
     # Stop Ollama
     (
@@ -194,30 +186,7 @@ log "=== Initializing Databases & Infrastructure in Parallel ==="
 ) &
 DB_PIDS+=($!)
 
-# --- MySQL (Docker) ---
-(
-    # Check if MySQL port 3307 is listening
-    if lsof -i:3307 >/dev/null 2>&1; then
-        log "✅ MySQL (port 3307) is already running."
-    else
-        log "🚀 MySQL not found on port 3307. Attempting to start via Docker Compose..."
-        if docker compose up -d mysql-db >/dev/null 2>&1; then
-            log "⏳ Waiting for MySQL to be ready..."
-            # Simple wait loop
-            for i in {1..30}; do
-                if lsof -i:3307 >/dev/null 2>&1; then
-                    log "✅ MySQL is listening on port 3307."
-                    break
-                fi
-                sleep 1
-            done
-        else
-            log "❌ Failed to start MySQL via Docker Compose."
-            exit 1
-        fi
-    fi
-) &
-DB_PIDS+=($!)
+    # MySQL Removed
 
 # --- Ollama ---
 (
