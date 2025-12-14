@@ -139,6 +139,7 @@ mkdir -p "$LOG_ROOT/express-db" "$LOG_ROOT/flask-dynamic-db" "$LOG_ROOT/dictiona
 
 # --- Argument Parsing ---
 SHOULD_SEED=false
+MODE="dev"
 
 for arg in "$@"; do
     if [[ "$arg" == "stop" || "$arg" == "close" || "$arg" == "down" ]]; then
@@ -146,6 +147,9 @@ for arg in "$@"; do
     fi
     if [[ "$arg" == "seed" || "$arg" == "--seed" ]]; then
         SHOULD_SEED=true
+    fi
+    if [[ "$arg" == "prod" || "$arg" == "--prod" ]]; then
+        MODE="prod"
     fi
 done
 
@@ -331,7 +335,12 @@ log "✅ Started hanachan (PID: $pid)"
     log "🚀 Starting frontend-next (port 3000)..."
     cd frontend-next || exit 1
     
-    npm run dev > "$LOG_ROOT/frontend/next_3000.log" 2>&1
+    if [ "$MODE" == "prod" ]; then
+        log "🚀 Starting frontend-next (OPTIMIZED PRODUCTION)..."
+        npm start > "$LOG_ROOT/frontend/next_3000.log" 2>&1
+    else
+        npm run dev > "$LOG_ROOT/frontend/next_3000.log" 2>&1
+    fi
     on_error "frontend-next" $?
 ) &
 pid=$!

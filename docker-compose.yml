@@ -11,6 +11,12 @@ services:
       - '127.0.0.1:3000:3000'
     environment:
       REACT_APP_HOST_IP: 'express-db'
+      EXPRESS_API_URL: 'http://express-db:8000'
+      FLASK_API_URL: 'http://flask-dynamic-db:5100'
+      DICTIONARY_API_URL: 'http://dictionary-db:5200'
+      HANACHAN_API_URL: 'http://hanachan:5400'
+      MYSQL_HOST: 'mysql-db'
+      MYSQL_PORT: '3306'
       GA_MEASUREMENT_ID: '' # Google Analytics measurement ID 
     restart: unless-stopped
     networks:

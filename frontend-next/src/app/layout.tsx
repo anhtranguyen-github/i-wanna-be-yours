@@ -59,11 +59,10 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <Providers>
-      <html lang="en">
-        {/* Head tags removed; see metadata above */}
-        <body className={inter.className}>
-
+    <html lang="en">
+      {/* Head tags removed; see metadata above */}
+      <body className={inter.className}>
+        <Providers>
           {/* Page Layout - Redesigned: Fixed Sidebar + Main Content */}
           <div className="flex bg-slate-50 min-h-screen text-brand-dark">
             <Sidebar />
@@ -75,11 +74,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </div>
           </div>
           <CookieConsent />
-          <GoogleAnalytics gaId={GA_MEASUREMENT_ID} />
+          {GA_MEASUREMENT_ID && <GoogleAnalytics gaId={GA_MEASUREMENT_ID} />}
           {/* <GoogleTagManager gtmId={GA_MEASUREMENT_ID} /> */}
-        </body>
-      </html>
-    </Providers>
+        </Providers>
+      </body>
+    </html>
   );
 }
 
