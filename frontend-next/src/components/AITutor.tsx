@@ -139,37 +139,6 @@ export default function AITutor() {
     e.preventDefault();
     if (!input.trim() && selectedResources.length === 0) return;
 
-    if (!activeConvoId) {
-      // Construct context from selected resources
-      let context = "";
-      if (selectedResources.length > 0) {
-        const attached = resources.filter(r => selectedResources.includes(r._id));
-        context = "\n\n[Attached Resources]:\n" + attached.map(r => `- ${r.title} (${r.type}): ${r.content}`).join("\n");
-        setSelectedResources([]); // Clear selection
-      }
-      const fullQuery = input + context;
-      setInput("");
-
-      // Create conversation with initial message
-      const newConvo = await aiTutorService.createConversation("New Chat", fullQuery);
-      setConversations([newConvo, ...conversations]);
-      setActiveConvoId(newConvo._id);
-
-      // Stream response
-      try {
-        await streamResponse(newConvo._id, fullQuery);
-      } catch (error) {
-        console.error("Error streaming response", error);
-      }
-    } else {
-      await sendMessageToId(activeConvoId, input);
-    }
-  };
-
-  const sendMessageToId = async (convoId: string, text: string) => {
-    const userMsgText = text;
-    setInput("");
-
     // Construct context from selected resources
     let context = "";
     if (selectedResources.length > 0) {
@@ -178,10 +147,40 @@ export default function AITutor() {
       setSelectedResources([]); // Clear selection
     }
 
-    const fullQuery = userMsgText + context;
+    const fullQuery = input + context;
+    setInput("");
 
-    // Optimistic update
-    const tempUserMsg: Message = { id: Date.now().toString(), role: 'user', text: fullQuery };
+    if (!activeConvoId) {
+      // Create conversation
+      // We don't pass initialMessage to backend creation, we handle prompt via invoke
+      const newConvo = await aiTutorService.createConversation("New Chat");
+
+      // Optimistic user message for UI
+      const optimisticMsg: Message = {
+        id: Date.now().toString(),
+        role: 'user',
+        text: fullQuery
+      };
+      const newConvoWithMsg = { ...newConvo, messages: [optimisticMsg] };
+
+      setConversations([newConvoWithMsg, ...conversations]);
+      setActiveConvoId(newConvo._id);
+      setMessages([optimisticMsg]);
+
+      // Stream response
+      try {
+        await streamResponse(newConvo._id, fullQuery, newConvo.sessionId);
+      } catch (error) {
+        console.error("Error streaming response", error);
+      }
+    } else {
+      await sendMessageToId(activeConvoId, fullQuery);
+    }
+  };
+
+  const sendMessageToId = async (convoId: string, text: string) => {
+    // Optimistic update for user message
+    const tempUserMsg: Message = { id: Date.now().toString(), role: 'user', text: text };
     setMessages(prev => [...prev, tempUserMsg]);
 
     // Update conversations state
@@ -192,19 +191,20 @@ export default function AITutor() {
     ));
 
     try {
-      // Save user message to backend
-      await aiTutorService.addMessage(convoId, 'user', fullQuery);
-      await streamResponse(convoId, fullQuery);
+      // We DO NOT save user message explicitly here, because 'invoke' (streamChat) saves it.
+      // Find session ID
+      const convo = conversations.find(c => c._id === convoId);
+      await streamResponse(convoId, text, convo?.sessionId);
     } catch (error) {
       console.error("Error sending message", error);
       setMessages(prev => [...prev, { id: Date.now().toString(), role: 'ai', text: "Error: Failed to get response." }]);
     }
   };
 
-  const streamResponse = async (convoId: string, query: string) => {
+  const streamResponse = async (convoId: string, query: string, sessionId?: string) => {
     try {
       setIsStreaming(true);
-      const reader = await aiTutorService.streamChat(query, isThinking);
+      const reader = await aiTutorService.streamChat(query, isThinking, convoId, sessionId);
 
       let aiText = "";
       const aiMsgId = (Date.now() + 1).toString();
@@ -225,10 +225,10 @@ export default function AITutor() {
         ));
       }
 
-      // Save AI message to backend (persistence)
-      const finalAiMsg = await aiTutorService.addMessage(convoId, 'ai', aiText);
+      // We DO NOT save AI message explicitly here, backend does it.
 
-      // Update conversations state with AI message
+      // Update conversations state with final AI message for list view
+      const finalAiMsg: Message = { ...aiMsg, text: aiText }; // Update text
       setConversations(prev => prev.map(c =>
         c._id === convoId
           ? { ...c, messages: [...(c.messages || []), finalAiMsg], updated_at: Date.now() }

@@ -6,7 +6,8 @@ export interface Message {
 }
 
 export interface Conversation {
-    _id: string;
+    _id: string; // We will cast backend int ID to string for consistency
+    sessionId?: string; // Backend session ID
     title: string;
     messages: Message[];
     updated_at: number;
