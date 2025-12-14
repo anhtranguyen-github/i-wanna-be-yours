@@ -1213,6 +1213,10 @@ class FlashcardModule:
                 # =======================================
                 # Handling Grammars flashcard updates
                 # =======================================
+
+                # =======================================
+                # Handling Grammars flashcard updates
+                # =======================================
                 elif collection_name == "grammars":
                     title = data.get("title")
 
@@ -1262,5 +1266,324 @@ class FlashcardModule:
                     jsonify({"error": "Failed to store flashcard state", "details": str(e)}),
                     500,
                 )
+
+        # -----------------------------------------------------------------------------------------
+        #  UNIFIED FLASHCARD SYSTEM (PHASE 1)
+        # -----------------------------------------------------------------------------------------
+
+        @app.route("/f-api/v1/cards/personal", methods=["POST"])
+        def create_personal_card():
+            """
+            Creates a new Personal Card and initializes its progress.
+            Schema: PersonalCard + UserFlashcardProgress
+            """
+            logging.info("received POST at /f-api/v1/cards/personal")
+            data = request.json
+            user_id = data.get("userId")
+            front = data.get("front")
+            back = data.get("back")
+            card_type = data.get("type", "vocabulary") # vocabulary, sentence, kanji
+            deck_name = data.get("deck_name", "Inbox") # Default to Inbox
+            tags = data.get("tags", [])
+            
+            if not user_id or not front or not back:
+                return jsonify({"error": "Missing required fields: userId, front, back"}), 400
+
+            try:
+                # 1. Create Personal Card
+                personal_card = {
+                    "userId": user_id,
+                    "front": front,
+                    "back": back,
+                    "type": card_type,
+                    "default_deck": deck_name,
+                    "original_creator": data.get("creator", "user"), # user or hanachan
+                    "created_at": datetime.utcnow()
+                }
+                
+                res_card = mongo_flaskFlashcardDB.db.personal_cards.insert_one(personal_card)
+                card_id = str(res_card.inserted_id)
+
+                # 2. Initialize Progress
+                progress_doc = {
+                    "userId": user_id,
+                    "card_type": "PERSONAL",
+                    "content_type": card_type, # store type for easy filtering
+                    "source_id": card_id,
+                    "deck_name": deck_name,
+                    "srs_state": {
+                        "step": 0,
+                        "interval": 0,
+                        "ease_factor": 2.5,
+                        "next_review_at": datetime.utcnow() # Due immediately
+                    },
+                    "tags": tags,
+                    "created_at": datetime.utcnow()
+                }
+                
+                res_prog = mongo_flaskFlashcardDB.db.user_flashcard_progress.insert_one(progress_doc)
+                progress_id = str(res_prog.inserted_id)
+
+                return jsonify({
+                    "message": "Personal card created",
+                    "cardId": card_id,
+                    "progressId": progress_id
+                }), 201
+
+            except Exception as e:
+                logging.error(f"Error creating personal card: {e}")
+                return jsonify({"error": str(e)}), 500
+
+
+        # -----------------------------------------------------------------------------------------
+        #  PHASE 2: UNIFIED REVIEW API
+        # -----------------------------------------------------------------------------------------
+
+        @app.route("/f-api/v1/study/due", methods=["GET"])
+        def get_due_flashcards():
+            """
+            Fetches all flashcards due for review for a given user.
+            Hydrates content from PersonalCard collection text or Static Express API.
+            """
+            user_id = request.args.get("userId")
+            if not user_id:
+                return jsonify({"error": "userId required"}), 400
+            
+            try:
+                # 1. Find due items
+                now = datetime.utcnow()
+                due_items = list(mongo_flaskFlashcardDB.db.user_flashcard_progress.find({
+                    "userId": user_id,
+                    "$or": [
+                        {"srs_state.next_review_at": {"$lte": now}},
+                        {"srs_state.next_review_at": {"$exists": False}} # Handle new cards
+                    ]
+                }))
+                
+                if not due_items:
+                     return jsonify([]), 200
+
+                # 2. Bucket IDs
+                personal_ids = []
+                static_requests = {"kanji": [], "words": [], "grammars": []}
+                
+                for item in due_items:
+                    sid = item.get("source_id")
+                    item["_id"] = str(item["_id"]) # Stringify Progress ID
+                    
+                    if item.get("card_type") == "PERSONAL":
+                        if sid: personal_ids.append(ObjectId(sid))
+                    elif item.get("card_type") == "STATIC":
+                        c_type = item.get("content_type", "words") 
+                        if c_type == "kanji": static_requests["kanji"].append(sid)
+                        elif c_type == "grammar": static_requests["grammars"].append(sid)
+                        else: static_requests["words"].append(sid)
+
+                # 3. Fetch Content
+                # A) Personal
+                personal_cards = []
+                if personal_ids:
+                    p_cards = list(mongo_flaskFlashcardDB.db.personal_cards.find({"_id": {"$in": personal_ids}}))
+                    # Normalize personal cards
+                    for p in p_cards:
+                        p["_id"] = str(p["_id"])
+                        # Map front/back to universal content fields? 
+                        # Or just keep as is. Frontend expects specific structure?
+                        # Let's keep strict schema: front, back.
+                    personal_cards = p_cards
+                
+                # B) Static
+                static_cards = []
+                if any(static_requests.values()):
+                    try:
+                        # Ensure lists are unique for request
+                        req_payload = {
+                           "kanji": list(set(static_requests["kanji"])),
+                           "words": list(set(static_requests["words"])),
+                           "grammars": list(set(static_requests["grammars"]))
+                        }
+                        
+                        resp = requests.post(f"http://{host}:{port}/e-api/v1/batch-fetch", json=req_payload)
+                        if resp.status_code == 200:
+                            s_data = resp.json()
+                            static_cards.extend(s_data.get("kanji", []))
+                            static_cards.extend(s_data.get("words", []))
+                            static_cards.extend(s_data.get("grammars", []))
+                    except Exception as e:
+                        print(f"Failed to batch fetch static cards: {e}")
+
+                # 4. Hydrate
+                # Create a map for quick lookup
+                content_map = {str(c["_id"]): c for c in personal_cards + static_cards}
+                
+                final_list = []
+                for item in due_items:
+                    sid = item.get("source_id")
+                    if sid in content_map:
+                        item["content"] = content_map[sid]
+                        final_list.append(item)
+                
+                return jsonify(final_list), 200
+            
+            except Exception as e:
+                return jsonify({"error": str(e)}), 500
+
+        @app.route("/f-api/v1/public/sample", methods=["GET"])
+        def get_public_sample():
+            """
+            Returns a sample deck for guest users.
+            Fetches 10 words from Express JLPT N5 deck.
+            """
+            try:
+                # Fetch N5 Verbs
+                resp = requests.get(f"http://{host}:{port}/e-api/v1/words?p_tag=essential_600_verbs&s_tag=verbs-1")
+                if resp.status_code != 200:
+                    return jsonify({"error": "Failed to fetch sample data"}), 500
+                
+                data = resp.json()
+                words = data.get("words", [])
+                
+                # Take 10 random
+                import random
+                sample_words = random.sample(words, min(len(words), 10))
+                
+                # Wrap in unified structure
+                final_list = []
+                for word in sample_words:
+                    final_list.append({
+                        "_id": str(word["_id"]), # Use content ID as card ID for guests
+                        "userId": "guest",
+                        "card_type": "STATIC",
+                        "source_id": str(word["_id"]),
+                        "deck_name": "Sample Deck",
+                        "content": word
+                    })
+                    
+                return jsonify(final_list), 200
+            except Exception as e:
+                return jsonify({"error": str(e)}), 500
+
+        @app.route("/f-api/v1/cards/personal/<card_id>", methods=["PUT"])
+        def update_personal_card(card_id):
+            """
+            Updates Personal Card content and its associated progress metadata (Deck/Tags).
+            """
+            data = request.json
+            try:
+                # Update PersonalCard (Content)
+                update_fields_card = {}
+                if "front" in data: update_fields_card["front"] = data["front"]
+                if "back" in data: update_fields_card["back"] = data["back"]
+                
+                if update_fields_card:
+                    mongo_flaskFlashcardDB.db.personal_cards.update_one(
+                        {"_id": ObjectId(card_id)}, {"$set": update_fields_card}
+                    )
+                
+                # Update Progress (Tags/Deck)
+                update_fields_prog = {}
+                if "deck_name" in data: update_fields_prog["deck_name"] = data["deck_name"]
+                if "tags" in data: update_fields_prog["tags"] = data["tags"]
+                
+                if update_fields_prog:
+                     mongo_flaskFlashcardDB.db.user_flashcard_progress.update_one(
+                        {"source_id": card_id, "card_type": "PERSONAL"}, {"$set": update_fields_prog}
+                    )
+                
+                return jsonify({"message": "Card updated"}), 200
+            except Exception as e:
+                return jsonify({"error": str(e)}), 500
+
+        @app.route("/f-api/v1/cards/personal/<card_id>", methods=["DELETE"])
+        def delete_personal_card(card_id):
+            """
+            Hard delete of Personal Card and its progress.
+            """
+            try:
+                # Delete PersonalCard
+                mongo_flaskFlashcardDB.db.personal_cards.delete_one({"_id": ObjectId(card_id)})
+                
+                # Delete Progress
+                mongo_flaskFlashcardDB.db.user_flashcard_progress.delete_many(
+                    {"source_id": card_id, "card_type": "PERSONAL"}
+                )
+                
+                return jsonify({"message": "Card deleted"}), 200
+            except Exception as e:
+                return jsonify({"error": str(e)}), 500
+
+        @app.route("/f-api/v1/study/answer", methods=["POST"])
+        def answer_flashcard():
+            """
+            Updates the SRS state of a flashcard based on user quality rating (0-5).
+            Uses SM-2 Algorithm.
+            """
+            data = request.json
+            # cardId should be the _id of the UserFlashcardProgress content
+            card_id = data.get("cardId") 
+            quality = data.get("quality") # 0-5
+            
+            if not card_id or quality is None:
+                return jsonify({"error": "Missing cardId or quality"}), 400
+            
+            try:
+                progress = mongo_flaskFlashcardDB.db.user_flashcard_progress.find_one({"_id": ObjectId(card_id)})
+                if not progress:
+                    return jsonify({"error": "Card not found"}), 404
+                
+                # SRS Logic (SM-2 simplified)
+                srs = progress.get("srs_state", {})
+                reps = srs.get("repetitions", 0)
+                interval = srs.get("interval", 0)
+                ease = srs.get("ease_factor", 2.5)
+                
+                # Input validation
+                try:
+                    quality = int(quality)
+                except:
+                    quality = 0
+                
+                if quality >= 3:
+                    if reps == 0:
+                        interval = 1
+                    elif reps == 1:
+                        interval = 6
+                    else:
+                        interval = int(interval * ease)
+                    
+                    reps += 1
+                    ease = ease + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02))
+                    if ease < 1.3:
+                         ease = 1.3
+                else:
+                    reps = 0
+                    interval = 1
+                
+                next_review = datetime.utcnow() + timedelta(days=interval)
+                
+                new_state = {
+                    "repetitions": reps,
+                    "interval": interval,
+                    "ease_factor": ease,
+                    "next_review_at": next_review,
+                    "last_review_at": datetime.utcnow()
+                }
+                
+                mongo_flaskFlashcardDB.db.user_flashcard_progress.update_one(
+                    {"_id": ObjectId(card_id)},
+                    {"$set": {"srs_state": new_state}}
+                )
+                
+                return jsonify({
+                    "message": "SRS updated", 
+                    "newState": {
+                        "repetitions": reps,
+                        "interval": interval,
+                        "next_review_at": next_review.isoformat()
+                    }
+                }), 200
+                
+            except Exception as e:
+                return jsonify({"error": str(e)}), 500
 
 
