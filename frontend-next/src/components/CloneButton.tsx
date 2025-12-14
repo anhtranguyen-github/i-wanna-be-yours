@@ -8,6 +8,10 @@ interface CloneButtonProps {
 
 const CloneButton: React.FC<CloneButtonProps> = ({ collection, level, userId }) => {
   const handleButtonClick = async () => {
+    if (!userId) {
+      alert("Please log in to clone collections.");
+      return;
+    }
 
     // const host = "localhost";
     // const port = 5100;

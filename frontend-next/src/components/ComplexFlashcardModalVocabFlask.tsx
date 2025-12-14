@@ -216,7 +216,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
   //         </div>
 
   //         <a
-  //           href="/japanese/flashcards-kanji/#"
+  //            href="/flashcards"
   //           className="block mt-1 text-xs sm:text-sm md:text-md leading-tight font-semibold text-gray-800 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400"
   //           aria-label={`Kanji with one reading ${s_tag}`}
   //         >
@@ -239,19 +239,19 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
   //   );
 
 
-    if (!isOpen) {
-      return (
-        <ClosedFlashcard
-          p_tag={p_tag}
-          s_tag={s_tag}
-          badgeText="Vocabulary"
-          badgeColor="bg-orange-100 text-orange-800" // Specify badge color here
-          description="Essential Japanese vocabulary."
-          openModal={openModal}
-          buttonText="Open Flashcard"
-        />
-      );
-    }
+  if (!isOpen) {
+    return (
+      <ClosedFlashcard
+        p_tag={p_tag}
+        s_tag={s_tag}
+        badgeText="Vocabulary"
+        badgeColor="bg-orange-100 text-orange-800" // Specify badge color here
+        description="Essential Japanese vocabulary."
+        openModal={openModal}
+        buttonText="Open Flashcard"
+      />
+    );
+  }
 
 
 

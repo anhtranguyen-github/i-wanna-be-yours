@@ -378,8 +378,8 @@ const CreateReadingFlashcard: React.FC<CreateReadingFlashcardProps> = ({
             My Vocabulary
           </Link>
 
-          <Link href="/japanese/flashcards-words" className="text-blue-500 text-xs underline hover:text-blue-600">
-            Japanese Flashcards Words
+          <Link href="/flashcards" className="text-blue-500 text-xs underline hover:text-blue-600">
+            Flashcards Dashboard
           </Link>
         </div>
 

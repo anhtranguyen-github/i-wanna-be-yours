@@ -72,7 +72,25 @@ export const FlashcardArtifact = ({ content }: { content: any }) => {
             {/* Action Bar */}
             <div className="mt-10 flex items-center gap-3 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
                 <button
-                    onClick={(e) => { e.stopPropagation(); alert('Saved!'); }}
+                    onClick={async (e) => {
+                        e.stopPropagation();
+                        try {
+                            // Import dynamically to avoid SSR issues if any, or just use standard import at top
+                            const { flashcardService } = require("@/services/flashcardService");
+
+                            await flashcardService.createPersonalCard({
+                                front: content.front,
+                                back: content.back,
+                                type: "vocabulary", // Default or infer from content
+                                tags: ["chat-mined"],
+                                deck_name: "Inbox"
+                            });
+                            alert('Saved to Inbox!');
+                        } catch (err) {
+                            console.error(err);
+                            alert('Failed to save.');
+                        }
+                    }}
                     className="flex items-center gap-2 px-6 py-3 bg-white hover:bg-brand-green hover:text-white text-slate-500 rounded-xl text-sm font-bold transition-all shadow-lg hover:shadow-xl hover:scale-105 border border-slate-100 group"
                 >
                     <Library size={18} className="group-hover:animate-pulse" />
