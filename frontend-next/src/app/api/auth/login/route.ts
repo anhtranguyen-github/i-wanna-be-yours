@@ -1,40 +1,28 @@
 import { NextResponse } from 'next/server';
-import pool from '@/lib/db';
-import { verifyPassword, createAccessToken, createRefreshToken } from '@/lib/auth';
-import { RowDataPacket } from 'mysql2';
 import { cookies } from 'next/headers';
+
+const EXPRESS_API_URL = process.env.EXPRESS_API_URL || 'http://localhost:8000';
 
 export async function POST(request: Request) {
     try {
-        const { email, password } = await request.json();
+        const body = await request.json();
 
-        if (!email || !password) {
-            return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
-        }
-
-        // Find user
-        const [users] = await pool.query<RowDataPacket[]>('SELECT * FROM users WHERE email = ?', [email]);
-        const user = users[0];
-
-        if (!user || !(await verifyPassword(password, user.password_hash))) {
-            return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
-        }
-
-        // Create tokens
-        const accessToken = await createAccessToken({
-            userId: user.id,
-            id: user.id,
-            email: user.email,
-            role: user.role,
-            is_verified: user.is_verified
+        // Proxy to Express Backend
+        const res = await fetch(`${EXPRESS_API_URL}/e-api/v1/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
         });
-        const refreshToken = await createRefreshToken();
 
-        // Store refresh token in DB
-        const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
-        await pool.query('INSERT INTO sessions (user_id, refresh_token, expires_at) VALUES (?, ?, ?)', [user.id, refreshToken, expiresAt]);
+        if (!res.ok) {
+            const error = await res.json();
+            return NextResponse.json(error, { status: res.status });
+        }
 
-        // Set cookies
+        const data = await res.json();
+        const { accessToken, refreshToken, user } = data;
+
+        // Set cookies (Server-side in Next.js)
         cookies().set('accessToken', accessToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
@@ -51,11 +39,9 @@ export async function POST(request: Request) {
             path: '/',
         });
 
-        return NextResponse.json({
-            user: { id: user.id, email: user.email, role: user.role, is_verified: user.is_verified }
-        });
+        return NextResponse.json({ user });
     } catch (error) {
-        console.error('Login error:', error);
+        console.error('Login Proxy Error:', error);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
 }
