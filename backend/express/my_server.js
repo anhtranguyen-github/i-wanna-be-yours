@@ -41,6 +41,10 @@ app.use(cors(corsOptions));
 // connect to DB before we expose our API Express endpoints
 connectDB();
 
+// --- Auth Routes ---
+const authRoutes = require("./routes/authRoutes");
+app.use("/e-api/v1/auth", authRoutes);
+
 // ---------------- Function Definitions ------------------ //
 const getAllWords = async (req, res) => {
   try {
@@ -340,6 +344,37 @@ app.get("/e-api/v1/reading", async (req, res) => {
 });
 
 // ------------ Tanos N5-N1 vocabulary ---------------
+
+// ------------ Batch Fetch ---------------
+
+// POST endpoint to fetch multiple items by their IDs
+// Expects: { "kanji": ["id1", ...], "words": ["id2", ...], "grammars": ["id3", ...] }
+app.post("/e-api/v1/batch-fetch", async (req, res) => {
+  try {
+    const { kanji, words, grammars } = req.body;
+    const response = {};
+
+    if (kanji && kanji.length > 0) {
+      response.kanji = await Kanji.find({ _id: { $in: kanji } });
+    }
+
+    if (words && words.length > 0) {
+      // Check both standard Word and TanosWord collections
+      const standardWords = await Word.find({ _id: { $in: words } }).populate("sentences");
+      const tanosWords = await TanosWord.find({ _id: { $in: words } });
+      response.words = [...standardWords, ...tanosWords];
+    }
+
+    if (grammars && grammars.length > 0) {
+      response.grammars = await Grammar.find({ _id: { $in: grammars } });
+    }
+
+    res.status(200).json(response);
+  } catch (error) {
+    console.error("Batch fetch error:", error);
+    res.status(500).json({ error: "Failed to batch fetch items" });
+  }
+});
 
 // -------------------------------------------------------- //
 // start the Express server
