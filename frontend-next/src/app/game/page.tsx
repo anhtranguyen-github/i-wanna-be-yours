@@ -19,7 +19,7 @@ const routes = [
     {
         title: "Flashcards",
         description: "SRS Flashcards for vocabulary retention.",
-        href: "/game/flashcards",
+        href: "/flashcards",
         icon: <Layers className="w-8 h-8 text-brand-blue" />,
         color: "bg-brand-blue"
     },

@@ -166,7 +166,7 @@ export default function Home() {
             </button>
 
             <a
-              href="/japanese/flashcards"
+              href="/flashcards"
               className="text-brand-blue hover:text-brand-dark font-bold transition duration-300 p-2 block mt-2"
             >
               Flashcards - Kanji
@@ -211,7 +211,7 @@ export default function Home() {
             </button>
 
             <a
-              href="/japanese/flashcards"
+              href="/flashcards"
               className="text-brand-blue hover:text-brand-dark font-bold transition duration-300 p-2 block mt-2"
             >
               Flashcards - Essential Verbs
@@ -258,7 +258,7 @@ export default function Home() {
             </button>
 
             <a
-              href="/japanese/flashcards"
+              href="/flashcards"
               className="text-brand-blue hover:text-brand-dark font-bold transition duration-300 p-2 block mt-2"
             >
               Flashcards - Essential Suru Verbs

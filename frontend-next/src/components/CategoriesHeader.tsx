@@ -18,15 +18,15 @@ export default function CategoriesHeader() {
   const categories = ["All", "Grammar", "Vocabulary", "Kanji"];
 
   const items = [
-    { title: "Japanese JLPT N5 Grammar", link: "/content/grammar_selection/JLPT_N5", category: "Grammar", img: "/img/core.png" },
-    { title: "Japanese JLPT N4 Grammar", link: "/content/grammar_selection/JLPT_N4", category: "Grammar", img: "/img/core.png" },
-    { title: "Japanese JLPT N3 Grammar", link: "/content/grammar_selection/JLPT_N3", category: "Grammar", img: "/img/core.png" },
-    { title: "Japanese JLPT N2 Grammar", link: "/content/grammar_selection/JLPT_N2", category: "Grammar", img: "/img/core.png" },
-    { title: "Japanese JLPT N1 Grammar", link: "/content/grammar_selection/JLPT_N1", category: "Grammar", img: "/img/core.png" },
-    { title: "Essential Verbs", link: "/content/vocabulary_selection/essential_verbs", category: "Vocabulary", img: "/img/core.png" },
-    { title: "JLPT N3 Vocab", link: "/content/vocabulary_selection/JLPT_N3", category: "Vocabulary", img: "/img/core.png" },
-    { title: "Kanji", link: "/content/kanji", category: "Kanji", img: "/img/core.png" },
-    { title: "Radicals", link: "/content/radicals", category: "Kanji", img: "/img/core.png" },
+    { title: "Japanese JLPT N5 Grammar", link: "/knowledge-base/all/grammar_selection/JLPT_N5", category: "Grammar", img: "/img/core.png" },
+    { title: "Japanese JLPT N4 Grammar", link: "/knowledge-base/all/grammar_selection/JLPT_N4", category: "Grammar", img: "/img/core.png" },
+    { title: "Japanese JLPT N3 Grammar", link: "/knowledge-base/all/grammar_selection/JLPT_N3", category: "Grammar", img: "/img/core.png" },
+    { title: "Japanese JLPT N2 Grammar", link: "/knowledge-base/all/grammar_selection/JLPT_N2", category: "Grammar", img: "/img/core.png" },
+    { title: "Japanese JLPT N1 Grammar", link: "/knowledge-base/all/grammar_selection/JLPT_N1", category: "Grammar", img: "/img/core.png" },
+    { title: "Essential Verbs", link: "/knowledge-base/verbs/essential_verbs", category: "Vocabulary", img: "/img/core.png" },
+    { title: "JLPT N3 Vocab", link: "/knowledge-base/verbs/JLPT_N3", category: "Vocabulary", img: "/img/core.png" },
+    { title: "Kanji", link: "/knowledge-base/kanji", category: "Kanji", img: "/img/core.png" },
+    { title: "Radicals", link: "/knowledge-base/radicals", category: "Kanji", img: "/img/core.png" },
   ];
 
   const filteredItems = filter === "All"
