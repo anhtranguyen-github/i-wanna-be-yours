@@ -9,7 +9,8 @@ import {
     Library,
     BookOpen,
     LogOut,
-    User as UserIcon
+    User as UserIcon,
+    GraduationCap
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
@@ -41,6 +42,7 @@ const Sidebar = () => {
                 <NavItem icon={<Gamepad2 size={24} />} label="Game" href="/game" active={pathname === '/game'} />
                 <NavItem icon={<Library size={24} />} label="Library" href="/library" active={pathname?.startsWith('/library')} />
                 <NavItem icon={<BookOpen size={24} />} label="Knowledge" href="/knowledge-base" active={pathname?.startsWith('/knowledge-base')} />
+                <NavItem icon={<GraduationCap size={24} />} label="Practice" href="/practice" active={pathname?.startsWith('/practice')} />
             </nav>
 
             {/* User Profile / Logout */}
