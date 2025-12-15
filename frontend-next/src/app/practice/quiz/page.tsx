@@ -83,11 +83,11 @@ export default function QuizListPage() {
     return (
         <div className="min-h-screen bg-brand-cream text-brand-dark pb-20">
             {/* Header */}
-            <div className="bg-white shadow-sm sticky top-0 z-30">
+            <div className="bg-white border-b border-gray-100 sticky top-0 z-30">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                     <div className="flex items-center justify-between mb-6">
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white shadow-md">
+                            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white">
                                 <GraduationCap size={28} />
                             </div>
                             <div>
@@ -97,7 +97,7 @@ export default function QuizListPage() {
                         </div>
                         <Link
                             href="/practice/quiz/create"
-                            className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-xl font-bold hover:bg-blue-600 transition-colors shadow-sm"
+                            className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-xl font-bold hover:bg-blue-600 transition-colors"
                         >
                             <span className="text-lg">+</span>
                             <span className="hidden sm:inline">Create Quiz</span>
@@ -173,7 +173,7 @@ export default function QuizListPage() {
                             <Link
                                 key={quiz.id}
                                 href={`/practice/quiz/${quiz.id}`}
-                                className="block bg-white rounded-xl p-4 shadow-sm border border-slate-100 hover:shadow-md hover:border-blue-200 transition-all group"
+                                className="block bg-white rounded-xl p-4 border border-slate-100 hover:border-blue-300 hover:bg-blue-50/30 transition-all group"
                             >
                                 <div className="flex items-center justify-between">
                                     <div className="flex-1">

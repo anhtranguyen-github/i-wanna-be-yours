@@ -127,7 +127,7 @@ export default function PlanHealthCard({ planId, compact = false }: PlanHealthPr
             <div className={`p-5 ${config.bg}`}>
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className={`p-3 rounded-xl bg-white shadow-sm`}>
+                        <div className={`p-3 rounded-xl bg-white border border-gray-100`}>
                             <StatusIcon className={config.color} size={24} />
                         </div>
                         <div>
@@ -160,10 +160,10 @@ export default function PlanHealthCard({ planId, compact = false }: PlanHealthPr
                         {/* Actual Progress */}
                         <div
                             className={`h-full rounded-full ${health.health_status === 'ahead' || health.health_status === 'on_track'
-                                    ? 'bg-brand-green'
-                                    : health.health_status === 'slightly_behind'
-                                        ? 'bg-yellow-500'
-                                        : 'bg-red-500'
+                                ? 'bg-brand-green'
+                                : health.health_status === 'slightly_behind'
+                                    ? 'bg-yellow-500'
+                                    : 'bg-red-500'
                                 }`}
                             style={{ width: `${health.actual_progress}%` }}
                         />

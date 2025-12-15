@@ -162,7 +162,7 @@ function SetupWizardContent() {
                             <div className={`
                                 w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all
                                 ${step >= s
-                                    ? 'bg-brand-salmon text-white shadow-lg'
+                                    ? 'bg-brand-salmon text-white'
                                     : 'bg-gray-200 text-gray-400'
                                 }
                             `}>
@@ -203,7 +203,7 @@ function SetupWizardContent() {
                                             className={`
                                                 p-5 rounded-2xl border-2 text-left transition-all flex items-center gap-4
                                                 ${isSelected
-                                                    ? 'border-brand-salmon bg-brand-salmon/5 shadow-lg'
+                                                    ? 'border-brand-salmon bg-brand-salmon/5'
                                                     : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                                                 }
                                             `}
@@ -328,7 +328,7 @@ function SetupWizardContent() {
                                             className={`
                                                 py-3 rounded-xl font-bold transition-all text-sm
                                                 ${dailyMinutes === mins
-                                                    ? 'bg-brand-salmon text-white shadow-lg'
+                                                    ? 'bg-brand-salmon text-white'
                                                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                                                 }
                                             `}
@@ -352,7 +352,7 @@ function SetupWizardContent() {
                                             className={`
                                                 py-3 rounded-xl font-bold transition-all
                                                 ${studyDays === days
-                                                    ? 'bg-brand-salmon text-white shadow-lg'
+                                                    ? 'bg-brand-salmon text-white'
                                                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                                                 }
                                             `}

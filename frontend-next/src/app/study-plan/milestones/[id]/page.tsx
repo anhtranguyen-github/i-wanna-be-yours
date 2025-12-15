@@ -247,8 +247,8 @@ export default function MilestoneDetailPage() {
                         <div className="h-4 bg-gray-200 rounded-full overflow-hidden">
                             <div
                                 className={`h-full rounded-full transition-all ${milestone.status === 'completed'
-                                        ? 'bg-brand-green'
-                                        : 'bg-gradient-to-r from-brand-salmon to-brand-sky'
+                                    ? 'bg-brand-green'
+                                    : 'bg-gradient-to-r from-brand-salmon to-brand-sky'
                                     }`}
                                 style={{ width: `${milestone.progress_percent}%` }}
                             />
@@ -312,7 +312,7 @@ export default function MilestoneDetailPage() {
                                     href={action.href}
                                     className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-brand-salmon/5 transition-colors group"
                                 >
-                                    <div className="p-3 rounded-xl bg-white shadow-sm group-hover:bg-brand-salmon group-hover:text-white transition-all">
+                                    <div className="p-3 rounded-xl bg-white border border-gray-100 group-hover:bg-brand-salmon group-hover:text-white transition-all">
                                         <action.icon size={24} className="text-brand-salmon group-hover:text-white" />
                                     </div>
                                     <div className="flex-1">

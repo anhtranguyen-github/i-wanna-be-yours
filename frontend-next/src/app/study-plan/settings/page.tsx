@@ -270,7 +270,7 @@ function SettingsContent() {
                                     className={`
                                         py-3 rounded-xl font-bold transition-all text-sm
                                         ${dailyMinutes === mins
-                                            ? 'bg-brand-salmon text-white shadow-lg'
+                                            ? 'bg-brand-salmon text-white'
                                             : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                                         }
                                     `}
@@ -295,7 +295,7 @@ function SettingsContent() {
                                     className={`
                                         py-3 rounded-xl font-bold transition-all
                                         ${studyDays === days
-                                            ? 'bg-brand-salmon text-white shadow-lg'
+                                            ? 'bg-brand-salmon text-white'
                                             : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                                         }
                                     `}

@@ -160,12 +160,12 @@ export default function QuizPlayerPage() {
             <div className="min-h-screen bg-brand-cream py-10 px-4">
                 <div className="max-w-2xl mx-auto">
                     {/* Result Card */}
-                    <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
+                    <div className="bg-white rounded-2xl border-2 border-gray-100 p-8 text-center">
                         <div className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-6 ${result.percentage >= 80
-                                ? "bg-green-100 text-green-600"
-                                : result.percentage >= 50
-                                    ? "bg-amber-100 text-amber-600"
-                                    : "bg-red-100 text-red-600"
+                            ? "bg-green-100 text-green-600"
+                            : result.percentage >= 50
+                                ? "bg-amber-100 text-amber-600"
+                                : "bg-red-100 text-red-600"
                             }`}>
                             <CheckCircle size={40} />
                         </div>
@@ -254,7 +254,7 @@ export default function QuizPlayerPage() {
     return (
         <div className="min-h-screen bg-brand-cream">
             {/* Header */}
-            <div className="bg-white shadow-sm sticky top-0 z-30">
+            <div className="bg-white border-b border-gray-100 sticky top-0 z-30">
                 <div className="max-w-3xl mx-auto px-4 py-4">
                     <div className="flex items-center justify-between">
                         <Link
@@ -294,7 +294,7 @@ export default function QuizPlayerPage() {
             {/* Question */}
             <div className="max-w-3xl mx-auto px-4 py-8">
                 {currentQuestion && (
-                    <div className="bg-white rounded-2xl shadow-sm p-6 md:p-8">
+                    <div className="bg-white rounded-2xl border-2 border-gray-100 p-6 md:p-8">
                         {/* Passage (if reading comprehension) */}
                         {currentQuestion.content.passage && (
                             <div className="bg-slate-50 rounded-xl p-4 mb-6 text-sm leading-relaxed border-l-4 border-blue-400">
@@ -317,13 +317,13 @@ export default function QuizPlayerPage() {
                                             key={idx}
                                             onClick={() => handleAnswer(option)}
                                             className={`w-full p-4 rounded-xl text-left transition-all border-2 ${isSelected
-                                                    ? "border-blue-500 bg-blue-50 text-blue-700"
-                                                    : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
+                                                ? "border-blue-500 bg-blue-50 text-blue-700"
+                                                : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
                                                 }`}
                                         >
                                             <span className={`inline-block w-7 h-7 rounded-full mr-3 text-center leading-7 text-sm font-bold ${isSelected
-                                                    ? "bg-blue-500 text-white"
-                                                    : "bg-slate-100 text-slate-500"
+                                                ? "bg-blue-500 text-white"
+                                                : "bg-slate-100 text-slate-500"
                                                 }`}>
                                                 {String.fromCharCode(65 + idx)}
                                             </span>
@@ -354,10 +354,10 @@ export default function QuizPlayerPage() {
                                 key={q.question_id}
                                 onClick={() => setCurrentIndex(idx)}
                                 className={`w-3 h-3 rounded-full transition-all ${idx === currentIndex
-                                        ? "bg-blue-500 scale-125"
-                                        : answers[q.question_id]
-                                            ? "bg-green-400"
-                                            : "bg-slate-200"
+                                    ? "bg-blue-500 scale-125"
+                                    : answers[q.question_id]
+                                        ? "bg-green-400"
+                                        : "bg-slate-200"
                                     }`}
                             />
                         ))}

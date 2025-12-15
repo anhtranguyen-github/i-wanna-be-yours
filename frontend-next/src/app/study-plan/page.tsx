@@ -128,8 +128,8 @@ export default function StudyPlanPage() {
                         <button
                             onClick={() => setSelectedLevel(null)}
                             className={`px-5 py-2.5 rounded-xl font-bold transition-all ${selectedLevel === null
-                                    ? 'bg-brand-dark text-white shadow-lg'
-                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                ? 'bg-brand-dark text-white'
+                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                                 }`}
                         >
                             All Levels
@@ -139,8 +139,8 @@ export default function StudyPlanPage() {
                                 key={level}
                                 onClick={() => setSelectedLevel(level)}
                                 className={`px-5 py-2.5 rounded-xl font-bold transition-all ${selectedLevel === level
-                                        ? 'bg-brand-dark text-white shadow-lg'
-                                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                    ? 'bg-brand-dark text-white'
+                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                                     }`}
                             >
                                 {level}
@@ -181,7 +181,7 @@ export default function StudyPlanPage() {
                                             {levelTemplates.map(template => (
                                                 <div
                                                     key={template.id}
-                                                    className="clay-card p-6 hover:shadow-xl transition-all cursor-pointer group"
+                                                    className="clay-card p-6 hover:border-brand-salmon transition-all cursor-pointer group"
                                                     onClick={() => router.push(`/study-plan/setup?template=${template.id}`)}
                                                 >
                                                     <div className="flex items-start justify-between mb-4">
@@ -237,7 +237,7 @@ export default function StudyPlanPage() {
                     </p>
                     <button
                         onClick={handleGetStarted}
-                        className="bg-white text-brand-salmon px-10 py-4 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all"
+                        className="bg-white text-brand-salmon px-10 py-4 rounded-2xl font-bold text-lg hover:bg-brand-salmon hover:text-white hover:scale-105 transition-all"
                     >
                         {user ? 'Create My Plan' : 'Get Started Free'}
                     </button>

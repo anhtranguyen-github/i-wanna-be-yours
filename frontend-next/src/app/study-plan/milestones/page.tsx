@@ -172,7 +172,7 @@ function MilestonesContent() {
                             className={`
                                 px-4 py-2 rounded-xl font-bold text-sm whitespace-nowrap transition-all
                                 ${filter === tab.id
-                                    ? 'bg-brand-dark text-white shadow-lg'
+                                    ? 'bg-brand-dark text-white'
                                     : 'bg-white text-gray-600 hover:bg-gray-100'
                                 }
                             `}
@@ -263,8 +263,8 @@ function MilestonesContent() {
                                                 <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                                                     <div
                                                         className={`h-full rounded-full transition-all ${milestone.status === 'completed'
-                                                                ? 'bg-brand-green'
-                                                                : 'bg-brand-salmon'
+                                                            ? 'bg-brand-green'
+                                                            : 'bg-brand-salmon'
                                                             }`}
                                                         style={{ width: `${milestone.progress_percent}%` }}
                                                     />
