@@ -98,10 +98,12 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
 
   const [isFlipped, setIsFlipped] = useState(false); // State to track card flip
 
-  // ... existing function declarations
-
   const flipCard = () => {
     setIsFlipped(!isFlipped);
+  };
+
+  const resetFlip = () => {
+    setIsFlipped(false);
   };
 
   // Function to save flashcard state to the backend
@@ -185,7 +187,8 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
       }
     }
 
-    // Move to next card
+    // Reset flip and move to next card
+    resetFlip();
     if (questions) {
       setCurrentQuestionIndex((prevIndex) =>
         prevIndex === questions.length - 1 ? 0 : prevIndex + 1
@@ -322,123 +325,167 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                   onClick={(e) => e.stopPropagation()}
                 >
                   <div className="bg-gray-100 dark:bg-gray-900 flex flex-col items-center py-6 space-y-6 z-50">
-                    <div className="dark:bg-gray-800 bg-white rounded-lg shadow-md p-8 w-full max-w-2xl flex z-50">
-                      <div className="flex-1 flex justify-center items-center">
-                        <span className="text-9xl font-bold dark:text-gray-200 text-gray-600 font-noto-sans-jp">
-                          {currentQuestion.kanji}
-                        </span>
-                      </div>
-
-                      {/* Card Content Section (1/2 of the width) */}
-                      <div className="flex-1 text-center space-y-6">
-                        <div className="space-y-4">
-                          <div className="text-4xl font-bold flex items-center justify-center space-x-2">
-                            <span className="dark:text-white text-gray-800">
+                    {/* -------------------- Flip Card Container ------------------- */}
+                    <div
+                      className="perspective-1000 w-full max-w-2xl cursor-pointer"
+                      onClick={!isFlipped ? flipCard : undefined}
+                      style={{ perspective: '1000px' }}
+                    >
+                      <div
+                        className="relative w-full transition-transform duration-500"
+                        style={{
+                          transformStyle: 'preserve-3d',
+                          transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+                          minHeight: '350px'
+                        }}
+                      >
+                        {/* ===== FRONT SIDE - Just Kanji ===== */}
+                        <div
+                          className="absolute w-full dark:bg-gray-800 bg-white rounded-lg shadow-md p-8 flex flex-col items-center justify-center"
+                          style={{
+                            backfaceVisibility: 'hidden',
+                            minHeight: '350px'
+                          }}
+                        >
+                          <div className="text-center">
+                            <div className="text-sm text-gray-400 uppercase tracking-wider mb-6">
+                              Tap to reveal answer
+                            </div>
+                            <span className="text-9xl font-bold dark:text-gray-200 text-gray-700 block font-noto-sans-jp">
                               {currentQuestion.kanji}
-                            </span>{" "}
-                            {/* Small Kanji */}
+                            </span>
                             <button
-                              onClick={playKanjiAudio}
-                              className="focus:outline-none dark:text-gray-300 text-gray-500 hover:dark:text-gray-200 hover:text-gray-600"
+                              onClick={(e) => { e.stopPropagation(); playKanjiAudio(); }}
+                              className="mt-6 p-3 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                             >
-                              <FontAwesomeIcon icon={faPlayCircle} size="xs" />
+                              <FontAwesomeIcon
+                                icon={faPlayCircle}
+                                className="w-6 h-6 text-gray-600 dark:text-white"
+                              />
                             </button>
-                          </div>
-                          <div className="text-xl dark:text-gray-300 text-gray-600">
-                            {currentQuestion.reading}
                           </div>
                         </div>
 
-                        <div className="border-t border-b border-gray-300 py-6 space-y-4">
-                          <div className="text-base font-semibold dark:text-gray-200 text-gray-700">
-                            Example:
-                          </div>
-                          <div className="text-xl flex items-center justify-center space-x-2">
-                            <span className="text-2xl dark:text-white text-gray-800">
-                              {currentQuestion.exampleWord}
+                        {/* ===== BACK SIDE - Full Details ===== */}
+                        <div
+                          className="absolute w-full dark:bg-gray-800 bg-white rounded-lg shadow-md p-8 flex"
+                          style={{
+                            backfaceVisibility: 'hidden',
+                            transform: 'rotateY(180deg)',
+                            minHeight: '350px'
+                          }}
+                        >
+                          <div className="flex-1 flex justify-center items-center">
+                            <span className="text-8xl font-bold dark:text-gray-200 text-gray-600 font-noto-sans-jp">
+                              {currentQuestion.kanji}
                             </span>
-                            <button
-                              onClick={handlePlayAudio}
-                              className="focus:outline-none dark:text-gray-300 text-gray-500 hover:dark:text-gray-200 hover:text-gray-600"
-                            >
-                              <FontAwesomeIcon icon={faPlayCircle} size="lg" />
-                            </button>
                           </div>
-                          <audio
-                            ref={audioRef}
-                            src={currentQuestion.audio}
-                            preload="auto"
-                          ></audio>
-                          <div className="text-base dark:text-gray-200 text-gray-700">
-                            {currentQuestion.exampleReading}
-                          </div>
-                          <div className="text-lg italic dark:text-gray-400 text-gray-600">
-                            {currentQuestion.translation}
+
+                          <div className="flex-1 text-center space-y-4">
+                            <div className="space-y-2">
+                              <div className="text-3xl font-bold flex items-center justify-center space-x-2">
+                                <span className="dark:text-white text-gray-800">
+                                  {currentQuestion.kanji}
+                                </span>
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); playKanjiAudio(); }}
+                                  className="focus:outline-none dark:text-gray-300 text-gray-500 hover:dark:text-gray-200 hover:text-gray-600"
+                                >
+                                  <FontAwesomeIcon icon={faPlayCircle} size="xs" />
+                                </button>
+                              </div>
+                              <div className="text-xl dark:text-gray-300 text-gray-600">
+                                {currentQuestion.reading}
+                              </div>
+                            </div>
+
+                            <div className="border-t border-b border-gray-300 py-4 space-y-3">
+                              <div className="text-sm font-semibold dark:text-gray-200 text-gray-700">
+                                Example:
+                              </div>
+                              <div className="text-lg flex items-center justify-center space-x-2">
+                                <span className="text-xl dark:text-white text-gray-800">
+                                  {currentQuestion.exampleWord}
+                                </span>
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); handlePlayAudio(); }}
+                                  className="focus:outline-none dark:text-gray-300 text-gray-500"
+                                >
+                                  <FontAwesomeIcon icon={faPlayCircle} size="sm" />
+                                </button>
+                              </div>
+                              <audio
+                                ref={audioRef}
+                                src={currentQuestion.audio}
+                                preload="auto"
+                              ></audio>
+                              <div className="text-sm dark:text-gray-200 text-gray-700">
+                                {currentQuestion.exampleReading}
+                              </div>
+                              <div className="text-base italic dark:text-gray-400 text-gray-600">
+                                {currentQuestion.translation}
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    <div className="flex justify-between items-center mt-12 px-2 sm:px-4">
-                      {/* Reduced horizontal padding for the main container on smaller screens */}
-                      <div className="flex flex-col items-center space-y-1 mr-4 sm:mr-8">
-                        {/* Reduced right margin for smaller screens */}
-                        <span className="text-xs font-medium text-gray-700 mb-1">
-                          Previous
+                    {/* -------------------- Navigation & Difficulty ------------------- */}
+                    {isFlipped ? (
+                      <div className="flex flex-col items-center space-y-4">
+                        <span className="text-sm font-semibold text-gray-700">
+                          How well did you know this?
                         </span>
-                        <button
-                          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-2 sm:py-3 sm:px-6 rounded-md shadow-lg transition duration-200 ease-in-out"
-                          onClick={handlePreviousQuestion}
-                        >
-                          <FontAwesomeIcon icon={faArrowLeft} size="lg" />
-                        </button>
-                      </div>
-
-                      <div className="flex flex-col items-center">
-                        <span className="text-xs font-semibold text-gray-700 mb-1">
-                          Select Difficulty
-                        </span>
-                        <div className="flex space-x-2 sm:space-x-3">
-                          {/* Reduced space between buttons on smaller screens */}
-                          {["easy", "medium", "hard"].map((level, idx) => (
-                            <button
-                              key={idx}
-                              className={`py-1 px-2 sm:py-3 sm:px-6 rounded-md font-semibold text-xs sm:text-sm transition duration-200 ease-in-out shadow-md
-          ${difficulty === level
-                                  ? level === "easy"
-                                    ? "bg-blue-500 hover:bg-blue-600 text-white"
-                                    : level === "medium"
-                                      ? "bg-yellow-500 hover:bg-yellow-600 text-white"
-                                      : "bg-red-500 hover:bg-red-600 text-white"
-                                  : "bg-gray-300 hover:bg-gray-400 text-gray-800"
-                                }`}
-                              onClick={() => handleDifficultySelection(level)}
-                            >
-                              {level.charAt(0).toUpperCase() + level.slice(1)}
-                            </button>
-                          ))}
+                        <div className="flex space-x-3">
+                          <button
+                            className="py-3 px-6 rounded-xl font-bold text-sm bg-red-100 hover:bg-red-200 text-red-700 transition-colors"
+                            onClick={() => handleDifficultySelection("hard")}
+                          >
+                            😓 Hard
+                          </button>
+                          <button
+                            className="py-3 px-6 rounded-xl font-bold text-sm bg-yellow-100 hover:bg-yellow-200 text-yellow-700 transition-colors"
+                            onClick={() => handleDifficultySelection("medium")}
+                          >
+                            🤔 Medium
+                          </button>
+                          <button
+                            className="py-3 px-6 rounded-xl font-bold text-sm bg-green-100 hover:bg-green-200 text-green-700 transition-colors"
+                            onClick={() => handleDifficultySelection("easy")}
+                          >
+                            😊 Easy
+                          </button>
                         </div>
-                      </div>
 
-                      <div className="flex flex-col items-center space-y-1 ml-4 sm:ml-8">
-                        {/* Reduced left margin for smaller screens */}
-                        <span className="text-xs font-medium text-gray-700 mb-1">
-                          Next
-                        </span>
                         <button
-                          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-2 sm:py-3 sm:px-6 rounded-md shadow-lg transition duration-200 ease-in-out"
-                          onClick={handleNextQuestion}
+                          onClick={() => {
+                            resetFlip();
+                            handleNextQuestion();
+                          }}
+                          className="text-sm text-gray-400 hover:text-gray-600 mt-2"
                         >
-                          <FontAwesomeIcon icon={faArrowRight} size="lg" />
+                          Skip without rating
                         </button>
                       </div>
+                    ) : (
+                      <button
+                        onClick={flipCard}
+                        className="px-8 py-3 bg-brand-salmon hover:bg-brand-salmon/90 text-white font-bold rounded-xl transition-colors"
+                      >
+                        Show Answer
+                      </button>
+                    )}
+
+                    <div className="text-sm text-gray-400">
+                      {currentQuestionIndex + 1} / {questions?.length || 0}
                     </div>
 
                     <button
                       onClick={() => setIsOpen(false)}
-                      className="w-full max-w-xs justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus-visible:ring focus-visible:ring-indigo-600"
+                      className="w-full max-w-xs justify-center rounded-md bg-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-300 focus:outline-none"
                     >
-                      Close Flashcard
+                      Close
                     </button>
                   </div>
                 </Dialog.Panel>

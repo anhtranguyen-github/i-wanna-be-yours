@@ -94,8 +94,14 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
 
   const [isFlipped, setIsFlipped] = useState(false); // State to track card flip
 
+  // Reset flip state when changing cards
   const flipCard = () => {
     setIsFlipped(!isFlipped);
+  };
+
+  // Reset flip when moving to next/previous card
+  const resetFlip = () => {
+    setIsFlipped(false);
   };
 
   // Function to save flashcard state to the backend
@@ -179,7 +185,8 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
       }
     }
 
-    // Move to next card
+    // Reset flip and move to next card
+    resetFlip();
     if (questions) {
       setCurrentQuestionIndex((prevIndex) =>
         prevIndex === questions.length - 1 ? 0 : prevIndex + 1
@@ -336,108 +343,148 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                   onClick={(e) => e.stopPropagation()}
                 >
                   <div className="bg-gray-100 dark:bg-gray-900 flex flex-col items-center py-6 space-y-6 z-50">
-                    {/* -------------------- card content ------------------- */}
-                    <div className="dark:bg-gray-800 bg-white rounded-lg shadow-md p-8 w-full max-w-2xl flex flex-col z-50">
-                      {/* Vocabulary Section */}
-
-                      <div className="mb-8">
-                        {" "}
-                        {/* Maintains margin-bottom */}
-                        {/* Flex container to align play button to the left and vocabulary details centered */}
-                        <div className="flex justify-start items-center space-x-4 w-full">
-                          {/* Play Button */}
-                          <button
-                            onClick={playVocabularyAudio}
-                            className="flex-shrink-0"
-                          >
-                            <FontAwesomeIcon
-                              icon={faPlayCircle}
-                              className="w-8 h-8 text-gray-800 dark:text-white"
-                            />
-                          </button>
-
-                          {/* Container for vocabulary details to center them except for the button */}
-                          <div className="flex-grow text-center">
-                            {/* vocabulary_simplified above vocabulary_original */}
-                            <div className="text-2xl font-bold dark:text-white text-gray-800">
-                              {currentQuestion.vocabulary_simplified}
+                    {/* -------------------- Flip Card Container ------------------- */}
+                    <div
+                      className="perspective-1000 w-full max-w-2xl cursor-pointer"
+                      onClick={!isFlipped ? flipCard : undefined}
+                      style={{ perspective: '1000px' }}
+                    >
+                      <div
+                        className={`relative w-full transition-transform duration-500 transform-style-preserve-3d ${isFlipped ? 'rotate-y-180' : ''
+                          }`}
+                        style={{
+                          transformStyle: 'preserve-3d',
+                          transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+                          minHeight: '300px'
+                        }}
+                      >
+                        {/* ===== FRONT SIDE ===== */}
+                        <div
+                          className="absolute w-full backface-hidden dark:bg-gray-800 bg-white rounded-lg shadow-md p-8 flex flex-col items-center justify-center"
+                          style={{
+                            backfaceVisibility: 'hidden',
+                            minHeight: '300px'
+                          }}
+                        >
+                          <div className="text-center">
+                            <div className="text-sm text-gray-400 uppercase tracking-wider mb-4">
+                              Tap to reveal answer
                             </div>
-                            {/* vocabulary_original in the middle */}
-                            <span className="text-6xl font-bold dark:text-gray-200 text-gray-600 block">
+                            <span className="text-7xl font-bold dark:text-gray-200 text-gray-700 block mb-4">
                               {currentQuestion.vocabulary_original}
                             </span>
-                            {/* vocabulary_english below vocabulary_original */}
-                            <div className="text-xl dark:text-gray-300 text-gray-600">
-                              {currentQuestion.vocabulary_english}
-                            </div>
+                            <button
+                              onClick={(e) => { e.stopPropagation(); playVocabularyAudio(); }}
+                              className="mt-4 p-3 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                            >
+                              <FontAwesomeIcon
+                                icon={faPlayCircle}
+                                className="w-6 h-6 text-gray-600 dark:text-white"
+                              />
+                            </button>
                           </div>
                         </div>
-                      </div>
 
-                      {/* Adaptive Sentences Section */}
-                      <SentenceSection sentences={currentQuestion.sentences} />
-                      {/* End of Adaptive Sentences Section */}
-                    </div>
-
-                    {/* -------------------- end of card content ------------------- */}
-
-                    {/* ---------------- card nav buttons ------------------- */}
-                    <div className="flex justify-between items-center mt-12 px-2 sm:px-4">
-                      <div className="flex flex-col items-center space-y-1 mr-4 sm:mr-8">
-                        <span className="text-xs font-medium text-gray-700 mb-1">
-                          Previous
-                        </span>
-                        <button
-                          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-2 sm:py-3 sm:px-6 rounded-md shadow-lg transition duration-200 ease-in-out"
-                          onClick={handlePreviousQuestion}
+                        {/* ===== BACK SIDE ===== */}
+                        <div
+                          className="absolute w-full backface-hidden dark:bg-gray-800 bg-white rounded-lg shadow-md p-8 flex flex-col"
+                          style={{
+                            backfaceVisibility: 'hidden',
+                            transform: 'rotateY(180deg)',
+                            minHeight: '300px'
+                          }}
                         >
-                          <FontAwesomeIcon icon={faArrowLeft} size="lg" />
-                        </button>
-                      </div>
+                          {/* Vocabulary Section */}
+                          <div className="mb-6">
+                            <div className="flex justify-start items-center space-x-4 w-full">
+                              <button
+                                onClick={(e) => { e.stopPropagation(); playVocabularyAudio(); }}
+                                className="flex-shrink-0"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faPlayCircle}
+                                  className="w-8 h-8 text-gray-800 dark:text-white"
+                                />
+                              </button>
+                              <div className="flex-grow text-center">
+                                <div className="text-2xl font-bold dark:text-white text-gray-800">
+                                  {currentQuestion.vocabulary_simplified}
+                                </div>
+                                <span className="text-5xl font-bold dark:text-gray-200 text-gray-600 block">
+                                  {currentQuestion.vocabulary_original}
+                                </span>
+                                <div className="text-xl dark:text-gray-300 text-gray-600 mt-2">
+                                  {currentQuestion.vocabulary_english}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
 
-                      <div className="flex flex-col items-center">
-                        <span className="text-xs font-semibold text-gray-700 mb-1">
-                          Select Difficulty
-                        </span>
-                        <div className="flex space-x-2 sm:space-x-3">
-                          {["easy", "medium", "hard"].map((level, idx) => (
-                            <button
-                              key={idx}
-                              className={`py-1 px-2 sm:py-3 sm:px-6 rounded-md font-semibold text-xs sm:text-sm transition duration-200 ease-in-out shadow-md
-          ${difficulty === level
-                                  ? level === "easy"
-                                    ? "bg-blue-500 hover:bg-blue-600 text-white"
-                                    : level === "medium"
-                                      ? "bg-yellow-500 hover:bg-yellow-600 text-white"
-                                      : "bg-red-500 hover:bg-red-600 text-white"
-                                  : "bg-gray-300 hover:bg-gray-400 text-gray-800"
-                                }`}
-                              onClick={() => handleDifficultySelection(level)}
-                            >
-                              {level.charAt(0).toUpperCase() + level.slice(1)}
-                            </button>
-                          ))}
+                          {/* Sentences Section */}
+                          <SentenceSection sentences={currentQuestion.sentences} />
                         </div>
                       </div>
+                    </div>
 
-                      <div className="flex flex-col items-center space-y-1 ml-4 sm:ml-8">
-                        <span className="text-xs font-medium text-gray-700 mb-1">
-                          Next
+                    {/* -------------------- Navigation & Difficulty ------------------- */}
+                    {isFlipped ? (
+                      // Show difficulty buttons only after flip
+                      <div className="flex flex-col items-center space-y-4">
+                        <span className="text-sm font-semibold text-gray-700">
+                          How well did you know this?
                         </span>
+                        <div className="flex space-x-3">
+                          <button
+                            className="py-3 px-6 rounded-xl font-bold text-sm bg-red-100 hover:bg-red-200 text-red-700 transition-colors"
+                            onClick={() => handleDifficultySelection("hard")}
+                          >
+                            😓 Hard
+                          </button>
+                          <button
+                            className="py-3 px-6 rounded-xl font-bold text-sm bg-yellow-100 hover:bg-yellow-200 text-yellow-700 transition-colors"
+                            onClick={() => handleDifficultySelection("medium")}
+                          >
+                            🤔 Medium
+                          </button>
+                          <button
+                            className="py-3 px-6 rounded-xl font-bold text-sm bg-green-100 hover:bg-green-200 text-green-700 transition-colors"
+                            onClick={() => handleDifficultySelection("easy")}
+                          >
+                            😊 Easy
+                          </button>
+                        </div>
+
+                        {/* Skip button */}
                         <button
-                          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-2 sm:py-3 sm:px-6 rounded-md shadow-lg transition duration-200 ease-in-out"
-                          onClick={handleNextQuestion}
+                          onClick={() => {
+                            resetFlip();
+                            handleNextQuestion();
+                          }}
+                          className="text-sm text-gray-400 hover:text-gray-600 mt-2"
                         >
-                          <FontAwesomeIcon icon={faArrowRight} size="lg" />
+                          Skip without rating
                         </button>
                       </div>
+                    ) : (
+                      // Show "Show Answer" button before flip
+                      <button
+                        onClick={flipCard}
+                        className="px-8 py-3 bg-brand-salmon hover:bg-brand-salmon/90 text-white font-bold rounded-xl transition-colors"
+                      >
+                        Show Answer
+                      </button>
+                    )}
+
+                    {/* Card counter */}
+                    <div className="text-sm text-gray-400">
+                      {currentQuestionIndex + 1} / {questions?.length || 0}
                     </div>
 
                     <button
                       onClick={() => setIsOpen(false)}
-                      className="w-full max-w-xs justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus-visible:ring focus-visible:ring-indigo-600"
+                      className="w-full max-w-xs justify-center rounded-md bg-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-300 focus:outline-none"
                     >
-                      Close Flashcard
+                      Close
                     </button>
                   </div>
                 </Dialog.Panel>

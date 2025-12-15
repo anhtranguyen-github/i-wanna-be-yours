@@ -58,6 +58,10 @@ const GrammarFlashcardModal: FC<GrammarFlashcardModalProps> = ({
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [difficulty, setDifficulty] = useState<string | null>(null);
+  const [isFlipped, setIsFlipped] = useState<boolean>(false);
+
+  const flipCard = () => setIsFlipped(!isFlipped);
+  const resetFlip = () => setIsFlipped(false);
 
   /* Construct the endpoint for combining dynamic user data with static grammar data */
   const apiUrl = `/f-api/v1/combine-flashcard-data-grammars?userId=${userId}&collectionName=${collectionName}&p_tag=${p_tag}&s_tag=${s_tag}`;
@@ -137,7 +141,8 @@ const GrammarFlashcardModal: FC<GrammarFlashcardModalProps> = ({
       }
     }
 
-    // Move to next card
+    // Reset flip and move to next card
+    resetFlip();
     if (grammarItems) {
       setCurrentIndex((prevIndex) =>
         prevIndex === grammarItems.length - 1 ? 0 : prevIndex + 1
@@ -245,7 +250,7 @@ const GrammarFlashcardModal: FC<GrammarFlashcardModalProps> = ({
               leaveTo="opacity-0 scale-95 translate-y-4"
             >
               <Dialog.Panel
-                className="relative w-full max-w-3xl transform overflow-hidden rounded-xl bg-blue-50 p-6 shadow-xl transition-all"
+                className="relative w-full max-w-3xl transform overflow-hidden rounded-xl bg-gray-50 dark:bg-gray-900 p-6 shadow-xl transition-all"
                 onClick={(e) => e.stopPropagation()}
               >
                 {/* Close Button (top-right corner) */}
@@ -256,105 +261,133 @@ const GrammarFlashcardModal: FC<GrammarFlashcardModalProps> = ({
                   ✕
                 </button>
 
-                {/* Card Content */}
-                <div className="flex flex-col items-center space-y-6 mt-4">
-                  {/* Title & Short Explanation */}
-                  <div className="text-center">
-                    <h2 className="text-2xl font-bold text-gray-800">
-                      {currentGrammar.title}
-                    </h2>
-                    <p className="mt-2 text-sm italic text-gray-600">
-                      {currentGrammar.short_explanation}
-                    </p>
-                  </div>
+                {/* Flip Card Container */}
+                <div
+                  className="cursor-pointer mt-4"
+                  onClick={!isFlipped ? flipCard : undefined}
+                  style={{ perspective: '1000px' }}
+                >
+                  <div
+                    className="relative w-full transition-transform duration-500"
+                    style={{
+                      transformStyle: 'preserve-3d',
+                      transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+                      minHeight: '350px'
+                    }}
+                  >
+                    {/* ===== FRONT SIDE - Just Title ===== */}
+                    <div
+                      className="absolute w-full bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 flex flex-col items-center justify-center"
+                      style={{
+                        backfaceVisibility: 'hidden',
+                        minHeight: '350px'
+                      }}
+                    >
+                      <div className="text-center">
+                        <div className="text-sm text-gray-400 uppercase tracking-wider mb-6">
+                          Tap to reveal explanation
+                        </div>
+                        <h2 className="text-3xl font-bold text-gray-800 dark:text-white mb-4">
+                          {currentGrammar.title}
+                        </h2>
+                        <p className="text-lg italic text-gray-600 dark:text-gray-400">
+                          {currentGrammar.short_explanation}
+                        </p>
+                      </div>
+                    </div>
 
-                  {/* Formation */}
-                  <div className="w-full max-w-2xl rounded-lg bg-white p-4 shadow-sm">
-                    <h3 className="text-lg font-semibold text-gray-800">
-                      Formation
-                    </h3>
-                    <p className="mt-1 text-gray-700">
-                      {currentGrammar.formation}
-                    </p>
-                  </div>
+                    {/* ===== BACK SIDE - Full Details ===== */}
+                    <div
+                      className="absolute w-full bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 flex flex-col"
+                      style={{
+                        backfaceVisibility: 'hidden',
+                        transform: 'rotateY(180deg)',
+                        minHeight: '350px'
+                      }}
+                    >
+                      <div className="text-center mb-4">
+                        <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
+                          {currentGrammar.title}
+                        </h2>
+                        <p className="mt-1 text-sm italic text-gray-600 dark:text-gray-400">
+                          {currentGrammar.short_explanation}
+                        </p>
+                      </div>
 
-                  {/* Details */}
-                  <div className="w-full max-w-2xl rounded-lg bg-white p-4 shadow-sm">
-                    <h3 className="text-lg font-semibold text-gray-800">
-                      Details
-                    </h3>
-                    <p className="mt-1 text-gray-700">
-                      {currentGrammar.long_explanation}
-                    </p>
-                  </div>
+                      <div className="w-full rounded-lg bg-gray-50 dark:bg-gray-700 p-3 mb-3">
+                        <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+                          Formation
+                        </h3>
+                        <p className="mt-1 text-sm text-gray-700 dark:text-gray-300">
+                          {currentGrammar.formation}
+                        </p>
+                      </div>
 
-                  {/* Examples */}
-                  <div className="w-full max-w-2xl rounded-lg bg-white p-4 shadow-sm">
-                    <ExampleSection examples={currentGrammar.examples} />
+                      <div className="w-full rounded-lg bg-gray-50 dark:bg-gray-700 p-3 mb-3">
+                        <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+                          Details
+                        </h3>
+                        <p className="mt-1 text-sm text-gray-700 dark:text-gray-300">
+                          {currentGrammar.long_explanation}
+                        </p>
+                      </div>
+
+                      <div className="w-full rounded-lg bg-gray-50 dark:bg-gray-700 p-3">
+                        <ExampleSection examples={currentGrammar.examples} />
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                {/* Bottom Section: Original "Previous–Difficulty–Next" Layout */}
-                <div className="mt-8 flex justify-between items-center px-2 sm:px-4 w-full max-w-md mx-auto">
-                  {/* Previous */}
-                  <div className="flex flex-col items-center space-y-1 mr-4 sm:mr-8">
-                    <span className="text-xs font-medium text-gray-700 mb-1">
-                      Previous
-                    </span>
-                    <button
-                      className="inline-flex items-center justify-center rounded-md bg-blue-200 px-3 py-2 text-sm font-medium text-blue-900 transition hover:bg-blue-300 shadow-md"
-                      onClick={handlePrevious}
-                    >
-                      <FontAwesomeIcon icon={faArrowLeft} size="lg" />
-                    </button>
-                  </div>
+                {/* Navigation & Difficulty */}
+                <div className="mt-6 flex flex-col items-center space-y-4">
+                  {isFlipped ? (
+                    <>
+                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        How well did you know this?
+                      </span>
+                      <div className="flex space-x-3">
+                        <button
+                          className="py-3 px-6 rounded-xl font-bold text-sm bg-red-100 hover:bg-red-200 text-red-700 transition-colors"
+                          onClick={() => handleDifficultySelection("hard")}
+                        >
+                          😓 Hard
+                        </button>
+                        <button
+                          className="py-3 px-6 rounded-xl font-bold text-sm bg-yellow-100 hover:bg-yellow-200 text-yellow-700 transition-colors"
+                          onClick={() => handleDifficultySelection("medium")}
+                        >
+                          🤔 Medium
+                        </button>
+                        <button
+                          className="py-3 px-6 rounded-xl font-bold text-sm bg-green-100 hover:bg-green-200 text-green-700 transition-colors"
+                          onClick={() => handleDifficultySelection("easy")}
+                        >
+                          😊 Easy
+                        </button>
+                      </div>
 
-                  {/* Difficulty */}
-                  <div className="flex flex-col items-center space-y-1">
-                    <span className="text-xs font-semibold text-gray-700 mb-1">
-                      Difficulty
-                    </span>
-                    <div className="flex space-x-2 sm:space-x-3">
-                      {["easy", "medium", "hard"].map((level, idx) => {
-                        const isActive = difficulty === level;
-                        let colorClass =
-                          "bg-gray-100 text-gray-800 hover:bg-gray-200";
-                        if (isActive) {
-                          if (level === "easy") {
-                            colorClass =
-                              "bg-blue-200 text-blue-900 hover:bg-blue-300";
-                          } else if (level === "medium") {
-                            colorClass =
-                              "bg-yellow-200 text-yellow-900 hover:bg-yellow-300";
-                          } else {
-                            colorClass =
-                              "bg-red-200 text-red-900 hover:bg-red-300";
-                          }
-                        }
-                        return (
-                          <button
-                            key={idx}
-                            className={`py-2 px-4 rounded-md text-sm font-semibold transition duration-200 ease-in-out shadow-md ${colorClass}`}
-                            onClick={() => handleDifficultySelection(level)}
-                          >
-                            {level.charAt(0).toUpperCase() + level.slice(1)}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Next */}
-                  <div className="flex flex-col items-center space-y-1 ml-4 sm:ml-8">
-                    <span className="text-xs font-medium text-gray-700 mb-1">
-                      Next
-                    </span>
+                      <button
+                        onClick={() => {
+                          resetFlip();
+                          handleNext();
+                        }}
+                        className="text-sm text-gray-400 hover:text-gray-600"
+                      >
+                        Skip without rating
+                      </button>
+                    </>
+                  ) : (
                     <button
-                      className="inline-flex items-center justify-center rounded-md bg-blue-200 px-3 py-2 text-sm font-medium text-blue-900 transition hover:bg-blue-300 shadow-md"
-                      onClick={handleNext}
+                      onClick={flipCard}
+                      className="px-8 py-3 bg-brand-salmon hover:bg-brand-salmon/90 text-white font-bold rounded-xl transition-colors"
                     >
-                      <FontAwesomeIcon icon={faArrowRight} size="lg" />
+                      Show Answer
                     </button>
+                  )}
+
+                  <div className="text-sm text-gray-400">
+                    {currentIndex + 1} / {grammarItems?.length || 0}
                   </div>
                 </div>
               </Dialog.Panel>
