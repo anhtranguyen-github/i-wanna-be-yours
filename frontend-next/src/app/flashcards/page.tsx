@@ -14,6 +14,7 @@ import {
     Inbox
 } from "lucide-react";
 import { getPublicDecks, getPersonalDecks, DeckDefinition } from "./decks-data";
+import { LoginPromptCard } from "@/components/auth";
 
 export default function FlashcardsMenu() {
     const { user } = useUser();
@@ -108,13 +109,12 @@ export default function FlashcardsMenu() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
                 {activeTab === 'personal' && !user && (
-                    <div className="text-center py-20 bg-white rounded-3xl shadow-sm border border-slate-100">
-                        <UserIcon className="w-16 h-16 mx-auto text-slate-300 mb-4" />
-                        <h2 className="text-2xl font-bold text-brand-dark mb-2">Log in to view your collection</h2>
-                        <p className="text-slate-500 mb-8 max-w-md mx-auto">Create your own decks, track your progress, and clone public decks to your personal library.</p>
-                        <Link href="/login" className="inline-block px-8 py-3 bg-brand-green text-white font-bold rounded-xl shadow-clay-img hover:bg-brand-green/90 transition-all">
-                            Log In
-                        </Link>
+                    <div className="py-8">
+                        <LoginPromptCard
+                            title="Personal Collection"
+                            message="Log in to view your collection, create custom decks, and track your progress."
+                            icon={<UserIcon size={36} className="text-brand-salmon" />}
+                        />
                     </div>
                 )}
 

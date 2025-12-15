@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { createQuiz } from '@/services/quizService';
+import { LoginPromptCard } from '@/components/auth';
 
 const JLPT_LEVELS = ['N5', 'N4', 'N3', 'N2', 'N1', 'mixed'];
 const CATEGORIES = ['vocabulary', 'grammar', 'kanji', 'reading', 'mixed'];
@@ -179,17 +180,12 @@ export default function CreateQuizPage() {
 
     if (!user) {
         return (
-            <div className="min-h-screen bg-brand-cream py-12">
-                <div className="max-w-2xl mx-auto px-4 text-center">
-                    <div className="clay-card p-12">
-                        <GraduationCap className="w-16 h-16 mx-auto mb-6 text-gray-300" />
-                        <h2 className="text-2xl font-black text-brand-dark mb-4">Login Required</h2>
-                        <p className="text-gray-500 mb-6">Please log in to create personal quizzes.</p>
-                        <Link href="/login?redirect=/practice/quiz/create" className="btnPrimary">
-                            Log In
-                        </Link>
-                    </div>
-                </div>
+            <div className="min-h-screen bg-brand-cream py-12 px-4">
+                <LoginPromptCard
+                    title="Login Required"
+                    message="Log in to create your own custom quizzes."
+                    icon={<GraduationCap size={36} className="text-brand-salmon" />}
+                />
             </div>
         );
     }
