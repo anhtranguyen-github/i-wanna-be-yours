@@ -85,14 +85,23 @@ export default function QuizListPage() {
             {/* Header */}
             <div className="bg-white shadow-sm sticky top-0 z-30">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white shadow-md">
-                            <GraduationCap size={28} />
+                    <div className="flex items-center justify-between mb-6">
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white shadow-md">
+                                <GraduationCap size={28} />
+                            </div>
+                            <div>
+                                <h1 className="text-2xl font-black tracking-tight text-brand-dark">Quizzes</h1>
+                                <p className="text-slate-500 text-sm">Test your knowledge with JLPT-style quizzes</p>
+                            </div>
                         </div>
-                        <div>
-                            <h1 className="text-2xl font-black tracking-tight text-brand-dark">Quizzes</h1>
-                            <p className="text-slate-500 text-sm">Test your knowledge with JLPT-style quizzes</p>
-                        </div>
+                        <Link
+                            href="/practice/quiz/create"
+                            className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-xl font-bold hover:bg-blue-600 transition-colors shadow-sm"
+                        >
+                            <span className="text-lg">+</span>
+                            <span className="hidden sm:inline">Create Quiz</span>
+                        </Link>
                     </div>
 
                     {/* Filters */}
