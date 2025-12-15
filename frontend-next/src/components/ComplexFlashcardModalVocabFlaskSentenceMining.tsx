@@ -170,8 +170,24 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
 
   // -------------------------------------------------------------
 
-  const handleDifficultySelection = (selectedDifficulty: string) => {
-    setDifficulty(selectedDifficulty);
+  const handleDifficultySelection = async (selectedDifficulty: string) => {
+    // Save the difficulty and move to next card in one action
+    if (currentQuestion && userId) {
+      try {
+        await axios.patch(`/f-api/v1/text-parser-words/${currentQuestion.id}`, {
+          difficulty: selectedDifficulty,
+        });
+      } catch (error) {
+        console.log("Failed to store flashcard state:", error);
+      }
+    }
+
+    // Move to next card
+    if (questions) {
+      setCurrentQuestionIndex((prevIndex) =>
+        prevIndex === questions.length - 1 ? 0 : prevIndex + 1
+      );
+    }
   };
 
   const handlePlayAudio = () => {

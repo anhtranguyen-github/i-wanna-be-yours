@@ -168,8 +168,29 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
 
   // -------------------------------------------------------------
 
-  const handleDifficultySelection = (selectedDifficulty: string) => {
-    setDifficulty(selectedDifficulty);
+  const handleDifficultySelection = async (selectedDifficulty: string) => {
+    // Save the difficulty and move to next card in one action
+    if (currentQuestion && userId) {
+      try {
+        await axios.post(`/f-api/v1/flashcard`, {
+          userId: userId,
+          difficulty: selectedDifficulty,
+          collectionName: collectionName,
+          kanji: currentQuestion.kanji,
+          p_tag,
+          s_tag,
+        });
+      } catch (error) {
+        console.log("Failed to store flashcard state:", error);
+      }
+    }
+
+    // Move to next card
+    if (questions) {
+      setCurrentQuestionIndex((prevIndex) =>
+        prevIndex === questions.length - 1 ? 0 : prevIndex + 1
+      );
+    }
   };
 
   const handlePlayAudio = () => {
@@ -227,19 +248,19 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
   //   );
 
 
-    if (!isOpen) {
-      return (
-        <ClosedFlashcard
-          p_tag={p_tag}
-          s_tag={s_tag}
-          badgeText="Kanji"
-          badgeColor="bg-rose-100 text-rose-800" // Specify badge color here
-          description="Explore kanji readings."
-          openModal={openModal}
-          buttonText="Open Flashcard"
-        />
-      );
-    }
+  if (!isOpen) {
+    return (
+      <ClosedFlashcard
+        p_tag={p_tag}
+        s_tag={s_tag}
+        badgeText="Kanji"
+        badgeColor="bg-rose-100 text-rose-800" // Specify badge color here
+        description="Explore kanji readings."
+        openModal={openModal}
+        buttonText="Open Flashcard"
+      />
+    );
+  }
 
 
 
@@ -268,7 +289,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
           as="div"
           className="relative z-50"
           open={isOpen}
-          onClose={() => {}}
+          onClose={() => { }}
         >
           <Transition.Child
             as={Fragment}
@@ -383,15 +404,14 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                             <button
                               key={idx}
                               className={`py-1 px-2 sm:py-3 sm:px-6 rounded-md font-semibold text-xs sm:text-sm transition duration-200 ease-in-out shadow-md
-          ${
-            difficulty === level
-              ? level === "easy"
-                ? "bg-blue-500 hover:bg-blue-600 text-white"
-                : level === "medium"
-                ? "bg-yellow-500 hover:bg-yellow-600 text-white"
-                : "bg-red-500 hover:bg-red-600 text-white"
-              : "bg-gray-300 hover:bg-gray-400 text-gray-800"
-          }`}
+          ${difficulty === level
+                                  ? level === "easy"
+                                    ? "bg-blue-500 hover:bg-blue-600 text-white"
+                                    : level === "medium"
+                                      ? "bg-yellow-500 hover:bg-yellow-600 text-white"
+                                      : "bg-red-500 hover:bg-red-600 text-white"
+                                  : "bg-gray-300 hover:bg-gray-400 text-gray-800"
+                                }`}
                               onClick={() => handleDifficultySelection(level)}
                             >
                               {level.charAt(0).toUpperCase() + level.slice(1)}

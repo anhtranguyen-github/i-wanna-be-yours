@@ -117,8 +117,32 @@ const GrammarFlashcardModal: FC<GrammarFlashcardModalProps> = ({
   };
 
   /* -------------- Difficulty ---------------- */
-  const handleDifficultySelection = (selectedDifficulty: string) => {
-    setDifficulty(selectedDifficulty);
+  const handleDifficultySelection = async (selectedDifficulty: string) => {
+    // Save the difficulty and move to next card in one action
+    if (currentGrammar && userId) {
+      try {
+        const grammar_s_tag = currentGrammar.s_tag ?? s_tag;
+        const grammar_p_tag = currentGrammar.p_tag ?? p_tag;
+
+        await axios.post(`/f-api/v1/flashcard`, {
+          userId: userId,
+          difficulty: selectedDifficulty,
+          collectionName: collectionName,
+          title: currentGrammar.title,
+          p_tag: grammar_p_tag,
+          s_tag: grammar_s_tag,
+        });
+      } catch (error) {
+        console.log("Failed to store grammar flashcard state:", error);
+      }
+    }
+
+    // Move to next card
+    if (grammarItems) {
+      setCurrentIndex((prevIndex) =>
+        prevIndex === grammarItems.length - 1 ? 0 : prevIndex + 1
+      );
+    }
   };
 
   /* -------------- Persist Flashcard State -------------- */
@@ -190,7 +214,7 @@ const GrammarFlashcardModal: FC<GrammarFlashcardModalProps> = ({
         as="div"
         className="relative z-50"
         open={isOpen}
-        onClose={() => {}}
+        onClose={() => { }}
       >
         {/* Overlay */}
         <Transition.Child
