@@ -19,15 +19,19 @@ class FlashcardService {
 
     // --- Personal Cards ---
 
-    async createPersonalCard(card: { front: string, back: string, type: string, tags?: string[], deck_name?: string }) {
+    async createPersonalCard(card: { front: string; back: string; tags?: string[]; deck_name?: string }) {
         const user = await this.getCurrentUser();
         if (!user) throw new Error("User must be logged in");
+
+        // Determine type from tags (first category tag found)
+        const categoryTags = ['kanji', 'vocabulary', 'grammar'];
+        const cardType = card.tags?.find(t => categoryTags.includes(t)) || 'vocabulary';
 
         const payload = {
             userId: user.id,
             front: card.front,
             back: card.back,
-            type: card.type || 'vocabulary',
+            type: cardType,
             deck_name: card.deck_name || 'Inbox',
             tags: card.tags || [],
             creator: 'user'
