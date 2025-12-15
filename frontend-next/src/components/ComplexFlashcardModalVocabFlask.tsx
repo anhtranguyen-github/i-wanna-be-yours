@@ -1,9 +1,9 @@
 "use client";
 
 import useSWR from "swr";
-import { FC, useState, useRef, Fragment } from "react";
+import { FC, useState, useRef, Fragment, useCallback } from "react";
 import { useEffect } from "react";
-import { Dialog, Transition } from "@headlessui/react"; // https://headlessui.com/react/dialog
+import { Dialog, Transition } from "@headlessui/react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -13,6 +13,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/solid";
 import ClosedFlashcard from "@/components/ClosedFlashcard";
+import { ProgressBar, CompletionScreen, SessionStats } from "@/components/flashcards/ProgressTracker";
 
 interface Question {
   vocabulary_original: string;
@@ -50,10 +51,15 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
   const [count, setCount] = useState<number>(0);
   let [isOpen, setIsOpen] = useState(false);
   const [shouldFetchData, setShouldFetchData] = useState(false);
-  const [isFetching, setIsFetching] = useState(false); // To track fetching status
+  const [isFetching, setIsFetching] = useState(false);
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [difficulty, setDifficulty] = useState<string | null>(null);
+
+  // Progress tracking state
+  const [sessionStats, setSessionStats] = useState({ easy: 0, medium: 0, hard: 0 });
+  const [reviewedCards, setReviewedCards] = useState<Set<number>>(new Set());
+  const [isComplete, setIsComplete] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -169,7 +175,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
   // -------------------------------------------------------------
 
   const handleDifficultySelection = async (selectedDifficulty: string) => {
-    // Save the difficulty and move to next card in one action
+    // Save the difficulty and move to next card
     if (currentQuestion && userId) {
       try {
         await axios.post(`/f-api/v1/flashcard`, {
@@ -185,12 +191,27 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
       }
     }
 
+    // Update session stats
+    setSessionStats(prev => ({
+      ...prev,
+      [selectedDifficulty]: prev[selectedDifficulty as keyof typeof prev] + 1
+    }));
+
+    // Track reviewed cards
+    setReviewedCards(prev => new Set(prev).add(currentQuestionIndex));
+
     // Reset flip and move to next card
     resetFlip();
     if (questions) {
-      setCurrentQuestionIndex((prevIndex) =>
-        prevIndex === questions.length - 1 ? 0 : prevIndex + 1
-      );
+      const nextIndex = currentQuestionIndex + 1;
+
+      // Check if all cards have been reviewed
+      if (reviewedCards.size + 1 >= questions.length) {
+        setIsComplete(true);
+      } else {
+        // Find next unreviewed card or loop back
+        setCurrentQuestionIndex(nextIndex >= questions.length ? 0 : nextIndex);
+      }
     }
   };
 
@@ -221,15 +242,28 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
 
   function closeModal() {
     setIsOpen(false);
-    // Optionally reset `shouldFetchData` here if you want to refetch data every time the modal opens
     setShouldFetchData(false);
   }
 
   function openModal() {
     setIsOpen(true);
     setShouldFetchData(true);
-    setIsFetching(true); // Start fetching data
+    setIsFetching(true);
+    // Reset progress when opening
+    setSessionStats({ easy: 0, medium: 0, hard: 0 });
+    setReviewedCards(new Set());
+    setIsComplete(false);
+    setCurrentQuestionIndex(0);
   }
+
+  // Restart deck study
+  const handleRestart = () => {
+    setSessionStats({ easy: 0, medium: 0, hard: 0 });
+    setReviewedCards(new Set());
+    setIsComplete(false);
+    setCurrentQuestionIndex(0);
+    resetFlip();
+  };
 
   // ------------------------------------------------------------------------
 
@@ -343,149 +377,172 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                   className="relative transform w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl h-[85vh] max-h-[700px] overflow-hidden rounded-2xl bg-gray-50 dark:bg-gray-900 p-4 sm:p-6 text-left shadow-xl transition-all z-50"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <div className="h-full flex flex-col">
-                    {/* Close button */}
-                    <button
-                      onClick={() => setIsOpen(false)}
-                      className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 z-10"
-                    >
-                      ✕
-                    </button>
-
-                    {/* -------------------- Flip Card Container ------------------- */}
-                    <div
-                      className="flex-1 min-h-0 cursor-pointer"
-                      onClick={!isFlipped ? flipCard : undefined}
-                      style={{ perspective: '1000px' }}
-                    >
-                      <div
-                        className="relative w-full h-full transition-transform duration-500"
-                        style={{
-                          transformStyle: 'preserve-3d',
-                          transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
-                        }}
+                  {/* Completion Screen */}
+                  {isComplete ? (
+                    <CompletionScreen
+                      totalCards={questions?.length || 0}
+                      sessionStats={{ reviewed: reviewedCards.size, ...sessionStats }}
+                      onRestart={handleRestart}
+                      onClose={closeModal}
+                      deckTitle={`${p_tag} ${s_tag}`}
+                    />
+                  ) : (
+                    <div className="h-full flex flex-col">
+                      {/* Close button */}
+                      <button
+                        onClick={() => setIsOpen(false)}
+                        className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 z-10"
                       >
-                        {/* ===== FRONT SIDE - Fixed size ===== */}
-                        <div
-                          className="absolute inset-0 w-full h-full dark:bg-gray-800 bg-white rounded-xl shadow-md flex flex-col items-center justify-center p-4 sm:p-6"
-                          style={{ backfaceVisibility: 'hidden' }}
-                        >
-                          <div className="text-center max-w-full">
-                            <div className="text-xs sm:text-sm text-gray-400 uppercase tracking-wider mb-3 sm:mb-4">
-                              Tap to reveal answer
-                            </div>
-                            <span className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold dark:text-gray-200 text-gray-700 block mb-3 sm:mb-4 truncate max-w-full px-2">
-                              {currentQuestion.vocabulary_original}
-                            </span>
-                            <button
-                              onClick={(e) => { e.stopPropagation(); playVocabularyAudio(); }}
-                              className="mt-2 sm:mt-4 p-2 sm:p-3 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                            >
-                              <FontAwesomeIcon
-                                icon={faPlayCircle}
-                                className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600 dark:text-white"
-                              />
-                            </button>
-                          </div>
-                        </div>
+                        ✕
+                      </button>
 
-                        {/* ===== BACK SIDE - Fixed size with scroll ===== */}
+                      {/* -------------------- Flip Card Container ------------------- */}
+                      <div
+                        className="flex-1 min-h-0 cursor-pointer"
+                        onClick={!isFlipped ? flipCard : undefined}
+                        style={{ perspective: '1000px' }}
+                      >
                         <div
-                          className="absolute inset-0 w-full h-full dark:bg-gray-800 bg-white rounded-xl shadow-md flex flex-col overflow-hidden"
+                          className="relative w-full h-full transition-transform duration-500"
                           style={{
-                            backfaceVisibility: 'hidden',
-                            transform: 'rotateY(180deg)',
+                            transformStyle: 'preserve-3d',
+                            transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
                           }}
                         >
-                          {/* Header - Fixed */}
-                          <div className="flex-shrink-0 p-4 sm:p-6 border-b border-gray-100 dark:border-gray-700">
-                            <div className="flex items-center space-x-3">
+                          {/* ===== FRONT SIDE - Fixed size ===== */}
+                          <div
+                            className="absolute inset-0 w-full h-full dark:bg-gray-800 bg-white rounded-xl shadow-md flex flex-col items-center justify-center p-4 sm:p-6"
+                            style={{ backfaceVisibility: 'hidden' }}
+                          >
+                            <div className="text-center max-w-full">
+                              <div className="text-xs sm:text-sm text-gray-400 uppercase tracking-wider mb-3 sm:mb-4">
+                                Tap to reveal answer
+                              </div>
+                              <span className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold dark:text-gray-200 text-gray-700 block mb-3 sm:mb-4 truncate max-w-full px-2">
+                                {currentQuestion.vocabulary_original}
+                              </span>
                               <button
                                 onClick={(e) => { e.stopPropagation(); playVocabularyAudio(); }}
-                                className="flex-shrink-0 p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+                                className="mt-2 sm:mt-4 p-2 sm:p-3 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                               >
                                 <FontAwesomeIcon
                                   icon={faPlayCircle}
-                                  className="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white"
+                                  className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600 dark:text-white"
                                 />
                               </button>
-                              <div className="flex-1 min-w-0 text-center">
-                                <div className="text-lg sm:text-xl md:text-2xl font-bold dark:text-white text-gray-800 truncate">
-                                  {currentQuestion.vocabulary_simplified}
-                                </div>
-                                <span className="text-2xl sm:text-3xl md:text-4xl font-bold dark:text-gray-200 text-gray-600 block truncate">
-                                  {currentQuestion.vocabulary_original}
-                                </span>
-                                <div className="text-base sm:text-lg md:text-xl dark:text-gray-300 text-gray-600 mt-1 truncate">
-                                  {currentQuestion.vocabulary_english}
-                                </div>
-                              </div>
                             </div>
                           </div>
 
-                          {/* Sentences - Scrollable */}
-                          <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6">
-                            <SentenceSection sentences={currentQuestion.sentences} />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* -------------------- Navigation & Difficulty - Fixed bottom ------------------- */}
-                    <div className="flex-shrink-0 pt-4 sm:pt-6 space-y-3">
-                      {isFlipped ? (
-                        <div className="flex flex-col items-center space-y-3">
-                          <span className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
-                            How well did you know this?
-                          </span>
-                          <div className="flex flex-wrap justify-center gap-2">
-                            <button
-                              className="py-2 px-4 sm:py-3 sm:px-6 rounded-xl font-bold text-xs sm:text-sm bg-red-100 hover:bg-red-200 text-red-700 transition-colors"
-                              onClick={() => handleDifficultySelection("hard")}
-                            >
-                              😓 Hard
-                            </button>
-                            <button
-                              className="py-2 px-4 sm:py-3 sm:px-6 rounded-xl font-bold text-xs sm:text-sm bg-yellow-100 hover:bg-yellow-200 text-yellow-700 transition-colors"
-                              onClick={() => handleDifficultySelection("medium")}
-                            >
-                              🤔 Medium
-                            </button>
-                            <button
-                              className="py-2 px-4 sm:py-3 sm:px-6 rounded-xl font-bold text-xs sm:text-sm bg-green-100 hover:bg-green-200 text-green-700 transition-colors"
-                              onClick={() => handleDifficultySelection("easy")}
-                            >
-                              😊 Easy
-                            </button>
-                          </div>
-
-                          <button
-                            onClick={() => {
-                              resetFlip();
-                              handleNextQuestion();
+                          {/* ===== BACK SIDE - Fixed size with scroll ===== */}
+                          <div
+                            className="absolute inset-0 w-full h-full dark:bg-gray-800 bg-white rounded-xl shadow-md flex flex-col overflow-hidden"
+                            style={{
+                              backfaceVisibility: 'hidden',
+                              transform: 'rotateY(180deg)',
                             }}
-                            className="text-xs sm:text-sm text-gray-400 hover:text-gray-600"
                           >
-                            Skip without rating
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="flex justify-center">
-                          <button
-                            onClick={flipCard}
-                            className="px-6 py-2 sm:px-8 sm:py-3 bg-brand-salmon hover:bg-brand-salmon/90 text-white font-bold rounded-xl transition-colors text-sm sm:text-base"
-                          >
-                            Show Answer
-                          </button>
-                        </div>
-                      )}
+                            {/* Header - Fixed */}
+                            <div className="flex-shrink-0 p-4 sm:p-6 border-b border-gray-100 dark:border-gray-700">
+                              <div className="flex items-center space-x-3">
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); playVocabularyAudio(); }}
+                                  className="flex-shrink-0 p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faPlayCircle}
+                                    className="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white"
+                                  />
+                                </button>
+                                <div className="flex-1 min-w-0 text-center">
+                                  <div className="text-lg sm:text-xl md:text-2xl font-bold dark:text-white text-gray-800 truncate">
+                                    {currentQuestion.vocabulary_simplified}
+                                  </div>
+                                  <span className="text-2xl sm:text-3xl md:text-4xl font-bold dark:text-gray-200 text-gray-600 block truncate">
+                                    {currentQuestion.vocabulary_original}
+                                  </span>
+                                  <div className="text-base sm:text-lg md:text-xl dark:text-gray-300 text-gray-600 mt-1 truncate">
+                                    {currentQuestion.vocabulary_english}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
 
-                      {/* Card counter */}
-                      <div className="text-xs sm:text-sm text-gray-400 text-center">
-                        {currentQuestionIndex + 1} / {questions?.length || 0}
+                            {/* Sentences - Scrollable */}
+                            <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6">
+                              <SentenceSection sentences={currentQuestion.sentences} />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* -------------------- Navigation & Difficulty - Fixed bottom ------------------- */}
+                      <div className="flex-shrink-0 pt-4 sm:pt-6 space-y-3">
+                        {isFlipped ? (
+                          <div className="flex flex-col items-center space-y-3">
+                            <span className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
+                              How well did you know this?
+                            </span>
+                            <div className="flex flex-wrap justify-center gap-2">
+                              <button
+                                className="py-2 px-4 sm:py-3 sm:px-6 rounded-xl font-bold text-xs sm:text-sm bg-red-100 hover:bg-red-200 text-red-700 transition-colors"
+                                onClick={() => handleDifficultySelection("hard")}
+                              >
+                                😓 Hard
+                              </button>
+                              <button
+                                className="py-2 px-4 sm:py-3 sm:px-6 rounded-xl font-bold text-xs sm:text-sm bg-yellow-100 hover:bg-yellow-200 text-yellow-700 transition-colors"
+                                onClick={() => handleDifficultySelection("medium")}
+                              >
+                                🤔 Medium
+                              </button>
+                              <button
+                                className="py-2 px-4 sm:py-3 sm:px-6 rounded-xl font-bold text-xs sm:text-sm bg-green-100 hover:bg-green-200 text-green-700 transition-colors"
+                                onClick={() => handleDifficultySelection("easy")}
+                              >
+                                😊 Easy
+                              </button>
+                            </div>
+
+                            <button
+                              onClick={() => {
+                                resetFlip();
+                                handleNextQuestion();
+                              }}
+                              className="text-xs sm:text-sm text-gray-400 hover:text-gray-600"
+                            >
+                              Skip without rating
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="flex justify-center">
+                            <button
+                              onClick={flipCard}
+                              className="px-6 py-2 sm:px-8 sm:py-3 bg-brand-salmon hover:bg-brand-salmon/90 text-white font-bold rounded-xl transition-colors text-sm sm:text-base"
+                            >
+                              Show Answer
+                            </button>
+                          </div>
+                        )}
+
+                        {/* Progress bar with stats */}
+                        <ProgressBar
+                          current={currentQuestionIndex}
+                          total={questions?.length || 0}
+                          reviewed={reviewedCards.size}
+                        />
+
+                        {/* Session stats */}
+                        <div className="flex justify-center">
+                          <SessionStats
+                            reviewed={reviewedCards.size}
+                            easy={sessionStats.easy}
+                            medium={sessionStats.medium}
+                            hard={sessionStats.hard}
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </Dialog.Panel>
               </Transition.Child>
             </div>
