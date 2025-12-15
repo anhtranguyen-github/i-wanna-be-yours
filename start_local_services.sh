@@ -32,18 +32,26 @@ on_error() {
     return 0 # Indicate success
 }
 
-# Check if a port is in use and kill the process using it
-# Usage: check_port_and_kill <port> <service_name>
-check_port_and_kill() {
-    local port="$1"
-    local service="$2"
-    local pid
-
-    pid=$(lsof -t -i:"$port" 2>/dev/null || true)
-    if [ -n "$pid" ]; then
-        log "⚠️  Port $port ($service) is in use by PID $pid. Killing it..."
-        kill -9 "$pid" 2>/dev/null || true
+# Function to check if a port is in use and free it
+check_and_free_port() {
+    local port=$1
+    local name=$2
+    
+    # Find all PIDs using the port (comma separated)
+    local pids=$(lsof -t -i:$port)
+    
+    if [ -n "$pids" ]; then
+        log "⚠️  Port $port ($name) is in use by PID(s) $pids. Killing them..."
+        # Try graceful kill first
+        kill $pids 2>/dev/null
         sleep 1
+        
+        # Check if still alive
+        if lsof -t -i:$port >/dev/null; then
+             log "⚠️  Port $port ($name) still active. Force killing..."
+             kill -9 $(lsof -t -i:$port) 2>/dev/null
+        fi
+        
         log "✅ Port $port freed."
     else
         log "✅ Port $port is free."
@@ -56,23 +64,31 @@ cleanup() {
     log "Initiating cleanup..."
     local stopped_count=0
 
-    # Kill services started in the background
+    # 1. Kill by PIDs (Background Subshells)
     if [ ${#PIDS[@]} -gt 0 ]; then
-        log "Killing ${#PIDS[@]} background processes..."
+        log "Killing ${#PIDS[@]} background subshells..."
         for pid in "${PIDS[@]}"; do
-            log "🛑 Killing background process PID: $pid"
-            kill -9 "$pid" 2>/dev/null || true
-            stopped_count=$((stopped_count + 1))
+            kill -TERM "$pid" 2>/dev/null || true
         done
+        wait 2>/dev/null || true
     fi
     
-    # Kill services by port (fallback)
+    # 2. Kill by Process Names (Robust)
+    log "Ensuring all child processes are dead..."
+    pkill -f "next-server" && log "  🛑 Killed next-server" && stopped_count=$((stopped_count + 1)) || true
+    pkill -f "flask/bin/gunicorn" && log "  🛑 Killed gunicorn" && stopped_count=$((stopped_count + 1)) || true
+    pkill -f "python3 app.py" && log "  🛑 Killed python3 app" && stopped_count=$((stopped_count + 1)) || true
+    # Be careful with 'node' as it might be used by other system things, but for this dev env it's likely ours
+    # We target the specific server scripts to be safer if possible, or fall back to ports
+    pkill -f "express-db/my_server.js" && log "  🛑 Killed express server" || true
+    pkill -f "dictionary-db/main_server.js" && log "  🛑 Killed dictionary server" || true
+
+    # 3. Fallback: Kill by Ports
     log "Checking for leftover services on ports..."
-    # Ports: 3000 (Next), 8000 (Express), 5100 (Flask), 5200 (Dict), 5400 (Hanachan)
     pids=$(lsof -t -i:3000 -i:8000 -i:5100 -i:5200 -i:5400 2>/dev/null || true)
     if [ -n "$pids" ]; then
         for pid in $pids; do
-            log "🛑 Killing leftover process PID: $pid"
+            log "  🛑 Killing leftover process on port PID: $pid"
             kill -9 "$pid" 2>/dev/null || true
             stopped_count=$((stopped_count + 1))
         done
@@ -80,7 +96,7 @@ cleanup() {
         log "✅ No leftover services found on ports."
     fi
     
-    log "Cleanup complete. Stopped $stopped_count services/processes."
+    log "Cleanup complete."
 }
 
 # Full shutdown function
@@ -152,11 +168,11 @@ log "=== Initializing Startup Script ==="
 # 0. Pre-flight Checks: Ports
 # ======================================================================
 log "=== Checking Ports (Parallel) ==="
-check_port_and_kill 8000 "express-db" &
-check_port_and_kill 5100 "flask-dynamic-db" &
-check_port_and_kill 5200 "dictionary-db" &
-check_port_and_kill 5400 "hanachan" &
-check_port_and_kill 3000 "frontend-next" &
+check_and_free_port 3000 "frontend-next" &
+check_and_free_port 5100 "flask-dynamic-db" &
+check_and_free_port 5200 "dictionary-db" &
+check_and_free_port 8000 "express-db" &
+check_and_free_port 5400 "hanachan" &
 wait
 log "✅ All ports checked/freed."
 
