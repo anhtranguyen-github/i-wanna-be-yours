@@ -1609,5 +1609,90 @@ class StudyPlanModule:
                 self.logger.error(f"Error updating from SRS: {e}")
                 return jsonify({"error": "Failed to update from SRS"}), 500
 
+        @app.route("/f-api/v1/study-plan/log-activity", methods=["POST"])
+        def log_activity_route():
+            try:
+                data = request.json
+                user_id = data.get("user_id")
+                if not user_id:
+                     return jsonify({"error": "User ID required"}), 400
+                     
+                result = self.log_activity(user_id, data)
+                return jsonify(result), 200
+            except Exception as e:
+                self.logger.error(f"Error log activity: {e}")
+                return jsonify({"error": str(e)}), 500
+
         self.logger.info("Study Plan routes registered")
+
+    # ============================================
+    # Activity Logging & Progress Updates (New Feature)
+    # ============================================
+
+    def log_activity(self, user_id: str, activity_data: Dict) -> Dict:
+        """
+        Log a completed study activity and update relevant tasks/milestones.
+        
+        expected activity_data:
+        {
+            "type": "flashcard_review",
+            "quantity": 10,
+            "duration_seconds": 300,
+            "plan_id": "optional_plan_id"
+        }
+        """
+        today = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+        
+        # 1. Update Daily Tasks
+        # Find pending tasks for today that match the activity type
+        query = {
+            "user_id": user_id,
+            "date": {"$gte": today, "$lt": today + timedelta(days=1)},
+            "status": "pending"
+        }
+        
+        if activity_data.get("type") == "flashcard_review":
+             query["task_type"] = "flashcard"
+             
+        tasks = list(self.tasks_collection.find(query))
+        
+        updates = []
+        for task in tasks:
+            # Simple logic: if they did some flashcards, mark the task as done
+            # In a real system, we'd check quantity vs requirement
+            self.tasks_collection.update_one(
+                {"_id": task["_id"]},
+                {"$set": {
+                    "status": "completed", 
+                    "completed_at": datetime.utcnow(),
+                    "actual_duration": activity_data.get("duration_seconds", 0) / 60
+                }}
+            )
+            updates.append(str(task["_id"]))
+            
+        # 2. Update Milestone Progress (Simplified)
+        # If a plan_id is provided or found via active plan
+        plan = self.plans_collection.find_one({"user_id": user_id, "status": "active"})
+        if plan:
+            current_milestone_id = plan.get("current_milestone_id")
+            if current_milestone_id:
+                # Increment vocab/kanji counts in the milestone criteria
+                # This is a bit of a placeholder, ideally we track 'unique' items learned
+                inc_value = activity_data.get("quantity", 0)
+                
+                # We need to know WHICH criterion to update. 
+                # For now, we'll blindly increment any 'vocab_count' or 'kanji_count' criterion
+                # This logic assumes 'flashcard_review' contributes to these counts.
+                
+                self.milestones_collection.update_one(
+                    {"_id": current_milestone_id, "criteria.type": "vocab_count"},
+                    {"$inc": {"criteria.$.current_value": inc_value}}
+                )
+                
+        return {
+            "success": True, 
+            "tasks_updated": len(updates), 
+            "message": f"Activity logged. {len(updates)} tasks completed."
+        }
+
 

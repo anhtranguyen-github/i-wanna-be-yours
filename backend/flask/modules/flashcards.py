@@ -1155,7 +1155,11 @@ class FlashcardModule:
                         updated_data = {
                             "$set": {
                                 "difficulty": data.get("difficulty"),
-                                # You can add other fields if needed
+                                # Content Updates
+                                "reading": data.get("reading"),
+                                "translation": data.get("translation"),
+                                "exampleWord": data.get("exampleWord"),
+                                "exampleReading": data.get("exampleReading"),
                             }
                         }
                         mongo_flaskFlashcardDB.db[collection_name].update_one(
@@ -1200,6 +1204,13 @@ class FlashcardModule:
                         updated_data = {
                             "$set": {
                                 "difficulty": data.get("difficulty"),
+                                # Content Updates
+                                "vocabulary_simplified": data.get("vocabulary_simplified"),
+                                "vocabulary_english": data.get("vocabulary_english"),
+                                "vocabulary_audio": data.get("vocabulary_audio"),
+                                # Note: Sentence updates are complex due to list structure, 
+                                # for now facilitating basic field updates.
+                                # "sentences": data.get("sentences") 
                             }
                         }
                         mongo_flaskFlashcardDB.db[collection_name].update_one(

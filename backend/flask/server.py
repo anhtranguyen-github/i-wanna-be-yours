@@ -75,6 +75,10 @@ from modules.study_plan import StudyPlanModule
 study_plan_module = StudyPlanModule()
 study_plan_module.register_routes(app)
 
+from modules.decks import DeckModule
+deck_module = DeckModule()
+deck_module.register_routes(app)
+
 # --------------- End of Class imports ---------------- #
 
 
