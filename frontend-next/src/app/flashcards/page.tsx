@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { useUser } from "@/context/UserContext";
 import {
@@ -11,32 +11,106 @@ import {
     Filter,
     Play,
     Settings,
-    Inbox
+    Inbox,
+    X,
+    Tag as TagIcon
 } from "lucide-react";
-import { getPublicDecks, getPersonalDecks, DeckDefinition } from "./decks-data";
+import {
+    getPublicDecks,
+    getPersonalDecks,
+    DeckDefinition,
+    Tag,
+    ALL_TAGS,
+    getTagsByType,
+    getTagById,
+    searchDecks
+} from "./decks-data";
 import { LoginPromptCard } from "@/components/auth";
+
+// Tag color mapping for visual distinction
+const TAG_COLORS: Record<string, { bg: string; text: string; activeBg: string }> = {
+    // Categories
+    kanji: { bg: 'bg-rose-50', text: 'text-rose-600', activeBg: 'bg-rose-500' },
+    vocabulary: { bg: 'bg-emerald-50', text: 'text-emerald-600', activeBg: 'bg-emerald-500' },
+    grammar: { bg: 'bg-sky-50', text: 'text-sky-600', activeBg: 'bg-sky-500' },
+    personal: { bg: 'bg-violet-50', text: 'text-violet-600', activeBg: 'bg-violet-500' },
+    // Levels
+    n5: { bg: 'bg-green-50', text: 'text-green-600', activeBg: 'bg-green-500' },
+    n4: { bg: 'bg-lime-50', text: 'text-lime-600', activeBg: 'bg-lime-500' },
+    n3: { bg: 'bg-yellow-50', text: 'text-yellow-600', activeBg: 'bg-yellow-500' },
+    n2: { bg: 'bg-orange-50', text: 'text-orange-600', activeBg: 'bg-orange-500' },
+    n1: { bg: 'bg-red-50', text: 'text-red-600', activeBg: 'bg-red-500' },
+    // Skills
+    beginner: { bg: 'bg-teal-50', text: 'text-teal-600', activeBg: 'bg-teal-500' },
+    intermediate: { bg: 'bg-amber-50', text: 'text-amber-600', activeBg: 'bg-amber-500' },
+    advanced: { bg: 'bg-red-50', text: 'text-red-600', activeBg: 'bg-red-500' },
+    // Sources
+    essential: { bg: 'bg-indigo-50', text: 'text-indigo-600', activeBg: 'bg-indigo-500' },
+    'suru-verbs': { bg: 'bg-purple-50', text: 'text-purple-600', activeBg: 'bg-purple-500' },
+    'sentence-mining': { bg: 'bg-pink-50', text: 'text-pink-600', activeBg: 'bg-pink-500' },
+    verbs: { bg: 'bg-cyan-50', text: 'text-cyan-600', activeBg: 'bg-cyan-500' },
+};
+
+const getTagColor = (tagId: string, isActive: boolean) => {
+    const colors = TAG_COLORS[tagId] || { bg: 'bg-slate-50', text: 'text-slate-600', activeBg: 'bg-slate-500' };
+    return isActive
+        ? `${colors.activeBg} text-white`
+        : `${colors.bg} ${colors.text} hover:${colors.activeBg}/20`;
+};
 
 export default function FlashcardsMenu() {
     const { user } = useUser();
     const [activeTab, setActiveTab] = useState<'public' | 'personal'>('public');
     const [searchTerm, setSearchTerm] = useState("");
-    const [filterCategory, setFilterCategory] = useState<string>("all");
+    const [selectedTags, setSelectedTags] = useState<string[]>([]);
+    const [showAllFilters, setShowAllFilters] = useState(false);
 
     // Fetch Data
-    const publicDecks = getPublicDecks(user?.id ? String(user.id) : null);
-    const personalDecks = getPersonalDecks();
+    const publicDecks = useMemo(() => getPublicDecks(user?.id ? String(user.id) : null), [user?.id]);
+    const personalDecks = useMemo(() => getPersonalDecks(), []);
 
     // Determine current list based on tab
     const currentList = activeTab === 'public' ? publicDecks : personalDecks;
 
-    // Filter Logic
-    const filteredDecks = currentList.filter(deck => {
-        const matchesSearch = deck.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            deck.description.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesCategory = filterCategory === 'all' || deck.category === filterCategory;
+    // Get category tags for quick filters
+    const categoryTags = useMemo(() => getTagsByType('category').filter(t => t.id !== 'personal'), []);
+    const levelTags = useMemo(() => getTagsByType('level'), []);
+    const skillTags = useMemo(() => getTagsByType('skill'), []);
+    const sourceTags = useMemo(() => getTagsByType('source'), []);
 
-        return matchesSearch && matchesCategory;
-    });
+    // Filter Logic
+    const filteredDecks = useMemo(() => {
+        let result = currentList;
+
+        // Filter by selected tags (match ANY)
+        if (selectedTags.length > 0) {
+            result = result.filter(deck =>
+                selectedTags.some(tagId => deck.tags.includes(tagId))
+            );
+        }
+
+        // Filter by search
+        if (searchTerm.trim()) {
+            result = searchDecks(result, searchTerm);
+        }
+
+        return result;
+    }, [currentList, selectedTags, searchTerm]);
+
+    // Toggle tag selection
+    const toggleTag = (tagId: string) => {
+        setSelectedTags(prev =>
+            prev.includes(tagId)
+                ? prev.filter(t => t !== tagId)
+                : [...prev, tagId]
+        );
+    };
+
+    // Clear all filters
+    const clearFilters = () => {
+        setSelectedTags([]);
+        setSearchTerm("");
+    };
 
     return (
         <div className="min-h-screen bg-brand-cream text-brand-dark pb-20">
@@ -54,13 +128,13 @@ export default function FlashcardsMenu() {
                         {/* Tabs */}
                         <div className="flex p-1 bg-slate-100 rounded-xl w-full md:w-auto">
                             <button
-                                onClick={() => setActiveTab('public')}
+                                onClick={() => { setActiveTab('public'); clearFilters(); }}
                                 className={`flex-1 md:flex-none px-6 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === 'public' ? 'bg-white shadow-sm text-brand-dark' : 'text-slate-500 hover:text-brand-dark'}`}
                             >
                                 Public Library
                             </button>
                             <button
-                                onClick={() => setActiveTab('personal')}
+                                onClick={() => { setActiveTab('personal'); clearFilters(); }}
                                 className={`flex-1 md:flex-none px-6 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === 'personal' ? 'bg-white shadow-sm text-brand-dark' : 'text-slate-500 hover:text-brand-dark'}`}
                             >
                                 My Collection
@@ -68,37 +142,157 @@ export default function FlashcardsMenu() {
                         </div>
                     </div>
 
-                    {/* Filters & Search */}
-                    <div className="py-4 border-t border-slate-100 flex flex-col md:flex-row gap-4">
-                        <div className="relative flex-1">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
-                            <input
-                                type="text"
-                                placeholder="Search decks..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green transition-all"
-                            />
+                    {/* Search & Filters */}
+                    <div className="py-4 border-t border-slate-100 space-y-4">
+                        {/* Search Bar */}
+                        <div className="flex gap-3">
+                            <div className="relative flex-1">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                                <input
+                                    type="text"
+                                    placeholder="Search by name, description, or tag..."
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green transition-all"
+                                />
+                            </div>
+                            <button
+                                onClick={() => setShowAllFilters(!showAllFilters)}
+                                className={`px-4 py-2.5 rounded-xl border transition-all flex items-center gap-2 ${showAllFilters || selectedTags.length > 0
+                                        ? 'bg-brand-dark text-white border-brand-dark'
+                                        : 'bg-white border-slate-200 text-slate-600 hover:border-brand-dark/30'
+                                    }`}
+                            >
+                                <Filter size={18} />
+                                <span className="hidden sm:inline font-bold text-sm">Filters</span>
+                                {selectedTags.length > 0 && (
+                                    <span className="bg-white/20 text-xs font-bold px-1.5 py-0.5 rounded-full">
+                                        {selectedTags.length}
+                                    </span>
+                                )}
+                            </button>
                         </div>
 
+                        {/* Quick Category Filters (always visible for public) */}
                         {activeTab === 'public' && (
-                            <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 no-scrollbar">
-                                {[
-                                    { id: 'all', label: 'All' },
-                                    { id: 'kanji', label: 'Kanji' },
-                                    { id: 'vocabulary', label: 'Vocabulary' },
-                                    { id: 'grammar', label: 'Grammar' }
-                                ].map(cat => (
-                                    <button
-                                        key={cat.id}
-                                        onClick={() => setFilterCategory(cat.id)}
-                                        className={`px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap border transition-all ${filterCategory === cat.id
+                            <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+                                <button
+                                    onClick={clearFilters}
+                                    className={`px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap border transition-all ${selectedTags.length === 0
                                             ? 'bg-brand-dark text-white border-brand-dark'
-                                            : 'bg-white text-slate-500 border-slate-200 hover:border-brand-dark/30'}`}
+                                            : 'bg-white text-slate-500 border-slate-200 hover:border-brand-dark/30'
+                                        }`}
+                                >
+                                    All
+                                </button>
+                                {categoryTags.map(tag => (
+                                    <button
+                                        key={tag.id}
+                                        onClick={() => toggleTag(tag.id)}
+                                        className={`px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap border transition-all ${selectedTags.includes(tag.id)
+                                                ? getTagColor(tag.id, true) + ' border-transparent'
+                                                : getTagColor(tag.id, false) + ' border-slate-200'
+                                            }`}
                                     >
-                                        {cat.label}
+                                        {tag.label}
                                     </button>
                                 ))}
+                            </div>
+                        )}
+
+                        {/* Expanded Filters Panel */}
+                        {showAllFilters && activeTab === 'public' && (
+                            <div className="bg-slate-50 rounded-xl p-4 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
+                                {/* Active Tags */}
+                                {selectedTags.length > 0 && (
+                                    <div className="flex flex-wrap gap-2 pb-3 border-b border-slate-200">
+                                        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider self-center mr-2">
+                                            Active:
+                                        </span>
+                                        {selectedTags.map(tagId => {
+                                            const tag = getTagById(tagId);
+                                            return tag ? (
+                                                <button
+                                                    key={tagId}
+                                                    onClick={() => toggleTag(tagId)}
+                                                    className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 ${getTagColor(tagId, true)}`}
+                                                >
+                                                    {tag.label}
+                                                    <X size={12} />
+                                                </button>
+                                            ) : null;
+                                        })}
+                                        <button
+                                            onClick={clearFilters}
+                                            className="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-700 hover:bg-slate-200"
+                                        >
+                                            Clear all
+                                        </button>
+                                    </div>
+                                )}
+
+                                {/* Level Tags */}
+                                <div>
+                                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">
+                                        JLPT Level
+                                    </span>
+                                    <div className="flex flex-wrap gap-2">
+                                        {levelTags.map(tag => (
+                                            <button
+                                                key={tag.id}
+                                                onClick={() => toggleTag(tag.id)}
+                                                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${selectedTags.includes(tag.id)
+                                                        ? getTagColor(tag.id, true)
+                                                        : getTagColor(tag.id, false)
+                                                    }`}
+                                            >
+                                                {tag.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Skill Tags */}
+                                <div>
+                                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">
+                                        Skill Level
+                                    </span>
+                                    <div className="flex flex-wrap gap-2">
+                                        {skillTags.map(tag => (
+                                            <button
+                                                key={tag.id}
+                                                onClick={() => toggleTag(tag.id)}
+                                                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${selectedTags.includes(tag.id)
+                                                        ? getTagColor(tag.id, true)
+                                                        : getTagColor(tag.id, false)
+                                                    }`}
+                                            >
+                                                {tag.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Source Tags */}
+                                <div>
+                                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">
+                                        Content Type
+                                    </span>
+                                    <div className="flex flex-wrap gap-2">
+                                        {sourceTags.map(tag => (
+                                            <button
+                                                key={tag.id}
+                                                onClick={() => toggleTag(tag.id)}
+                                                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${selectedTags.includes(tag.id)
+                                                        ? getTagColor(tag.id, true)
+                                                        : getTagColor(tag.id, false)
+                                                    }`}
+                                            >
+                                                {tag.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
                             </div>
                         )}
                     </div>
@@ -119,50 +313,77 @@ export default function FlashcardsMenu() {
                 )}
 
                 {(activeTab === 'public' || (activeTab === 'personal' && user)) && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        {filteredDecks.length > 0 ? (
-                            filteredDecks.map((deck) => (
-                                <DeckCard key={deck.id} deck={deck} />
-                            ))
-                        ) : (
-                            <div className="col-span-full py-12 text-center text-slate-400">
-                                <Filter className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                                <p>No decks found matching your filters.</p>
-                            </div>
-                        )}
-                    </div>
+                    <>
+                        {/* Results count */}
+                        <div className="mb-6 flex items-center justify-between">
+                            <p className="text-sm text-slate-500">
+                                Showing <span className="font-bold text-brand-dark">{filteredDecks.length}</span> decks
+                                {selectedTags.length > 0 && (
+                                    <span> matching your filters</span>
+                                )}
+                            </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                            {filteredDecks.length > 0 ? (
+                                filteredDecks.map((deck) => (
+                                    <DeckCard key={deck.id} deck={deck} onTagClick={toggleTag} selectedTags={selectedTags} />
+                                ))
+                            ) : (
+                                <div className="col-span-full py-12 text-center text-slate-400">
+                                    <Filter className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                                    <p className="mb-4">No decks found matching your filters.</p>
+                                    <button
+                                        onClick={clearFilters}
+                                        className="text-brand-green font-bold hover:underline"
+                                    >
+                                        Clear all filters
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </>
                 )}
             </div>
         </div>
     );
 }
 
-function DeckCard({ deck }: { deck: DeckDefinition }) {
-    // Determine icon based on category or specific ID
+interface DeckCardProps {
+    deck: DeckDefinition;
+    onTagClick: (tagId: string) => void;
+    selectedTags: string[];
+}
+
+function DeckCard({ deck, onTagClick, selectedTags }: DeckCardProps) {
+    // Determine icon based on tags
     let Icon = BookOpen;
     let colorClass = "text-slate-500 bg-slate-100";
 
-    if (deck.category === 'kanji') {
-        Icon = BookOpen; // Specific icon if available
-        colorClass = "text-brand-salmon bg-red-50";
-    } else if (deck.category === 'vocabulary') {
-        Icon = BookOpen;
-        colorClass = "text-brand-green bg-green-50";
-    } else if (deck.category === 'grammar') {
-        Icon = Layers; // Placeholder
-        colorClass = "text-brand-blue bg-blue-50";
-    } else if (deck.category === 'personal') {
+    if (deck.tags.includes('kanji')) {
+        colorClass = "text-rose-500 bg-rose-50";
+    } else if (deck.tags.includes('vocabulary')) {
+        colorClass = "text-emerald-500 bg-emerald-50";
+    } else if (deck.tags.includes('grammar')) {
+        Icon = Layers;
+        colorClass = "text-sky-500 bg-sky-50";
+    } else if (deck.tags.includes('personal')) {
         if (deck.id === 'personal-study') {
             Icon = Play;
-            colorClass = "text-white bg-brand-green shadow-clay-img";
+            colorClass = "text-white bg-brand-green shadow-sm";
         } else if (deck.id === 'personal-inbox') {
             Icon = Inbox;
-            colorClass = "text-brand-peach bg-orange-50";
+            colorClass = "text-orange-500 bg-orange-50";
         } else {
             Icon = Settings;
             colorClass = "text-slate-700 bg-slate-100";
         }
     }
+
+    // Get displayable tags (exclude category tags which are shown via icon)
+    const displayTags = deck.tags
+        .filter(t => !['kanji', 'vocabulary', 'grammar', 'personal'].includes(t))
+        .slice(0, 3); // Limit to 3 tags
 
     return (
         <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md border border-slate-100 transition-all duration-200 flex flex-col h-full group">
@@ -170,10 +391,27 @@ function DeckCard({ deck }: { deck: DeckDefinition }) {
                 <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${colorClass}`}>
                     <Icon size={24} />
                 </div>
-                {deck.level && (
-                    <span className="text-xs font-bold px-2 py-1 rounded-md bg-slate-100 text-slate-500 uppercase tracking-wider">
-                        {deck.level}
-                    </span>
+
+                {/* Tags display */}
+                {displayTags.length > 0 && (
+                    <div className="flex flex-wrap gap-1 justify-end max-w-[60%]">
+                        {displayTags.map(tagId => {
+                            const tag = getTagById(tagId);
+                            const isActive = selectedTags.includes(tagId);
+                            return tag ? (
+                                <button
+                                    key={tagId}
+                                    onClick={(e) => { e.stopPropagation(); onTagClick(tagId); }}
+                                    className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider transition-all ${isActive
+                                            ? getTagColor(tagId, true)
+                                            : getTagColor(tagId, false) + ' hover:scale-105'
+                                        }`}
+                                >
+                                    {tag.label}
+                                </button>
+                            ) : null;
+                        })}
+                    </div>
                 )}
             </div>
 
