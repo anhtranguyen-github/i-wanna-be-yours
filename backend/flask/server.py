@@ -71,6 +71,10 @@ from modules.quiz import QuizModule
 quiz_module = QuizModule()
 quiz_module.register_routes(app)
 
+from modules.study_plan import StudyPlanModule
+study_plan_module = StudyPlanModule()
+study_plan_module.register_routes(app)
+
 # --------------- End of Class imports ---------------- #
 
 
