@@ -10,7 +10,8 @@ import {
     BookOpen,
     LogOut,
     User as UserIcon,
-    GraduationCap
+    GraduationCap,
+    CalendarDays
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
@@ -42,6 +43,7 @@ const Sidebar = () => {
                 <NavItem icon={<Gamepad2 size={24} />} label="Game" href="/game" active={pathname === '/game'} />
                 <NavItem icon={<Library size={24} />} label="Library" href="/library" active={pathname?.startsWith('/library')} />
                 <NavItem icon={<BookOpen size={24} />} label="Knowledge" href="/knowledge-base" active={pathname?.startsWith('/knowledge-base')} />
+                <NavItem icon={<CalendarDays size={24} />} label="Study Plan" href="/study-plan" active={pathname?.startsWith('/study-plan')} />
                 <NavItem icon={<GraduationCap size={24} />} label="Practice" href="/practice" active={pathname?.startsWith('/practice')} />
             </nav>
 
