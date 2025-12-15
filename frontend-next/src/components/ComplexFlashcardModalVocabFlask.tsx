@@ -10,8 +10,11 @@ import {
   faPlayCircle,
   faArrowLeft,
   faArrowRight,
+  faGear,
+  faShuffle,
+  faRotate
 } from "@fortawesome/free-solid-svg-icons";
-import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/solid";
+import { ChevronDownIcon, ChevronUpIcon, XMarkIcon, Cog6ToothIcon } from "@heroicons/react/24/solid";
 import ClosedFlashcard from "@/components/ClosedFlashcard";
 import { ProgressBar, CompletionScreen, SessionStats } from "@/components/flashcards/ProgressTracker";
 
@@ -40,6 +43,10 @@ interface ComplexFlashcardModalProps {
   collectionName: string;
   p_tag: string;
   s_tag: string;
+  deckId?: string;
+  deckTitle?: string;
+  deckDescription?: string;
+  prefetchedData?: Question[];
 }
 
 const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
@@ -47,7 +54,12 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
   collectionName,
   p_tag,
   s_tag,
+  deckId,
+  deckTitle,
+  deckDescription,
+  prefetchedData
 }) => {
+
   const [count, setCount] = useState<number>(0);
   let [isOpen, setIsOpen] = useState(false);
   const [shouldFetchData, setShouldFetchData] = useState(false);
@@ -60,6 +72,15 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
   const [sessionStats, setSessionStats] = useState({ easy: 0, medium: 0, hard: 0 });
   const [reviewedCards, setReviewedCards] = useState<Set<number>>(new Set());
   const [isComplete, setIsComplete] = useState(false);
+
+  // Settings State
+  const [settings, setSettings] = useState({
+    mode: 'learn' as 'basic' | 'learn',
+    shuffle: false,
+    defaultSide: 'front' as 'front' | 'back',
+  });
+  const [showSettings, setShowSettings] = useState(false);
+  const [displayQuestions, setDisplayQuestions] = useState<Question[]>([]);
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -80,7 +101,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
 
   //const { data: questions, error } = useSWR<Question[]>(apiUrl, fetcher);
   const { data: questions, error } = useSWR<Question[]>(
-    shouldFetchData ? apiUrl : null,
+    shouldFetchData && !prefetchedData ? apiUrl : null,
     fetcher,
     {
       revalidateOnFocus: false, // Disable revalidation on window focus
@@ -91,24 +112,62 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
     }
   );
 
+
+
   console.log(questions);
 
-  const currentQuestion = questions?.[currentQuestionIndex];
+  // Handle Questions Update and Shuffling
+  useEffect(() => {
+    const sourceData = prefetchedData || questions;
+
+    if (sourceData) {
+      let q = [...sourceData];
+      if (settings.shuffle) {
+        // Fisher-Yates shuffle
+        for (let i = q.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [q[i], q[j]] = [q[j], q[i]];
+        }
+      }
+      setDisplayQuestions(q);
+      setCurrentQuestionIndex(0); // Reset to start when questions/shuffle changes
+    }
+  }, [questions, prefetchedData, settings.shuffle]);
+
+
+  const currentQuestion = displayQuestions?.[currentQuestionIndex];
 
   console.log("------------------------------------------");
   console.log(currentQuestion);
 
+  /* ----------------- State ------------------ */
   const [isFlipped, setIsFlipped] = useState(false); // State to track card flip
+  const [hasRevealed, setHasRevealed] = useState(false); // Track if answer has been revealed for current card
 
-  // Reset flip state when changing cards
   const flipCard = () => {
+    if (!isFlipped && !hasRevealed) {
+      setHasRevealed(true);
+    }
     setIsFlipped(!isFlipped);
   };
 
-  // Reset flip when moving to next/previous card
   const resetFlip = () => {
-    setIsFlipped(false);
+    setIsFlipped(settings.defaultSide === 'back');
+    setHasRevealed(false);
   };
+
+  // Re-apply default side when setting changes or index changes
+  useEffect(() => {
+    setIsFlipped(settings.defaultSide === 'back');
+    // We do NOT reset hasRevealed here generally, unless index changed.
+    // Actually typically resetFlip is called on index change.
+  }, [settings.defaultSide]);
+
+  // Handle index change explicitly if needed for hasRevealed, but usually done in handlers
+  useEffect(() => {
+    setHasRevealed(false);
+  }, [currentQuestionIndex]);
+
 
   // Function to save flashcard state to the backend
   const saveFlashcardState = async () => {
@@ -145,27 +204,29 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
 
   const handleNextQuestion = () => {
     //if (difficulty && questions) { // Ensure questions is defined
-    if (questions) {
+    if (displayQuestions && displayQuestions.length > 0) {
       // Ensure questions is defined, lets iterate freely without setting difficulty
       // Only save state if difficulty is set
       saveFlashcardState();
+
+      // If basic mode, mark as reviewed when manually stepping
+      if (settings.mode === 'basic') {
+        setReviewedCards(prev => new Set(prev).add(currentQuestionIndex));
+      }
+
       setCurrentQuestionIndex((prevIndex) =>
-        prevIndex === questions.length - 1 ? 0 : prevIndex + 1
+        prevIndex === displayQuestions.length - 1 ? 0 : prevIndex + 1
       );
+      // hasRevealed reset by useEffect on currentQuestionIndex
     }
   };
 
   const handlePreviousQuestion = () => {
-    if (difficulty && questions) {
+    if (displayQuestions && displayQuestions.length > 0) {
       // Only save state if difficulty is set and questions are defined
       saveFlashcardState();
       setCurrentQuestionIndex((prevIndex) =>
-        prevIndex === 0 ? questions.length - 1 : prevIndex - 1
-      );
-    } else if (questions) {
-      // If only questions are defined but no difficulty is set, still allow navigating questions
-      setCurrentQuestionIndex((prevIndex) =>
-        prevIndex === 0 ? questions.length - 1 : prevIndex - 1
+        prevIndex === 0 ? displayQuestions.length - 1 : prevIndex - 1
       );
     }
     // If questions are undefined, this function effectively does nothing,
@@ -202,15 +263,15 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
 
     // Reset flip and move to next card
     resetFlip();
-    if (questions) {
+    if (displayQuestions) {
       const nextIndex = currentQuestionIndex + 1;
 
       // Check if all cards have been reviewed
-      if (reviewedCards.size + 1 >= questions.length) {
+      if (reviewedCards.size + 1 >= displayQuestions.length) {
         setIsComplete(true);
       } else {
         // Find next unreviewed card or loop back
-        setCurrentQuestionIndex(nextIndex >= questions.length ? 0 : nextIndex);
+        setCurrentQuestionIndex(nextIndex >= displayQuestions.length ? 0 : nextIndex);
       }
     }
   };
@@ -265,6 +326,8 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
     resetFlip();
   };
 
+  const toggleSettings = () => setShowSettings(!showSettings);
+
   // ------------------------------------------------------------------------
 
   if (error) return <div>Failed to load</div>;
@@ -304,13 +367,14 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
   if (!isOpen) {
     return (
       <ClosedFlashcard
-        p_tag={p_tag}
-        s_tag={s_tag}
-        badgeText="Vocabulary"
-        badgeColor="bg-orange-100 text-orange-800" // Specify badge color here
-        description="Essential Japanese vocabulary."
+        title={deckTitle || p_tag.replace(/_/g, " ")} // Make title readable
+        subtitle={s_tag}
+        tags={[collectionName === 'words' ? 'vocabulary' : collectionName, 'essential']} // Pass appropriate tags
+        description={deckDescription || "Essential Japanese vocabulary."}
         openModal={openModal}
-        buttonText="Open Flashcard"
+        onMouseEnter={() => setShouldFetchData(true)}
+        buttonText="Start Session"
+        detailLink={deckId ? `/flashcards/details/${deckId}` : `/flashcards/details/${collectionName}/${p_tag}/${s_tag}`} // Generated Link
       />
     );
   }
@@ -330,7 +394,10 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
 
 
 
-  if (!questions || questions.length === 0) return <div>Loading...</div>; // Ensure questions is loaded and has data
+  const isLoading = !displayQuestions || displayQuestions.length === 0;
+
+  if (isLoading && isFetching) return <div>Loading...</div>;
+  if (!isLoading && displayQuestions.length === 0) return <div>No cards found.</div>;
 
   if (!currentQuestion) {
     // Render a loading state or nothing until the data is available
@@ -388,18 +455,92 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                     />
                   ) : (
                     <div className="h-full flex flex-col">
-                      {/* Close button */}
-                      <button
-                        onClick={() => setIsOpen(false)}
-                        className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 z-10"
-                      >
-                        ✕
-                      </button>
+                      {/* Header Controls */}
+                      <div className="flex justify-between items-center mb-4 z-10">
+                        <button
+                          onClick={() => setIsOpen(false)}
+                          className="text-sm font-bold text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+                        >
+                          Close Deck
+                        </button>
+
+                        <div className="flex items-center gap-4">
+                          {/* Settings Button */}
+                          <button
+                            onClick={toggleSettings}
+                            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1"
+                          >
+                            <FontAwesomeIcon icon={faGear} className="w-5 h-5" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Settings Panel */}
+                      {showSettings && (
+                        <div className="absolute top-12 right-4 z-20 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 p-4 animate-in fade-in slide-in-from-top-5">
+                          <h3 className="font-bold text-gray-800 dark:text-gray-200 mb-3 border-b pb-2 dark:border-gray-700">Detailed Settings</h3>
+
+                          <div className="space-y-4">
+                            {/* Mode Toggle */}
+                            <div className="flex flex-col gap-1">
+                              <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Mode</label>
+                              <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+                                <button
+                                  onClick={() => setSettings(s => ({ ...s, mode: 'basic' }))}
+                                  className={`flex-1 text-sm py-1 rounded-md transition-all ${settings.mode === 'basic' ? 'bg-white dark:bg-gray-600 shadow text-brand-salmon' : 'text-gray-500 dark:text-gray-400'}`}
+                                >
+                                  Basic
+                                </button>
+                                <button
+                                  onClick={() => setSettings(s => ({ ...s, mode: 'learn' }))}
+                                  className={`flex-1 text-sm py-1 rounded-md transition-all ${settings.mode === 'learn' ? 'bg-white dark:bg-gray-600 shadow text-brand-salmon' : 'text-gray-500 dark:text-gray-400'}`}
+                                >
+                                  SR
+                                </button>
+                              </div>
+                            </div>
+
+                            {/* Shuffle Toggle */}
+                            <div className="flex items-center justify-between">
+                              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                                <FontAwesomeIcon icon={faShuffle} className="text-gray-400" />
+                                Shuffle
+                              </label>
+                              <button
+                                onClick={() => setSettings(s => ({ ...s, shuffle: !s.shuffle }))}
+                                className={`w-10 h-5 rounded-full relative transition-colors ${settings.shuffle ? 'bg-brand-salmon' : 'bg-gray-300 dark:bg-gray-600'}`}
+                              >
+                                <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${settings.shuffle ? 'left-5.5' : 'left-0.5'}`} style={{ left: settings.shuffle ? '1.35rem' : '0.15rem' }}></div>
+                              </button>
+                            </div>
+
+                            {/* Default Side Toggle */}
+                            <div className="flex flex-col gap-1">
+                              <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Start Side</label>
+                              <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+                                <button
+                                  onClick={() => setSettings(s => ({ ...s, defaultSide: 'front' }))}
+                                  className={`flex-1 text-sm py-1 rounded-md transition-all ${settings.defaultSide === 'front' ? 'bg-white dark:bg-gray-600 shadow text-brand-salmon' : 'text-gray-500 dark:text-gray-400'}`}
+                                >
+                                  Def
+                                </button>
+                                <button
+                                  onClick={() => setSettings(s => ({ ...s, defaultSide: 'back' }))}
+                                  className={`flex-1 text-sm py-1 rounded-md transition-all ${settings.defaultSide === 'back' ? 'bg-white dark:bg-gray-600 shadow text-brand-salmon' : 'text-gray-500 dark:text-gray-400'}`}
+                                >
+                                  Rev
+                                </button>
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+                      )}
 
                       {/* -------------------- Flip Card Container ------------------- */}
                       <div
                         className="flex-1 min-h-0 cursor-pointer"
-                        onClick={!isFlipped ? flipCard : undefined}
+                        onClick={flipCard}
                         style={{ perspective: '1000px' }}
                       >
                         <div
@@ -476,58 +617,87 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                       </div>
 
                       {/* -------------------- Navigation & Difficulty - Fixed bottom ------------------- */}
+                      {/* Navigation & Difficulty */}
                       <div className="flex-shrink-0 pt-4 sm:pt-6 space-y-3">
-                        {isFlipped ? (
+                        {settings.mode === 'basic' ? (
                           <div className="flex flex-col items-center space-y-3">
-                            <span className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
-                              How well did you know this?
-                            </span>
-                            <div className="flex flex-wrap justify-center gap-2">
+                            <div className="flex justify-center gap-4 w-full">
                               <button
-                                className="py-2 px-4 sm:py-3 sm:px-6 rounded-xl font-bold text-xs sm:text-sm bg-red-100 hover:bg-red-200 text-red-700 transition-colors"
-                                onClick={() => handleDifficultySelection("hard")}
+                                onClick={(e) => { e.stopPropagation(); handlePreviousQuestion(); }}
+                                className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
                               >
-                                😓 Hard
+                                <FontAwesomeIcon icon={faArrowLeft} /> Prev
                               </button>
+
+                              {!isFlipped ? (
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); flipCard(); }}
+                                  className="flex-1 px-4 py-2 bg-brand-salmon text-white font-bold rounded-xl shadow-md hover:bg-brand-salmon/90 transition-colors"
+                                >
+                                  Show Answer
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); handleNextQuestion(); }}
+                                  className="flex-1 px-4 py-2 bg-blue-500 text-white font-bold rounded-xl shadow-md hover:bg-blue-600 transition-colors"
+                                >
+                                  Next Card <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
+                                </button>
+                              )}
+
                               <button
-                                className="py-2 px-4 sm:py-3 sm:px-6 rounded-xl font-bold text-xs sm:text-sm bg-yellow-100 hover:bg-yellow-200 text-yellow-700 transition-colors"
-                                onClick={() => handleDifficultySelection("medium")}
+                                onClick={(e) => { e.stopPropagation(); handleNextQuestion(); }}
+                                className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
                               >
-                                🤔 Medium
-                              </button>
-                              <button
-                                className="py-2 px-4 sm:py-3 sm:px-6 rounded-xl font-bold text-xs sm:text-sm bg-green-100 hover:bg-green-200 text-green-700 transition-colors"
-                                onClick={() => handleDifficultySelection("easy")}
-                              >
-                                😊 Easy
+                                <FontAwesomeIcon icon={faArrowRight} />
                               </button>
                             </div>
-
-                            <button
-                              onClick={() => {
-                                resetFlip();
-                                handleNextQuestion();
-                              }}
-                              className="text-xs sm:text-sm text-gray-400 hover:text-gray-600"
-                            >
-                              Skip without rating
-                            </button>
                           </div>
                         ) : (
-                          <div className="flex justify-center">
-                            <button
-                              onClick={flipCard}
-                              className="px-6 py-2 sm:px-8 sm:py-3 bg-brand-salmon hover:bg-brand-salmon/90 text-white font-bold rounded-xl transition-colors text-sm sm:text-base"
-                            >
-                              Show Answer
-                            </button>
-                          </div>
+                          // Learn Mode (SRS)
+                          <>
+                            {hasRevealed ? (
+                              <div className="flex flex-col items-center space-y-3">
+                                <div className="flex flex-wrap justify-center gap-2">
+                                  <button
+                                    className="py-2 px-4 sm:py-3 sm:px-6 rounded-xl font-bold text-xs sm:text-sm bg-red-100 hover:bg-red-200 text-red-700 transition-colors"
+                                    onClick={() => handleDifficultySelection("hard")}
+                                  >
+                                    😓 Hard
+                                  </button>
+                                  <button
+                                    className="py-2 px-4 sm:py-3 sm:px-6 rounded-xl font-bold text-xs sm:text-sm bg-yellow-100 hover:bg-yellow-200 text-yellow-700 transition-colors"
+                                    onClick={() => handleDifficultySelection("medium")}
+                                  >
+                                    🤔 Medium
+                                  </button>
+                                  <button
+                                    className="py-2 px-4 sm:py-3 sm:px-6 rounded-xl font-bold text-xs sm:text-sm bg-green-100 hover:bg-green-200 text-green-700 transition-colors"
+                                    onClick={() => handleDifficultySelection("easy")}
+                                  >
+                                    😊 Easy
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="flex justify-center">
+                                <button
+                                  onClick={flipCard}
+                                  className="px-6 py-2 sm:px-8 sm:py-3 bg-brand-salmon hover:bg-brand-salmon/90 text-white font-bold rounded-xl transition-colors text-sm sm:text-base"
+                                >
+                                  Show Answer
+                                </button>
+                              </div>
+                            )}
+
+                          </>
                         )}
+
 
                         {/* Progress bar with stats */}
                         <ProgressBar
                           current={currentQuestionIndex}
-                          total={questions?.length || 0}
+                          total={displayQuestions?.length || 0}
                           reviewed={reviewedCards.size}
                         />
 

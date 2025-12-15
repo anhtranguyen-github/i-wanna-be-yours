@@ -40,6 +40,7 @@ interface ComplexFlashcardModalProps {
   collectionName: string;
   p_tag: string;
   s_tag: string;
+  deckId?: string;
 }
 
 const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
@@ -47,6 +48,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
   collectionName,
   p_tag,
   s_tag,
+  deckId,
 }) => {
   const [count, setCount] = useState<number>(0);
   let [isOpen, setIsOpen] = useState(false);
@@ -269,13 +271,13 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
   if (!isOpen) {
     return (
       <ClosedFlashcard
-        p_tag={p_tag}
-        s_tag={s_tag}
-        badgeText="Vocabulary"
-        badgeColor="bg-orange-100 text-orange-800" // Specify badge color here
+        title="Sentence Mining"
+        subtitle={s_tag}
+        tags={['vocabulary', 'sentence-mining', 'verbs']} // Derive or hardcode relevant tags
         description="My vocabulary (Sentence Mining)"
         openModal={openModal}
         buttonText="Open Flashcard"
+        detailLink={deckId ? `/flashcards/details/${deckId}` : `/flashcards/details/${collectionName}/${p_tag}/${s_tag}`}
       />
     );
   }

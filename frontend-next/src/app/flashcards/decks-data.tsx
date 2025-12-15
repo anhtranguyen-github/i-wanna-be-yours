@@ -65,7 +65,17 @@ export interface DeckDefinition {
     actionLink?: string;        // Or a link if it's a page navigation
     locked?: boolean;           // If true, requires login
     cardCount?: number;         // Optional: number of cards in deck
+    apiParams?: {               // Metadata for fetching data
+        collection: string;
+        p_tag: string;
+        s_tag: string;
+    };
 }
+
+export const getDeckById = (id: string): DeckDefinition | undefined => {
+    // We pass null for userId as we only need static definition here
+    return getPublicDecks(null).find(d => d.id === id);
+};
 
 // ==================== Deck Generators ====================
 
@@ -79,11 +89,13 @@ export const getPublicDecks = (userId: string | null): DeckDefinition[] => {
         title: 'Sentence Mining: Verbs',
         description: 'Context-based vocabulary learning with real sentences.',
         tags: ['vocabulary', 'sentence-mining', 'verbs', 'intermediate'],
+        apiParams: { collection: 'vocabulary', p_tag: 'sentence_mining', s_tag: 'verbs-1' },
         component: <ComplexFlashcardModalVocabFlaskSentenceMining
             userId={effectiveUserId}
             collectionName="vocabulary"
             p_tag="sentence_mining"
             s_tag="verbs-1"
+            deckId="vocab-sentence-mining"
         />
     });
 
@@ -93,16 +105,23 @@ export const getPublicDecks = (userId: string | null): DeckDefinition[] => {
         "verbs-5", "verbs-6", "verbs-7", "verbs-8"
     ];
     vocabLevels.forEach((part, index) => {
+        const id = `vocab-essential-${part}`;
+        const title = `Essential Verbs Vol. ${index + 1}`;
+        const description = 'Core 600 Essential Japanese Verbs for everyday use.';
         decks.push({
-            id: `vocab-essential-${part}`,
-            title: `Essential Verbs Vol. ${index + 1}`,
-            description: 'Core 600 Essential Japanese Verbs for everyday use.',
+            id: id,
+            title: title,
+            description: description,
             tags: ['vocabulary', 'verbs', 'essential', 'beginner'],
+            apiParams: { collection: 'words', p_tag: 'essential_600_verbs', s_tag: part },
             component: <ComplexFlashcardModalVocabFlask
                 userId={effectiveUserId}
                 collectionName="words"
                 p_tag="essential_600_verbs"
                 s_tag={part}
+                deckId={id}
+                deckTitle={title}
+                deckDescription={description}
             />
         });
     });
@@ -112,16 +131,24 @@ export const getPublicDecks = (userId: string | null): DeckDefinition[] => {
         "verbs-1", "verbs-2", "verbs-3", "verbs-4", "verbs-5", "verbs-6"
     ];
     suruVocabLevels.forEach((part, index) => {
+        const id = `vocab-suru-${part}`;
+        const title = `Suru Verbs Vol. ${index + 1}`;
+        const description = 'Essential する-verbs commonly used in Japanese.';
+
         decks.push({
-            id: `vocab-suru-${part}`,
-            title: `Suru Verbs Vol. ${index + 1}`,
-            description: 'Essential する-verbs commonly used in Japanese.',
+            id: id,
+            title: title,
+            description: description,
             tags: ['vocabulary', 'suru-verbs', 'intermediate'],
+            apiParams: { collection: 'words', p_tag: 'suru_essential_600_verbs', s_tag: part },
             component: <ComplexFlashcardModalVocabFlask
                 userId={effectiveUserId}
                 collectionName="words"
                 p_tag="suru_essential_600_verbs"
                 s_tag={part}
+                deckId={id}
+                deckTitle={title}
+                deckDescription={description}
             />
         });
     });
@@ -134,18 +161,24 @@ export const getPublicDecks = (userId: string | null): DeckDefinition[] => {
         { p_tag: "JLPT_N2", tagId: "n2" },
         { p_tag: "JLPT_N1", tagId: "n1" },
     ];
-    grammarLevels.forEach(({ p_tag, tagId }) => {
-        decks.push({
-            id: `grammar-${tagId}`,
-            title: `Grammar ${tagId.toUpperCase()}`,
-            description: `Complete grammar patterns for JLPT ${tagId.toUpperCase()}.`,
-            tags: ['grammar', tagId],
-            component: <ComplexFlashcardModalGrammarFlask
-                userId={effectiveUserId}
-                collectionName="grammars"
-                p_tag={p_tag}
-                s_tag="all"
-            />
+
+    grammarLevels.forEach((level) => {
+        ['grammar_1', 'grammar_2', 'grammar_3', 'grammar_4', 'grammar_5', 'grammar_6'].forEach((part, index) => {
+            const id = `grammar-${level.tagId}-part${index + 1}`;
+            decks.push({
+                id: id,
+                title: `${level.p_tag.replace('JLPT_', '')} Grammar Part ${index + 1}`,
+                description: `Master ${level.p_tag.replace('JLPT_', '')} grammar points part ${index + 1}.`,
+                tags: ['grammar', level.tagId],
+                apiParams: { collection: 'grammar', p_tag: level.p_tag, s_tag: part },
+                component: <ComplexFlashcardModalGrammarFlask
+                    userId={effectiveUserId}
+                    collectionName="grammar"
+                    p_tag={level.p_tag}
+                    s_tag={part}
+                    deckId={id}
+                />
+            });
         });
     });
 

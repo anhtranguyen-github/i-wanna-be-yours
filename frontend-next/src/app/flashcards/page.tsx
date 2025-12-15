@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { useUser } from "@/context/UserContext";
 import {
@@ -16,7 +16,6 @@ import {
     Tag as TagIcon
 } from "lucide-react";
 import {
-    getPublicDecks,
     getPersonalDecks,
     DeckDefinition,
     Tag,
@@ -26,6 +25,8 @@ import {
     searchDecks
 } from "./decks-data";
 import { LoginPromptCard } from "@/components/auth";
+import { fetchAllDecks } from "@/services/deckService";
+import { Deck } from "@/types/decks";
 
 // Tag color mapping for visual distinction
 const TAG_COLORS: Record<string, { bg: string; text: string; activeBg: string }> = {
@@ -66,7 +67,27 @@ export default function FlashcardsMenu() {
     const [showAllFilters, setShowAllFilters] = useState(false);
 
     // Fetch Data
-    const publicDecks = useMemo(() => getPublicDecks(user?.id ? String(user.id) : null), [user?.id]);
+    const [publicDecks, setPublicDecks] = useState<DeckDefinition[]>([]);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        setLoading(true);
+        fetchAllDecks().then(decks => {
+            const mappedDecks: DeckDefinition[] = decks.map(d => ({
+                id: d._id,
+                title: d.title,
+                description: d.description || "",
+                tags: d.tags,
+                actionLink: `/flashcards/details?id=${d._id}` // Link to detail page
+            }));
+            setPublicDecks(mappedDecks);
+            setLoading(false);
+        }).catch(err => {
+            console.error("Failed to load decks", err);
+            setLoading(false);
+        });
+    }, []);
+
     const personalDecks = useMemo(() => getPersonalDecks(), []);
 
     // Determine current list based on tab
@@ -159,8 +180,8 @@ export default function FlashcardsMenu() {
                             <button
                                 onClick={() => setShowAllFilters(!showAllFilters)}
                                 className={`px-4 py-2.5 rounded-xl border transition-all flex items-center gap-2 ${showAllFilters || selectedTags.length > 0
-                                        ? 'bg-brand-dark text-white border-brand-dark'
-                                        : 'bg-white border-slate-200 text-slate-600 hover:border-brand-dark/30'
+                                    ? 'bg-brand-dark text-white border-brand-dark'
+                                    : 'bg-white border-slate-200 text-slate-600 hover:border-brand-dark/30'
                                     }`}
                             >
                                 <Filter size={18} />
@@ -173,32 +194,7 @@ export default function FlashcardsMenu() {
                             </button>
                         </div>
 
-                        {/* Quick Category Filters (always visible for public) */}
-                        {activeTab === 'public' && (
-                            <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
-                                <button
-                                    onClick={clearFilters}
-                                    className={`px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap border transition-all ${selectedTags.length === 0
-                                            ? 'bg-brand-dark text-white border-brand-dark'
-                                            : 'bg-white text-slate-500 border-slate-200 hover:border-brand-dark/30'
-                                        }`}
-                                >
-                                    All
-                                </button>
-                                {categoryTags.map(tag => (
-                                    <button
-                                        key={tag.id}
-                                        onClick={() => toggleTag(tag.id)}
-                                        className={`px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap border transition-all ${selectedTags.includes(tag.id)
-                                                ? getTagColor(tag.id, true) + ' border-transparent'
-                                                : getTagColor(tag.id, false) + ' border-slate-200'
-                                            }`}
-                                    >
-                                        {tag.label}
-                                    </button>
-                                ))}
-                            </div>
-                        )}
+
 
                         {/* Expanded Filters Panel */}
                         {showAllFilters && activeTab === 'public' && (
@@ -231,6 +227,27 @@ export default function FlashcardsMenu() {
                                     </div>
                                 )}
 
+                                {/* Category Tags (Moved from Quick Filters) */}
+                                <div>
+                                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">
+                                        Category
+                                    </span>
+                                    <div className="flex flex-wrap gap-2">
+                                        {categoryTags.map(tag => (
+                                            <button
+                                                key={tag.id}
+                                                onClick={() => toggleTag(tag.id)}
+                                                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${selectedTags.includes(tag.id)
+                                                    ? getTagColor(tag.id, true)
+                                                    : getTagColor(tag.id, false)
+                                                    }`}
+                                            >
+                                                {tag.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
                                 {/* Level Tags */}
                                 <div>
                                     <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">
@@ -242,8 +259,8 @@ export default function FlashcardsMenu() {
                                                 key={tag.id}
                                                 onClick={() => toggleTag(tag.id)}
                                                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${selectedTags.includes(tag.id)
-                                                        ? getTagColor(tag.id, true)
-                                                        : getTagColor(tag.id, false)
+                                                    ? getTagColor(tag.id, true)
+                                                    : getTagColor(tag.id, false)
                                                     }`}
                                             >
                                                 {tag.label}
@@ -263,8 +280,8 @@ export default function FlashcardsMenu() {
                                                 key={tag.id}
                                                 onClick={() => toggleTag(tag.id)}
                                                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${selectedTags.includes(tag.id)
-                                                        ? getTagColor(tag.id, true)
-                                                        : getTagColor(tag.id, false)
+                                                    ? getTagColor(tag.id, true)
+                                                    : getTagColor(tag.id, false)
                                                     }`}
                                             >
                                                 {tag.label}
@@ -284,8 +301,8 @@ export default function FlashcardsMenu() {
                                                 key={tag.id}
                                                 onClick={() => toggleTag(tag.id)}
                                                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${selectedTags.includes(tag.id)
-                                                        ? getTagColor(tag.id, true)
-                                                        : getTagColor(tag.id, false)
+                                                    ? getTagColor(tag.id, true)
+                                                    : getTagColor(tag.id, false)
                                                     }`}
                                             >
                                                 {tag.label}
@@ -312,7 +329,13 @@ export default function FlashcardsMenu() {
                     </div>
                 )}
 
-                {(activeTab === 'public' || (activeTab === 'personal' && user)) && (
+                {loading && (
+                    <div className="py-12 text-center text-slate-400">
+                        Loading decks...
+                    </div>
+                )}
+
+                {!loading && (activeTab === 'public' || (activeTab === 'personal' && user)) && (
                     <>
                         {/* Results count */}
                         <div className="mb-6 flex items-center justify-between">
@@ -356,80 +379,91 @@ interface DeckCardProps {
 }
 
 function DeckCard({ deck, onTagClick, selectedTags }: DeckCardProps) {
-    // Determine icon based on tags
+    // Determine icon and colors based on type
     let Icon = BookOpen;
-    let colorClass = "text-slate-500 bg-slate-100";
+    // Default to 'brand-green' theme equivalent
+    let iconBg = "bg-emerald-100 text-emerald-600";
+    let buttonClass = "bg-emerald-500 hover:bg-emerald-600 text-white shadow-md shadow-emerald-200";
 
     if (deck.tags.includes('kanji')) {
-        colorClass = "text-rose-500 bg-rose-50";
-    } else if (deck.tags.includes('vocabulary')) {
-        colorClass = "text-emerald-500 bg-emerald-50";
+        iconBg = "bg-rose-100 text-rose-600";
+        buttonClass = "bg-rose-500 hover:bg-rose-600 text-white shadow-md shadow-rose-200";
     } else if (deck.tags.includes('grammar')) {
         Icon = Layers;
-        colorClass = "text-sky-500 bg-sky-50";
+        iconBg = "bg-sky-100 text-sky-600";
+        buttonClass = "bg-sky-500 hover:bg-sky-600 text-white shadow-md shadow-sky-200";
     } else if (deck.tags.includes('personal')) {
-        if (deck.id === 'personal-study') {
-            Icon = Play;
-            colorClass = "text-white bg-brand-green shadow-sm";
-        } else if (deck.id === 'personal-inbox') {
-            Icon = Inbox;
-            colorClass = "text-orange-500 bg-orange-50";
-        } else {
-            Icon = Settings;
-            colorClass = "text-slate-700 bg-slate-100";
-        }
+        Icon = UserIcon;
+        if (deck.id === 'personal-study') Icon = Play;
+        if (deck.id === 'personal-inbox') Icon = Inbox;
+
+        iconBg = "bg-violet-100 text-violet-600";
+        buttonClass = "bg-violet-500 hover:bg-violet-600 text-white shadow-md shadow-violet-200";
     }
 
-    // Get displayable tags (exclude category tags which are shown via icon)
+    // Filter tags for the footer row (exclude structural tags)
     const displayTags = deck.tags
         .filter(t => !['kanji', 'vocabulary', 'grammar', 'personal'].includes(t))
-        .slice(0, 3); // Limit to 3 tags
+        .slice(0, 4);
 
     return (
-        <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md border border-slate-100 transition-all duration-200 flex flex-col h-full group">
-            <div className="flex items-start justify-between mb-4">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${colorClass}`}>
-                    <Icon size={24} />
+        <div className="bg-white rounded-2xl p-0 shadow-sm hover:shadow-xl border border-slate-100 transition-all duration-300 flex flex-col h-full group overflow-hidden relative">
+
+            {/* 1. Header Section */}
+            <div className="p-6 pb-2">
+                <div className="flex justify-between items-start mb-4">
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${iconBg} mb-2`}>
+                        <Icon size={24} />
+                    </div>
                 </div>
 
-                {/* Tags display */}
-                {displayTags.length > 0 && (
-                    <div className="flex flex-wrap gap-1 justify-end max-w-[60%]">
-                        {displayTags.map(tagId => {
-                            const tag = getTagById(tagId);
-                            const isActive = selectedTags.includes(tagId);
-                            return tag ? (
-                                <button
-                                    key={tagId}
-                                    onClick={(e) => { e.stopPropagation(); onTagClick(tagId); }}
-                                    className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider transition-all ${isActive
-                                            ? getTagColor(tagId, true)
-                                            : getTagColor(tagId, false) + ' hover:scale-105'
-                                        }`}
-                                >
-                                    {tag.label}
-                                </button>
-                            ) : null;
-                        })}
-                    </div>
-                )}
+                <h3 className="text-xl font-bold text-slate-800 mb-2 leading-tight">
+                    {deck.title}
+                </h3>
             </div>
 
-            <h3 className="text-lg font-bold text-brand-dark mb-2 group-hover:text-brand-green transition-colors line-clamp-2">
-                {deck.title}
-            </h3>
-            <p className="text-sm text-slate-500 mb-6 flex-grow line-clamp-3">
-                {deck.description}
-            </p>
+            {/* 2. Body Section */}
+            <div className="px-6 flex-grow flex flex-col">
+                <p className="text-sm text-slate-500 leading-relaxed mb-6 line-clamp-3">
+                    {deck.description}
+                </p>
 
-            <div className="mt-auto">
+                {/* Metadata / Tags */}
+                <div className="mt-auto pt-4 border-t border-slate-50 mb-6">
+                    <div className="flex flex-wrap gap-2">
+                        {/* Always show category tag first if present */}
+                        {deck.tags.includes('vocabulary') && <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">Vocabulary</span>}
+                        {deck.tags.includes('kanji') && <span className="text-xs font-semibold text-rose-600 bg-rose-50 px-2 py-1 rounded-md">Kanji</span>}
+
+                        {displayTags.map(tagId => {
+                            const tag = getTagById(tagId);
+                            if (!tag) return null;
+                            return (
+                                <span key={tagId} className="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded-md">
+                                    {tag.label}
+                                </span>
+                            );
+                        })}
+                    </div>
+                </div>
+            </div>
+
+            {/* 3. Action Section */}
+            <div className="p-4 bg-slate-50/50 mt-auto">
                 {deck.actionLink ? (
-                    <Link
-                        href={deck.actionLink}
-                        className="block w-full text-center py-2.5 rounded-xl font-bold text-sm bg-slate-50 hover:bg-slate-100 text-brand-dark transition-colors"
-                    >
-                        Open Deck
-                    </Link>
+                    <div className="space-y-3">
+                        <Link
+                            href={deck.actionLink}
+                            className={`block w-full text-center py-3.5 rounded-xl font-bold text-sm tracking-wide transition-all transform active:scale-95 ${buttonClass}`}
+                        >
+                            OPEN FLASHCARD
+                        </Link>
+                        <div className="flex justify-center gap-4 text-xs font-medium text-slate-400">
+                            <button className="hover:text-slate-600 transition-colors">View Details</button>
+                            <span>·</span>
+                            <button className="hover:text-slate-600 transition-colors">Edit Settings</button>
+                        </div>
+                    </div>
                 ) : (
                     <div className="w-full">
                         {deck.component}

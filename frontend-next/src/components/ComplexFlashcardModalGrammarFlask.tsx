@@ -41,6 +41,7 @@ interface GrammarFlashcardModalProps {
   collectionName: string; // likely "grammars"
   p_tag: string;
   s_tag: string;
+  deckId?: string;
 }
 
 /* -------------------------------------------------------------------
@@ -51,6 +52,7 @@ const GrammarFlashcardModal: FC<GrammarFlashcardModalProps> = ({
   collectionName,
   p_tag,
   s_tag,
+  deckId,
 }) => {
   /* ----------------- State & Refs ------------------ */
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -182,13 +184,13 @@ const GrammarFlashcardModal: FC<GrammarFlashcardModalProps> = ({
   if (!isOpen) {
     return (
       <ClosedFlashcard
-        p_tag={p_tag}
-        s_tag={s_tag}
-        badgeText="Grammar"
-        badgeColor="bg-blue-100 text-blue-800" // Specify badge color here
+        title={p_tag.replace('JLPT_', '') + ' Grammar'}
+        subtitle={s_tag}
+        tags={['grammar', p_tag.toLowerCase().replace('jlpt_', '')]}
         description="Explore essential Japanese grammar interactively."
         openModal={openModal}
         buttonText="Open Flashcard"
+        detailLink={deckId ? `/flashcards/details/${deckId}` : `/flashcards/details/${collectionName}/${p_tag}/${s_tag}`}
       />
     );
   }
