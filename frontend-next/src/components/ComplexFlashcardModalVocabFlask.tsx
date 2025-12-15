@@ -338,154 +338,153 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                 leaveFrom="opacity-100 translate-y-0 scale-100"
                 leaveTo="opacity-0 translate-y-4 scale-95"
               >
+                {/* Fixed-size modal with responsive breakpoints */}
                 <Dialog.Panel
-                  className="bg-blue-100 relative transform w-11/12 h-5/6 overflow-hidden rounded-lg bg-white p-8 text-left shadow-xl transition-all text-gray-900 dark:bg-gray-800 dark:text-white z-50"
+                  className="relative transform w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl h-[85vh] max-h-[700px] overflow-hidden rounded-2xl bg-gray-50 dark:bg-gray-900 p-4 sm:p-6 text-left shadow-xl transition-all z-50"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <div className="bg-gray-100 dark:bg-gray-900 flex flex-col items-center py-6 space-y-6 z-50">
+                  <div className="h-full flex flex-col">
+                    {/* Close button */}
+                    <button
+                      onClick={() => setIsOpen(false)}
+                      className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 z-10"
+                    >
+                      ✕
+                    </button>
+
                     {/* -------------------- Flip Card Container ------------------- */}
                     <div
-                      className="perspective-1000 w-full max-w-2xl cursor-pointer"
+                      className="flex-1 min-h-0 cursor-pointer"
                       onClick={!isFlipped ? flipCard : undefined}
                       style={{ perspective: '1000px' }}
                     >
                       <div
-                        className={`relative w-full transition-transform duration-500 transform-style-preserve-3d ${isFlipped ? 'rotate-y-180' : ''
-                          }`}
+                        className="relative w-full h-full transition-transform duration-500"
                         style={{
                           transformStyle: 'preserve-3d',
                           transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
-                          minHeight: '300px'
                         }}
                       >
-                        {/* ===== FRONT SIDE ===== */}
+                        {/* ===== FRONT SIDE - Fixed size ===== */}
                         <div
-                          className="absolute w-full backface-hidden dark:bg-gray-800 bg-white rounded-lg shadow-md p-8 flex flex-col items-center justify-center"
-                          style={{
-                            backfaceVisibility: 'hidden',
-                            minHeight: '300px'
-                          }}
+                          className="absolute inset-0 w-full h-full dark:bg-gray-800 bg-white rounded-xl shadow-md flex flex-col items-center justify-center p-4 sm:p-6"
+                          style={{ backfaceVisibility: 'hidden' }}
                         >
-                          <div className="text-center">
-                            <div className="text-sm text-gray-400 uppercase tracking-wider mb-4">
+                          <div className="text-center max-w-full">
+                            <div className="text-xs sm:text-sm text-gray-400 uppercase tracking-wider mb-3 sm:mb-4">
                               Tap to reveal answer
                             </div>
-                            <span className="text-7xl font-bold dark:text-gray-200 text-gray-700 block mb-4">
+                            <span className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold dark:text-gray-200 text-gray-700 block mb-3 sm:mb-4 truncate max-w-full px-2">
                               {currentQuestion.vocabulary_original}
                             </span>
                             <button
                               onClick={(e) => { e.stopPropagation(); playVocabularyAudio(); }}
-                              className="mt-4 p-3 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                              className="mt-2 sm:mt-4 p-2 sm:p-3 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                             >
                               <FontAwesomeIcon
                                 icon={faPlayCircle}
-                                className="w-6 h-6 text-gray-600 dark:text-white"
+                                className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600 dark:text-white"
                               />
                             </button>
                           </div>
                         </div>
 
-                        {/* ===== BACK SIDE ===== */}
+                        {/* ===== BACK SIDE - Fixed size with scroll ===== */}
                         <div
-                          className="absolute w-full backface-hidden dark:bg-gray-800 bg-white rounded-lg shadow-md p-8 flex flex-col"
+                          className="absolute inset-0 w-full h-full dark:bg-gray-800 bg-white rounded-xl shadow-md flex flex-col overflow-hidden"
                           style={{
                             backfaceVisibility: 'hidden',
                             transform: 'rotateY(180deg)',
-                            minHeight: '300px'
                           }}
                         >
-                          {/* Vocabulary Section */}
-                          <div className="mb-6">
-                            <div className="flex justify-start items-center space-x-4 w-full">
+                          {/* Header - Fixed */}
+                          <div className="flex-shrink-0 p-4 sm:p-6 border-b border-gray-100 dark:border-gray-700">
+                            <div className="flex items-center space-x-3">
                               <button
                                 onClick={(e) => { e.stopPropagation(); playVocabularyAudio(); }}
-                                className="flex-shrink-0"
+                                className="flex-shrink-0 p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
                               >
                                 <FontAwesomeIcon
                                   icon={faPlayCircle}
-                                  className="w-8 h-8 text-gray-800 dark:text-white"
+                                  className="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white"
                                 />
                               </button>
-                              <div className="flex-grow text-center">
-                                <div className="text-2xl font-bold dark:text-white text-gray-800">
+                              <div className="flex-1 min-w-0 text-center">
+                                <div className="text-lg sm:text-xl md:text-2xl font-bold dark:text-white text-gray-800 truncate">
                                   {currentQuestion.vocabulary_simplified}
                                 </div>
-                                <span className="text-5xl font-bold dark:text-gray-200 text-gray-600 block">
+                                <span className="text-2xl sm:text-3xl md:text-4xl font-bold dark:text-gray-200 text-gray-600 block truncate">
                                   {currentQuestion.vocabulary_original}
                                 </span>
-                                <div className="text-xl dark:text-gray-300 text-gray-600 mt-2">
+                                <div className="text-base sm:text-lg md:text-xl dark:text-gray-300 text-gray-600 mt-1 truncate">
                                   {currentQuestion.vocabulary_english}
                                 </div>
                               </div>
                             </div>
                           </div>
 
-                          {/* Sentences Section */}
-                          <SentenceSection sentences={currentQuestion.sentences} />
+                          {/* Sentences - Scrollable */}
+                          <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6">
+                            <SentenceSection sentences={currentQuestion.sentences} />
+                          </div>
                         </div>
                       </div>
                     </div>
 
-                    {/* -------------------- Navigation & Difficulty ------------------- */}
-                    {isFlipped ? (
-                      // Show difficulty buttons only after flip
-                      <div className="flex flex-col items-center space-y-4">
-                        <span className="text-sm font-semibold text-gray-700">
-                          How well did you know this?
-                        </span>
-                        <div className="flex space-x-3">
+                    {/* -------------------- Navigation & Difficulty - Fixed bottom ------------------- */}
+                    <div className="flex-shrink-0 pt-4 sm:pt-6 space-y-3">
+                      {isFlipped ? (
+                        <div className="flex flex-col items-center space-y-3">
+                          <span className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            How well did you know this?
+                          </span>
+                          <div className="flex flex-wrap justify-center gap-2">
+                            <button
+                              className="py-2 px-4 sm:py-3 sm:px-6 rounded-xl font-bold text-xs sm:text-sm bg-red-100 hover:bg-red-200 text-red-700 transition-colors"
+                              onClick={() => handleDifficultySelection("hard")}
+                            >
+                              😓 Hard
+                            </button>
+                            <button
+                              className="py-2 px-4 sm:py-3 sm:px-6 rounded-xl font-bold text-xs sm:text-sm bg-yellow-100 hover:bg-yellow-200 text-yellow-700 transition-colors"
+                              onClick={() => handleDifficultySelection("medium")}
+                            >
+                              🤔 Medium
+                            </button>
+                            <button
+                              className="py-2 px-4 sm:py-3 sm:px-6 rounded-xl font-bold text-xs sm:text-sm bg-green-100 hover:bg-green-200 text-green-700 transition-colors"
+                              onClick={() => handleDifficultySelection("easy")}
+                            >
+                              😊 Easy
+                            </button>
+                          </div>
+
                           <button
-                            className="py-3 px-6 rounded-xl font-bold text-sm bg-red-100 hover:bg-red-200 text-red-700 transition-colors"
-                            onClick={() => handleDifficultySelection("hard")}
+                            onClick={() => {
+                              resetFlip();
+                              handleNextQuestion();
+                            }}
+                            className="text-xs sm:text-sm text-gray-400 hover:text-gray-600"
                           >
-                            😓 Hard
-                          </button>
-                          <button
-                            className="py-3 px-6 rounded-xl font-bold text-sm bg-yellow-100 hover:bg-yellow-200 text-yellow-700 transition-colors"
-                            onClick={() => handleDifficultySelection("medium")}
-                          >
-                            🤔 Medium
-                          </button>
-                          <button
-                            className="py-3 px-6 rounded-xl font-bold text-sm bg-green-100 hover:bg-green-200 text-green-700 transition-colors"
-                            onClick={() => handleDifficultySelection("easy")}
-                          >
-                            😊 Easy
+                            Skip without rating
                           </button>
                         </div>
+                      ) : (
+                        <div className="flex justify-center">
+                          <button
+                            onClick={flipCard}
+                            className="px-6 py-2 sm:px-8 sm:py-3 bg-brand-salmon hover:bg-brand-salmon/90 text-white font-bold rounded-xl transition-colors text-sm sm:text-base"
+                          >
+                            Show Answer
+                          </button>
+                        </div>
+                      )}
 
-                        {/* Skip button */}
-                        <button
-                          onClick={() => {
-                            resetFlip();
-                            handleNextQuestion();
-                          }}
-                          className="text-sm text-gray-400 hover:text-gray-600 mt-2"
-                        >
-                          Skip without rating
-                        </button>
+                      {/* Card counter */}
+                      <div className="text-xs sm:text-sm text-gray-400 text-center">
+                        {currentQuestionIndex + 1} / {questions?.length || 0}
                       </div>
-                    ) : (
-                      // Show "Show Answer" button before flip
-                      <button
-                        onClick={flipCard}
-                        className="px-8 py-3 bg-brand-salmon hover:bg-brand-salmon/90 text-white font-bold rounded-xl transition-colors"
-                      >
-                        Show Answer
-                      </button>
-                    )}
-
-                    {/* Card counter */}
-                    <div className="text-sm text-gray-400">
-                      {currentQuestionIndex + 1} / {questions?.length || 0}
                     </div>
-
-                    <button
-                      onClick={() => setIsOpen(false)}
-                      className="w-full max-w-xs justify-center rounded-md bg-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-300 focus:outline-none"
-                    >
-                      Close
-                    </button>
                   </div>
                 </Dialog.Panel>
               </Transition.Child>

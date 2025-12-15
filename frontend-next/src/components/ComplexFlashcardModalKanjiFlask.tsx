@@ -320,110 +320,121 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                 leaveFrom="opacity-100 translate-y-0 scale-100"
                 leaveTo="opacity-0 translate-y-4 scale-95"
               >
+                {/* Fixed-size modal with responsive breakpoints */}
                 <Dialog.Panel
-                  className="bg-blue-100 relative transform w-11/12 h-5/6 overflow-hidden rounded-lg bg-white p-8 text-left shadow-xl transition-all text-gray-900 dark:bg-gray-800 dark:text-white z-50"
+                  className="relative transform w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl h-[85vh] max-h-[700px] overflow-hidden rounded-2xl bg-gray-50 dark:bg-gray-900 p-4 sm:p-6 text-left shadow-xl transition-all z-50"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <div className="bg-gray-100 dark:bg-gray-900 flex flex-col items-center py-6 space-y-6 z-50">
+                  <div className="h-full flex flex-col">
+                    {/* Close button */}
+                    <button
+                      onClick={() => setIsOpen(false)}
+                      className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 z-10"
+                    >
+                      ✕
+                    </button>
+
                     {/* -------------------- Flip Card Container ------------------- */}
                     <div
-                      className="perspective-1000 w-full max-w-2xl cursor-pointer"
+                      className="flex-1 min-h-0 cursor-pointer"
                       onClick={!isFlipped ? flipCard : undefined}
                       style={{ perspective: '1000px' }}
                     >
                       <div
-                        className="relative w-full transition-transform duration-500"
+                        className="relative w-full h-full transition-transform duration-500"
                         style={{
                           transformStyle: 'preserve-3d',
                           transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
-                          minHeight: '350px'
                         }}
                       >
-                        {/* ===== FRONT SIDE - Just Kanji ===== */}
+                        {/* ===== FRONT SIDE - Fixed size ===== */}
                         <div
-                          className="absolute w-full dark:bg-gray-800 bg-white rounded-lg shadow-md p-8 flex flex-col items-center justify-center"
-                          style={{
-                            backfaceVisibility: 'hidden',
-                            minHeight: '350px'
-                          }}
+                          className="absolute inset-0 w-full h-full dark:bg-gray-800 bg-white rounded-xl shadow-md flex flex-col items-center justify-center p-4 sm:p-6"
+                          style={{ backfaceVisibility: 'hidden' }}
                         >
                           <div className="text-center">
-                            <div className="text-sm text-gray-400 uppercase tracking-wider mb-6">
+                            <div className="text-xs sm:text-sm text-gray-400 uppercase tracking-wider mb-4 sm:mb-6">
                               Tap to reveal answer
                             </div>
-                            <span className="text-9xl font-bold dark:text-gray-200 text-gray-700 block font-noto-sans-jp">
+                            <span className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold dark:text-gray-200 text-gray-700 block font-noto-sans-jp">
                               {currentQuestion.kanji}
                             </span>
                             <button
                               onClick={(e) => { e.stopPropagation(); playKanjiAudio(); }}
-                              className="mt-6 p-3 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                              className="mt-4 sm:mt-6 p-2 sm:p-3 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                             >
                               <FontAwesomeIcon
                                 icon={faPlayCircle}
-                                className="w-6 h-6 text-gray-600 dark:text-white"
+                                className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600 dark:text-white"
                               />
                             </button>
                           </div>
                         </div>
 
-                        {/* ===== BACK SIDE - Full Details ===== */}
+                        {/* ===== BACK SIDE - Fixed size with scroll ===== */}
                         <div
-                          className="absolute w-full dark:bg-gray-800 bg-white rounded-lg shadow-md p-8 flex"
+                          className="absolute inset-0 w-full h-full dark:bg-gray-800 bg-white rounded-xl shadow-md flex flex-col overflow-hidden"
                           style={{
                             backfaceVisibility: 'hidden',
                             transform: 'rotateY(180deg)',
-                            minHeight: '350px'
                           }}
                         >
-                          <div className="flex-1 flex justify-center items-center">
-                            <span className="text-8xl font-bold dark:text-gray-200 text-gray-600 font-noto-sans-jp">
-                              {currentQuestion.kanji}
-                            </span>
-                          </div>
-
-                          <div className="flex-1 text-center space-y-4">
-                            <div className="space-y-2">
-                              <div className="text-3xl font-bold flex items-center justify-center space-x-2">
-                                <span className="dark:text-white text-gray-800">
+                          {/* Content - Scrollable */}
+                          <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6">
+                            <div className="flex flex-col sm:flex-row gap-4">
+                              {/* Large Kanji */}
+                              <div className="flex justify-center items-center sm:flex-1">
+                                <span className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold dark:text-gray-200 text-gray-600 font-noto-sans-jp">
                                   {currentQuestion.kanji}
                                 </span>
-                                <button
-                                  onClick={(e) => { e.stopPropagation(); playKanjiAudio(); }}
-                                  className="focus:outline-none dark:text-gray-300 text-gray-500 hover:dark:text-gray-200 hover:text-gray-600"
-                                >
-                                  <FontAwesomeIcon icon={faPlayCircle} size="xs" />
-                                </button>
                               </div>
-                              <div className="text-xl dark:text-gray-300 text-gray-600">
-                                {currentQuestion.reading}
-                              </div>
-                            </div>
 
-                            <div className="border-t border-b border-gray-300 py-4 space-y-3">
-                              <div className="text-sm font-semibold dark:text-gray-200 text-gray-700">
-                                Example:
-                              </div>
-                              <div className="text-lg flex items-center justify-center space-x-2">
-                                <span className="text-xl dark:text-white text-gray-800">
-                                  {currentQuestion.exampleWord}
-                                </span>
-                                <button
-                                  onClick={(e) => { e.stopPropagation(); handlePlayAudio(); }}
-                                  className="focus:outline-none dark:text-gray-300 text-gray-500"
-                                >
-                                  <FontAwesomeIcon icon={faPlayCircle} size="sm" />
-                                </button>
-                              </div>
-                              <audio
-                                ref={audioRef}
-                                src={currentQuestion.audio}
-                                preload="auto"
-                              ></audio>
-                              <div className="text-sm dark:text-gray-200 text-gray-700">
-                                {currentQuestion.exampleReading}
-                              </div>
-                              <div className="text-base italic dark:text-gray-400 text-gray-600">
-                                {currentQuestion.translation}
+                              {/* Details */}
+                              <div className="sm:flex-1 text-center space-y-3 sm:space-y-4">
+                                <div className="space-y-1 sm:space-y-2">
+                                  <div className="text-xl sm:text-2xl md:text-3xl font-bold flex items-center justify-center gap-2">
+                                    <span className="dark:text-white text-gray-800 truncate">
+                                      {currentQuestion.kanji}
+                                    </span>
+                                    <button
+                                      onClick={(e) => { e.stopPropagation(); playKanjiAudio(); }}
+                                      className="flex-shrink-0 focus:outline-none dark:text-gray-300 text-gray-500"
+                                    >
+                                      <FontAwesomeIcon icon={faPlayCircle} size="xs" />
+                                    </button>
+                                  </div>
+                                  <div className="text-base sm:text-lg md:text-xl dark:text-gray-300 text-gray-600 truncate">
+                                    {currentQuestion.reading}
+                                  </div>
+                                </div>
+
+                                <div className="border-t border-b border-gray-200 dark:border-gray-700 py-3 sm:py-4 space-y-2 sm:space-y-3">
+                                  <div className="text-xs sm:text-sm font-semibold dark:text-gray-200 text-gray-700">
+                                    Example:
+                                  </div>
+                                  <div className="text-sm sm:text-lg flex items-center justify-center gap-2">
+                                    <span className="text-base sm:text-xl dark:text-white text-gray-800 truncate">
+                                      {currentQuestion.exampleWord}
+                                    </span>
+                                    <button
+                                      onClick={(e) => { e.stopPropagation(); handlePlayAudio(); }}
+                                      className="flex-shrink-0 focus:outline-none dark:text-gray-300 text-gray-500"
+                                    >
+                                      <FontAwesomeIcon icon={faPlayCircle} size="sm" />
+                                    </button>
+                                  </div>
+                                  <audio
+                                    ref={audioRef}
+                                    src={currentQuestion.audio}
+                                    preload="auto"
+                                  ></audio>
+                                  <div className="text-xs sm:text-sm dark:text-gray-200 text-gray-700 truncate">
+                                    {currentQuestion.exampleReading}
+                                  </div>
+                                  <div className="text-sm sm:text-base italic dark:text-gray-400 text-gray-600 line-clamp-2">
+                                    {currentQuestion.translation}
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -431,62 +442,60 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                       </div>
                     </div>
 
-                    {/* -------------------- Navigation & Difficulty ------------------- */}
-                    {isFlipped ? (
-                      <div className="flex flex-col items-center space-y-4">
-                        <span className="text-sm font-semibold text-gray-700">
-                          How well did you know this?
-                        </span>
-                        <div className="flex space-x-3">
+                    {/* -------------------- Navigation & Difficulty - Fixed bottom ------------------- */}
+                    <div className="flex-shrink-0 pt-4 sm:pt-6 space-y-3">
+                      {isFlipped ? (
+                        <div className="flex flex-col items-center space-y-3">
+                          <span className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            How well did you know this?
+                          </span>
+                          <div className="flex flex-wrap justify-center gap-2">
+                            <button
+                              className="py-2 px-4 sm:py-3 sm:px-6 rounded-xl font-bold text-xs sm:text-sm bg-red-100 hover:bg-red-200 text-red-700 transition-colors"
+                              onClick={() => handleDifficultySelection("hard")}
+                            >
+                              😓 Hard
+                            </button>
+                            <button
+                              className="py-2 px-4 sm:py-3 sm:px-6 rounded-xl font-bold text-xs sm:text-sm bg-yellow-100 hover:bg-yellow-200 text-yellow-700 transition-colors"
+                              onClick={() => handleDifficultySelection("medium")}
+                            >
+                              🤔 Medium
+                            </button>
+                            <button
+                              className="py-2 px-4 sm:py-3 sm:px-6 rounded-xl font-bold text-xs sm:text-sm bg-green-100 hover:bg-green-200 text-green-700 transition-colors"
+                              onClick={() => handleDifficultySelection("easy")}
+                            >
+                              😊 Easy
+                            </button>
+                          </div>
+
                           <button
-                            className="py-3 px-6 rounded-xl font-bold text-sm bg-red-100 hover:bg-red-200 text-red-700 transition-colors"
-                            onClick={() => handleDifficultySelection("hard")}
+                            onClick={() => {
+                              resetFlip();
+                              handleNextQuestion();
+                            }}
+                            className="text-xs sm:text-sm text-gray-400 hover:text-gray-600"
                           >
-                            😓 Hard
-                          </button>
-                          <button
-                            className="py-3 px-6 rounded-xl font-bold text-sm bg-yellow-100 hover:bg-yellow-200 text-yellow-700 transition-colors"
-                            onClick={() => handleDifficultySelection("medium")}
-                          >
-                            🤔 Medium
-                          </button>
-                          <button
-                            className="py-3 px-6 rounded-xl font-bold text-sm bg-green-100 hover:bg-green-200 text-green-700 transition-colors"
-                            onClick={() => handleDifficultySelection("easy")}
-                          >
-                            😊 Easy
+                            Skip without rating
                           </button>
                         </div>
+                      ) : (
+                        <div className="flex justify-center">
+                          <button
+                            onClick={flipCard}
+                            className="px-6 py-2 sm:px-8 sm:py-3 bg-brand-salmon hover:bg-brand-salmon/90 text-white font-bold rounded-xl transition-colors text-sm sm:text-base"
+                          >
+                            Show Answer
+                          </button>
+                        </div>
+                      )}
 
-                        <button
-                          onClick={() => {
-                            resetFlip();
-                            handleNextQuestion();
-                          }}
-                          className="text-sm text-gray-400 hover:text-gray-600 mt-2"
-                        >
-                          Skip without rating
-                        </button>
+                      {/* Card counter */}
+                      <div className="text-xs sm:text-sm text-gray-400 text-center">
+                        {currentQuestionIndex + 1} / {questions?.length || 0}
                       </div>
-                    ) : (
-                      <button
-                        onClick={flipCard}
-                        className="px-8 py-3 bg-brand-salmon hover:bg-brand-salmon/90 text-white font-bold rounded-xl transition-colors"
-                      >
-                        Show Answer
-                      </button>
-                    )}
-
-                    <div className="text-sm text-gray-400">
-                      {currentQuestionIndex + 1} / {questions?.length || 0}
                     </div>
-
-                    <button
-                      onClick={() => setIsOpen(false)}
-                      className="w-full max-w-xs justify-center rounded-md bg-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-300 focus:outline-none"
-                    >
-                      Close
-                    </button>
                   </div>
                 </Dialog.Panel>
               </Transition.Child>
