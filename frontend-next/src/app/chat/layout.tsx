@@ -1,11 +1,13 @@
-// Chat routes use their own layout without the main sidebar
+// Chat layout - uses main app layout sidebar
+// This just ensures chat pages fill the available space
+
 export default function ChatLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
     return (
-        <div className="fixed inset-0 z-50">
+        <div className="h-[calc(100vh)] w-full">
             {children}
         </div>
     );

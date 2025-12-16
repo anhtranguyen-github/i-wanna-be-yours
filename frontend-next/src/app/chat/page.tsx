@@ -1,23 +1,53 @@
-import dynamic from 'next/dynamic';
+"use client";
 
-// Dynamically import ChatScreen with no SSR to avoid window errors
-const ChatScreen = dynamic(
-    () => import('@/components/chat').then(mod => mod.ChatScreen),
-    {
-        ssr: false,
-        loading: () => (
-            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-                <div className="flex flex-col items-center gap-3">
-                    <div className="w-12 h-12 bg-brand-green rounded-2xl flex items-center justify-center text-2xl animate-pulse">
-                        🌸
-                    </div>
-                    <p className="text-sm text-slate-400">Loading Hanachan...</p>
-                </div>
-            </div>
-        )
-    }
+import React from 'react';
+import dynamic from 'next/dynamic';
+import { ChatLayoutProvider } from '@/components/chat/ChatLayoutContext';
+
+// Dynamically import components with no SSR
+const ChatMainArea = dynamic(
+    () => import('@/components/chat/ChatMainArea').then(mod => mod.ChatMainArea),
+    { ssr: false }
+);
+
+const ChatRightSidebar = dynamic(
+    () => import('@/components/chat/ChatRightSidebar').then(mod => mod.ChatRightSidebar),
+    { ssr: false }
 );
 
 export default function ChatPage() {
-    return <ChatScreen />;
+    return (
+        <ChatLayoutProvider>
+            <div className="flex flex-1 h-full">
+                {/* Main Chat Area */}
+                <main className="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-white">
+                    <ChatMainArea />
+                </main>
+
+                {/* Right Sidebar */}
+                <ChatRightSidebarWrapper />
+            </div>
+        </ChatLayoutProvider>
+    );
+}
+
+function ChatRightSidebarWrapper() {
+    // Import the hook dynamically to avoid SSR issues
+    const { useChatLayout } = require('@/components/chat/ChatLayoutContext');
+    const { rightSidebar } = useChatLayout();
+
+    const SIDEBAR_WIDTHS = {
+        collapsed: 40,
+        minimized: 280,
+        expanded: 440,
+    };
+
+    return (
+        <aside
+            className="flex-shrink-0 h-full bg-white border-l border-slate-100 transition-all duration-300 ease-out"
+            style={{ width: SIDEBAR_WIDTHS[rightSidebar] }}
+        >
+            <ChatRightSidebar />
+        </aside>
+    );
 }
