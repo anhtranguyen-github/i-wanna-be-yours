@@ -8,7 +8,7 @@ import { Inter } from "next/font/google";
 // import Sidebar from "@/components/Sidebar";
 // import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
-import Footer from "@/components/Footer";
+// import Footer from "@/components/Footer"; // Removed - no longer using footer
 import CookieConsent from "@/components/CookieConsent";
 
 import Script from "next/script";
@@ -69,7 +69,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <div className="flex-1 ml-32 flex flex-col min-h-screen transition-all duration-300">
               <div className="flex-1 overflow-auto">
                 {children}
-                <Footer />
               </div>
             </div>
           </div>

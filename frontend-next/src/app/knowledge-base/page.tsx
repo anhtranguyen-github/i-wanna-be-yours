@@ -59,7 +59,7 @@ const routes = [
 export default function KnowledgeBasePage() {
     return (
         <div className="container mx-auto py-12 px-4 max-w-7xl">
-            <h1 className="text-4xl font-display font-extrabold text-brand-dark mb-12 text-center text-shadow-clay">
+            <h1 className="text-4xl font-display font-extrabold text-brand-dark mb-12 text-center">
                 Knowledge <span className="text-brand-indigo">Base</span>
             </h1>
 
@@ -67,7 +67,7 @@ export default function KnowledgeBasePage() {
                 <input
                     type="text"
                     placeholder="Search for grammar, kanji, or topics..."
-                    className="w-full pl-12 pr-4 py-4 rounded-full border-2 border-brand-indigo/20 shadow-clay-inner focus:outline-none focus:border-brand-indigo focus:ring-4 focus:ring-brand-indigo/10 transition-all font-medium text-brand-dark"
+                    className="w-full pl-12 pr-4 py-4 rounded-full border-2 border-brand-indigo/20 focus:outline-none focus:border-brand-indigo focus:ring-4 focus:ring-brand-indigo/10 transition-all font-medium text-brand-dark"
                 />
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
             </div>
@@ -76,7 +76,7 @@ export default function KnowledgeBasePage() {
                 {routes.map((route) => (
                     <Link key={route.href} href={route.href} className="group">
                         <div className="clay-card h-full hover:-translate-y-2 transition-transform cursor-pointer flex flex-col items-center text-center p-8 bg-white relative overflow-hidden">
-                            <div className={`mb-6 p-5 rounded-2xl shadow-inner ${route.color} bg-opacity-20 group-hover:bg-opacity-30 transition-all`}>
+                            <div className={`mb-6 p-5 rounded-2xl ${route.color} bg-opacity-20 group-hover:bg-opacity-30 transition-all`}>
                                 {route.icon}
                             </div>
                             <h2 className="text-2xl font-display font-bold text-brand-dark mb-3">{route.title}</h2>

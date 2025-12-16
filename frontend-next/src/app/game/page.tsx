@@ -35,11 +35,11 @@ const routes = [
 export default function GamePage() {
     return (
         <div className="container mx-auto py-12 px-4 max-w-7xl">
-            <h1 className="text-4xl font-display font-extrabold text-brand-dark mb-12 text-center text-shadow-clay">
+            <h1 className="text-4xl font-display font-extrabold text-brand-dark mb-12 text-center">
                 Game <span className="text-brand-orange">Center</span>
             </h1>
 
-            <div className="bg-white rounded-clay p-8 mb-12 shadow-clay-sm flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="bg-white rounded-2xl p-8 mb-12 border border-slate-100 flex flex-col md:flex-row items-center justify-between gap-6">
                 <div>
                     <h2 className="text-2xl font-bold font-display text-brand-dark mb-2">Daily Challenge</h2>
                     <p className="text-gray-500">Complete today's mini-game to keep your streak alive!</p>
@@ -54,7 +54,7 @@ export default function GamePage() {
                 {routes.map((route) => (
                     <Link key={route.href} href={route.href} className="group">
                         <div className="clay-card h-full hover:-translate-y-2 transition-transform cursor-pointer flex flex-col items-center text-center p-8 bg-white relative overflow-hidden">
-                            <div className={`mb-6 p-5 rounded-2xl shadow-inner ${route.color} bg-opacity-20 group-hover:bg-opacity-30 transition-all`}>
+                            <div className={`mb-6 p-5 rounded-2xl ${route.color} bg-opacity-20 group-hover:bg-opacity-30 transition-all`}>
                                 {route.icon}
                             </div>
                             <h2 className="text-2xl font-display font-bold text-brand-dark mb-3">{route.title}</h2>

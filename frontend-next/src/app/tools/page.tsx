@@ -67,14 +67,14 @@ const routes = [
 export default function ToolsPage() {
     return (
         <div className="container mx-auto py-12 px-4 max-w-7xl">
-            <h1 className="text-4xl font-display font-extrabold text-white mb-12 text-center text-shadow-clay">
+            <h1 className="text-4xl font-display font-extrabold text-brand-dark mb-12 text-center">
                 Tools <span className="text-brand-green">Kit</span>
             </h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {routes.map((route) => (
                     <Link key={route.href} href={route.href} className="group">
                         <div className="clay-card h-full hover:-translate-y-2 transition-transform cursor-pointer flex flex-col items-center text-center p-8 bg-white relative overflow-hidden">
-                            <div className={`mb-6 p-5 rounded-2xl shadow-inner ${route.color} bg-opacity-20 group-hover:bg-opacity-30 transition-all`}>
+                            <div className={`mb-6 p-5 rounded-2xl ${route.color} bg-opacity-20 group-hover:bg-opacity-30 transition-all`}>
                                 {route.icon}
                             </div>
                             <h2 className="text-2xl font-display font-bold text-brand-dark mb-3">{route.title}</h2>
