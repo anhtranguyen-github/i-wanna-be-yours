@@ -1,4 +1,4 @@
-import { Conversation, Message, Resource } from "@/types/aiTutorTypes";
+import { Conversation, Message, Resource, Artifact } from "@/types/aiTutorTypes";
 import Cookies from 'js-cookie';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -211,7 +211,8 @@ class AITutorService {
     // --- Chat API (Backend) ---
 
     // Modified to accept conversationId and sessionId, and simulate streaming
-    async streamChat(query: string, thinking: boolean = false, conversationId?: string, sessionId?: string): Promise<ReadableStreamDefaultReader<Uint8Array>> {
+    // Returns artifacts alongside the stream reader
+    async streamChat(query: string, thinking: boolean = false, conversationId?: string, sessionId?: string): Promise<{ reader: ReadableStreamDefaultReader<Uint8Array>; artifacts: Artifact[] }> {
         const user = await this.getCurrentUser();
         if (!user) throw new Error("User not logged in");
         if (!sessionId) throw new Error("Session ID missing");
@@ -233,10 +234,18 @@ class AITutorService {
 
         const data = await response.json();
         // data matches AgentResponse Pydantic model
-        // responses: Array of { type: 'text', content: '...' }
-        // We only care about the text content for the stream simulation for now.
+        // responses: Array of { type: 'text' | 'flashcard' | 'quiz' | etc, content: '...' }
 
         const textContent = data.responses.find((r: any) => r.type === 'text')?.content || "No response content.";
+
+        // Extract artifacts from responses
+        const artifacts: Artifact[] = data.responses
+            .filter((r: any) => r.type !== 'text')
+            .map((r: any) => ({
+                type: r.type,
+                title: r.content?.title || r.type,
+                data: r.content?.flashcards || r.content?.quiz || r.content?.vocabulary || r.content,
+            }));
 
         // Simulate streaming
         const stream = new ReadableStream({
@@ -249,7 +258,7 @@ class AITutorService {
             }
         });
 
-        return stream.getReader();
+        return { reader: stream.getReader(), artifacts };
     }
 }
 

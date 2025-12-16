@@ -1,7 +1,8 @@
 import React, { useRef, useEffect } from 'react';
-import { Conversation, Message, Resource } from '@/types/aiTutorTypes';
+import { Conversation, Message, Resource, Artifact } from '@/types/aiTutorTypes';
 import { Brain, Menu, MessageSquare, Paperclip, Send, X, FileText, Link as LinkIcon, StickyNote } from 'lucide-react';
 import { AIResponseDisplay } from "@/components/AIResponseDisplay";
+import { ArtifactRenderer } from "@/components/ai-tutor/ArtifactRenderer";
 
 interface ChatAreaProps {
     // State
@@ -115,7 +116,7 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
                     </div>
                 ) : (
                     messages.map((msg, idx) => (
-                        <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                        <div key={idx} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
                             <div className={`max-w-[85%] rounded-2xl p-5 relative shadow-sm border-2 ${msg.role === 'user'
                                 ? 'bg-white border-brand-dark text-brand-dark rounded-br-none'
                                 : 'bg-brand-cream border-brand-dark/20 text-brand-dark dark:bg-gray-800 dark:text-gray-200 rounded-bl-none'
@@ -128,6 +129,19 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
                                     )}
                                 </div>
                             </div>
+
+                            {/* Render Artifacts for AI Messages */}
+                            {msg.role === 'ai' && msg.artifacts && msg.artifacts.length > 0 && (
+                                <div className="mt-3 space-y-3 max-w-[85%] w-full">
+                                    {msg.artifacts.map((artifact, artIdx) => (
+                                        <ArtifactRenderer
+                                            key={artIdx}
+                                            artifact={artifact}
+                                            onSave={(a) => console.log('Save artifact:', a)}
+                                        />
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     ))
                 )}

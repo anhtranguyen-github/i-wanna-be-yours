@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Conversation, Message, Resource } from "@/types/aiTutorTypes";
+import { Conversation, Message, Resource, Artifact } from "@/types/aiTutorTypes";
 import { aiTutorService } from "@/services/aiTutorService";
 
 // Components
@@ -204,13 +204,13 @@ export default function AITutor() {
   const streamResponse = async (convoId: string, query: string, sessionId?: string) => {
     try {
       setIsStreaming(true);
-      const reader = await aiTutorService.streamChat(query, isThinking, convoId, sessionId);
+      const { reader, artifacts } = await aiTutorService.streamChat(query, isThinking, convoId, sessionId);
 
       let aiText = "";
       const aiMsgId = (Date.now() + 1).toString();
 
       // Add placeholder AI message
-      const aiMsg: Message = { id: aiMsgId, role: 'ai', text: "" };
+      const aiMsg: Message = { id: aiMsgId, role: 'ai', text: "", artifacts: [] };
       setMessages(prev => [...prev, aiMsg]);
 
       const decoder = new TextDecoder();
@@ -225,10 +225,15 @@ export default function AITutor() {
         ));
       }
 
+      // Attach artifacts to the AI message
+      setMessages(prev => prev.map(m =>
+        m.id === aiMsgId ? { ...m, text: aiText, artifacts } : m
+      ));
+
       // We DO NOT save AI message explicitly here, backend does it.
 
       // Update conversations state with final AI message for list view
-      const finalAiMsg: Message = { ...aiMsg, text: aiText }; // Update text
+      const finalAiMsg: Message = { ...aiMsg, text: aiText, artifacts };
       setConversations(prev => prev.map(c =>
         c._id === convoId
           ? { ...c, messages: [...(c.messages || []), finalAiMsg], updated_at: Date.now() }
