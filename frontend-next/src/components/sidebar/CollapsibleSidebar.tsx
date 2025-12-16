@@ -129,7 +129,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
             <div className="flex-1 flex flex-col min-h-0 overflow-hidden border-t border-slate-100">
                 
                 {/* --- CHAT HISTORY SECTION --- */}
-                <div className={`flex flex-col transition-all duration-300 ${isHistoryOpen ? 'flex-[3]' : 'flex-none'}`}>
+                <div className={`flex flex-col transition-all duration-300 min-h-0 ${isHistoryOpen ? 'flex-[3]' : 'flex-none'}`}>
                     {/* Header / Toggle */}
                     {isExpanded && (
                         <button 
@@ -188,7 +188,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                 <div className="border-t border-slate-100 flex-shrink-0" />
 
                 {/* --- RESOURCES SECTION --- */}
-                <div className={`flex flex-col transition-all duration-300 ${isResourcesOpen ? 'flex-[2]' : 'flex-none'}`}>
+                <div className={`flex flex-col transition-all duration-300 min-h-0 ${isResourcesOpen ? 'flex-[2]' : 'flex-none'}`}>
                    {/* Header / Toggle */}
                    {isExpanded && (
                         <button 
