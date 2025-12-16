@@ -24,10 +24,19 @@ def create_app(test_config=None):
     from routes.conversation import bp as conversation_bp
     from routes.task import bp as task_bp
     from routes.suggestion import bp as suggestion_bp
+    from routes.artifacts import bp as artifacts_bp
     app.register_blueprint(resource_bp)
     app.register_blueprint(conversation_bp)
     app.register_blueprint(task_bp)
     app.register_blueprint(suggestion_bp)
+    app.register_blueprint(artifacts_bp)
+    
+    # Initialize MongoDB indexes for artifacts
+    try:
+        from database.mongo import init_mongo_indexes
+        init_mongo_indexes()
+    except Exception as e:
+        print(f"⚠️ MongoDB index init skipped: {e}")
     
     @app.route('/health')
     def health():
