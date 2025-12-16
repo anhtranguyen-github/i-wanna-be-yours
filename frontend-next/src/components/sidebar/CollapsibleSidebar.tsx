@@ -14,13 +14,14 @@ import {
     User,
     HelpCircle,
     Moon,
-    LogOut
+    LogOut,
+    FileText
 } from 'lucide-react';
 
 // Width constants
 const SIDEBAR_WIDTHS = {
-    collapsed: 64,
-    expanded: 280,
+    collapsed: 70,
+    expanded: 300,
 } as const;
 
 // Mock chat history data
@@ -36,6 +37,14 @@ const mockResources = [
     { id: 'r1', title: 'N3 Vocabulary List', type: 'flashcard' },
     { id: 'r2', title: 'Grammar Notes', type: 'document' },
     { id: 'r3', title: 'Kanji Study Set', type: 'flashcard' },
+];
+
+// Utility icons configuration
+const utilityIcons = [
+    { icon: Settings, label: 'Settings', href: '/settings', action: 'link' },
+    { icon: HelpCircle, label: 'Help', href: '/help', action: 'link' },
+    { icon: Moon, label: 'Dark Mode', href: '#', action: 'toggle' },
+    { icon: User, label: 'Profile', href: '/user-dashboard', action: 'link' },
 ];
 
 interface CollapsibleSidebarProps {
@@ -69,8 +78,8 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
             className={`fixed left-0 top-0 bottom-0 z-40 flex flex-col bg-white border-r border-slate-200 transition-all duration-300 ease-out ${className}`}
             style={{ width }}
         >
-            {/* ===== HEADER SECTION ===== */}
-            <div className="flex items-center justify-between p-3 border-b border-slate-100">
+            {/* ===== HEADER / TOGGLE ===== */}
+            <div className="flex-shrink-0 flex items-center justify-between p-3 border-b border-slate-100">
                 {isExpanded ? (
                     <>
                         <div className="flex items-center gap-2">
@@ -97,11 +106,11 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
             </div>
 
             {/* ===== NEW CHAT BUTTON ===== */}
-            <div className="p-3">
+            <div className="flex-shrink-0 p-3">
                 {isExpanded ? (
                     <Link
                         href="/chat"
-                        className="flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-brand-green text-white font-semibold rounded-xl hover:bg-brand-green/90 transition-colors"
+                        className="flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-brand-green text-white font-semibold rounded-xl hover:bg-brand-green/90 transition-all duration-200 shadow-sm hover:shadow-md"
                     >
                         <Plus size={18} />
                         New Chat
@@ -109,7 +118,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                 ) : (
                     <Link
                         href="/chat"
-                        className="flex items-center justify-center w-full py-2.5 bg-brand-green text-white rounded-xl hover:bg-brand-green/90 transition-colors"
+                        className="flex items-center justify-center w-full py-2.5 bg-brand-green text-white rounded-xl hover:bg-brand-green/90 transition-all duration-200"
                         title="New Chat"
                     >
                         <Plus size={18} />
@@ -117,9 +126,9 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                 )}
             </div>
 
-            {/* ===== CHAT SEARCH & LIST ===== */}
+            {/* ===== CHAT SEARCH (Expanded Only) ===== */}
             {isExpanded && (
-                <div className="px-3 pb-3">
+                <div className="flex-shrink-0 px-3 pb-3">
                     <div className="relative">
                         <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                         <input
@@ -127,26 +136,27 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                             placeholder="Search chats..."
                             value={chatSearch}
                             onChange={(e) => setChatSearch(e.target.value)}
-                            className="w-full pl-9 pr-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-brand-green focus:ring-1 focus:ring-brand-green/20"
+                            className="w-full pl-9 pr-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 transition-all"
                         />
                     </div>
                 </div>
             )}
 
-            {/* Chat List */}
-            <div className={`flex-1 overflow-y-auto ${isExpanded ? 'px-2' : 'px-1'}`}>
+            {/* ===== CHAT HISTORY LIST ===== */}
+            <div className={`flex-1 overflow-y-auto min-h-0 ${isExpanded ? 'px-2' : 'px-1'}`}>
                 {isExpanded ? (
                     <div className="space-y-1">
                         {filteredChats.map(chat => (
                             <Link
                                 key={chat.id}
                                 href={`/chat/${chat.id}`}
-                                className="block p-2.5 rounded-lg hover:bg-slate-50 transition-colors group"
+                                className={`block p-2.5 rounded-lg hover:bg-slate-50 transition-colors group ${pathname === `/chat/${chat.id}` ? 'bg-brand-green/10 border-l-2 border-brand-green' : ''
+                                    }`}
                             >
                                 <p className="text-sm font-medium text-slate-700 truncate group-hover:text-brand-dark">
                                     {chat.title}
                                 </p>
-                                <p className="text-xs text-slate-400">{chat.date}</p>
+                                <p className="text-xs text-slate-400 mt-0.5">{chat.date}</p>
                             </Link>
                         ))}
                     </div>
@@ -154,7 +164,8 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     <div className="flex flex-col items-center py-2 space-y-2">
                         <Link
                             href="/chat"
-                            className="p-2 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-brand-green transition-colors"
+                            className={`p-2.5 rounded-lg hover:bg-slate-100 transition-colors ${pathname?.startsWith('/chat') ? 'bg-brand-green/10 text-brand-green' : 'text-slate-500 hover:text-brand-green'
+                                }`}
                             title="Chats"
                         >
                             <MessageCircle size={20} />
@@ -164,30 +175,33 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
             </div>
 
             {/* ===== RESOURCES SECTION ===== */}
-            <div className="border-t border-slate-100">
+            <div className="flex-shrink-0 border-t border-slate-100">
                 {isExpanded ? (
                     <div className="p-3">
-                        <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                        <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                            <FolderOpen size={12} />
                             Resources
                         </h3>
+                        {/* Resources Search */}
                         <div className="relative mb-2">
-                            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                            <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
                             <input
                                 type="text"
                                 placeholder="Search resources..."
                                 value={resourceSearch}
                                 onChange={(e) => setResourceSearch(e.target.value)}
-                                className="w-full pl-8 pr-3 py-1.5 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-brand-green focus:ring-1 focus:ring-brand-green/20"
+                                className="w-full pl-8 pr-3 py-1.5 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 transition-all"
                             />
                         </div>
-                        <div className="space-y-1 max-h-32 overflow-y-auto">
+                        {/* Resources List */}
+                        <div className="space-y-1 max-h-28 overflow-y-auto">
                             {filteredResources.map(resource => (
                                 <Link
                                     key={resource.id}
                                     href={`/library/${resource.id}`}
                                     className="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-50 transition-colors text-sm text-slate-600 hover:text-brand-dark"
                                 >
-                                    <FolderOpen size={14} />
+                                    <FileText size={14} className="flex-shrink-0 text-slate-400" />
                                     <span className="truncate">{resource.title}</span>
                                 </Link>
                             ))}
@@ -197,7 +211,8 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     <div className="flex flex-col items-center py-3">
                         <Link
                             href="/library"
-                            className="p-2 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-brand-green transition-colors"
+                            className={`p-2.5 rounded-lg hover:bg-slate-100 transition-colors ${pathname?.startsWith('/library') ? 'bg-brand-green/10 text-brand-green' : 'text-slate-500 hover:text-brand-green'
+                                }`}
                             title="Resources"
                         >
                             <FolderOpen size={20} />
@@ -207,60 +222,49 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
             </div>
 
             {/* ===== FOOTER / UTILITY ICONS ===== */}
-            <div className="border-t border-slate-100 p-2">
+            {/* IMPORTANT: Layout shifts from HORIZONTAL (expanded) to VERTICAL (collapsed) */}
+            <div className="flex-shrink-0 border-t border-slate-100 p-2 bg-slate-50/50">
                 {isExpanded ? (
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1">
-                            <button
-                                className="p-2 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-700 transition-colors"
-                                title="Settings"
-                            >
-                                <Settings size={18} />
-                            </button>
-                            <button
-                                className="p-2 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-700 transition-colors"
-                                title="Help"
-                            >
-                                <HelpCircle size={18} />
-                            </button>
-                            <button
-                                className="p-2 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-700 transition-colors"
-                                title="Toggle Dark Mode"
-                            >
-                                <Moon size={18} />
-                            </button>
-                        </div>
-                        <div className="flex items-center gap-1">
+                    /* ===== EXPANDED: Horizontal Row (flex-row, justify-between) ===== */
+                    <div className="flex items-center justify-between gap-1 animate-fadeIn">
+                        {utilityIcons.map((item, idx) => (
                             <Link
-                                href="/user-dashboard"
-                                className="p-2 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-700 transition-colors"
-                                title="Profile"
+                                key={idx}
+                                href={item.href}
+                                className="flex-1 flex items-center justify-center p-2.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-700 transition-all duration-200 group"
+                                title={item.label}
                             >
-                                <User size={18} />
+                                <item.icon size={18} className="group-hover:scale-110 transition-transform" />
                             </Link>
-                            <button
-                                className="p-2 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-red-500 transition-colors"
-                                title="Logout"
-                            >
-                                <LogOut size={18} />
-                            </button>
-                        </div>
+                        ))}
+                        {/* Logout - separate styling */}
+                        <button
+                            className="flex-1 flex items-center justify-center p-2.5 rounded-lg hover:bg-red-50 text-slate-500 hover:text-red-500 transition-all duration-200 group"
+                            title="Logout"
+                        >
+                            <LogOut size={18} className="group-hover:scale-110 transition-transform" />
+                        </button>
                     </div>
                 ) : (
-                    <div className="flex flex-col items-center gap-1">
+                    /* ===== COLLAPSED: Vertical Stack (flex-col, items-center) ===== */
+                    <div className="flex flex-col items-center gap-1 animate-fadeIn">
+                        {utilityIcons.map((item, idx) => (
+                            <Link
+                                key={idx}
+                                href={item.href}
+                                className="p-2.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-700 transition-all duration-200 group"
+                                title={item.label}
+                            >
+                                <item.icon size={18} className="group-hover:scale-110 transition-transform" />
+                            </Link>
+                        ))}
+                        {/* Logout */}
                         <button
-                            className="p-2 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-700 transition-colors"
-                            title="Settings"
+                            className="p-2.5 rounded-lg hover:bg-red-50 text-slate-500 hover:text-red-500 transition-all duration-200 group"
+                            title="Logout"
                         >
-                            <Settings size={18} />
+                            <LogOut size={18} className="group-hover:scale-110 transition-transform" />
                         </button>
-                        <Link
-                            href="/user-dashboard"
-                            className="p-2 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-700 transition-colors"
-                            title="Profile"
-                        >
-                            <User size={18} />
-                        </Link>
                     </div>
                 )}
             </div>
