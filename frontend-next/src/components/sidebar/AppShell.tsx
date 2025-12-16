@@ -1,14 +1,52 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { SidebarProvider, SIDEBAR_WIDTHS } from './SidebarContext';
 import { UnifiedSidebar } from './UnifiedSidebar';
+import { HybridLandingModal } from '../modal/HybridLandingModal';
 
 interface AppShellProps {
     children: React.ReactNode;
 }
 
+// Routes where modal should NOT appear
+const EXCLUDED_ROUTES = ['/', '/login', '/signup', '/pricing', '/checkout'];
+
 export function AppShell({ children }: AppShellProps) {
+    const pathname = usePathname();
+    const [showModal, setShowModal] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+        
+        // Check if we should show modal (not on excluded routes)
+        const shouldShow = !EXCLUDED_ROUTES.some(route => 
+            pathname === route || pathname?.startsWith(route + '/')
+        );
+        
+        // Small delay for better UX
+        if (shouldShow) {
+            const timer = setTimeout(() => {
+                setShowModal(true);
+            }, 300);
+            return () => clearTimeout(timer);
+        }
+    }, []);
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+    };
+
+    // Check if current route is landing page (no sidebar)
+    const isLandingPage = pathname === '/';
+
+    if (isLandingPage) {
+        // Landing page gets no sidebar, no modal
+        return <>{children}</>;
+    }
+
     return (
         <SidebarProvider>
             <div className="flex bg-slate-50 min-h-screen text-brand-dark">
@@ -22,6 +60,14 @@ export function AppShell({ children }: AppShellProps) {
                     </div>
                 </main>
             </div>
+            
+            {/* Hybrid Landing Modal */}
+            {mounted && (
+                <HybridLandingModal 
+                    isOpen={showModal} 
+                    onClose={handleCloseModal} 
+                />
+            )}
         </SidebarProvider>
     );
 }
