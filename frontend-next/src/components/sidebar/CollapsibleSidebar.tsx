@@ -86,8 +86,9 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
 
     const renderChatModeContent = () => (
         <div className="flex flex-col h-full overflow-hidden">
-            {/* New Chat Button (Always Visible) */}
-            <div className="flex-shrink-0 p-3 pb-2">
+            {/* Top Section: New Chat + Quick Actions */}
+            <div className="flex-shrink-0 flex flex-col pt-3 px-3 pb-2 gap-3 bg-white z-10">
+                {/* New Chat Button */}
                 {isExpanded ? (
                     <Link
                         href="/chat"
@@ -105,10 +106,50 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                         <Plus size={20} />
                     </Link>
                 )}
+
+                {/* Quick Actions (Nav Icons) */}
+                {isExpanded ? (
+                    /* EXPANDED: Horizontal Wrap, Bigger Padding, Bigger Icons */
+                    <div className="flex flex-wrap gap-2 animate-fadeIn">
+                        {navIcons.map((item, idx) => (
+                            <Link
+                                key={idx}
+                                href={item.href}
+                                className={`flex items-center justify-center p-3 rounded-xl transition-all duration-200 shadow-sm border border-transparent hover:border-slate-200 group ${
+                                    pathname?.startsWith(item.href)
+                                    ? 'bg-brand-green text-white shadow-md'
+                                    : 'bg-slate-50 text-slate-500 hover:bg-slate-100 hover:text-brand-dark'
+                                }`}
+                                title={item.label}
+                                style={{ flex: '1 0 auto', minWidth: '3.5rem' }} 
+                            >
+                                <item.icon size={24} className="transition-transform group-hover:scale-110" />
+                            </Link>
+                        ))}
+                    </div>
+                ) : (
+                    /* COLLAPSED: Vertical Stack */
+                    <div className="flex flex-col items-center gap-2 animate-fadeIn">
+                        {navIcons.map((item, idx) => (
+                            <Link
+                                key={idx}
+                                href={item.href}
+                                className={`p-3 rounded-xl transition-all duration-200 group ${
+                                    pathname?.startsWith(item.href)
+                                    ? 'bg-brand-green text-white shadow-md'
+                                    : 'hover:bg-slate-100 text-slate-500 hover:text-brand-dark'
+                                }`}
+                                title={item.label}
+                            >
+                                <item.icon size={22} className="transition-transform group-hover:scale-110" />
+                            </Link>
+                        ))}
+                    </div>
+                )}
             </div>
 
             {/* Middle Section: Flexible layout for History & Resources */}
-            <div className="flex-1 flex flex-col min-h-0 overflow-y-auto">
+            <div className="flex-1 flex flex-col min-h-0 overflow-y-auto border-t border-slate-100">
                 
                 {/* --- CHAT HISTORY SECTION --- */}
                 <div className={`flex flex-col transition-all duration-300 ${isHistoryOpen ? 'flex-[3]' : 'flex-none'}`}>
@@ -116,7 +157,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     {isExpanded && (
                         <button 
                             onClick={() => setIsHistoryOpen(!isHistoryOpen)}
-                            className="flex items-center justify-between px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider hover:bg-slate-50 transition-colors w-full"
+                            className="flex items-center justify-between px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider hover:bg-slate-50 transition-colors w-full sticky top-0 bg-white z-10"
                         >
                             <span className="flex items-center gap-2">
                                 <History size={14} />
@@ -129,7 +170,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     {/* Content */}
                     <div className={`transition-all duration-300 overflow-hidden ${isHistoryOpen ? 'flex-1 min-h-0' : 'h-0'}`}>
                         {isExpanded && (
-                            <div className="px-3 pb-2">
+                            <div className="px-3 pb-2 sticky top-8 bg-white z-10">
                                 <div className="relative">
                                     <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                                     <input
@@ -175,7 +216,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                    {isExpanded && (
                         <button 
                             onClick={() => setIsResourcesOpen(!isResourcesOpen)}
-                            className="flex items-center justify-between px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider hover:bg-slate-50 transition-colors w-full"
+                            className="flex items-center justify-between px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider hover:bg-slate-50 transition-colors w-full sticky top-0 bg-white z-10"
                         >
                             <span className="flex items-center gap-2">
                                 <FolderOpen size={14} />
@@ -188,7 +229,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     {/* Content */}
                     <div className={`transition-all duration-300 overflow-hidden ${isResourcesOpen ? 'flex-1 min-h-0' : 'h-0'}`}>
                         {isExpanded && (
-                            <div className="px-3 pb-2">
+                            <div className="px-3 pb-2 sticky top-8 bg-white z-10">
                                 <div className="relative">
                                     <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                                     <input
@@ -222,46 +263,29 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                 </div>
             </div>
 
-            {/* --- BIGGER WRAPPING FOOTER --- */}
-            <div className="flex-shrink-0 border-t border-slate-200 bg-slate-50/80 backdrop-blur-sm z-10 transition-all duration-300">
-                {isExpanded ? (
-                    /* EXPANDED: Horizontal Wrap, Bigger Padding, Bigger Icons */
-                    <div className="p-4 flex flex-wrap gap-2 animate-fadeIn max-h-[40vh] overflow-y-auto">
-                        {navIcons.map((item, idx) => (
-                            <Link
-                                key={idx}
-                                href={item.href}
-                                className={`flex items-center justify-center p-3 rounded-xl transition-all duration-200 shadow-sm border border-transparent hover:border-slate-200 group ${
-                                    pathname?.startsWith(item.href)
-                                    ? 'bg-brand-green text-white shadow-md'
-                                    : 'bg-white text-slate-500 hover:bg-slate-100 hover:text-brand-dark'
-                                }`}
-                                title={item.label}
-                                style={{ flex: '1 0 auto', minWidth: '3.5rem' }} // Grow to fill rows
-                            >
-                                <item.icon size={26} className="transition-transform group-hover:scale-110" />
-                            </Link>
-                        ))}
-                    </div>
-                ) : (
-                    /* COLLAPSED: Vertical Stack */
-                    <div className="flex flex-col items-center gap-3 p-2 animate-fadeIn max-h-[50vh] overflow-y-auto no-scrollbar">
-                        {navIcons.map((item, idx) => (
-                            <Link
-                                key={idx}
-                                href={item.href}
-                                className={`p-3 rounded-xl transition-all duration-200 group ${
-                                    pathname?.startsWith(item.href)
-                                    ? 'bg-brand-green text-white shadow-md'
-                                    : 'hover:bg-slate-100 text-slate-500 hover:text-brand-dark'
-                                }`}
-                                title={item.label}
-                            >
-                                <item.icon size={24} className="transition-transform group-hover:scale-110" />
-                            </Link>
-                        ))}
-                    </div>
-                )}
+            {/* --- UTILITY FOOTER --- */}
+            <div className="flex-shrink-0 border-t border-slate-100 p-3 bg-slate-50">
+                <div className={`flex ${isExpanded ? 'flex-row justify-between' : 'flex-col gap-3'} items-center`}>
+                     <button
+                        className="p-2.5 rounded-lg hover:bg-white hover:shadow-sm text-slate-500 hover:text-slate-700 transition-all"
+                        title="Settings"
+                    >
+                        <Settings size={20} className="mx-auto" />
+                    </button>
+                    <Link
+                        href="/user-dashboard"
+                        className="p-2.5 rounded-lg hover:bg-white hover:shadow-sm text-slate-500 hover:text-slate-700 transition-all"
+                        title="Profile"
+                    >
+                        <User size={20} className="mx-auto" />
+                    </Link>
+                    <button
+                        className="p-2.5 rounded-lg hover:bg-red-50 hover:text-red-500 text-slate-400 transition-all"
+                        title="Logout"
+                    >
+                        <LogOut size={20} className="mx-auto" />
+                    </button>
+                </div>
             </div>
         </div>
     );
