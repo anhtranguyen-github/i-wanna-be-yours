@@ -13,7 +13,10 @@ import {
     Copy,
     ThumbsUp,
     ThumbsDown,
-    RefreshCw
+    RefreshCw,
+    FileText,
+    CheckSquare,
+    GraduationCap
 } from 'lucide-react';
 
 interface Message {
@@ -129,6 +132,16 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLTextAreaElement>(null);
 
+    // Use layout context for opening artifacts
+    let openArtifact: any;
+    try {
+        const context = useChatLayout();
+        openArtifact = context.openArtifact;
+    } catch (e) {
+        // Fallback if not in provider
+        openArtifact = () => console.log('Open Artifact');
+    }
+
     // Auto-scroll to bottom
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -176,15 +189,26 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
         }
     };
 
+    const handleQuickAction = (type: string) => {
+        if (openArtifact) {
+            // Mock creating a new artifact for now
+            openArtifact({
+                id: `new-${Date.now()}`,
+                type: type,
+                title: `New ${type.charAt(0).toUpperCase() + type.slice(1)}`
+            });
+        }
+    };
+
     const showWelcome = messages.length === 0 && !conversationId;
 
     return (
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full bg-white relative">
             {/* Messages Area */}
             {showWelcome ? (
                 <WelcomeCard />
             ) : (
-                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                <div className="flex-1 overflow-y-auto p-4 space-y-4 pb-4">
                     {messages.map(message => (
                         <div key={message.id} className="group">
                             <MessageBubble message={message} />
@@ -212,49 +236,74 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
             )}
 
             {/* Input Area */}
-            <div className="border-t border-slate-100 p-4">
-                <div className="max-w-3xl mx-auto">
-                    <div className="relative flex items-end gap-2 bg-slate-50 rounded-2xl border border-slate-200 focus-within:border-brand-green focus-within:ring-2 focus-within:ring-brand-green/20 transition-all">
-                        {/* Attachment button */}
+            <div className="border-t border-slate-100 pt-4 px-4 pb-6 bg-white z-10 w-full max-w-3xl mx-auto">
+                <div className="relative flex items-end gap-2 bg-slate-50 rounded-2xl border border-slate-200 focus-within:border-brand-green focus-within:ring-2 focus-within:ring-brand-green/20 transition-all">
+                    {/* Attachment button */}
+                    <button
+                        className="p-2.5 text-slate-400 hover:text-brand-green transition-colors"
+                        title="Attach file"
+                    >
+                        <Paperclip size={20} />
+                    </button>
+
+                    {/* Text input */}
+                    <textarea
+                        ref={inputRef}
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        placeholder="Ask Hanachan anything..."
+                        rows={1}
+                        className="flex-1 bg-transparent py-3 text-brand-dark placeholder:text-slate-400 resize-none focus:outline-none text-sm max-h-[200px]"
+                    />
+
+                    {/* Action buttons */}
+                    <div className="flex items-center gap-1 pr-2 pb-1.5">
                         <button
-                            className="p-2.5 text-slate-400 hover:text-brand-green transition-colors"
-                            title="Attach file"
+                            className="p-2 text-slate-400 hover:text-brand-green transition-colors"
+                            title="Voice input"
                         >
-                            <Paperclip size={20} />
+                            <Mic size={20} />
                         </button>
+                        <button
+                            onClick={handleSend}
+                            disabled={!inputValue.trim() || isLoading}
+                            className="p-2 bg-brand-green text-white rounded-xl hover:bg-brand-green/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            title="Send message"
+                        >
+                            <Send size={18} />
+                        </button>
+                    </div>
+                </div>
 
-                        {/* Text input */}
-                        <textarea
-                            ref={inputRef}
-                            value={inputValue}
-                            onChange={(e) => setInputValue(e.target.value)}
-                            onKeyDown={handleKeyDown}
-                            placeholder="Ask Hanachan anything..."
-                            rows={1}
-                            className="flex-1 bg-transparent py-3 text-brand-dark placeholder:text-slate-400 resize-none focus:outline-none text-sm max-h-[200px]"
-                        />
-
-                        {/* Action buttons */}
-                        <div className="flex items-center gap-1 pr-2">
-                            <button
-                                className="p-2 text-slate-400 hover:text-brand-green transition-colors"
-                                title="Voice input"
-                            >
-                                <Mic size={20} />
-                            </button>
-                            <button
-                                onClick={handleSend}
-                                disabled={!inputValue.trim() || isLoading}
-                                className="p-2 bg-brand-green text-white rounded-xl hover:bg-brand-green/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                                title="Send message"
-                            >
-                                <Send size={18} />
-                            </button>
-                        </div>
+                {/* Quick Actions Toolbar (Under Chat Input Bubble) */}
+                <div className="flex items-center justify-between mt-3 px-1">
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => handleQuickAction('flashcard')}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-brand-green hover:bg-brand-green/5 border border-transparent hover:border-brand-green/20 transition-all"
+                        >
+                            <FileText size={14} />
+                            Flashcards
+                        </button>
+                        <button
+                            onClick={() => handleQuickAction('quiz')}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-purple-600 hover:bg-purple-50 border border-transparent hover:border-purple-200 transition-all"
+                        >
+                            <CheckSquare size={14} />
+                            Quiz
+                        </button>
+                        <button
+                            onClick={() => handleQuickAction('summary')}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-amber-600 hover:bg-amber-50 border border-transparent hover:border-amber-200 transition-all"
+                        >
+                            <Sparkles size={14} />
+                            Summary
+                        </button>
                     </div>
 
-                    <p className="text-center text-xs text-slate-400 mt-2">
-                        Hanachan can make mistakes. Verify important information.
+                    <p className="text-xs text-slate-400">
+                        Hanachan makes mistakes. Verify info.
                     </p>
                 </div>
             </div>
