@@ -28,6 +28,15 @@ interface PracticeCategory {
 
 const practiceCategories: PracticeCategory[] = [
     {
+        id: "jlpt-practice",
+        title: "JLPT Practice",
+        description: "Quizzes, single skill exams, and full JLPT simulations for all levels.",
+        icon: <GraduationCap size={28} />,
+        href: "/practice/jlpt",
+        color: "text-emerald-600",
+        bgColor: "bg-emerald-50",
+    },
+    {
         id: "flashcards",
         title: "Flashcards",
         description: "Review vocabulary, kanji, and grammar with spaced repetition.",
@@ -38,7 +47,7 @@ const practiceCategories: PracticeCategory[] = [
     },
     {
         id: "quizzes",
-        title: "JLPT Quizzes",
+        title: "Quick Quizzes",
         description: "Test your knowledge with vocabulary, grammar, and kanji quizzes.",
         icon: <BookCheck size={28} />,
         href: "/practice/quiz",
