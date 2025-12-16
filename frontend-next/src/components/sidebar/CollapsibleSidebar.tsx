@@ -36,6 +36,15 @@ const mockChats = [
     { id: '4', title: 'Reading Comprehension', date: 'Yesterday' },
     { id: '5', title: 'Listening Practice', date: 'Last Week' },
     { id: '6', title: 'Culture Discussion', date: 'Last Week' },
+    { id: '7', title: 'Travel Phrases', date: 'Last Week' },
+    { id: '8', title: 'Keigo Mastery', date: '2 Weeks Ago' },
+    { id: '9', title: 'Anime Dialogue Breakdown', date: '2 Weeks Ago' },
+    { id: '10', title: 'Particle Wa vs Ga', date: 'Last Month' },
+    { id: '11', title: 'Counters (1-10)', date: 'Last Month' },
+    { id: '12', title: 'Giving Directions', date: 'Last Month' },
+    { id: '13', title: 'Restaurant Ordering', date: '2 Months Ago' },
+    { id: '14', title: 'Self Introduction', date: '2 Months Ago' },
+    { id: '15', title: 'Family Members', date: '3 Months Ago' },
 ];
 
 // Mock resources data
@@ -44,6 +53,14 @@ const mockResources = [
     { id: 'r2', title: 'Grammar Notes', type: 'document' },
     { id: 'r3', title: 'Kanji Study Set', type: 'flashcard' },
     { id: 'r4', title: 'Particle Cheat Sheet', type: 'document' },
+    { id: 'r5', title: 'Common Adjectives', type: 'flashcard' },
+    { id: 'r6', title: 'Verb Groups 1,2,3', type: 'document' },
+    { id: 'r7', title: 'Katakana Chart', type: 'image' },
+    { id: 'r8', title: 'Discussion Topics', type: 'document' },
+    { id: 'r9', title: 'N4 Practice Test', type: 'quiz' },
+    { id: 'r10', title: 'Daily Life Vocab', type: 'flashcard' },
+    { id: 'r11', title: 'Onomatopoeia', type: 'flashcard' },
+    { id: 'r12', title: 'Business Email Template', type: 'document' },
 ];
 
 // Main Navigation Icons
