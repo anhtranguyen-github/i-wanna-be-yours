@@ -11,7 +11,7 @@ interface AppShellProps {
 }
 
 // Routes where modal should NOT appear
-const EXCLUDED_ROUTES = ['/', '/login', '/signup', '/pricing', '/checkout'];
+const EXCLUDED_ROUTES = ['/landing', '/login', '/signup', '/pricing', '/checkout'];
 
 export function AppShell({ children }: AppShellProps) {
     const pathname = usePathname();
@@ -20,12 +20,12 @@ export function AppShell({ children }: AppShellProps) {
 
     useEffect(() => {
         setMounted(true);
-        
+
         // Check if we should show modal (not on excluded routes)
-        const shouldShow = !EXCLUDED_ROUTES.some(route => 
+        const shouldShow = !EXCLUDED_ROUTES.some(route =>
             pathname === route || pathname?.startsWith(route + '/')
         );
-        
+
         // Small delay for better UX
         if (shouldShow) {
             const timer = setTimeout(() => {
@@ -33,14 +33,14 @@ export function AppShell({ children }: AppShellProps) {
             }, 300);
             return () => clearTimeout(timer);
         }
-    }, []);
+    }, [pathname]);
 
     const handleCloseModal = () => {
         setShowModal(false);
     };
 
-    // Check if current route is landing page (no sidebar)
-    const isLandingPage = pathname === '/';
+    // Check if current route is dedicated landing page (no sidebar)
+    const isLandingPage = pathname === '/landing';
 
     if (isLandingPage) {
         // Landing page gets no sidebar, no modal
@@ -60,12 +60,12 @@ export function AppShell({ children }: AppShellProps) {
                     </div>
                 </main>
             </div>
-            
-            {/* Hybrid Landing Modal */}
+
+            {/* Hybrid Landing Modal - shows on first visit */}
             {mounted && (
-                <HybridLandingModal 
-                    isOpen={showModal} 
-                    onClose={handleCloseModal} 
+                <HybridLandingModal
+                    isOpen={showModal}
+                    onClose={handleCloseModal}
                 />
             )}
         </SidebarProvider>
