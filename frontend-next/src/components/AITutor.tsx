@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Conversation, Message, Resource, Artifact } from "@/types/aiTutorTypes";
 import { aiTutorService } from "@/services/aiTutorService";
 
@@ -8,7 +9,12 @@ import { ChatSidebar } from "./ai-tutor/ChatSidebar";
 import { ResourcesSidebar } from "./ai-tutor/ResourcesSidebar";
 import { ChatArea } from "./ai-tutor/ChatArea";
 
-export default function AITutor() {
+interface AITutorProps {
+  initialConversationId?: string;
+}
+
+export default function AITutor({ initialConversationId }: AITutorProps) {
+  const router = useRouter();
   // State
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConvoId, setActiveConvoId] = useState<string | null>(null);
@@ -43,12 +49,22 @@ export default function AITutor() {
         // Fetch if not in list (e.g. deep link)
         aiTutorService.getConversation(activeConvoId).then(c => {
           setMessages(c.messages || []);
+        }).catch(() => {
+          // Conversation not found, redirect to new chat
+          router.replace('/chat');
         });
       }
     } else {
       setMessages([]);
     }
-  }, [activeConvoId, conversations]);
+  }, [activeConvoId, conversations, router]);
+
+  // Load initial conversation from URL if provided
+  useEffect(() => {
+    if (initialConversationId) {
+      setActiveConvoId(initialConversationId);
+    }
+  }, [initialConversationId]);
 
   // Handle mobile responsive layout defaults
   useEffect(() => {
@@ -108,6 +124,7 @@ export default function AITutor() {
 
     if (existingEmpty) {
       setActiveConvoId(existingEmpty._id);
+      router.push(`/chat/${existingEmpty._id}`, { scroll: false });
       if (window.innerWidth < 1024) setSidebarOpen(false);
       return;
     }
@@ -116,11 +133,19 @@ export default function AITutor() {
       const newConvo = await aiTutorService.createConversation("New Conversation");
       setConversations([newConvo, ...conversations]);
       setActiveConvoId(newConvo._id);
+      router.push(`/chat/${newConvo._id}`, { scroll: false });
       // Close sidebar on mobile after creating
       if (window.innerWidth < 1024) setSidebarOpen(false);
     } catch (error) {
       console.error("Failed to create conversation", error);
     }
+  };
+
+  // Handle selecting a conversation from sidebar
+  const handleSelectConversation = (id: string) => {
+    setActiveConvoId(id);
+    router.push(`/chat/${id}`, { scroll: false });
+    if (window.innerWidth < 1024) setSidebarOpen(false);
   };
 
   const handleDeleteConversation = async (e: React.MouseEvent, id: string) => {
@@ -297,7 +322,7 @@ export default function AITutor() {
         <ChatSidebar
           conversations={conversations}
           activeConvoId={activeConvoId}
-          setActiveConvoId={setActiveConvoId}
+          setActiveConvoId={handleSelectConversation}
           onNewChat={handleNewConversation}
           onDeleteChat={handleDeleteConversation}
           searchQuery={searchQuery}

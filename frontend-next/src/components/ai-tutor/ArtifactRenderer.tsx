@@ -414,6 +414,292 @@ export function VocabularyRenderer({ artifact, onSave }: VocabularyRendererProps
 }
 
 // =============================================================================
+// EXAM ARTIFACT RENDERER (Navigate to exam page)
+// =============================================================================
+
+interface ExamRendererProps {
+    artifact: Artifact;
+    onLaunch?: () => void;
+    onSave?: () => void;
+}
+
+export function ExamRenderer({ artifact, onLaunch, onSave }: ExamRendererProps) {
+    const [isSaved, setIsSaved] = useState(false);
+    const metadata = artifact.metadata || {};
+    const data = artifact.data || {};
+
+    const handleSave = () => {
+        setIsSaved(true);
+        onSave?.();
+    };
+
+    return (
+        <div className="bg-gradient-to-br from-purple-50 to-violet-50 rounded-2xl border border-purple-200 overflow-hidden">
+            <div className="px-4 py-3 bg-white/50 border-b border-purple-100 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                    <FileText size={18} className="text-purple-600" />
+                    <span className="font-semibold text-purple-800">{artifact.title}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    {metadata.level && (
+                        <span className="text-xs px-2 py-0.5 bg-purple-100 text-purple-700 rounded-full">
+                            {metadata.level}
+                        </span>
+                    )}
+                </div>
+            </div>
+
+            <div className="p-6 text-center">
+                <p className="text-slate-600 mb-4">{data.description || 'Full practice exam'}</p>
+
+                <div className="flex justify-center gap-6 text-sm text-slate-500 mb-6">
+                    <span>📝 {metadata.questionCount || '?'} questions</span>
+                    {metadata.timeLimitMinutes && (
+                        <span>⏱️ {metadata.timeLimitMinutes} min</span>
+                    )}
+                    {metadata.sections && (
+                        <span>📚 {metadata.sections.length} sections</span>
+                    )}
+                </div>
+
+                <div className="flex gap-3 justify-center">
+                    <button
+                        onClick={handleSave}
+                        disabled={isSaved}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isSaved
+                                ? "bg-purple-100 text-purple-600"
+                                : "bg-white border border-purple-200 text-purple-700 hover:bg-purple-50"
+                            }`}
+                    >
+                        {isSaved ? <><Check size={14} className="inline mr-1" /> Saved</> : <><Bookmark size={14} className="inline mr-1" /> Save</>}
+                    </button>
+                    <button
+                        onClick={onLaunch}
+                        className="px-6 py-2 bg-purple-600 text-white font-bold rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
+                    >
+                        <Play size={18} />
+                        Start Exam
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// =============================================================================
+// FLASHCARD SINGLE RENDERER (Add to deck functionality)
+// =============================================================================
+
+interface FlashcardSingleRendererProps {
+    artifact: Artifact;
+    onAddToDeck?: (deckId: string) => void;
+    onCreateNewDeck?: () => void;
+}
+
+export function FlashcardSingleRenderer({ artifact, onAddToDeck, onCreateNewDeck }: FlashcardSingleRendererProps) {
+    const [isFlipped, setIsFlipped] = useState(false);
+    const data = artifact.data || {};
+    const cards = data.cards || [];
+    const card = cards[0];
+    const metadata = artifact.metadata || {};
+
+    if (!card) {
+        return <div className="text-slate-500">No card data</div>;
+    }
+
+    return (
+        <div className="bg-gradient-to-br from-teal-50 to-cyan-50 rounded-2xl border border-teal-200 overflow-hidden">
+            <div className="px-4 py-3 bg-white/50 border-b border-teal-100 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                    <BookOpen size={18} className="text-teal-600" />
+                    <span className="font-semibold text-teal-800">{artifact.title}</span>
+                    {metadata.level && (
+                        <span className="text-xs px-2 py-0.5 bg-teal-100 text-teal-700 rounded-full">
+                            {metadata.level}
+                        </span>
+                    )}
+                </div>
+            </div>
+
+            <div className="p-6">
+                {/* Card */}
+                <div
+                    onClick={() => setIsFlipped(!isFlipped)}
+                    className={`
+                        relative w-full min-h-[180px] bg-white rounded-xl shadow-lg cursor-pointer
+                        transition-all duration-300 transform hover:shadow-xl
+                        ${isFlipped ? "bg-teal-50" : ""}
+                    `}
+                >
+                    <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+                        <p className="text-xs text-slate-400 mb-2">
+                            {isFlipped ? "Answer" : "Front"}
+                        </p>
+                        <p className={`text-xl font-medium ${isFlipped ? "text-teal-700" : "text-slate-800"}`}>
+                            {isFlipped ? card.back : card.front}
+                        </p>
+                        {isFlipped && card.reading && (
+                            <p className="text-sm text-slate-500 mt-2">({card.reading})</p>
+                        )}
+                        {isFlipped && card.example && (
+                            <p className="text-sm text-slate-400 mt-2 italic">"{card.example}"</p>
+                        )}
+                    </div>
+                    <div className="absolute bottom-3 right-3">
+                        <RotateCw size={16} className="text-slate-300" />
+                    </div>
+                </div>
+
+                {/* Actions */}
+                <div className="mt-4 flex gap-3 justify-center">
+                    {artifact.actions?.canAddToExistingDeck && (
+                        <button
+                            onClick={() => onAddToDeck?.('select')}
+                            className="px-4 py-2 bg-white border border-teal-200 text-teal-700 rounded-lg hover:bg-teal-50 transition-colors text-sm font-medium"
+                        >
+                            + Add to Deck
+                        </button>
+                    )}
+                    {artifact.actions?.canCreateNewDeck && (
+                        <button
+                            onClick={onCreateNewDeck}
+                            className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors text-sm font-medium"
+                        >
+                            Create New Deck
+                        </button>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// =============================================================================
+// FLASHCARD DECK RENDERER (Save to library)
+// =============================================================================
+
+interface FlashcardDeckRendererProps {
+    artifact: Artifact;
+    onSave?: () => void;
+}
+
+export function FlashcardDeckRenderer({ artifact, onSave }: FlashcardDeckRendererProps) {
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [isFlipped, setIsFlipped] = useState(false);
+    const [isSaved, setIsSaved] = useState(artifact.savedToLibrary || false);
+
+    const data = artifact.data || {};
+    const cards = data.cards || [];
+    const currentCard = cards[currentIndex];
+    const metadata = artifact.metadata || {};
+
+    const handleSave = () => {
+        setIsSaved(true);
+        onSave?.();
+    };
+
+    const handleNext = () => {
+        if (currentIndex < cards.length - 1) {
+            setCurrentIndex(currentIndex + 1);
+            setIsFlipped(false);
+        }
+    };
+
+    const handlePrev = () => {
+        if (currentIndex > 0) {
+            setCurrentIndex(currentIndex - 1);
+            setIsFlipped(false);
+        }
+    };
+
+    if (cards.length === 0) {
+        return <div className="text-slate-500">No flashcards available</div>;
+    }
+
+    return (
+        <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border border-emerald-200 overflow-hidden">
+            {/* Header */}
+            <div className="px-4 py-3 bg-white/50 border-b border-emerald-100 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                    <BookOpen size={18} className="text-emerald-600" />
+                    <span className="font-semibold text-emerald-800">{artifact.title}</span>
+                    {metadata.level && (
+                        <span className="text-xs px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full">
+                            {metadata.level}
+                        </span>
+                    )}
+                    <span className="text-xs text-slate-500">{cards.length} cards</span>
+                </div>
+                <button
+                    onClick={handleSave}
+                    disabled={isSaved}
+                    className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${isSaved
+                            ? "bg-emerald-100 text-emerald-600"
+                            : "bg-emerald-600 text-white hover:bg-emerald-700"
+                        }`}
+                >
+                    {isSaved ? <Check size={14} /> : <Save size={14} />}
+                    {isSaved ? "Saved" : "Save to Library"}
+                </button>
+            </div>
+
+            {/* Card Display */}
+            <div className="p-6">
+                <div
+                    onClick={() => setIsFlipped(!isFlipped)}
+                    className={`
+                        relative w-full min-h-[200px] bg-white rounded-xl shadow-lg cursor-pointer
+                        transition-all duration-300 transform hover:shadow-xl
+                        ${isFlipped ? "bg-emerald-50" : ""}
+                    `}
+                >
+                    <div className="absolute inset-0 flex items-center justify-center p-6 text-center">
+                        <div>
+                            <p className="text-xs text-slate-400 mb-2">
+                                {isFlipped ? "Answer" : "Question"}
+                            </p>
+                            <p className={`text-lg font-medium ${isFlipped ? "text-emerald-700" : "text-slate-800"}`}>
+                                {isFlipped ? currentCard.back : currentCard.front}
+                            </p>
+                            {isFlipped && currentCard.reading && (
+                                <p className="text-sm text-slate-500 mt-2">({currentCard.reading})</p>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="absolute bottom-3 right-3">
+                        <RotateCw size={16} className="text-slate-300" />
+                    </div>
+                </div>
+
+                {/* Navigation */}
+                <div className="mt-4 flex items-center justify-between">
+                    <button
+                        onClick={handlePrev}
+                        disabled={currentIndex === 0}
+                        className="p-2 rounded-lg bg-white border border-slate-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50"
+                    >
+                        <ChevronLeft size={20} />
+                    </button>
+
+                    <span className="text-sm text-slate-500">
+                        {currentIndex + 1} / {cards.length}
+                    </span>
+
+                    <button
+                        onClick={handleNext}
+                        disabled={currentIndex === cards.length - 1}
+                        className="p-2 rounded-lg bg-white border border-slate-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50"
+                    >
+                        <ChevronRight size={20} />
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// =============================================================================
 // MAIN ARTIFACT DISPATCHER
 // =============================================================================
 
@@ -423,33 +709,101 @@ interface ArtifactRendererProps {
 }
 
 export function ArtifactRenderer({ artifact, onSave }: ArtifactRendererProps) {
+    const handleSave = () => onSave?.(artifact);
+
     switch (artifact.type) {
+        case "flashcard_single":
+            return (
+                <FlashcardSingleRenderer
+                    artifact={artifact}
+                    onAddToDeck={(deckId) => {
+                        console.log('Add to deck:', deckId);
+                        // TODO: open deck selector modal
+                    }}
+                    onCreateNewDeck={() => {
+                        console.log('Create new deck');
+                        handleSave();
+                    }}
+                />
+            );
+
+        case "flashcard_deck":
+            return (
+                <FlashcardDeckRenderer
+                    artifact={artifact}
+                    onSave={handleSave}
+                />
+            );
+
         case "flashcard":
+            // Legacy flashcard type - convert to deck format
+            const legacyData = artifact.data as any;
             return (
                 <FlashcardRenderer
-                    artifact={artifact.data as FlashcardArtifact}
-                    onSave={() => onSave?.(artifact)}
+                    artifact={{
+                        title: artifact.title,
+                        cards: legacyData.cards || [],
+                        level: artifact.metadata?.level,
+                        skill: artifact.metadata?.skill,
+                    }}
+                    onSave={handleSave}
                 />
             );
+
         case "quiz":
+            const quizData = artifact.data as any;
             return (
                 <QuizRenderer
-                    artifact={artifact.data as QuizArtifact}
-                    onSave={() => onSave?.(artifact)}
+                    artifact={{
+                        title: artifact.title,
+                        description: quizData.description,
+                        quizType: 'quiz',
+                        level: artifact.metadata?.level,
+                        skill: artifact.metadata?.skill,
+                        questions: quizData.questions || [],
+                    }}
+                    onSave={handleSave}
                 />
             );
+
+        case "exam":
+            return (
+                <ExamRenderer
+                    artifact={artifact}
+                    onLaunch={() => {
+                        console.log('Launch exam');
+                        // TODO: Navigate to /jlpt/:examId
+                    }}
+                    onSave={handleSave}
+                />
+            );
+
         case "vocabulary":
+            const vocabData = artifact.data as any;
             return (
                 <VocabularyRenderer
-                    artifact={artifact.data as VocabularyArtifact}
-                    onSave={() => onSave?.(artifact)}
+                    artifact={{
+                        title: artifact.title,
+                        items: vocabData.items || [],
+                    }}
+                    onSave={handleSave}
                 />
             );
+
         default:
             return (
-                <div className="p-4 bg-slate-100 rounded-lg text-slate-500">
-                    Unknown artifact type: {artifact.type}
+                <div className="p-4 bg-slate-100 rounded-lg">
+                    <p className="text-sm text-slate-500 mb-2">Artifact: {artifact.type}</p>
+                    <p className="font-medium text-slate-700">{artifact.title}</p>
+                    {artifact.metadata && (
+                        <div className="mt-2 text-xs text-slate-400">
+                            {Object.entries(artifact.metadata).map(([k, v]) => (
+                                <span key={k} className="mr-2">{k}: {String(v)}</span>
+                            ))}
+                        </div>
+                    )}
                 </div>
             );
     }
 }
+
