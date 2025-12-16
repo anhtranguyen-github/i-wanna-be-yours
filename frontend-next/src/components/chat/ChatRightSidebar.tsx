@@ -95,16 +95,7 @@ export function ChatRightSidebar() {
                         </button>
                     </div>
 
-                    {/* Quick Creation Actions (Simplified) */}
-                    <div className="mt-6 pt-4 border-t border-slate-100">
-                        <p className="text-xs font-medium text-slate-400 uppercase tracking-wide mb-3">Quick Actions</p>
-                        <div className="grid grid-cols-2 gap-2">
-                            <QuickActionButton icon={<FileText size={16} />} label="Flashcard" />
-                            <QuickActionButton icon={<CheckSquare size={16} />} label="Quiz" />
-                            <QuickActionButton icon={<GraduationCap size={16} />} label="Exercise" />
-                            <QuickActionButton icon={<Sparkles size={16} />} label="Summary" />
-                        </div>
-                    </div>
+
                 </div>
             </div>
         );

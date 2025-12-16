@@ -23,7 +23,9 @@ import {
     LogOut,
     ChevronDown,
     ChevronRight,
-    History
+    History,
+    CheckSquare,
+    Sparkles
 } from 'lucide-react';
 
 // Mock chat history data
@@ -54,6 +56,13 @@ const navIcons = [
     { icon: GraduationCap, label: 'Practice', href: '/practice' },
 ];
 
+// Artifact Creation Actions (Moved from Right Sidebar)
+const artifactActions = [
+    { icon: FileText, label: 'Flashcard', action: 'create-flashcard' },
+    { icon: CheckSquare, label: 'Quiz', action: 'create-quiz' },
+    { icon: Sparkles, label: 'Summary', action: 'create-summary' },
+];
+
 interface CollapsibleSidebarProps {
     className?: string;
 }
@@ -81,12 +90,17 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
         resource.title.toLowerCase().includes(resourceSearch.toLowerCase())
     );
 
+    const handleArtifactAction = (action: string) => {
+        // TODO: Wire up to ChatLayoutContext to open Right Sidebar
+        console.log('Artifact Action triggered:', action);
+    };
+
     // --- RENDER HELPERS ---
 
     const renderChatModeContent = () => (
         <div className="flex flex-col h-full overflow-hidden">
             {/* Top Section: New Chat + Quick Actions */}
-            <div className="flex-shrink-0 flex flex-col pt-3 px-3 pb-2 gap-3 bg-white z-10">
+            <div className="flex-shrink-0 flex flex-col pt-3 px-3 pb-2 gap-3 bg-white z-10 shadow-sm relative">
                 {/* New Chat Button */}
                 {isExpanded ? (
                     <Link
@@ -106,45 +120,45 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     </Link>
                 )}
 
-                {/* Quick Actions (Nav Icons) */}
-                {isExpanded ? (
-                    /* EXPANDED: Horizontal Wrap, Bigger Padding, Bigger Icons */
-                    <div className="flex flex-wrap gap-2 animate-fadeIn">
-                        {navIcons.map((item, idx) => (
-                            <Link
-                                key={idx}
-                                href={item.href}
-                                className={`flex items-center justify-center p-3 rounded-xl transition-all duration-200 shadow-sm border border-transparent hover:border-slate-200 group ${
-                                    pathname?.startsWith(item.href)
-                                    ? 'bg-brand-green text-white shadow-md'
-                                    : 'bg-slate-50 text-slate-500 hover:bg-slate-100 hover:text-brand-dark'
-                                }`}
-                                title={item.label}
-                                style={{ flex: '1 0 auto', minWidth: '3.5rem' }} 
-                            >
-                                <item.icon size={24} className="transition-transform group-hover:scale-110" />
-                            </Link>
-                        ))}
-                    </div>
-                ) : (
-                    /* COLLAPSED: Vertical Stack */
-                    <div className="flex flex-col items-center gap-2 animate-fadeIn">
-                        {navIcons.map((item, idx) => (
-                            <Link
-                                key={idx}
-                                href={item.href}
-                                className={`p-3 rounded-xl transition-all duration-200 group ${
-                                    pathname?.startsWith(item.href)
-                                    ? 'bg-brand-green text-white shadow-md'
-                                    : 'hover:bg-slate-100 text-slate-500 hover:text-brand-dark'
-                                }`}
-                                title={item.label}
-                            >
-                                <item.icon size={22} className="transition-transform group-hover:scale-110" />
-                            </Link>
-                        ))}
-                    </div>
-                )}
+                {/* Quick Actions Area */}
+                <div className={`flex ${isExpanded ? 'flex-wrap gap-2' : 'flex-col items-center gap-2'} animate-fadeIn`}>
+                    
+                    {/* 1. Artifact Creation Actions (New) */}
+                    {artifactActions.map((item, idx) => (
+                        <button
+                            key={`artifact-${idx}`}
+                            onClick={() => handleArtifactAction(item.action)}
+                            className={`flex items-center justify-center rounded-xl transition-all duration-200 shadow-sm border group ${
+                                isExpanded 
+                                ? 'p-3 bg-white border-brand-green/20 text-brand-green hover:bg-brand-green/5' 
+                                : 'p-3 bg-white border-transparent text-slate-400 hover:text-brand-green'
+                            }`}
+                            title={item.label}
+                            style={isExpanded ? { flex: '1 0 auto', minWidth: '3rem' } : {}}
+                        >
+                            <item.icon size={22} className="transition-transform group-hover:scale-110" />
+                        </button>
+                    ))}
+
+                    {/* Divider if needed, or just flow */}
+                    
+                    {/* 2. Navigation Icons */}
+                    {navIcons.map((item, idx) => (
+                        <Link
+                            key={`nav-${idx}`}
+                            href={item.href}
+                            className={`flex items-center justify-center rounded-xl transition-all duration-200 shadow-sm border border-transparent group ${
+                                isExpanded 
+                                ? 'p-3 bg-slate-50 text-slate-500 hover:bg-slate-100 hover:text-brand-dark' 
+                                : 'p-3 hover:bg-slate-100 text-slate-500 hover:text-brand-dark'
+                            } ${pathname?.startsWith(item.href) ? '!bg-brand-green !text-white !shadow-md' : ''}`}
+                            title={item.label}
+                            style={isExpanded ? { flex: '1 0 auto', minWidth: '3.5rem' } : {}}
+                        >
+                            <item.icon size={isExpanded ? 24 : 22} className="transition-transform group-hover:scale-110" />
+                        </Link>
+                    ))}
+                </div>
             </div>
 
             {/* Middle Section: Flexible layout for History & Resources */}
