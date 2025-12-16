@@ -109,7 +109,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
             </div>
 
             {/* Middle Section: Flexible layout for History & Resources */}
-            <div className="flex-1 flex flex-col min-h-0 overflow-y-auto border-t border-slate-100">
+            <div className="flex-1 flex flex-col min-h-0 overflow-hidden border-t border-slate-100">
                 
                 {/* --- CHAT HISTORY SECTION --- */}
                 <div className={`flex flex-col transition-all duration-300 ${isHistoryOpen ? 'flex-[3]' : 'flex-none'}`}>
