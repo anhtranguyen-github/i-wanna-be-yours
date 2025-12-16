@@ -11,10 +11,34 @@ class MockAgent:
                                 attachments: List[Any]) -> str:
         """
         Generates a markdown debug response echoing all received data.
-        Enhanced with study plan context awareness.
+        Enhanced with study plan context awareness and content creation.
         """
         
-        # Check for study plan intent
+        # =====================================================================
+        # 1. Check for CONTENT CREATION intent (flashcards, quiz, exam)
+        # =====================================================================
+        from services.content_creator import ContentCreatorService
+        
+        creation_intent = ContentCreatorService.detect_creation_intent(prompt)
+        
+        if creation_intent:
+            # Use the content creator to generate response
+            creation_response = ContentCreatorService.generate_creation_response(
+                intent=creation_intent,
+                prompt=prompt,
+                user_id=user_id
+            )
+            
+            return {
+                "content": creation_response["content"],
+                "tasks": [],
+                "suggestions": creation_response.get("suggestions", []),
+                "artifacts": creation_response.get("artifacts", [])
+            }
+        
+        # =====================================================================
+        # 2. Check for study plan intent
+        # =====================================================================
         from services.study_plan_context import (
             detect_study_plan_intent,
             StudyPlanContextProvider
@@ -42,7 +66,9 @@ class MockAgent:
             except Exception as e:
                 print(f"[MockAgent] Study plan context error: {e}")
         
-        # Build Resource String
+        # =====================================================================
+        # 3. Build Resource String
+        # =====================================================================
         resource_info = []
         if attachments:
             for res in attachments:
@@ -53,7 +79,9 @@ class MockAgent:
         
         resources_str = "\n".join(resource_info) if resource_info else "None"
         
-        # Build debug content
+        # =====================================================================
+        # 4. Build debug content
+        # =====================================================================
         debug_content = f"""
 ### Mock Agent Debug Response
 **Session ID:** `{session_id}`
@@ -80,7 +108,9 @@ class MockAgent:
 {study_context}
 """
         
-        # Mock Logic for Rich Content
+        # =====================================================================
+        # 5. Generate Mock Artifacts & Suggestions
+        # =====================================================================
         tasks = []
         suggestions = []
         artifacts = []
@@ -96,7 +126,16 @@ class MockAgent:
             suggestions.append({"text": "How's my progress?"})
             suggestions.append({"text": "Quiz me on vocabulary"})
         else:
-            # Default debug artifacts
+            # =====================================================================
+            # 6. Default debug artifacts with Rich Content Creation Options
+            # =====================================================================
+            
+            # Always suggest content creation options
+            suggestions.append({"text": "Create N5 vocabulary flashcards"})
+            suggestions.append({"text": "Make a grammar quiz for N4"})
+            suggestions.append({"text": "Generate an N3 practice exam"})
+            
+            # Add sample debug artifacts
             tasks.append({
                 "title": "Debug Task",
                 "description": "Verify system logs for detailed error tracking.",
@@ -148,9 +187,6 @@ class MockAgent:
                     ]
                 }
             })
-                
-            suggestions.append({"text": "Upload a log file"})
-            suggestions.append({"text": "Check database status"})
 
         return {
             "content": debug_content,

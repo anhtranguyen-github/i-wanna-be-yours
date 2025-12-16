@@ -42,6 +42,7 @@ class ArtifactContent(BaseModel):
     audio: Optional[List[Dict[str, str]]] = [] # List of {text, url}
     vocabulary: Optional[Dict[str, Any]] = None
     task: Optional[Dict[str, Any]] = None
+    quiz: Optional[Dict[str, Any]] = None  # Quiz/Exam artifact
 
 class ResponseItemDTO(BaseModel):
     responseId: Optional[str] = None

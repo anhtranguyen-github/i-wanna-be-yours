@@ -4,6 +4,7 @@ import models.content.flashcard
 import models.content.mindmap
 import models.content.audio
 import models.content.vocabulary
+import models.content.quiz
 import models.action
 
 class MessageArtifact(db.Model):
@@ -12,7 +13,7 @@ class MessageArtifact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     message_id = db.Column(db.Integer, db.ForeignKey('chat_messages.id'), nullable=False)
     artifact_external_id = db.Column(db.String(120), nullable=True)
-    type = db.Column(db.String(50), nullable=True) # flashcard, mindmap, audio, vocabulary, task
+    type = db.Column(db.String(50), nullable=True) # flashcard, mindmap, audio, vocabulary, task, quiz
     
     # Content pointers (Composition approach)
     # Using string references for tables mostly solves order, but models must be registered
@@ -21,6 +22,7 @@ class MessageArtifact(db.Model):
     audio_content_id = db.Column(db.Integer, db.ForeignKey('audio_content.id'), nullable=True)
     vocabulary_set_id = db.Column(db.Integer, db.ForeignKey('vocabulary_sets.id'), nullable=True)
     task_id = db.Column(db.Integer, db.ForeignKey('proposed_tasks.id'), nullable=True)
+    quiz_set_id = db.Column(db.Integer, db.ForeignKey('quiz_sets.id'), nullable=True)
 
     # Legacy / Common fields
     title = db.Column(db.String(255), nullable=True)
@@ -32,6 +34,7 @@ class MessageArtifact(db.Model):
     audio_content = db.relationship('AudioContent', backref='artifacts', uselist=False)
     vocabulary_set = db.relationship('VocabularySet', backref='artifacts', uselist=False)
     task = db.relationship('ProposedTask', backref='artifacts', uselist=False)
+    quiz_set = db.relationship('QuizSet', backref='artifacts', uselist=False)
 
     citations = db.relationship('Citation', backref='artifact', cascade="all, delete-orphan")
 
@@ -47,6 +50,8 @@ class MessageArtifact(db.Model):
             content_data['vocabulary'] = self.vocabulary_set.to_dict()
         if self.task:
             content_data['task'] = self.task.to_dict()
+        if self.quiz_set:
+            content_data['quiz'] = self.quiz_set.to_dict()
         
         content_data['title'] = self.title
         content_data['summary'] = self.summary

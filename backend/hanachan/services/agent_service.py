@@ -9,6 +9,7 @@ from models.content.flashcard import FlashcardSet, Flashcard
 from models.content.mindmap import Mindmap, MindmapNode
 from models.content.audio import AudioContent
 from models.content.vocabulary import VocabularySet, VocabularyItem
+from models.content.quiz import QuizSet, QuizQuestion, QuizOption
 from database.database import db
 
 class AgentService:
@@ -174,6 +175,62 @@ class AgentService:
 
                 new_artifact.vocabulary_set_id = vs.id
                 content_dto.vocabulary = {"id": vs.id, "title": a_title, "items": items_list}
+
+            elif a_type == "quiz":
+                # Create Quiz Set
+                qs = QuizSet(
+                    title=a_title,
+                    description=a_data.get("description"),
+                    creator_id=request_data.user_id,
+                    quiz_type=a_data.get("quizType", "quiz"),
+                    level=a_data.get("level"),
+                    skill=a_data.get("skill"),
+                    time_limit_minutes=a_data.get("timeLimitMinutes")
+                )
+                db.session.add(qs)
+                db.session.flush()
+                
+                # Create questions
+                questions_list = []
+                for idx, q in enumerate(a_data.get("questions", [])):
+                    question = QuizQuestion(
+                        set_id=qs.id,
+                        question_type=q.get("type", "multiple_choice"),
+                        content=q.get("content", ""),
+                        passage=q.get("passage"),
+                        audio_url=q.get("audioUrl"),
+                        correct_answer=q.get("correctAnswer", "a"),
+                        explanation=q.get("explanation", ""),
+                        skill=q.get("skill"),
+                        difficulty=q.get("difficulty", 3),
+                        order_index=idx
+                    )
+                    db.session.add(question)
+                    db.session.flush()
+                    
+                    # Add options
+                    for opt in q.get("options", []):
+                        option = QuizOption(
+                            question_id=question.id,
+                            option_id=opt.get("id", "a"),
+                            text=opt.get("text", ""),
+                            order_index=0
+                        )
+                        db.session.add(option)
+                    
+                    questions_list.append(q)
+                
+                new_artifact.quiz_set_id = qs.id
+                content_dto.quiz = {
+                    "id": qs.id, 
+                    "title": a_title, 
+                    "quizType": a_data.get("quizType", "quiz"),
+                    "level": a_data.get("level"),
+                    "skill": a_data.get("skill"),
+                    "timeLimitMinutes": a_data.get("timeLimitMinutes"),
+                    "questionCount": len(questions_list),
+                    "questions": questions_list
+                }
 
             db.session.add(new_artifact)
             db.session.flush()
