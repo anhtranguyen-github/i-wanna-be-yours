@@ -11,11 +11,12 @@ import {
     Search,
     MessageCircle,
     FolderOpen,
-    Settings,
-    User,
-    HelpCircle,
-    Moon,
-    LogOut,
+    Wrench,
+    Gamepad2,
+    Library,
+    BookOpen,
+    CalendarDays,
+    GraduationCap,
     FileText
 } from 'lucide-react';
 
@@ -34,12 +35,15 @@ const mockResources = [
     { id: 'r3', title: 'Kanji Study Set', type: 'flashcard' },
 ];
 
-// Utility icons configuration
-const utilityIcons = [
-    { icon: Settings, label: 'Settings', href: '/settings', action: 'link' },
-    { icon: HelpCircle, label: 'Help', href: '/help', action: 'link' },
-    { icon: Moon, label: 'Dark Mode', href: '#', action: 'toggle' },
-    { icon: User, label: 'Profile', href: '/user-dashboard', action: 'link' },
+// Main Navigation Icons (moved to footer for layout shift)
+const navIcons = [
+    { icon: MessageCircle, label: 'Chat', href: '/chat' },
+    { icon: Wrench, label: 'Tools', href: '/tools' },
+    { icon: Gamepad2, label: 'Game', href: '/game' },
+    { icon: Library, label: 'Library', href: '/library' },
+    { icon: BookOpen, label: 'Knowledge', href: '/knowledge-base' },
+    { icon: CalendarDays, label: 'Study Plan', href: '/study-plan' },
+    { icon: GraduationCap, label: 'Practice', href: '/practice' },
 ];
 
 interface CollapsibleSidebarProps {
@@ -141,9 +145,8 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                             <Link
                                 key={chat.id}
                                 href={`/chat/${chat.id}`}
-                                className={`block p-2.5 rounded-lg hover:bg-slate-50 transition-colors group ${
-                                    pathname === `/chat/${chat.id}` ? 'bg-brand-green/10 border-l-2 border-brand-green' : ''
-                                }`}
+                                className={`block p-2.5 rounded-lg hover:bg-slate-50 transition-colors group ${pathname === `/chat/${chat.id}` ? 'bg-brand-green/10 border-l-2 border-brand-green' : ''
+                                    }`}
                             >
                                 <p className="text-sm font-medium text-slate-700 truncate group-hover:text-brand-dark">
                                     {chat.title}
@@ -153,17 +156,8 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                         ))}
                     </div>
                 ) : (
-                    <div className="flex flex-col items-center py-2 space-y-2">
-                        <Link
-                            href="/chat"
-                            className={`p-2.5 rounded-lg hover:bg-slate-100 transition-colors ${
-                                pathname?.startsWith('/chat') ? 'bg-brand-green/10 text-brand-green' : 'text-slate-500 hover:text-brand-green'
-                            }`}
-                            title="Chats"
-                        >
-                            <MessageCircle size={20} />
-                        </Link>
-                    </div>
+                    /* In collapsed mode, chat icon is now in footer, so this area is just spacing or secondary indicators if needed */
+                    <div className="flex flex-col items-center py-2 space-y-2 opacity-0"></div>
                 )}
             </div>
 
@@ -200,65 +194,45 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                             ))}
                         </div>
                     </div>
-                ) : (
-                    <div className="flex flex-col items-center py-3">
-                        <Link
-                            href="/library"
-                            className={`p-2.5 rounded-lg hover:bg-slate-100 transition-colors ${
-                                pathname?.startsWith('/library') ? 'bg-brand-green/10 text-brand-green' : 'text-slate-500 hover:text-brand-green'
-                            }`}
-                            title="Resources"
-                        >
-                            <FolderOpen size={20} />
-                        </Link>
-                    </div>
-                )}
+                ) : null}
             </div>
 
-            {/* ===== FOOTER / UTILITY ICONS ===== */}
+            {/* ===== FOOTER / NAV ICONS ===== */}
             {/* IMPORTANT: Layout shifts from HORIZONTAL (expanded) to VERTICAL (collapsed) */}
             <div className="flex-shrink-0 border-t border-slate-100 p-2 bg-slate-50/50">
                 {isExpanded ? (
-                    /* ===== EXPANDED: Horizontal Row (flex-row, justify-between) ===== */
-                    <div className="flex items-center justify-between gap-1 animate-fadeIn">
-                        {utilityIcons.map((item, idx) => (
+                    /* ===== EXPANDED: Horizontal scrollable row for nav items ===== */
+                    <div className="flex items-center gap-1 overflow-x-auto no-scrollbar animate-fadeIn pb-1">
+                        {navIcons.map((item, idx) => (
                             <Link
                                 key={idx}
                                 href={item.href}
-                                className="flex-1 flex items-center justify-center p-2.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-700 transition-all duration-200 group"
+                                className={`flex-shrink-0 flex items-center justify-center p-2.5 rounded-lg transition-all duration-200 group ${pathname?.startsWith(item.href)
+                                        ? 'bg-brand-green text-white shadow-md'
+                                        : 'hover:bg-slate-200 text-slate-500 hover:text-brand-dark'
+                                    }`}
                                 title={item.label}
                             >
-                                <item.icon size={18} className="group-hover:scale-110 transition-transform" />
+                                <item.icon size={20} className="transition-transform group-hover:scale-110" />
                             </Link>
                         ))}
-                        {/* Logout - separate styling */}
-                        <button
-                            className="flex-1 flex items-center justify-center p-2.5 rounded-lg hover:bg-red-50 text-slate-500 hover:text-red-500 transition-all duration-200 group"
-                            title="Logout"
-                        >
-                            <LogOut size={18} className="group-hover:scale-110 transition-transform" />
-                        </button>
                     </div>
                 ) : (
-                    /* ===== COLLAPSED: Vertical Stack (flex-col, items-center) ===== */
-                    <div className="flex flex-col items-center gap-1 animate-fadeIn">
-                        {utilityIcons.map((item, idx) => (
+                    /* ===== COLLAPSED: Vertical Stack for nav items ===== */
+                    <div className="flex flex-col items-center gap-2 animate-fadeIn max-h-[50vh] overflow-y-auto no-scrollbar">
+                        {navIcons.map((item, idx) => (
                             <Link
                                 key={idx}
                                 href={item.href}
-                                className="p-2.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-700 transition-all duration-200 group"
+                                className={`p-2.5 rounded-lg transition-all duration-200 group ${pathname?.startsWith(item.href)
+                                        ? 'bg-brand-green text-white shadow-md'
+                                        : 'hover:bg-slate-100 text-slate-500 hover:text-brand-dark'
+                                    }`}
                                 title={item.label}
                             >
-                                <item.icon size={18} className="group-hover:scale-110 transition-transform" />
+                                <item.icon size={22} className="transition-transform group-hover:scale-110" />
                             </Link>
                         ))}
-                        {/* Logout */}
-                        <button
-                            className="p-2.5 rounded-lg hover:bg-red-50 text-slate-500 hover:text-red-500 transition-all duration-200 group"
-                            title="Logout"
-                        >
-                            <LogOut size={18} className="group-hover:scale-110 transition-transform" />
-                        </button>
                     </div>
                 )}
             </div>
