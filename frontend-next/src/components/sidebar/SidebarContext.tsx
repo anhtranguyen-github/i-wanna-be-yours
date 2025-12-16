@@ -8,8 +8,8 @@ export type SidebarState = 'collapsed' | 'expanded';
 
 // Width constants
 export const SIDEBAR_WIDTHS = {
-    collapsed: 72,
-    expanded: 280,
+    collapsed: 70,
+    expanded: 300,
 } as const;
 
 // Context interface

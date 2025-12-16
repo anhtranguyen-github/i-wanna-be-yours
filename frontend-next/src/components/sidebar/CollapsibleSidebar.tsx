@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useSidebar, SIDEBAR_WIDTHS } from './SidebarContext';
 import {
     ChevronsLeft,
     ChevronsRight,
@@ -17,12 +18,6 @@ import {
     LogOut,
     FileText
 } from 'lucide-react';
-
-// Width constants
-const SIDEBAR_WIDTHS = {
-    collapsed: 70,
-    expanded: 300,
-} as const;
 
 // Mock chat history data
 const mockChats = [
@@ -52,16 +47,12 @@ interface CollapsibleSidebarProps {
 }
 
 export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) {
-    const [isExpanded, setIsExpanded] = useState(true);
+    const { isExpanded, toggle, state } = useSidebar();
     const [chatSearch, setChatSearch] = useState('');
     const [resourceSearch, setResourceSearch] = useState('');
     const pathname = usePathname();
 
-    const toggle = useCallback(() => {
-        setIsExpanded(prev => !prev);
-    }, []);
-
-    const width = isExpanded ? SIDEBAR_WIDTHS.expanded : SIDEBAR_WIDTHS.collapsed;
+    const width = SIDEBAR_WIDTHS[state];
 
     // Filter chats based on search
     const filteredChats = mockChats.filter(chat =>
@@ -150,8 +141,9 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                             <Link
                                 key={chat.id}
                                 href={`/chat/${chat.id}`}
-                                className={`block p-2.5 rounded-lg hover:bg-slate-50 transition-colors group ${pathname === `/chat/${chat.id}` ? 'bg-brand-green/10 border-l-2 border-brand-green' : ''
-                                    }`}
+                                className={`block p-2.5 rounded-lg hover:bg-slate-50 transition-colors group ${
+                                    pathname === `/chat/${chat.id}` ? 'bg-brand-green/10 border-l-2 border-brand-green' : ''
+                                }`}
                             >
                                 <p className="text-sm font-medium text-slate-700 truncate group-hover:text-brand-dark">
                                     {chat.title}
@@ -164,8 +156,9 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     <div className="flex flex-col items-center py-2 space-y-2">
                         <Link
                             href="/chat"
-                            className={`p-2.5 rounded-lg hover:bg-slate-100 transition-colors ${pathname?.startsWith('/chat') ? 'bg-brand-green/10 text-brand-green' : 'text-slate-500 hover:text-brand-green'
-                                }`}
+                            className={`p-2.5 rounded-lg hover:bg-slate-100 transition-colors ${
+                                pathname?.startsWith('/chat') ? 'bg-brand-green/10 text-brand-green' : 'text-slate-500 hover:text-brand-green'
+                            }`}
                             title="Chats"
                         >
                             <MessageCircle size={20} />
@@ -211,8 +204,9 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     <div className="flex flex-col items-center py-3">
                         <Link
                             href="/library"
-                            className={`p-2.5 rounded-lg hover:bg-slate-100 transition-colors ${pathname?.startsWith('/library') ? 'bg-brand-green/10 text-brand-green' : 'text-slate-500 hover:text-brand-green'
-                                }`}
+                            className={`p-2.5 rounded-lg hover:bg-slate-100 transition-colors ${
+                                pathname?.startsWith('/library') ? 'bg-brand-green/10 text-brand-green' : 'text-slate-500 hover:text-brand-green'
+                            }`}
                             title="Resources"
                         >
                             <FolderOpen size={20} />
