@@ -50,7 +50,6 @@ const navIcons = [
     { icon: Wrench, label: 'Tools', href: '/tools' },
     { icon: Gamepad2, label: 'Game', href: '/game' },
     { icon: Library, label: 'Library', href: '/library' },
-    { icon: BookOpen, label: 'Knowledge', href: '/knowledge-base' },
     { icon: CalendarDays, label: 'Study Plan', href: '/study-plan' },
     { icon: GraduationCap, label: 'Practice', href: '/practice' },
 ];

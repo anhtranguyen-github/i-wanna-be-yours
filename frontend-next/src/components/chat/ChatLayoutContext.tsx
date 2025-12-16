@@ -7,6 +7,13 @@ export type LeftSidebarState = 'collapsed' | 'expanded';
 export type RightSidebarState = 'collapsed' | 'minimized' | 'expanded';
 export type Viewport = 'desktop' | 'tablet' | 'mobile';
 
+// Artifact type definition
+export interface ActiveArtifact {
+    id: string;
+    type: 'flashcard' | 'quiz' | 'vocabulary' | 'mindmap' | 'document' | string;
+    title: string;
+}
+
 // Width constants
 export const SIDEBAR_WIDTHS = {
     left: {
@@ -14,9 +21,9 @@ export const SIDEBAR_WIDTHS = {
         expanded: 280,
     },
     right: {
-        collapsed: 40,
-        minimized: 280,
-        expanded: 440,
+        collapsed: 48,
+        minimized: 300,
+        expanded: 800, // Maximized for artifact editing
     }
 } as const;
 
@@ -25,6 +32,7 @@ interface ChatLayoutState {
     leftSidebar: LeftSidebarState;
     rightSidebar: RightSidebarState;
     viewport: Viewport;
+    activeArtifact: ActiveArtifact | null;
 }
 
 // Context interface
@@ -34,6 +42,8 @@ interface ChatLayoutContextType extends ChatLayoutState {
     toggleLeftSidebar: () => void;
     toggleRightSidebar: () => void;
     expandRightSidebar: () => void;
+    setActiveArtifact: (artifact: ActiveArtifact | null) => void;
+    openArtifact: (artifact: ActiveArtifact) => void;
 }
 
 const ChatLayoutContext = createContext<ChatLayoutContextType | null>(null);
@@ -71,14 +81,17 @@ function validateState(
         }
     }
 
-    // Tablet: expanded + expanded not allowed
+    // Tablet: expanded + expanded not allowed? Allow for now but logic might need tweak
     if (viewport === 'tablet') {
         if (left === 'expanded' && right === 'expanded') {
-            return { left: 'expanded', right: 'minimized' };
+            // Priority to right expand if active
+            return { left: 'collapsed', right: 'expanded' };
         }
     }
 
-    // Desktop: all states allowed
+    // Desktop: If right is expanded (max), force left collapsed?
+    // Maybe allow both if screen is huge ( > 1600)
+    // For now, let's keep logic simple
     return { left, right };
 }
 
@@ -90,6 +103,7 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
     const [leftSidebar, setLeftSidebarState] = useState<LeftSidebarState>('expanded');
     const [rightSidebar, setRightSidebarState] = useState<RightSidebarState>('minimized');
     const [viewport, setViewport] = useState<Viewport>('desktop');
+    const [activeArtifact, setActiveArtifactState] = useState<ActiveArtifact | null>(null);
 
     // Initialize viewport on mount
     useEffect(() => {
@@ -115,7 +129,13 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
     }, [rightSidebar, viewport]);
 
     const setRightSidebar = useCallback((state: RightSidebarState) => {
-        const validated = validateState(leftSidebar, state, viewport);
+        // If expanding right sidebar to max, maybe auto-collapse left sidebar on smaller desktop?
+        let nextLeft = leftSidebar;
+        if (state === 'expanded' && viewport !== 'desktop') {
+             nextLeft = 'collapsed';
+        }
+        
+        const validated = validateState(nextLeft, state, viewport);
         setRightSidebarState(validated.right);
         if (validated.left !== leftSidebar) setLeftSidebarState(validated.left);
     }, [leftSidebar, viewport]);
@@ -125,7 +145,6 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
     }, [leftSidebar, setLeftSidebar]);
 
     const toggleRightSidebar = useCallback(() => {
-        // Cycle: collapsed -> minimized -> expanded -> collapsed
         const next: Record<RightSidebarState, RightSidebarState> = {
             collapsed: 'minimized',
             minimized: 'expanded',
@@ -142,17 +161,29 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
         }
     }, [rightSidebar, setRightSidebar]);
 
+    const openArtifact = useCallback((artifact: ActiveArtifact) => {
+        setActiveArtifactState(artifact);
+        setRightSidebar('expanded');
+        // Optionally collapse left sidebar
+        if (window.innerWidth < 1600) {
+            setLeftSidebar('collapsed');
+        }
+    }, [setRightSidebar, setLeftSidebar]);
+
     return (
         <ChatLayoutContext.Provider
             value={{
                 leftSidebar,
                 rightSidebar,
                 viewport,
+                activeArtifact,
                 setLeftSidebar,
                 setRightSidebar,
                 toggleLeftSidebar,
                 toggleRightSidebar,
                 expandRightSidebar,
+                setActiveArtifact: setActiveArtifactState,
+                openArtifact,
             }}
         >
             {children}

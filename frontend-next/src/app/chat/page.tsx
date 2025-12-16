@@ -31,21 +31,18 @@ export default function ChatPage() {
     );
 }
 
+// Import SIDEBAR_WIDTHS from context
+import { SIDEBAR_WIDTHS } from '@/components/chat/ChatLayoutContext';
+
 function ChatRightSidebarWrapper() {
     // Import the hook dynamically to avoid SSR issues
     const { useChatLayout } = require('@/components/chat/ChatLayoutContext');
     const { rightSidebar } = useChatLayout();
 
-    const SIDEBAR_WIDTHS = {
-        collapsed: 40,
-        minimized: 280,
-        expanded: 440,
-    };
-
     return (
         <aside
-            className="flex-shrink-0 h-full bg-white border-l border-slate-100 transition-all duration-300 ease-out"
-            style={{ width: SIDEBAR_WIDTHS[rightSidebar] }}
+            className="flex-shrink-0 h-full bg-white border-l border-slate-100 transition-all duration-300 ease-out z-20 shadow-xl"
+            style={{ width: SIDEBAR_WIDTHS.right[rightSidebar] }}
         >
             <ChatRightSidebar />
         </aside>
