@@ -93,4 +93,4 @@ With consistent practice and exposure, you'll become more comfortable using **�
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

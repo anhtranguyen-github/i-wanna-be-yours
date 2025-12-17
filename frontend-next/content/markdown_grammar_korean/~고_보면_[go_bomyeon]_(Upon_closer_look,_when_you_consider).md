@@ -107,4 +107,4 @@ So, **~고 보면** literally translates to "**and if you see**" or "**and upon 
 Feel free to practice by making your own sentences using **~고 보면**!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

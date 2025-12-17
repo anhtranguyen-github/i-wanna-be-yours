@@ -141,4 +141,4 @@ It conveys a non-exhaustive list, often equivalent to "things like" or "such as"
 By understanding and practicing **~라든지**, you can effectively express a range of options and make your Korean speech more natural and versatile. Keep practicing by incorporating this grammar point into your everyday conversations.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

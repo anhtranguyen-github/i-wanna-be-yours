@@ -112,4 +112,4 @@ But typically, we attach **~라는 것이다** directly to the clause we want to
 3. "What he is saying is that we need to be cautious."
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

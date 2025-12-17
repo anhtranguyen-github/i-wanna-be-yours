@@ -96,4 +96,4 @@ When using **-고**, the level of politeness is determined by the verb endings i
 By mastering **-고**, you enhance your ability to create more complex and fluent sentences in Korean. Keep practicing by forming your own sentences using **-고**!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

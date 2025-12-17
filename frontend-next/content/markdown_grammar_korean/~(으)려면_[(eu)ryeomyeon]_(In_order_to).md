@@ -94,4 +94,4 @@ In Korean culture, expressing intentions and conditions politely is important. U
 Feel free to practice by creating your own sentences using **~(으)려면** to solidify your understanding!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

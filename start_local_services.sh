@@ -5,7 +5,7 @@ set -e # Exit immediately if a command exits with a non-zero status
 
 PROJECT_ROOT="$(pwd)"
 LOG_ROOT="$PROJECT_ROOT/logs"
-DB_ROOT="$HOME/hanabira_data/mongo-main"
+DB_ROOT="$HOME/hanachan_data/mongo-main"
 MONGO_LOG="$LOG_ROOT/mongo/mongo.log"
 
 # Array to hold background process IDs for cleanup

@@ -106,4 +106,4 @@ The structure of **~할 바에** is as follows:
 By understanding and practicing **~할 바에**, you can more naturally express preferences and choices in Korean. Remember to consider the context and the nuances of politeness when using this grammar point.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

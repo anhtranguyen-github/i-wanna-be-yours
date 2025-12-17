@@ -128,4 +128,4 @@ By understanding and practicing **Verbる なり**, you'll enhance your ability 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

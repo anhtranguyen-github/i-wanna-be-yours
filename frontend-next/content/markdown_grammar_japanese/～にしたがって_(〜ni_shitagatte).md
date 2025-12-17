@@ -90,4 +90,4 @@ By understanding and practicing **～にしたがって**, you'll enhance your a
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

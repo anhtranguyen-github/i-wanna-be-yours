@@ -122,4 +122,4 @@ Try creating your own sentences using **~이/가 아니다**:
 3. **He is not my brother.**
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

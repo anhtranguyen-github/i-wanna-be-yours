@@ -101,4 +101,4 @@ In Japanese culture, modesty and humility are valued traits. Pretending to be mo
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -135,4 +135,4 @@ By mastering **〜から見ると**, you can express various perspectives and en
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

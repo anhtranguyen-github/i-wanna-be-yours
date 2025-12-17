@@ -127,4 +127,4 @@ By mastering **～に比べて**, you'll be able to express comparisons effectiv
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

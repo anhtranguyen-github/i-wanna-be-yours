@@ -140,4 +140,4 @@ In Korean, the structure **~다는 것** is used to express "the fact that..." b
 By understanding and practicing **~다는 것**, you can more effectively express and emphasize facts in Korean, enhancing both your written and spoken communication.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

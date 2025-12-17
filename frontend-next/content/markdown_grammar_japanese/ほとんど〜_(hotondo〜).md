@@ -126,4 +126,4 @@ By mastering **ほとんど〜**, you can express nuances in quantity and freque
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

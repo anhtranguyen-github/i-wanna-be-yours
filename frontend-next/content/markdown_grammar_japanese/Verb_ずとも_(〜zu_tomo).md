@@ -91,4 +91,4 @@ Both sentences mean "I understand even if you don't say it," but **ずとも** a
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

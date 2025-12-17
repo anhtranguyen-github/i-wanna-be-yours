@@ -82,4 +82,4 @@ The use of **～気味** is neutral and can be used in both formal and informal 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

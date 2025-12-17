@@ -147,4 +147,4 @@ By understanding and using **Verb ように言う**, you'll improve your ability
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

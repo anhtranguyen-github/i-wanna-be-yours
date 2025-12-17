@@ -106,4 +106,4 @@ By understanding **～ものとして**, you can enhance your comprehension of f
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -118,4 +118,4 @@ By understanding and using **Noun というところだ**, you can add nuance to
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

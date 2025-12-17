@@ -130,4 +130,4 @@ While **「Noun の手前」** is itself an idiomatic expression, it's often use
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

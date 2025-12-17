@@ -127,4 +127,4 @@ By understanding and practicing **～ほど～ (〜hodo〜)**, you'll enhance yo
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

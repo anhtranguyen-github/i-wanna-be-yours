@@ -138,4 +138,4 @@ The structure of **~뿐이다** varies slightly depending on whether it is attac
 
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

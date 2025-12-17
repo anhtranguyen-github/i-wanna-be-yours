@@ -124,4 +124,4 @@ By understanding the usage of **にて**, you can enhance your formal Japanese c
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

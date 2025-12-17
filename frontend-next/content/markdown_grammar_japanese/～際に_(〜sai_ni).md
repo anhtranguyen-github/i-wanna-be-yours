@@ -86,4 +86,4 @@ Try creating your own sentences using **～際に**, considering the formal cont
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

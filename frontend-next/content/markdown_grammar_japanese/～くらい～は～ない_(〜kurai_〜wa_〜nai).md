@@ -124,4 +124,4 @@ By mastering **～くらい～はない**, you can effectively express strong co
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

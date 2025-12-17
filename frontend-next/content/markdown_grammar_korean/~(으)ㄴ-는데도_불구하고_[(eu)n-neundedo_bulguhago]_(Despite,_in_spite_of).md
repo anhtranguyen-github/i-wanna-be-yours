@@ -128,4 +128,4 @@ The structure of **~(으)ㄴ/는데도 불구하고** depends on the type of ver
 By mastering **~(으)ㄴ/는데도 불구하고**, you enhance your ability to express complex contrasts and unexpected outcomes in Korean, bringing greater depth and nuance to your communication.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -144,4 +144,4 @@ By mastering **Noun の 嫌いがある**, you can articulate observations about
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

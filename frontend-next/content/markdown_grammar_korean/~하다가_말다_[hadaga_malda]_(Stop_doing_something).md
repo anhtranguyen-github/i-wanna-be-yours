@@ -132,4 +132,4 @@ While **~하다가 말다** is a straightforward grammatical construction, it ca
 By understanding and practicing **~하다가 말다**, you can more accurately describe situations where actions were begun but not finished, adding depth to your Korean communication skills.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

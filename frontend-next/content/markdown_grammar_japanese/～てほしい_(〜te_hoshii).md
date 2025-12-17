@@ -116,4 +116,4 @@ By understanding and using **～てほしい**, you can express your desires reg
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

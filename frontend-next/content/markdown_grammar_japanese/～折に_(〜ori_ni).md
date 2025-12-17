@@ -95,4 +95,4 @@ Feel free to revisit this guide to strengthen your understanding of ～折に an
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

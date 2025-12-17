@@ -120,4 +120,4 @@ By understanding and using **～たら いかがですか**, you can make polite
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

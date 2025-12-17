@@ -124,7 +124,7 @@ export default function LoginModal({
                             )}
                         </div>
                         <h2 className="text-2xl font-black text-brand-dark">
-                            {title || (isLogin ? 'Welcome Back!' : 'Join Hanabira')}
+                            {title || (isLogin ? 'Welcome Back!' : 'Join hanachan')}
                         </h2>
                         <p className="text-gray-500 mt-2">{message}</p>
                     </div>
@@ -132,8 +132,8 @@ export default function LoginModal({
                     {/* Error message */}
                     {error && (
                         <div className={`p-3 rounded-xl mb-4 text-sm font-bold ${error.includes('successful')
-                                ? 'bg-green-50 border border-green-200 text-green-600'
-                                : 'bg-red-50 border border-red-200 text-red-600'
+                            ? 'bg-green-50 border border-green-200 text-green-600'
+                            : 'bg-red-50 border border-red-200 text-red-600'
                             }`}>
                             {error}
                         </div>

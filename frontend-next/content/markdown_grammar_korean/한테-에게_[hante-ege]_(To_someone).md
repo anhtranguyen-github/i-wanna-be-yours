@@ -140,4 +140,4 @@ Using the incorrect particle can be considered rude or inappropriate, so it's im
 By mastering **한테** and **에게**, you'll enhance your Korean communication skills and navigate social interactions more effectively. Keep practicing with different nouns and contexts to become more comfortable with their usage.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

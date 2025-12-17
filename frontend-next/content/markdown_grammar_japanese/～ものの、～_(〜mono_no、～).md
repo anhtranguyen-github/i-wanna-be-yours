@@ -94,4 +94,4 @@ This expression acknowledges a fact or situation in the first clause and then pr
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -136,4 +136,4 @@ By mastering **ところで**, you'll be able to navigate conversations more nat
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

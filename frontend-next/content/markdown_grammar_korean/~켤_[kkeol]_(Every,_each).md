@@ -91,4 +91,4 @@ In Korean culture, sharing and fair distribution are valued. Using "~켤" convey
 By mastering "~켤," you enhance your ability to discuss distributions and frequencies in Korean, bringing you one step closer to fluency!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -109,4 +109,4 @@ The structure **~을 통해** itself remains the same across different levels of
 Feel free to revisit this lesson to reinforce your understanding of **~을 통해**. Practice by creating your own sentences using this grammar point!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

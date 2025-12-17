@@ -109,4 +109,4 @@ In Japanese communication, there is a tendency to avoid absolute statements to m
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

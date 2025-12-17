@@ -96,4 +96,4 @@ The use of **~커녕** itself doesn't change with politeness levels, but the sur
 By understanding and practicing **~커녕**, you can express contrasts and emphasize the improbability of situations effectively in Korean. Remember to pay attention to the structure and use in appropriate contexts to ensure your sentences sound natural.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

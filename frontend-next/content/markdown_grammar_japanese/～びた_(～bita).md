@@ -100,4 +100,4 @@ By understanding and practicing **～びた**, you'll be able to add depth to yo
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

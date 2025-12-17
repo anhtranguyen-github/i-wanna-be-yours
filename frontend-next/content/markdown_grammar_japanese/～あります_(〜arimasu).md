@@ -185,4 +185,4 @@ By understanding and practicing the usage of **あります**, you'll be able to
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

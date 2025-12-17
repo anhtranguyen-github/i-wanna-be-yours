@@ -80,4 +80,4 @@ By understanding and practicing ～とく, you'll enhance your conversational Ja
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

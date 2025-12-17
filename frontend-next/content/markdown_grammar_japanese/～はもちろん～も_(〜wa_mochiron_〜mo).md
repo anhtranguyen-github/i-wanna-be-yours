@@ -111,4 +111,4 @@ This grammar pattern is used to indicate that the first item is obvious or given
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

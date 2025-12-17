@@ -98,4 +98,4 @@ The structure for using **~자** is as follows:
 Congratulations! You've learned how to use **~자** to express immediate sequential actions in Korean.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -90,4 +90,4 @@ The structure combines the verb stem with **-ㄹ/을 거예요**:
 By mastering **~할 거예요**, you can confidently talk about your future plans in Korean!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

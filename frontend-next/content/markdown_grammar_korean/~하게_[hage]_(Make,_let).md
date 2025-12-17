@@ -115,4 +115,4 @@ The formation of **~하게 하다** involves attaching **-게 하다** to the ve
 By understanding and practicing **~하게 하다**, you'll enhance your ability to express causative actions in Korean, making your communication more natural and effective.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

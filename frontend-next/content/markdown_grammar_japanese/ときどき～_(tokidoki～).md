@@ -129,4 +129,4 @@ By understanding and practicing the use of **ときどき**, you'll enhance your
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

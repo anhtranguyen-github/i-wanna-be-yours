@@ -102,4 +102,4 @@ Adjusting verb endings in the main clause can convey different levels of politen
 By understanding and practicing **~서야**, you can express conditional sequences more naturally in Korean. Keep practicing by creating sentences relevant to your daily life!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

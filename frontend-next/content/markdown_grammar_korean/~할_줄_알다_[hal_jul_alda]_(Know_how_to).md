@@ -98,4 +98,4 @@ Knowing how to do traditional activities (like making kimchi or playing traditio
 Feel free to revisit the lesson for any clarifications, and practice by creating sentences using **~할 줄 알다** to enhance your understanding!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -96,4 +96,4 @@ In Korean culture, diligence and meeting conditions are highly valued. Expressio
 By understanding and practicing **~하기만 하면**, you enhance your ability to express conditions and expectations effectively in Korean. Keep practicing by forming your own sentences, and soon this grammar point will become a natural part of your Korean language skills!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -92,4 +92,4 @@ While **足りない (tarinai)** is appropriate in casual conversation, in forma
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

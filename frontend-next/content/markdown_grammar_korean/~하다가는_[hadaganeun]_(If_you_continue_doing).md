@@ -84,4 +84,4 @@ The pattern **~하다가는** translates to **"if (someone) keeps doing..."** or
 Feel free to revisit the examples and notes to reinforce your understanding of **~하다가는**. Practice by creating your own sentences using this grammar pattern.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

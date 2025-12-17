@@ -95,4 +95,4 @@ The suffix **~아/어 보이다** attaches to the stem of descriptive verbs (adj
 3. Corrected: **그는 피곤해 보여요.**
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

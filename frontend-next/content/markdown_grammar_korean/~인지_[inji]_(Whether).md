@@ -190,4 +190,4 @@ Attach **-인지** directly to the noun.
 By understanding and practicing **~인지**, you'll be able to express curiosity and form indirect questions naturally in Korean. Keep practicing with different verbs, adjectives, and nouns to become comfortable with this grammar point.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -110,4 +110,4 @@ By mastering **まだ〜ないです**, you'll enhance your ability to discuss p
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

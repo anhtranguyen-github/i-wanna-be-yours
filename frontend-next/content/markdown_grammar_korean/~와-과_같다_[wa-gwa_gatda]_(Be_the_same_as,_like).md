@@ -117,4 +117,4 @@ Korean language has different levels of politeness:
 By mastering **~와/과 같다**, you enhance your ability to draw parallels and express similarities in Korean, making your communication more vivid and precise. Practice by creating your own sentences comparing different nouns to reinforce this grammar point.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

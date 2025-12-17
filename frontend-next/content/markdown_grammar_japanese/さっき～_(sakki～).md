@@ -115,4 +115,4 @@ By mastering **さっき**, you enhance your ability to discuss recent past even
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -88,4 +88,4 @@ To form this pattern, attach **~는 방향으로** to the stem of an action verb
 Feel free to revisit the examples and explanations to strengthen your understanding of **~는 방향으로**!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

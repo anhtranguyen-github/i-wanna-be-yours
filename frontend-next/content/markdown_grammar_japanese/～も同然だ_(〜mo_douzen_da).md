@@ -120,4 +120,4 @@ By mastering **～も同然だ**, you can add nuance to your Japanese expression
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

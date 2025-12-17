@@ -126,4 +126,4 @@ While **~는지라** itself may not be part of idiomatic expressions, its usage 
 By understanding and practicing **~는지라**, you can enhance your ability to read and write formal Korean texts, as well as appreciate the nuances of the language in literature and formal contexts.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

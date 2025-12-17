@@ -115,4 +115,4 @@ The expression **~할 것 같다 [hal geot gatda]** is used in Korean to express
 By mastering **~할 것 같다**, you can express your thoughts and predictions about future events more naturally in Korean. Practice by making your own sentences about what you think might happen!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

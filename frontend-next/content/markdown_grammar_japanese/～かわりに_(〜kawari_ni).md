@@ -126,4 +126,4 @@ By integrating **～かわりに** into your vocabulary, you can express complex
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -113,4 +113,4 @@ The formation of **～折には** depends on the preceding word:
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

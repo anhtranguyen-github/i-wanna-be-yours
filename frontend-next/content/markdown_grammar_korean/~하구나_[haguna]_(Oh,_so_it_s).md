@@ -106,4 +106,4 @@ In Korean culture, it's important to use language that matches the social contex
 Feel free to practice making your own sentences using **~구나**, and pay attention to the context in which it's appropriate to use this expression!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

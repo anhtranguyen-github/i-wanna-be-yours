@@ -107,4 +107,4 @@ The structure combines the verb stem with the past tense marker and the conditio
    - **Answer**: **~았/었으면 좋겠다** expresses a stronger wish about a situation contrary to reality, while **~으면 좋겠다** expresses a general hope for something possible.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

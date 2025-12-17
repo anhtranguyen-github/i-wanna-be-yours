@@ -124,4 +124,4 @@ By mastering **いつか**, you can express your hopes and plans gracefully in J
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

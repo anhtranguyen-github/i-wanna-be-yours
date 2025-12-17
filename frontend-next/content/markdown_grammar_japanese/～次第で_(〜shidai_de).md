@@ -82,4 +82,4 @@ By understanding and practicing **～次第で**, you'll be able to express depe
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

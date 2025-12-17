@@ -104,4 +104,4 @@ While **~했기에** itself is a grammatical structure rather than an idiom, und
 By understanding and practicing **~했기에**, you can enhance your ability to express reasons and causes accurately in formal Korean settings. Remember to pay attention to the context and formality level when choosing the appropriate grammatical structure.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

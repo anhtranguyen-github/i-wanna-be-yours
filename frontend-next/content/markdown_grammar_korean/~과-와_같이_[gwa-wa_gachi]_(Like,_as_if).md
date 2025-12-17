@@ -101,4 +101,4 @@ In Korean culture, expressing comparisons using **~과/와 같이** adds vividne
 Feel free to practice by making your own sentences using **~과/와 같이** to describe similarities!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

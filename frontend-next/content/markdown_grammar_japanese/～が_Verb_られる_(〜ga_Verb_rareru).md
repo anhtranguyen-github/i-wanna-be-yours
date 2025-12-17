@@ -123,4 +123,4 @@ Change the ending う sound to the corresponding あ sound + れる
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

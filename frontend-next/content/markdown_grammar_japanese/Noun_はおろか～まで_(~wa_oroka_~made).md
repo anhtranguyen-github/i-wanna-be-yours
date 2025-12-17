@@ -118,4 +118,4 @@ Try creating your own sentences using **Noun はおろか Noun まで** to descr
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

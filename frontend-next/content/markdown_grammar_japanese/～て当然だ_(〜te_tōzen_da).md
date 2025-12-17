@@ -131,4 +131,4 @@ Mainichi renshū shiterun dakara, umaku naru no wa tōzen da yo.
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

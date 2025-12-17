@@ -90,4 +90,4 @@ Now that you've learned about **～っぽい**, try incorporating it into your d
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -142,4 +142,4 @@ By understanding and practicing **すこしも〜ない**, you can add emphasis 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

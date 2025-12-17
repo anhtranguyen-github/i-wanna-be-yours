@@ -100,4 +100,4 @@ Practice using **たとえ～ても** in your daily conversations to become more
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

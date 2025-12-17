@@ -92,4 +92,4 @@ The combination of **이다 + -ㄴ즉** becomes **인즉**.
 By understanding and practicing **~인즉**, you can enhance your Korean language skills, especially in formal writing and speech.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -94,4 +94,4 @@ Feel free to practice by converting simple sentences into ones that use ～ん�
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

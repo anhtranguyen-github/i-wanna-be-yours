@@ -105,4 +105,4 @@ The structure varies slightly depending on whether the verb stem ends in a conso
 By mastering **~지요/죠**, you enhance your ability to engage in more natural and agreeable Korean conversations.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

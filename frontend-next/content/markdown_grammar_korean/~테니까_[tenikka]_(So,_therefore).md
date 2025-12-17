@@ -102,4 +102,4 @@ Both **~테니까** and **~으니까** express reasons or causes, but there are 
 Feel free to practice by creating your own sentences using **~테니까** to express reasons for future actions!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -123,4 +123,4 @@ By understanding and practicing **Noun を もらう**, you'll be better equippe
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

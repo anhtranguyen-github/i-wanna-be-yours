@@ -93,4 +93,4 @@ By understanding **Verbるがままに**, you can express actions done in accord
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -125,4 +125,4 @@ By mastering this phrase, you'll enhance your ability to learn new words and eng
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

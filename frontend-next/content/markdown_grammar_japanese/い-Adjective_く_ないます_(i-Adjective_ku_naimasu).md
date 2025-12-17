@@ -94,4 +94,4 @@ Feel free to practice by creating your own sentences using the pattern **い-adj
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

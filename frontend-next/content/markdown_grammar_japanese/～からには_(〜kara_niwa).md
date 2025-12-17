@@ -109,4 +109,4 @@ Practice using **～からには** in your own sentences to solidify your unders
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

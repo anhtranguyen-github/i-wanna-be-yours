@@ -86,4 +86,4 @@ Verb Stem + 고 말다
 **Congratulations!** You've learned how to use **~고 말다** to express actions that end up happening, often with a sense of inevitability or regret.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

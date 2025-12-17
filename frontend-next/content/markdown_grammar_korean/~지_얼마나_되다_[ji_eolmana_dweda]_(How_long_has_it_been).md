@@ -98,4 +98,4 @@ Understanding and using appropriate levels of politeness is crucial in Korean cu
 By mastering **~지 얼마나 되다**, you can effectively communicate and inquire about time durations in Korean, enhancing both your conversational skills and cultural understanding.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

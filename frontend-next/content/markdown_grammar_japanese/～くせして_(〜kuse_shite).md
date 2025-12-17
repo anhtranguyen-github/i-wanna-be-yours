@@ -121,4 +121,4 @@ By understanding **～くせして**, you can express nuances of criticism or fr
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

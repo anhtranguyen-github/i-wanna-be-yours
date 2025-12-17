@@ -126,4 +126,4 @@ Using the correct formality level is crucial in Korean culture to show respect a
 By understanding and practicing **진행하다**, you'll be better equipped to discuss ongoing actions and plans in Korean, enhancing both your conversational and formal communication skills.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

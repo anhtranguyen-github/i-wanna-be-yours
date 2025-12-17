@@ -106,4 +106,4 @@ By mastering **Noun に限る**, you can confidently express strong preferences 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

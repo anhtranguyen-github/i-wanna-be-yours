@@ -142,4 +142,4 @@ By understanding how to use **～おかげで (〜okagede)**, you can more natur
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -102,4 +102,4 @@ In Korean, expressing a change in plans or an interrupted intention is common in
 By mastering **~(으)려다가**, you'll be able to express nuanced changes in your intentions and plans, making your Korean communication more natural and versatile. Keep practicing with different verbs and scenarios to internalize this grammar pattern!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

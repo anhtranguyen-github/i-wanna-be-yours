@@ -104,4 +104,4 @@ These phrases are often paired with **～こととて** to enhance the apologeti
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

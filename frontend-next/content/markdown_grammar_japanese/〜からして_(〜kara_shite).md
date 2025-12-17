@@ -105,4 +105,4 @@ The expression **〜からして** is neutral in terms of politeness and can be 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

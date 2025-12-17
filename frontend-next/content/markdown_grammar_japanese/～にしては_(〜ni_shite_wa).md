@@ -106,4 +106,4 @@ By understanding and practicing **～にしては**, you can more accurately exp
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

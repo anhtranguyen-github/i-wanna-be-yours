@@ -134,4 +134,4 @@ By understanding and practicing **～びる**, you'll be able to express nuanced
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

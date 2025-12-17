@@ -128,4 +128,4 @@ In Japanese culture, it's important to maintain harmony (和, *wa*) and avoid di
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

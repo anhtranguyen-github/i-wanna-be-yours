@@ -107,4 +107,4 @@ Putting it all together, **[Person]から言わせれば** literally means "if y
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

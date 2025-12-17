@@ -118,4 +118,4 @@ In this lesson, we'll explore the Korean grammar point **~라도 [rado]**, which
 By mastering **~라도**, you'll enhance your ability to communicate nuances in Korean, expressing flexibility and politeness in various situations. Keep practicing with different words to become more comfortable with its usage!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

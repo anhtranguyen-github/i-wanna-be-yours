@@ -106,4 +106,4 @@ By understanding and practicing **～極まりない**, you'll be able to expres
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -118,4 +118,4 @@ By understanding and practicing the use of **〜ながら**, you can add complex
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

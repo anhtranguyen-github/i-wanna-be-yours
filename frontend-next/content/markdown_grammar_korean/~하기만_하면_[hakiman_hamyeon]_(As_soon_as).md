@@ -106,4 +106,4 @@ The grammar itself is neutral but can be adapted to different levels of politene
 Happy studying! Remember, practicing with various verbs and contexts will help solidify your understanding of **~하기만 하면**.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

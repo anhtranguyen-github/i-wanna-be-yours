@@ -114,4 +114,4 @@ The term **かい (甲斐)** means "effect", "result", or "worth". By adding **�
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

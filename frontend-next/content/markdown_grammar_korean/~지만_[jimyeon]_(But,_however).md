@@ -148,4 +148,4 @@ While **~지만** explicitly denotes contrast similar to "but," **~는데/은데
 By understanding and practicing the use of **~지만**, you can effectively express contrasting ideas in Korean, enhancing both your written and spoken communication skills.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

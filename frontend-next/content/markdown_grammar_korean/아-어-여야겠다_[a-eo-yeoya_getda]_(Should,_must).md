@@ -123,4 +123,4 @@ In Korean culture, expressing one’s intentions with consideration is important
 By mastering **아/어/여야겠다**, you can effectively express your intentions and obligations, making your Korean sound more natural and fluent.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

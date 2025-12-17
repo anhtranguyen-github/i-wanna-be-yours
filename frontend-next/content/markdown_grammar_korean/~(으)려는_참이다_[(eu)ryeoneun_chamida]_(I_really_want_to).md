@@ -119,4 +119,4 @@ In Korean culture, expressing intentions clearly and politely is important in so
 Keep practicing by creating your own sentences using **~(으)려는 참이다**. This will help solidify your understanding and make your Korean conversations more natural!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

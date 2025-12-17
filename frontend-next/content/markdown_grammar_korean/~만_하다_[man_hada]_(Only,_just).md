@@ -80,4 +80,4 @@ The structure involves attaching **~만 하다** to a noun:
 By mastering **~만 하다**, you can make more vivid and precise comparisons in Korean, enhancing both your descriptive skills and cultural understanding.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

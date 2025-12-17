@@ -116,4 +116,4 @@ In this lesson, we'll explore the Japanese grammar point **～一方 (〜ippou)*
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

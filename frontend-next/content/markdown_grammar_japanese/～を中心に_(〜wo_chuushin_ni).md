@@ -96,4 +96,4 @@ By understanding and practicing **～を中心に**, you'll be able to express t
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

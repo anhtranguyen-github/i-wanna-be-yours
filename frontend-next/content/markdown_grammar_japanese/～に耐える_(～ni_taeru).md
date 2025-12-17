@@ -84,4 +84,4 @@ Feel free to review this lesson and practice using ～に耐える in your own s
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

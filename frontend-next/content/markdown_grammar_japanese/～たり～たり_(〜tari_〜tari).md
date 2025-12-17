@@ -114,4 +114,4 @@ By mastering the ～たり～たり pattern, you can express a range of activiti
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

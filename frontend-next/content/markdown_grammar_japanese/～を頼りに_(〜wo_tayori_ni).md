@@ -107,4 +107,4 @@ By understanding and practicing **～を頼りに**, you can express reliance an
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

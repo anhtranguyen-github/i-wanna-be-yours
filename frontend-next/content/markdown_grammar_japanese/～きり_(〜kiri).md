@@ -104,4 +104,4 @@ By mastering **～きり**, you can add depth to your Japanese by expressing lim
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

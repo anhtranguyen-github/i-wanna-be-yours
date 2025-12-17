@@ -117,4 +117,4 @@ By understanding **～てくれと**, you can accurately convey when someone has
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -118,4 +118,4 @@ By mastering **「Noun にする」**, you'll be able to communicate your decisi
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

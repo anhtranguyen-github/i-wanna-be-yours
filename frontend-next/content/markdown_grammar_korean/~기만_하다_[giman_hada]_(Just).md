@@ -101,4 +101,4 @@ The grammar pattern **~기만 하다** is used in Korean to express the meaning 
 By understanding and practicing **~기만 하다**, you'll be able to express actions that are done exclusively, enhancing your ability to convey nuances in Korean.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -99,4 +99,4 @@ In this lesson, we'll explore the Korean grammar point **~는 측에서** (*~neu
 2. **~는 측에서** emphasizes the perspective or side considering the opinion, while **~의 입장에서** implies being in someone's position or shoes.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

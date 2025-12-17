@@ -120,4 +120,4 @@ For **Action Verbs**:
    > *Because **두드리다** ends with a consonant sound "ㄹ" in **두드리**.*
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

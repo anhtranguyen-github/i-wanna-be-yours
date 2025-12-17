@@ -113,4 +113,4 @@ The verb **버리다** is conjugated to match the speech level:
 By understanding and practicing **~아/어 버리다**, you'll be able to express subtle emotions related to the completion of actions, making your Korean more natural and expressive.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

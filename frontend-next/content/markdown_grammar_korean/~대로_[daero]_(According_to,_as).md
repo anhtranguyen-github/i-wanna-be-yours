@@ -111,4 +111,4 @@ In this lesson, we'll explore the Korean grammar point **~대로** (*daero*), wh
 By mastering **~대로**, you enhance your ability to convey precision and adherence in Korean, aligning your language skills with the cultural emphasis on following social norms and expectations.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

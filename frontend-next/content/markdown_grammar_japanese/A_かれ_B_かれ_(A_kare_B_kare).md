@@ -102,4 +102,4 @@ By understanding and practicing **AかれBかれ**, you'll enhance your comprehe
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

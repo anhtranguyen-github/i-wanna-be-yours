@@ -99,4 +99,4 @@ The structure combines a **verb stem** with **~어/아 달라다**.
 By understanding and practicing **~어/아 달라다**, you'll be better equipped to make polite and appropriate requests in Korean!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

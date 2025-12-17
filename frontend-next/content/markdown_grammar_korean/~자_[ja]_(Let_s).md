@@ -96,4 +96,4 @@ To form the **~자** ending:
 By understanding and practicing **~자**, you'll be able to make friendly suggestions and engage more naturally in casual Korean conversations. Remember to always consider the level of formality appropriate for the situation!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

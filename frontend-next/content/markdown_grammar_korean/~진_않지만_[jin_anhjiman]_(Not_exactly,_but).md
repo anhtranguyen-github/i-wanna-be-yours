@@ -100,4 +100,4 @@ While there aren't specific idioms that use **~진 않지만**, this structure i
 Keep practicing using **~진 않지만** in your daily conversations to become more comfortable with expressing nuanced thoughts in Korean.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

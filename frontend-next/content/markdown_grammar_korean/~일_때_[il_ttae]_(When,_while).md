@@ -130,4 +130,4 @@ In Korean culture, emphasizing timing and conditions is crucial in communication
 By understanding and practicing the usage of **~일 때**, you'll be able to express timing and conditions more naturally in Korean conversations.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

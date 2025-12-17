@@ -108,4 +108,4 @@ Try creating your own sentences using **～ずじまい** to express past situat
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

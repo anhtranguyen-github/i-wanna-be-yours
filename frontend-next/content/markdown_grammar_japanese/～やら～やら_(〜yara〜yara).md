@@ -109,4 +109,4 @@ By understanding and practicing ～やら～やら, you can express complex situ
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

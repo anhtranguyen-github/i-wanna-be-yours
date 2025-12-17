@@ -83,4 +83,4 @@ By mastering **～となれば**, you can effectively discuss hypothetical situa
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

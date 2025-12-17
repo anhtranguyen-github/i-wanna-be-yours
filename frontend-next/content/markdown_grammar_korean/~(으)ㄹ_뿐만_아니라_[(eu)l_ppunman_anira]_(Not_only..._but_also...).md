@@ -101,4 +101,4 @@ Understanding emphasis in Korean is important because:
 **Congratulations!** You've learned how to use ~(으)ㄹ 뿐만 아니라 to enhance your Korean sentences by adding more information and emphasis. Keep practicing by creating your own sentences using this grammar point.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

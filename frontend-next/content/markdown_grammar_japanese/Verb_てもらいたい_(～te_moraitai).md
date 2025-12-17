@@ -101,4 +101,4 @@ Remember, using **〜てもらいたい** helps you make polite requests and exp
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

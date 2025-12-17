@@ -157,4 +157,4 @@ Choosing the appropriate politeness level is crucial:
 By understanding and practicing **~기로 하다**, you enhance your ability to express decisions and plans confidently in Korean. Keep practicing with different verbs and contexts to become more fluent in using this essential grammar point.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

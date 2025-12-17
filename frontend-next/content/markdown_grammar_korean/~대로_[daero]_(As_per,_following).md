@@ -105,4 +105,4 @@ Verb Stem + (으)ㄹ 대로
 By mastering **~대로**, you can express actions that follow specific standards or instructions, enhancing clarity in your communication.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

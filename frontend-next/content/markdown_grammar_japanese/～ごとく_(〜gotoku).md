@@ -113,4 +113,4 @@ The expression ～ごとく is used to compare one action or state to another, e
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

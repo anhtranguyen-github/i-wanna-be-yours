@@ -101,4 +101,4 @@ By understanding and practicing **しかも**, you can improve the flow of your 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

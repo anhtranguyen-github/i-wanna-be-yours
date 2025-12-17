@@ -105,4 +105,4 @@ By understanding and practicing **A とか B とか**, you can effectively list 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

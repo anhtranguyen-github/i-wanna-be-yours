@@ -104,4 +104,4 @@ The connecting vowel **~어/아** is chosen based on vowel harmony:
 By understanding and practicing **~어/아 갖다**, you'll be able to express continuous actions more naturally in Korean. Remember to pay attention to the context and formality when using this grammar point!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

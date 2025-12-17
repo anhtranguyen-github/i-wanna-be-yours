@@ -110,4 +110,4 @@ The expression **を限りに** is neutral in politeness but can be adjusted wit
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

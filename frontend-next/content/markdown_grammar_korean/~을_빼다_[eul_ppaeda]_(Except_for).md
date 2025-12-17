@@ -81,4 +81,4 @@ The structure combines a noun with the object particle **~을/를** and the verb
 By mastering **~을 빼다**, you can more accurately describe exceptions and enhance your Korean communication skills. Remember to pay attention to particle usage and practice with various nouns for fluency.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

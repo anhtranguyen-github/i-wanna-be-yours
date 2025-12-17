@@ -110,4 +110,4 @@ By mastering **～ように言う**, you can accurately report commands and make
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

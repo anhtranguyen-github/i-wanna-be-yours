@@ -112,4 +112,4 @@ In Korean society, attention to detail and following established methods are hig
 By understanding and practicing **~는 대로**, you'll be able to express actions done in the exact manner as another, adding precision and depth to your Korean language skills. Keep practicing with different verbs and contexts to master this grammar point!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

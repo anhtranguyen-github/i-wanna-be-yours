@@ -112,4 +112,4 @@ To form this expression, attach "**기로 하다**" to the stem of a verb.
 By understanding and practicing the use of **~하기로 하다**, you'll be able to express decisions confidently and naturally in Korean.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

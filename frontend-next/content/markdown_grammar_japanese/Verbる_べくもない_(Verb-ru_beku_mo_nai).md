@@ -117,4 +117,4 @@ By mastering **べくもない**, you've added a sophisticated expression to you
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

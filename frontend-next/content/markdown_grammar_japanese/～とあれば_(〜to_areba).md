@@ -106,4 +106,4 @@ By understanding and using **～とあれば**, you can express actions motivate
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

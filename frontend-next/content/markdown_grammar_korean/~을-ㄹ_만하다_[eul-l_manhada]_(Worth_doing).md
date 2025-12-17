@@ -104,4 +104,4 @@ In Korean culture, modesty and humility are valued. Using **~을/ㄹ 만하다**
 By mastering **~을/ㄹ 만하다**, you enhance your ability to make recommendations and express value judgments in Korean, enriching your conversational skills.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

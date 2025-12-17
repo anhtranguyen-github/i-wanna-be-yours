@@ -118,4 +118,4 @@ These expressions are commonly used to show acknowledgment of effort or belated 
 By mastering **~했지만**, you enhance your ability to express complex thoughts and contrasts, bringing more nuance to your Korean conversations. Keep practicing by forming your own sentences and soon you'll use this grammar point naturally!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

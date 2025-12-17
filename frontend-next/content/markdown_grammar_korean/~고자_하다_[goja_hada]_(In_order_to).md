@@ -98,4 +98,4 @@ The structure combines the verb stem with **~고자 하다**:
 By understanding and practicing **~고자 하다**, you can enhance your ability to express intentions formally in Korean, which is essential for professional and academic communication.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

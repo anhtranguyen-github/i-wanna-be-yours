@@ -98,4 +98,4 @@ The grammar point **~다가는** is attached to the **verb stem** of an **action
 By understanding and practicing **~다가는**, you can effectively warn others or express caution about ongoing actions and their potential negative outcomes in Korean.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

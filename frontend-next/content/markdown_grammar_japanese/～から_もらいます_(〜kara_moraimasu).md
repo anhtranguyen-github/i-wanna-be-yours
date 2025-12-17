@@ -97,4 +97,4 @@ Feel free to practice by creating your own sentences using **～からもらい�
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

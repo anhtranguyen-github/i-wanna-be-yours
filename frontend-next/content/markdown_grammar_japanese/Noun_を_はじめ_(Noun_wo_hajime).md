@@ -90,4 +90,4 @@ By understanding and practicing **をはじめ**, you can enrich your Japanese b
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

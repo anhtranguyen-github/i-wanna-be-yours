@@ -1,6 +1,6 @@
 # Backend Architecture and Service Coordination
 
-This document describes the logic, flows, and coordination of the backend services in the `hanabira.org` project.
+This document describes the logic, flows, and coordination of the backend services in the `hanachan.org` project.
 
 ## Overview
 

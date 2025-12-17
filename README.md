@@ -1,4 +1,4 @@
-# Hanabira.org - Japanese Learning Platform
+# hanachan.org - Japanese Learning Platform
 
 A comprehensive Japanese language learning platform with AI-powered tutoring, adaptive learning, flashcards, quizzes, and personalized study plans.
 
@@ -107,7 +107,7 @@ python3 app.py
 ## 📁 Project Structure
 
 ```
-hanabira.org/
+hanachan.org/
 ├── frontend-next/          # Next.js frontend
 │   ├── src/
 │   │   ├── app/           # Next.js App Router pages
@@ -234,4 +234,4 @@ MIT License - see LICENSE file for details.
 
 ---
 
-**Hanabira.org** - 🌸 Your path to Japanese fluency
+**hanachan.org** - 🌸 Your path to Japanese fluency

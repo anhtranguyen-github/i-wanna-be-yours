@@ -575,7 +575,7 @@ coil@coil-VM:~/Desktop/zen-lingo-website/next-flash-cards/backend$
 
 the furigana looks promising
 
-WOW, this works amazing, we can convert everything on hanabira to use furigana
+WOW, this works amazing, we can convert everything on hanachan to use furigana
 there are massive possibilities with kuroshiro library
 
     <div>

@@ -98,4 +98,4 @@ By understanding and practicing **～？それとも～？**, you can effectivel
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

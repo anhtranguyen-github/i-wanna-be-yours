@@ -135,4 +135,4 @@ By understanding and practicing **～みたいだ**, you'll be able to express y
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

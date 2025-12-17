@@ -126,4 +126,4 @@ Try creating your own sentences using ～ぶり in both elapsed time and manner/
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

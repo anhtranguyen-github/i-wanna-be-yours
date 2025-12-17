@@ -126,4 +126,4 @@ By understanding and practicing **Verb ることにする**, you'll be able to e
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

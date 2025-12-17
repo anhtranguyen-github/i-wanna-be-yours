@@ -111,4 +111,4 @@ While **ともなれば** itself is not idiomatic, it frequently appears in set 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

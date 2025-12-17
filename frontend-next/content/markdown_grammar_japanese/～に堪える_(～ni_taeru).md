@@ -92,4 +92,4 @@ By mastering **～に堪える**, you enhance your ability to express value judg
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

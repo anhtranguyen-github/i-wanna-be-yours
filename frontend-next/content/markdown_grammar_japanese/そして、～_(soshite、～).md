@@ -111,4 +111,4 @@ By understanding and practicing the use of "そして", you'll be able to connec
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -121,4 +121,4 @@ By combining these, you emphasize that **the fact of being [noun] is without err
 By mastering **~임에 틀림없다**, you enhance your ability to express certainty and conviction in Korean, making your statements more authoritative and precise. Keep practicing with different nouns and contexts to internalize this grammar point fully.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

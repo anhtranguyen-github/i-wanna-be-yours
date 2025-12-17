@@ -92,4 +92,4 @@ Compared with other Korean conjunctions:
 By mastering ~(으)ㄴ/는데다가, you can make your Korean sentences more expressive and detailed, effectively communicating additional information with ease.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

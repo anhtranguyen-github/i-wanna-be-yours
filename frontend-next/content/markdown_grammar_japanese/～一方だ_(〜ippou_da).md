@@ -100,4 +100,4 @@ By understanding **～一方だ**, you can describe ongoing changes and trends i
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

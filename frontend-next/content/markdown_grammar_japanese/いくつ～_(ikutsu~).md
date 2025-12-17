@@ -107,4 +107,4 @@ We hope this explanation clarified the usage of **いくつ**. Practice using it
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

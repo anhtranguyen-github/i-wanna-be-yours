@@ -126,4 +126,4 @@ By understanding **〜のいかんによらず**, you can enhance your ability t
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

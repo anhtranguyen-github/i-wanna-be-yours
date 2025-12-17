@@ -3,20 +3,20 @@ go to CICD/ansible dir
 
 
 [primary]
-ansible-playbook -i inventory_file.yml server_setup_playbook.yml --limit hanabira_primary
-ansible-playbook -i inventory_file.yml service_setup_playbook.yml --limit hanabira_primary
+ansible-playbook -i inventory_file.yml server_setup_playbook.yml --limit hanachan_primary
+ansible-playbook -i inventory_file.yml service_setup_playbook.yml --limit hanachan_primary
 
 
 [secondary]
-ansible-playbook -i inventory_file.yml server_setup_playbook.yml --limit hanabira_secondary
-ansible-playbook -i inventory_file.yml service_setup_playbook.yml --limit hanabira_secondary
+ansible-playbook -i inventory_file.yml server_setup_playbook.yml --limit hanachan_secondary
+ansible-playbook -i inventory_file.yml service_setup_playbook.yml --limit hanachan_secondary
 
 
 
 
 # onboards certbot certificates, there is limit how many times we can call it before they rate limit us for several days
-ansible-playbook -i inventory_file.yml certbot_playbook_primary.yml   --limit hanabira_primary
-ansible-playbook -i inventory_file.yml certbot_playbook_secondary.yml --limit hanabira_secondary
+ansible-playbook -i inventory_file.yml certbot_playbook_primary.yml   --limit hanachan_primary
+ansible-playbook -i inventory_file.yml certbot_playbook_secondary.yml --limit hanachan_secondary
 
 
 
@@ -26,10 +26,10 @@ ansible-playbook -i inventory_file.yml certbot_playbook_secondary.yml --limit ha
 
 
 
-coil@ubuntu-4gb-hel1-2:~/hanabira$ systemctl --user start hanabira.service
-coil@ubuntu-4gb-hel1-2:~/hanabira$ systemctl --user daemon-reload
-coil@ubuntu-4gb-hel1-2:~/hanabira$ systemctl --user start hanabira.service
-coil@ubuntu-4gb-hel1-2:~/hanabira$ systemctl --user stop hanabira.service
+coil@ubuntu-4gb-hel1-2:~/hanachan$ systemctl --user start hanachan.service
+coil@ubuntu-4gb-hel1-2:~/hanachan$ systemctl --user daemon-reload
+coil@ubuntu-4gb-hel1-2:~/hanachan$ systemctl --user start hanachan.service
+coil@ubuntu-4gb-hel1-2:~/hanachan$ systemctl --user stop hanachan.service
 
 
 

@@ -93,4 +93,4 @@ Happy learning! Practice creating your own sentences using **にはあたらな�
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

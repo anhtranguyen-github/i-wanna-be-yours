@@ -98,4 +98,4 @@ The formation of **~할수록** depends on the verb or adjective stem to which i
 By understanding and practicing the use of **~할수록**, you can express increasingly complex relationships between actions and states in Korean, making your speech and writing more nuanced and natural.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

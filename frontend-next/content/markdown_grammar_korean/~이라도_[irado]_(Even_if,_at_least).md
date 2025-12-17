@@ -110,4 +110,4 @@ In Korean culture, offering or accepting a minimal option reflects politeness an
 By understanding and practicing **~이라도**, you can express suggestions and concessions more naturally in Korean conversations.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -124,4 +124,4 @@ By mastering **どの Noun**, you can ask precise questions and engage in more d
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

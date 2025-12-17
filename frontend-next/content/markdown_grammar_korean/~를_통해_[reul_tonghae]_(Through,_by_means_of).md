@@ -94,4 +94,4 @@ In Korean culture, emphasizing the means or medium through which information or 
 3. **그녀는 연습**을 통해** 자신감을 얻었다.**
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

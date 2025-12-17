@@ -129,4 +129,4 @@ In Korean culture, respecting social hierarchy and showing appropriate levels of
 By mastering **남다**, you'll enhance your ability to describe remaining quantities, time, and more in Korean conversations. Practice constructing sentences using **남다** to become more comfortable with its usage!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

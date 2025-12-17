@@ -128,4 +128,4 @@ Thank you for studying ～ようになった! Keep practicing by making your own
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

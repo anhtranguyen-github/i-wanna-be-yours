@@ -142,4 +142,4 @@ Keep practicing by creating your own sentences using **「Noun や Noun など�
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

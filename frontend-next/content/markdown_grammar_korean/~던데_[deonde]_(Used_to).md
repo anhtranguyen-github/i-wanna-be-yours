@@ -89,4 +89,4 @@ Using **~던데** can soften statements, making them sound less direct. It refle
 By mastering **~던데**, you can express your past observations in a nuanced way, adding depth to your Korean conversations.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -26,7 +26,7 @@ export default BlogPost;
 
 
 const headerProps = {
-  title: "Hanabira JLPT Kanji list",
+  title: "hanachan JLPT Kanji list",
   subtitle:
     "List of JLPT Kanji with only one reading. This is subset of JLPT N5-1 kanji picked to be learned first for each level. Since these kanji have only one reading required for each level and hence are easier to learn. This does not mean these kanji have only one reading in general (the other readings are just not required for given JLPT level).",
 };

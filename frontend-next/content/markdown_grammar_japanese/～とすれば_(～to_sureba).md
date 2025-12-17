@@ -105,4 +105,4 @@ While both **～とすれば** and **～としたら** express hypothetical cond
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -1,5 +1,5 @@
 ---
-- name: Configure Hanabira Service
+- name: Configure hanachan Service
   become: yes
   hosts: all
   tasks:
@@ -24,12 +24,12 @@
       become: yes
       become_user: coil
 
-    - name: Create systemd service file for Hanabira
+    - name: Create systemd service file for hanachan
       copy:
-        dest: /home/coil/.config/systemd/user/hanabira.service
+        dest: /home/coil/.config/systemd/user/hanachan.service
         content: |
           [Unit]
-          Description=Universal Hanabira Podman Containers
+          Description=Universal hanachan Podman Containers
           After=network-online.target
           Wants=network-online.target
 
@@ -37,14 +37,14 @@
           Type=exec
           ExecStart=/usr/bin/podman-compose up
           ExecStop=/usr/bin/podman-compose down
-          WorkingDirectory=/home/coil/hanabira
+          WorkingDirectory=/home/coil/hanachan
           Environment=XDG_RUNTIME_DIR=/run/user/%U
           TimeoutStartSec=90
           TimeoutStopSec=90
           Restart=on-failure
           RestartSec=10
-          StandardOutput=append:/home/coil/hanabira/hanabira.log
-          StandardError=append:/home/coil/hanabira/hanabira-error.log
+          StandardOutput=append:/home/coil/hanachan/hanachan.log
+          StandardError=append:/home/coil/hanachan/hanachan-error.log
 
           [Install]
           WantedBy=default.target
@@ -57,10 +57,10 @@
       become: yes
       become_user: coil
 
-    - name: Enable and start Hanabira service
+    - name: Enable and start hanachan service
       shell: |
         export XDG_RUNTIME_DIR=/run/user/$(id -u)
-        systemctl --user enable hanabira.service
-        systemctl --user start hanabira.service
+        systemctl --user enable hanachan.service
+        systemctl --user start hanachan.service
       become: yes
       become_user: coil

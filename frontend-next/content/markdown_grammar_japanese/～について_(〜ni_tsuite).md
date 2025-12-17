@@ -170,4 +170,4 @@ By practicing the usage of **～について**, you'll be able to effectively co
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

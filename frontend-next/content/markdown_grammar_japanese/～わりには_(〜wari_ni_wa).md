@@ -90,4 +90,4 @@ Understanding **～わりには** allows you to express nuances about expectatio
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

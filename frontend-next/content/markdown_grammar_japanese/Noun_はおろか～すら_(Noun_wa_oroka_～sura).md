@@ -85,4 +85,4 @@ By understanding and practicing **「Noun は おろか ～すら」**, you'll b
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -94,4 +94,4 @@ These expressions emphasize the importance of processes like communication and e
 By understanding and practicing **~을/를 통해**, you'll be able to express complex ideas about processes and methods in Korean, enhancing both your spoken and written communication skills.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -115,4 +115,4 @@ In Korean culture, it's common to express quantities approximately, especially i
 By understanding and practicing **~정도**, you'll be able to express approximate amounts naturally in Korean conversations. Remember to pay attention to the context and formality levels when choosing between similar expressions.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -79,4 +79,4 @@ By understanding **～ぶって**, you can recognize when someone is commenting 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

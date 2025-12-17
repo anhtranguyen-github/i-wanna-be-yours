@@ -98,4 +98,4 @@ In Korean culture, expressing one's intentions and resolutions is common, especi
 By mastering **~해야지**, you can effectively express your intentions and obligations in Korean, adding depth to your communication skills.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

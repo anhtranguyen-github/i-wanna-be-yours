@@ -89,4 +89,4 @@ The grammar pattern **Noun + ぐるみ (〜ぐるみ)** is used in Japanese to e
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

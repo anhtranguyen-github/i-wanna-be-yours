@@ -98,4 +98,4 @@ By understanding and practicing **～たかと思ったら**, you'll enhance you
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

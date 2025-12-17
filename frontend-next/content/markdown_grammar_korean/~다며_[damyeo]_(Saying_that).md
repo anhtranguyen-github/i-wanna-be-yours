@@ -135,4 +135,4 @@ The conjugation of **~다며** depends on the type of word it attaches to:
 By incorporating **~다며** into your Korean conversations, you'll be able to naturally confirm information and express curiosity, making your interactions more engaging and authentic.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

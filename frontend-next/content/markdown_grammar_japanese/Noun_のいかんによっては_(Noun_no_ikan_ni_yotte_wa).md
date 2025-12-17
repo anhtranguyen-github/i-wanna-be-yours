@@ -112,4 +112,4 @@ By understanding and practicing **のいかんによっては**, you enhance you
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

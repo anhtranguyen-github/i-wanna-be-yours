@@ -114,4 +114,4 @@ By understanding and correctly using **～ていただきたい**, you can commu
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

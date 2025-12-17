@@ -110,4 +110,4 @@ Understanding the appropriate level of formality is crucial in Korean culture. T
 By mastering **아/어/여 지다**, you'll enhance your ability to describe changes and developments in Korean, making your expressions more natural and nuanced.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

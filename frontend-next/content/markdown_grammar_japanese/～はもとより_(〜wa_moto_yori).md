@@ -99,4 +99,4 @@ In Japanese communication, it's common to acknowledge what's generally accepted 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -117,4 +117,4 @@ It can be translated as:
 Congratulations! You've learned how to use **~하기는 하다** to add nuance to your Korean expressions. Keep practicing by incorporating this grammar point into your daily conversations.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

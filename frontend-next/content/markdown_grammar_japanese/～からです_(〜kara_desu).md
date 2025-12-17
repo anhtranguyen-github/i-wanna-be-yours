@@ -153,4 +153,4 @@ By understanding and practicing the use of **～からです**, you'll be able t
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

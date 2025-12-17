@@ -108,4 +108,4 @@ By understanding **〜やすい**, you can better express ease and tendencies in
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -109,4 +109,4 @@ The structure of **~이지만** depends on whether the noun ends with a consonan
 By understanding and practicing **~이지만**, you will be able to express contrast and add complexity to your Korean sentences, making your speech and writing more natural and fluent.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

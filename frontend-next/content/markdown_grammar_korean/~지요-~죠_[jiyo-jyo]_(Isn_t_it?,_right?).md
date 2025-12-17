@@ -124,4 +124,4 @@ The grammar endings **~지요/~죠** are commonly used in Korean to seek agreeme
 By understanding and practicing **~지요/~죠**, you'll be able to make your Korean conversations more natural and engaging, reflecting a native speaker's way of confirming information and seeking agreement.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

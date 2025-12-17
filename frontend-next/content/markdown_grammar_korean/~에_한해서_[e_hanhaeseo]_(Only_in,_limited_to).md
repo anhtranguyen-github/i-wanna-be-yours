@@ -114,4 +114,4 @@ In Korean, the grammar point **~에 한해서** is used to express limitations o
 By mastering **~에 한해서**, you can effectively communicate limitations and exclusive conditions in Korean, enhancing both your formal writing and speaking skills.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

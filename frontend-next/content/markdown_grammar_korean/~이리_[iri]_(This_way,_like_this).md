@@ -130,4 +130,4 @@ In Korean, the adverb **이리 [iri]** is used to indicate direction towards the
 By mastering **이리 [iri]**, you'll enhance your ability to give directions and explain actions in Korean, making your communication more natural and effective.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

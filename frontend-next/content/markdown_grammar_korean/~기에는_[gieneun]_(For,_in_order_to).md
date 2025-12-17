@@ -85,4 +85,4 @@ In Korean culture, expressing appropriate levels of politeness and making consid
 By understanding and practicing **~기에는**, you'll enhance your ability to express nuanced evaluations in Korean, making your speech more natural and context-appropriate.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

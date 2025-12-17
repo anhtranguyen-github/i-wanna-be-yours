@@ -120,4 +120,4 @@ By understanding and practicing **～はともかく、～は**, you'll be able 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

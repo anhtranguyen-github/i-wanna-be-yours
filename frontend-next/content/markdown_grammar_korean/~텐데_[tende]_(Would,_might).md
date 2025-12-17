@@ -111,4 +111,4 @@ Attach **~텐데** directly to the verb stem.
 By incorporating **~텐데** into your Korean conversations, you'll be able to express expectations and make polite suggestions more naturally, aligning with Korean communication styles.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -120,4 +120,4 @@ By mastering **～とか**, you'll be able to express lists, hearsay, and uncert
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -85,4 +85,4 @@ By understanding and practicing **～にかかわらず**, you can express "rega
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

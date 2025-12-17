@@ -105,4 +105,4 @@ Thank you for studying **Verb てこそ**! Practice using this grammar point in 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

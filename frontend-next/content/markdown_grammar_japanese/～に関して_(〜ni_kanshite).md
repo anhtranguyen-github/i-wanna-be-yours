@@ -96,4 +96,4 @@ By understanding and practicing **～に関して**, you can effectively express
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

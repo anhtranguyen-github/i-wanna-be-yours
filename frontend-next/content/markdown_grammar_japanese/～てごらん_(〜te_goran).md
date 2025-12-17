@@ -108,4 +108,4 @@ By understanding ～てごらん, you can make your suggestions sound more natur
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

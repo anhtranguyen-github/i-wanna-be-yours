@@ -103,4 +103,4 @@ The structure for using めったにない is as follows:
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

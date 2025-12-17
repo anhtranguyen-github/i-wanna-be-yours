@@ -102,4 +102,4 @@ Both **처럼** and **같이** mean **"like"** or **"as"**, but there are subtle
 By mastering **~처럼**, you enhance your ability to create vivid and expressive comparisons in Korean, bringing your language skills closer to native-level fluency.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

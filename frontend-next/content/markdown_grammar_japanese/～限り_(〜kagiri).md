@@ -144,4 +144,4 @@ By mastering **～限り**, you can articulate conditions and limitations more n
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

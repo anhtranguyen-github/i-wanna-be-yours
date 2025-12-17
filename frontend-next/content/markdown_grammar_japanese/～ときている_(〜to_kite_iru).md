@@ -112,4 +112,4 @@ By mastering **～ときている**, you enhance your ability to articulate reas
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

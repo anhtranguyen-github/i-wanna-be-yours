@@ -89,4 +89,4 @@ Verb/Adjective Stem + 건마는
 By mastering **~건마는**, you enhance your ability to express nuanced contrasts in formal Korean, adding depth and emotion to your language skills.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

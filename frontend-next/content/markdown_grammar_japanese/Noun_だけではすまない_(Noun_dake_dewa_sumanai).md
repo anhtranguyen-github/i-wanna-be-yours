@@ -125,4 +125,4 @@ In Japanese culture, **responsibility and harmony** are highly valued. When some
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

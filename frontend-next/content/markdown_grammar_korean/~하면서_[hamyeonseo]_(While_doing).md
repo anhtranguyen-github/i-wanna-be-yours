@@ -120,4 +120,4 @@ Translate the following sentence into Korean using **~하면서**:
 By understanding and practicing **~하면서**, you can accurately describe actions happening at the same time and enhance the flow of your Korean sentences.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

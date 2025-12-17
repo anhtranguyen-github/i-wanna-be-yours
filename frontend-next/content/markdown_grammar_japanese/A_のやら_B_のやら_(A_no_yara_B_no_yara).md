@@ -102,4 +102,4 @@ By understanding and practicing **A のやら B のやら**, you can more effect
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

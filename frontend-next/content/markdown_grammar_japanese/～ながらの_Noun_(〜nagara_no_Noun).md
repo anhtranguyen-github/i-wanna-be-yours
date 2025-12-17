@@ -106,4 +106,4 @@ With this understanding of **～ながらの Noun**, you can now describe nouns 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

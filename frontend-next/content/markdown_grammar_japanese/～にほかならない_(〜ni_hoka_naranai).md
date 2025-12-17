@@ -114,4 +114,4 @@ By understanding and correctly using **～にほかならない**, you can add e
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

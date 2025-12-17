@@ -117,4 +117,4 @@ By understanding and practicing **～切る**, you'll be able to express complet
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

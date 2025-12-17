@@ -124,4 +124,4 @@ By mastering **～次第**, you can enhance your formal Japanese communication s
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

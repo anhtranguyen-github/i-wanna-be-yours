@@ -110,4 +110,4 @@ Let's compare **~인 바** with other similar grammar points:
 By understanding and appropriately using **~인 바**, you can enhance your comprehension and use of formal Korean, particularly in professional and official settings.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

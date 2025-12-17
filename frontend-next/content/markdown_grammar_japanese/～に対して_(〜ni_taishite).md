@@ -131,4 +131,4 @@ By understanding and practicing **～に対して**, you can express directed ac
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

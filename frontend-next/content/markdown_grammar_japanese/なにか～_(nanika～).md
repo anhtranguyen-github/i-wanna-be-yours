@@ -112,4 +112,4 @@ By understanding and practicing **なにか～ (nanika～)**, you'll be able to 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

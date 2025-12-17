@@ -127,4 +127,4 @@ By understanding the usage of **～により**, you can enhance your comprehensi
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

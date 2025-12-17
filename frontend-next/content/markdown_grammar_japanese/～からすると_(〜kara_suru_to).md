@@ -115,4 +115,4 @@ Congratulations! You've learned how to use **～からすると** to express inf
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

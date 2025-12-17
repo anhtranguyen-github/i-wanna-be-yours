@@ -88,4 +88,4 @@ Using **~는 대로** itself does not inherently carry a politeness level, but a
 Feel free to practice by creating your own sentences using **~는 대로**!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

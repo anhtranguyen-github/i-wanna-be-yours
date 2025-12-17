@@ -100,4 +100,4 @@ By understanding and practicing **～らしい**, you'll be able to express assu
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

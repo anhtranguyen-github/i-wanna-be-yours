@@ -91,4 +91,4 @@ In Korean society, one's status or role often influences their responsibilities 
 By understanding and practicing **~이다 보니**, you can effectively express reasons based on states of being in Korean, making your speech more natural and contextually appropriate.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

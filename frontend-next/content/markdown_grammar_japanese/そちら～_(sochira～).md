@@ -134,4 +134,4 @@ By mastering **そちら**, you enhance your ability to engage in polite Japanes
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

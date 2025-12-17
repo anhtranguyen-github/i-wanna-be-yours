@@ -115,4 +115,4 @@ In Korean culture, making requests politely is crucial due to the hierarchical a
 Feel free to practice by creating your own sentences using **~아/어 달라다**, and don't hesitate to reach out if you have any questions!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

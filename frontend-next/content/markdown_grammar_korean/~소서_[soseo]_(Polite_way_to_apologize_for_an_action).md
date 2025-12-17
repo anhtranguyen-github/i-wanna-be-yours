@@ -111,4 +111,4 @@ To attach **~소서** to a verb:
 Thank you for studying this formal and respectful aspect of Korean grammar. While **~소서** isn't used in daily conversations, appreciating its usage enriches your understanding of the Korean language's depth and cultural heritage.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

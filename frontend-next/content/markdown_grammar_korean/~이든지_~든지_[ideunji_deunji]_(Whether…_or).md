@@ -107,4 +107,4 @@ For Verbs/Adjectives:
 Feel free to practice by making your own sentences using **~이든지 ~든지** to solidify your understanding!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

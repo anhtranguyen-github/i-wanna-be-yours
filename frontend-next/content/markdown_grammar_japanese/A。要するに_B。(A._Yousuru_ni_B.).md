@@ -156,4 +156,4 @@ By mastering **「要するに」**, you'll be able to communicate your thoughts
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

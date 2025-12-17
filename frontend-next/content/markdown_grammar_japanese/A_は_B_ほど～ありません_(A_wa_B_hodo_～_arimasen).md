@@ -113,4 +113,4 @@ By mastering **「AはBほど～ありません」**, you enhance your ability t
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

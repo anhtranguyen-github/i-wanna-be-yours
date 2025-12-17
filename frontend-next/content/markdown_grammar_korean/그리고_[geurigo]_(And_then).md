@@ -129,4 +129,4 @@ The conjunction **그리고** is commonly used in Korean to connect sentences, p
 By understanding and practicing the use of **그리고**, you'll enhance your ability to construct cohesive and natural-sounding sentences in Korean.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

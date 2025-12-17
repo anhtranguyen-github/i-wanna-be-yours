@@ -99,4 +99,4 @@ In more formal contexts, **(이)랑** is replaced by **하고** or **과/와**.
 Feel free to practice using **(이)랑** by creating your own sentences! Remember to consider the level of formality required in each situation.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

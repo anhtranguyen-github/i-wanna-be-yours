@@ -110,4 +110,4 @@ B --> C[리가 없다]
 Practice creating your own sentences using **~(으)ㄹ 리가 없다** to become more comfortable with expressing disbelief in Korean!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

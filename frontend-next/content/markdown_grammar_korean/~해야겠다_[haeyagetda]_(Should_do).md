@@ -100,4 +100,4 @@ In Korean culture, expressing intentions or decisions often reflects humility an
 Feel free to practice by writing your own sentences using **~해야겠다** to express decisions you've made!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

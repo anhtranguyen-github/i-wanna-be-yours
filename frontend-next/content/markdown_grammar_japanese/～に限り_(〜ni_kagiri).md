@@ -91,4 +91,4 @@ By understanding and practicing **～に限り**, you'll enhance your ability to
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

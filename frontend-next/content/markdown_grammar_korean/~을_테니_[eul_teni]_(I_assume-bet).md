@@ -114,4 +114,4 @@ While both convey similar meanings, **~을 테니** is more about intention or a
 By mastering **~을 테니**, you'll enhance your ability to express intentions and make assumptions, allowing for more natural and effective communication in Korean.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

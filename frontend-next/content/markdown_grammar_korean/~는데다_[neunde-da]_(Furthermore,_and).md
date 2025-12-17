@@ -107,4 +107,4 @@ While **~는데다** itself does not carry a politeness level, it is often used 
 **Practice using **~는데다** in your own sentences to become more comfortable with its usage!**
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

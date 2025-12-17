@@ -141,4 +141,4 @@ While both **뿐** and **만** mean "only," they are used differently.
 By understanding and practicing the use of **뿐**, you will be able to express exclusivity and limitations more precisely in Korean.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -145,4 +145,4 @@ a) 마저  b) 까지
 By understanding and practicing the usage of **~마저**, you can add depth to your Korean language expressions, especially when conveying emotions related to exhaustive situations.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

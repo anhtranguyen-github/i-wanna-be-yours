@@ -2,10 +2,10 @@ version: '3.8'
 
 services:
   frontend-next:
-    image: coil/hanabira.org:frontend-next_blue
+    image: coil/hanachan.org:frontend-next_blue
     network_mode: "bridge"
     extra_hosts:
-      - "localhost:host-gateway"    
+      - "localhost:host-gateway"
       - "host.docker.internal:host-gateway"
     ports:
       - "127.0.0.1:3000:3000" # Bind to localhost only
@@ -19,10 +19,10 @@ services:
         #- dictionary-db
     restart: unless-stopped
     networks:
-      - hanabira-network
+      - hanachan-network
 
   express-db:
-    image: coil/hanabira.org:express-db_blue
+    image: coil/hanachan.org:express-db_blue
     network_mode: "bridge"
     extra_hosts:
       - "localhost:host-gateway"
@@ -34,10 +34,10 @@ services:
       REACT_APP_HOST_IP: 'express-db'
     restart: unless-stopped
     networks:
-      - hanabira-network
+      - hanachan-network
 
   flask-dynamic-db:
-    image: coil/hanabira.org:flask-dynamic-db_blue
+    image: coil/hanachan.org:flask-dynamic-db_blue
     network_mode: "bridge"
     extra_hosts:
       - "localhost:host-gateway"
@@ -48,10 +48,10 @@ services:
       - "127.0.0.1:5100:5100" # Bind to localhost only
     restart: unless-stopped
     networks:
-      - hanabira-network
+      - hanachan-network
 
   dictionary-db:
-    image: coil/hanabira.org:dictionary-db_blue
+    image: coil/hanachan.org:dictionary-db_blue
     network_mode: "bridge"
     extra_hosts:
       - "localhost:host-gateway"
@@ -62,10 +62,11 @@ services:
       - "127.0.0.1:5200:5200" # Bind to localhost only
     restart: unless-stopped
     networks:
-      - hanabira-network
+      - hanachan-network
 
 volumes:
   user_db:
 
+
 networks:
-  hanabira-network:
+  hanachan-network:

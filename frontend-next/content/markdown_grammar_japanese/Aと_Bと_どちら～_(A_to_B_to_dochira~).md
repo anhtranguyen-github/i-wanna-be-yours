@@ -97,4 +97,4 @@ In Japanese culture, indirectness and politeness are valued. Using **Aと Bと �
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

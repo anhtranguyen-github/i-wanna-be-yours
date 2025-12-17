@@ -5,7 +5,7 @@
 | Route | Description |
 |-------|-------------|
 | `/` | Landing page - Main homepage with features overview |
-| `/about` | About page - Information about Hanabira.org |
+| `/about` | About page - Information about hanachan.org |
 | `/admin` | Admin panel - Administrative dashboard |
 | `/chat` | AI Chat - Hanachan AI tutor conversations |
 | `/dashboard` | **Main Dashboard** - Progress, achievements, weekly goals |

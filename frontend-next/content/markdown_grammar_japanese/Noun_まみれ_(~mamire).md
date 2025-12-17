@@ -114,4 +114,4 @@ By mastering the use of **〜まみれ**, you can vividly describe situations wh
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

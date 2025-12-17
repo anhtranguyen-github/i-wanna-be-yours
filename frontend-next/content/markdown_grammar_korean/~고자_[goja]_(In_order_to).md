@@ -89,4 +89,4 @@ The Korean grammar pattern **~고자** is used to express the intention or purpo
 By understanding and practicing the use of **~고자**, you can enhance your formal writing and speech in Korean. Remember to choose the appropriate grammar pattern based on the context and level of formality.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

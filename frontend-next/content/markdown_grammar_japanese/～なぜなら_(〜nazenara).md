@@ -86,4 +86,4 @@ By understanding and practicing **なぜなら**, you can enhance your ability t
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

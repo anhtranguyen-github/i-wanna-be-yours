@@ -133,4 +133,4 @@ Thank you for studying **Verb られる (〜rareru)**! Keep practicing to master
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

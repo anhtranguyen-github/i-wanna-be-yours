@@ -13,7 +13,7 @@ export default function About() {
       <br></br>
       <div className="lg:col-span-10">
 
-        <h1 className="text-blue-900 text-3xl font-bold">About Hanabira</h1>
+        <h1 className="text-blue-900 text-3xl font-bold">About hanachan</h1>
 
         <div className="grid grid-cols-3 gap-8 text-center m-8">
           <div className="text-xl font-semibold text-slate-500">
@@ -22,7 +22,7 @@ export default function About() {
             <p>春の歌</p>
           </div>
           <div className="text-lg text-gray-400">
-            <p>Hanabira ga</p>
+            <p>hanachan ga</p>
             <p>Kaze ni mau yo</p>
             <p>Haru no uta</p>
           </div>
@@ -34,7 +34,7 @@ export default function About() {
         </div>
 
         <div className="mt-2 text-gray-500">
-          Hanabira is Free Open Source Japanese language learning website that
+          hanachan is Free Open Source Japanese language learning website that
           aims to prepare students for JLPT N5-N1. Enjoy studying Japanese
           without ads and popups. Currently we are offering Grammar explanation
           for all JLPT levels. Additionally we have several JLPT vocabulary
@@ -49,9 +49,9 @@ export default function About() {
           className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4"
           role="alert"
         >
-          <p className="font-bold">Contribute to Hanabira.org</p>
+          <p className="font-bold">Contribute to hanachan.org</p>
           <p>
-            Hanabira.org lead dev has set aside several hundred dollars
+            hanachan.org lead dev has set aside several hundred dollars
             (monthly) for meaningful contributions to the project. We welcome
             developers, designers, and content creators to join us in
             enhancing our platform. Your innovative ideas and contributions
@@ -124,10 +124,10 @@ export default function About() {
           </p>
           <div className="mt-4">
             <a
-              href="https://www.reddit.com/r/hanabira/"
+              href="https://www.reddit.com/r/hanachan/"
               className="text-blue-600 dark:text-blue-400 hover:underline"
             >
-              Hanabira Project Subreddit
+              hanachan Project Subreddit
             </a>
             <br />
             <a
@@ -141,14 +141,14 @@ export default function About() {
               href="https://discord.gg/afefVyfAkH"
               className="text-blue-600 dark:text-blue-400 hover:underline"
             >
-              Hanabira Discord server
+              hanachan Discord server
             </a>
             <br />
             <a
-              href="https://github.com/tristcoil/hanabira.org"
+              href="https://github.com/tristcoil/hanachan.org"
               className="text-blue-600 dark:text-blue-400 hover:underline"
             >
-              Hanabira GitHub repo
+              hanachan GitHub repo
             </a>
           </div>
 
@@ -161,10 +161,10 @@ export default function About() {
           <p className="mt-2 text-gray-700 dark:text-gray-300">
             Currently all content is free. And all content will be free for a long
             time. Vast majority of content will be free forever.
-            Project is open sourced, so anyone can spin up their own Hanabira server.
+            Project is open sourced, so anyone can spin up their own hanachan server.
           </p>
           <p className="mt-2 text-gray-700 dark:text-gray-300">
-            It is possible that in the future certain features will be paid on main production hanabira.org platform to
+            It is possible that in the future certain features will be paid on main production hanachan.org platform to
             keep servers running and to recuperate development costs. But even in such case lots of features will
             remain freely available forever. Functionality that might become
             premium covers user specific features, such as progress tracking,
@@ -238,7 +238,7 @@ export default function About() {
             </h3>
 
             <p>
-              <strong>JLPT level vocabulary and kanji lists</strong> taken from 
+              <strong>JLPT level vocabulary and kanji lists</strong> taken from
               <a
                 href="https://www.tanos.co.uk/jlpt/"
                 className="text-blue-600 hover:text-blue-800 visited:text-purple-600"
@@ -269,7 +269,7 @@ export default function About() {
 
 
 
-{/* # Kanjidic 
+          {/* # Kanjidic 
 we are using kanji dictionary from
 https://www.edrdg.org/wiki/index.php/KANJIDIC_Project
 
@@ -283,41 +283,41 @@ then we use our own python script to convert it to json file so it is easier to 
 json will have 50 MB */}
 
 
-<div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-lg">
-      <h1 className="text-2xl font-bold text-gray-800 mb-4">Kanjidic Project</h1>
-      <p className="text-gray-700 mb-2">
-        We are using the kanji dictionary from the 
-        <a 
-          href="https://www.edrdg.org/wiki/index.php/KANJIDIC_Project" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="text-blue-600 hover:underline ml-1"
-        >
-          KANJIDIC Project
-        </a>.
-      </p>
-      <p className="text-gray-700 mb-2">
-        We took the KANJIDIC2 file, which is in XML format, encoded in Unicode/UTF-8, and contains information about all 13,108 kanji. You can download the file 
-        <a 
-          href="http://www.edrdg.org/kanjidic/kanjidic2.xml.gz" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="text-blue-600 hover:underline ml-1"
-        >
-          here
-        </a>.
-      </p>
-      <p className="text-gray-700 mb-2">
-        After downloading, we extract the file to XML format. Then, we use our custom Python script to convert it to a JSON file for easier processing. The resulting JSON file is approximately 50 MB in size.
-      </p>
-    </div>
+          <div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-lg">
+            <h1 className="text-2xl font-bold text-gray-800 mb-4">Kanjidic Project</h1>
+            <p className="text-gray-700 mb-2">
+              We are using the kanji dictionary from the
+              <a
+                href="https://www.edrdg.org/wiki/index.php/KANJIDIC_Project"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline ml-1"
+              >
+                KANJIDIC Project
+              </a>.
+            </p>
+            <p className="text-gray-700 mb-2">
+              We took the KANJIDIC2 file, which is in XML format, encoded in Unicode/UTF-8, and contains information about all 13,108 kanji. You can download the file
+              <a
+                href="http://www.edrdg.org/kanjidic/kanjidic2.xml.gz"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline ml-1"
+              >
+                here
+              </a>.
+            </p>
+            <p className="text-gray-700 mb-2">
+              After downloading, we extract the file to XML format. Then, we use our custom Python script to convert it to a JSON file for easier processing. The resulting JSON file is approximately 50 MB in size.
+            </p>
+          </div>
 
 
 
 
 
 
-{/* # Radicals radkfile 
+          {/* # Radicals radkfile 
 https://www.edrdg.org/krad/kradinf.html
 
 
@@ -337,42 +337,42 @@ RADKFILE/KRADFILE - files relating to the decomposition of the 6,355 kanji in JI
 radkfile2/kradkfile2 is copyright by Jim Breen - but we are not using these specific files */}
 
 
-<div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-lg">
-      <h1 className="text-2xl font-bold text-gray-800 mb-4">Radicals - RADKFILE</h1>
-      <p className="text-gray-700 mb-2">
-        For more information on RADKFILE, visit 
-        <a 
-          href="https://www.edrdg.org/krad/kradinf.html" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="text-blue-600 hover:underline ml-1"
-        >
-          this page
-        </a>.
-      </p>
-      <h2 className="text-xl font-semibold text-gray-800 mt-4 mb-2">Copyright</h2>
-      <p className="text-gray-700 mb-2">
-        The RADKFILE and KRADFILE files are copyrighted and available under the EDRDG Licence. The copyright for RADKFILE2 and KRADFILE2 is held by Jim Rose and Jim Breen.
-      </p>
-      <p className="text-gray-700 mb-2">
-        Please note that the licence might not allow commercial use. You can read more about the licence 
-        <a 
-          href="https://www.edrdg.org/edrdg/licence.html" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="text-blue-600 hover:underline ml-1"
-        >
-          here
-        </a>.
-      </p>
-      <h2 className="text-xl font-semibold text-gray-800 mt-4 mb-2">License Information</h2>
-      <p className="text-gray-700 mb-2">
-        The dictionary files are made available under a Creative Commons Attribution-ShareAlike Licence (V4.0).
-      </p>
-      <p className="text-gray-700 mb-2">
-        The RADKFILE/KRADFILE files relate to the decomposition of the 6,355 kanji in JIS X 0208 into their visible components. However, please note that the RADKFILE2/KRADFILE2 files, which are copyrighted by Jim Breen, are not being used in our project.
-      </p>
-    </div>
+          <div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-lg">
+            <h1 className="text-2xl font-bold text-gray-800 mb-4">Radicals - RADKFILE</h1>
+            <p className="text-gray-700 mb-2">
+              For more information on RADKFILE, visit
+              <a
+                href="https://www.edrdg.org/krad/kradinf.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline ml-1"
+              >
+                this page
+              </a>.
+            </p>
+            <h2 className="text-xl font-semibold text-gray-800 mt-4 mb-2">Copyright</h2>
+            <p className="text-gray-700 mb-2">
+              The RADKFILE and KRADFILE files are copyrighted and available under the EDRDG Licence. The copyright for RADKFILE2 and KRADFILE2 is held by Jim Rose and Jim Breen.
+            </p>
+            <p className="text-gray-700 mb-2">
+              Please note that the licence might not allow commercial use. You can read more about the licence
+              <a
+                href="https://www.edrdg.org/edrdg/licence.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline ml-1"
+              >
+                here
+              </a>.
+            </p>
+            <h2 className="text-xl font-semibold text-gray-800 mt-4 mb-2">License Information</h2>
+            <p className="text-gray-700 mb-2">
+              The dictionary files are made available under a Creative Commons Attribution-ShareAlike Licence (V4.0).
+            </p>
+            <p className="text-gray-700 mb-2">
+              The RADKFILE/KRADFILE files relate to the decomposition of the 6,355 kanji in JIS X 0208 into their visible components. However, please note that the RADKFILE2/KRADFILE2 files, which are copyrighted by Jim Breen, are not being used in our project.
+            </p>
+          </div>
 
 
 
@@ -381,36 +381,36 @@ radkfile2/kradkfile2 is copyright by Jim Breen - but we are not using these spec
 
 
 
-{/* # Mecab
+          {/* # Mecab
 mecab apt package
 
 mecab-async - https://www.npmjs.com/package/mecab-async - MIT Licence */}
 
 
-<div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-lg">
-      <h1 className="text-2xl font-bold text-gray-800 mb-4">Mecab</h1>
-      <p className="text-gray-700 mb-2">
-        We are using the Mecab package available through the apt package manager.
-      </p>
-      <p className="text-gray-700 mb-2">
-        Additionally, we are utilizing 
-        <a 
-          href="https://www.npmjs.com/package/mecab-async" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="text-blue-600 hover:underline ml-1"
-        >
-          mecab-async
-        </a>, 
-        an NPM package licensed under the MIT License.
-      </p>
-    </div>
+          <div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-lg">
+            <h1 className="text-2xl font-bold text-gray-800 mb-4">Mecab</h1>
+            <p className="text-gray-700 mb-2">
+              We are using the Mecab package available through the apt package manager.
+            </p>
+            <p className="text-gray-700 mb-2">
+              Additionally, we are utilizing
+              <a
+                href="https://www.npmjs.com/package/mecab-async"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline ml-1"
+              >
+                mecab-async
+              </a>,
+              an NPM package licensed under the MIT License.
+            </p>
+          </div>
 
 
 
 
 
-{/* # KUROSHIRO Parser 
+          {/* # KUROSHIRO Parser 
 
 https://kuroshiro.org/
 https://github.com/hexenq/kuroshiro
@@ -418,41 +418,41 @@ https://github.com/hexenq/kuroshiro
 MIT licence
 it is node package */}
 
-<div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-lg">
-      <h1 className="text-2xl font-bold text-gray-800 mb-4">KUROSHIRO Parser</h1>
-      <p className="text-gray-700 mb-2">
-        The KUROSHIRO Parser is a powerful tool for converting Japanese text into various forms. For more details, visit the official website at 
-        <a 
-          href="https://kuroshiro.org/" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="text-blue-600 hover:underline ml-1"
-        >
-          kuroshiro.org
-        </a>.
-      </p>
-      <p className="text-gray-700 mb-2">
-        The source code is available on GitHub at 
-        <a 
-          href="https://github.com/hexenq/kuroshiro" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="text-blue-600 hover:underline ml-1"
-        >
-          github.com/hexenq/kuroshiro
-        </a>.
-      </p>
-      <p className="text-gray-700 mb-2">
-        KUROSHIRO is a Node.js package and is licensed under the MIT License.
-      </p>
-    </div>
+          <div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-lg">
+            <h1 className="text-2xl font-bold text-gray-800 mb-4">KUROSHIRO Parser</h1>
+            <p className="text-gray-700 mb-2">
+              The KUROSHIRO Parser is a powerful tool for converting Japanese text into various forms. For more details, visit the official website at
+              <a
+                href="https://kuroshiro.org/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline ml-1"
+              >
+                kuroshiro.org
+              </a>.
+            </p>
+            <p className="text-gray-700 mb-2">
+              The source code is available on GitHub at
+              <a
+                href="https://github.com/hexenq/kuroshiro"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline ml-1"
+              >
+                github.com/hexenq/kuroshiro
+              </a>.
+            </p>
+            <p className="text-gray-700 mb-2">
+              KUROSHIRO is a Node.js package and is licensed under the MIT License.
+            </p>
+          </div>
 
 
 
 
 
 
-{/* # JMDIC 
+          {/* # JMDIC 
 
 https://www.edrdg.org/jmdict/j_jmdict.html
 https://www.edrdg.org/edrdg/licence.html
@@ -474,75 +474,75 @@ Licence (jmdict for yomitan):
 The code in this repository is licensed under the MIT license. 
 The released dictionaries are licensed under the Creative Commons Attribution-ShareAlike Licence (V4.0) that JMdict is. */}
 
-<div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-lg">
-      <h1 className="text-2xl font-bold text-gray-800 mb-4">JMDICT</h1>
-      <p className="text-gray-700 mb-2">
-        The JMDict files are available under a Creative Commons Attribution-ShareAlike Licence (V4.0). You can view the Licence Deed 
-        <a 
-          href="https://www.edrdg.org/edrdg/licence.html" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="text-blue-600 hover:underline ml-1"
-        >
-          here
-        </a>, and the full Licence Code 
-        <a 
-          href="https://www.edrdg.org/edrdg/licence.html" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="text-blue-600 hover:underline ml-1"
-        >
-          here
-        </a>.
-      </p>
-      <p className="text-gray-700 mb-2">
-        For the EDICT, JMdict, and KANJIDIC files, you may use or quote the following URLs:
-        </p>
-        <ul className="list-disc list-inside ml-4">
-          <li>
-            <a 
-              href="https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="text-blue-600 hover:underline"
-            >
-              JMdict-EDICT Dictionary Project
-            </a>
-          </li>
-          <li>
-            <a 
-              href="https://www.edrdg.org/wiki/index.php/KANJIDIC_Project" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="text-blue-600 hover:underline"
-            >
-              KANJIDIC Project
-            </a>
-          </li>
-        </ul>
+          <div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-lg">
+            <h1 className="text-2xl font-bold text-gray-800 mb-4">JMDICT</h1>
+            <p className="text-gray-700 mb-2">
+              The JMDict files are available under a Creative Commons Attribution-ShareAlike Licence (V4.0). You can view the Licence Deed
+              <a
+                href="https://www.edrdg.org/edrdg/licence.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline ml-1"
+              >
+                here
+              </a>, and the full Licence Code
+              <a
+                href="https://www.edrdg.org/edrdg/licence.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline ml-1"
+              >
+                here
+              </a>.
+            </p>
+            <p className="text-gray-700 mb-2">
+              For the EDICT, JMdict, and KANJIDIC files, you may use or quote the following URLs:
+            </p>
+            <ul className="list-disc list-inside ml-4">
+              <li>
+                <a
+                  href="https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  JMdict-EDICT Dictionary Project
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.edrdg.org/wiki/index.php/KANJIDIC_Project"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  KANJIDIC Project
+                </a>
+              </li>
+            </ul>
 
-      <p className="text-gray-700 mb-2">
-        Unfortunately, we encountered issues downloading files from these older sites due to errors. However, we found a repository under the MIT License for JMDict (used for Yomitan) that is frequently updated. You can check it out 
-        <a 
-          href="https://github.com/themoeway/jmdict-yomitan?tab=readme-ov-file" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="text-blue-600 hover:underline ml-1"
-        >
-          here
-        </a>.
-      </p>
-      <p className="text-gray-700 mb-2">
-        We downloaded the JMDict file from that repository, which does not include example sentences from Tatoeba. In the future, we may download the larger file as well.
-      </p>
-      <h2 className="text-xl font-semibold text-gray-800 mt-4 mb-2">Licence (JMDict for Yomitan)</h2>
-      <p className="text-gray-700 mb-2">
-        The code in the JMDict for Yomitan repository is licensed under the MIT License. The released dictionaries are licensed under the Creative Commons Attribution-ShareAlike Licence (V4.0), the same as JMdict.
-      </p>
-    </div>
+            <p className="text-gray-700 mb-2">
+              Unfortunately, we encountered issues downloading files from these older sites due to errors. However, we found a repository under the MIT License for JMDict (used for Yomitan) that is frequently updated. You can check it out
+              <a
+                href="https://github.com/themoeway/jmdict-yomitan?tab=readme-ov-file"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline ml-1"
+              >
+                here
+              </a>.
+            </p>
+            <p className="text-gray-700 mb-2">
+              We downloaded the JMDict file from that repository, which does not include example sentences from Tatoeba. In the future, we may download the larger file as well.
+            </p>
+            <h2 className="text-xl font-semibold text-gray-800 mt-4 mb-2">Licence (JMDict for Yomitan)</h2>
+            <p className="text-gray-700 mb-2">
+              The code in the JMDict for Yomitan repository is licensed under the MIT License. The released dictionaries are licensed under the Creative Commons Attribution-ShareAlike Licence (V4.0), the same as JMdict.
+            </p>
+          </div>
 
 
-{/* # Radicals + KRADFILE
+          {/* # Radicals + KRADFILE
 
 radical meanings taken from wikipedia:
 
@@ -561,60 +561,60 @@ https://www.edrdg.org/edrdg/sample.html
 
 we are using just KRADFILE (NOT KRADFILE2, so we are good with licence) */}
 
-<div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-lg">
-      <h1 className="text-2xl font-bold text-gray-800 mb-4">Radicals + KRADFILE</h1>
-      <p className="text-gray-700 mb-2">
-        The meanings of the radicals used in our project are sourced from Wikipedia. You can view the full list of kanji radicals by stroke count 
-        <a 
-          href="https://en.wikipedia.org/wiki/List_of_kanji_radicals_by_stroke_count" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="text-blue-600 hover:underline ml-1"
-        >
-          here
-        </a>.
-      </p>
-      <h2 className="text-xl font-semibold text-gray-800 mt-4 mb-2">KRADFILE</h2>
-      <p className="text-gray-700 mb-2">
-        We are using the KRADFILE for our project. More information about KRADFILE can be found 
-        <a 
-          href="https://www.edrdg.org/krad/kradinf.html" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="text-blue-600 hover:underline ml-1"
-        >
-          here
-        </a>.
-      </p>
-      <p className="text-gray-700 mb-2">
-        The RADKFILE and KRADFILE files are copyrighted and available under the EDRDG Licence. The copyright for RADKFILE2 and KRADFILE2 is held by Jim Rose. However, we are only using KRADFILE (not KRADFILE2), so we are in compliance with the licence.
-      </p>
-      <p className="text-gray-700 mb-2">
-        For more information on the EDRDG licence, you can visit 
-        <a 
-          href="https://www.edrdg.org/edrdg/licence.html" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="text-blue-600 hover:underline ml-1"
-        >
-          this link
-        </a>.
-      </p>
-      <p className="text-gray-700 mb-2">
-        Sample attribution texts for using these files under the licence can be found 
-        <a 
-          href="https://www.edrdg.org/edrdg/sample.html" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="text-blue-600 hover:underline ml-1"
-        >
-          here
-        </a>.
-      </p>
-    </div>
+          <div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-lg">
+            <h1 className="text-2xl font-bold text-gray-800 mb-4">Radicals + KRADFILE</h1>
+            <p className="text-gray-700 mb-2">
+              The meanings of the radicals used in our project are sourced from Wikipedia. You can view the full list of kanji radicals by stroke count
+              <a
+                href="https://en.wikipedia.org/wiki/List_of_kanji_radicals_by_stroke_count"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline ml-1"
+              >
+                here
+              </a>.
+            </p>
+            <h2 className="text-xl font-semibold text-gray-800 mt-4 mb-2">KRADFILE</h2>
+            <p className="text-gray-700 mb-2">
+              We are using the KRADFILE for our project. More information about KRADFILE can be found
+              <a
+                href="https://www.edrdg.org/krad/kradinf.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline ml-1"
+              >
+                here
+              </a>.
+            </p>
+            <p className="text-gray-700 mb-2">
+              The RADKFILE and KRADFILE files are copyrighted and available under the EDRDG Licence. The copyright for RADKFILE2 and KRADFILE2 is held by Jim Rose. However, we are only using KRADFILE (not KRADFILE2), so we are in compliance with the licence.
+            </p>
+            <p className="text-gray-700 mb-2">
+              For more information on the EDRDG licence, you can visit
+              <a
+                href="https://www.edrdg.org/edrdg/licence.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline ml-1"
+              >
+                this link
+              </a>.
+            </p>
+            <p className="text-gray-700 mb-2">
+              Sample attribution texts for using these files under the licence can be found
+              <a
+                href="https://www.edrdg.org/edrdg/sample.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline ml-1"
+              >
+                here
+              </a>.
+            </p>
+          </div>
 
 
-{/* # JAMDICT 
+          {/* # JAMDICT 
 
 MIT licence 
 
@@ -622,51 +622,51 @@ https://pypi.org/project/jamdict/
 https://github.com/tristcoil/jamdict?tab=readme-ov-file */}
 
 
-<div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-lg">
-      <h1 className="text-2xl font-bold text-gray-800 mb-4">JAMDICT</h1>
-      <p className="text-gray-700 mb-2">
-        JAMDICT is a Python package for working with Japanese dictionary files. It is licensed under the MIT License.
-      </p>
-      <p className="text-gray-700 mb-2">
-        For more information, you can visit the package page on PyPI 
-        <a 
-          href="https://pypi.org/project/jamdict/" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="text-blue-600 hover:underline ml-1"
-        >
-          here
-        </a>.
-      </p>
-      <p className="text-gray-700 mb-2">
-        The source code and additional details can be found on GitHub 
-        <a 
-          href="https://github.com/tristcoil/jamdict?tab=readme-ov-file" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="text-blue-600 hover:underline ml-1"
-        >
-          here
-        </a>.
-      </p>
-    </div>
+          <div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-lg">
+            <h1 className="text-2xl font-bold text-gray-800 mb-4">JAMDICT</h1>
+            <p className="text-gray-700 mb-2">
+              JAMDICT is a Python package for working with Japanese dictionary files. It is licensed under the MIT License.
+            </p>
+            <p className="text-gray-700 mb-2">
+              For more information, you can visit the package page on PyPI
+              <a
+                href="https://pypi.org/project/jamdict/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline ml-1"
+              >
+                here
+              </a>.
+            </p>
+            <p className="text-gray-700 mb-2">
+              The source code and additional details can be found on GitHub
+              <a
+                href="https://github.com/tristcoil/jamdict?tab=readme-ov-file"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline ml-1"
+              >
+                here
+              </a>.
+            </p>
+          </div>
 
 
 
-    <div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-lg">
-      <h1 className="text-2xl font-bold text-gray-800 mb-4">Kanji Radicals</h1>
-      <p className="text-gray-700 mb-2">
-        List of Kanji Radicals sourced from 
-        <a 
-          href="https://en.wikipedia.org/wiki/List_of_kanji_radicals_by_stroke_count" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="text-blue-600 hover:underline ml-1"
-        >
-          Wikipedia
-        </a>.
-      </p>
-    </div>
+          <div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-lg">
+            <h1 className="text-2xl font-bold text-gray-800 mb-4">Kanji Radicals</h1>
+            <p className="text-gray-700 mb-2">
+              List of Kanji Radicals sourced from
+              <a
+                href="https://en.wikipedia.org/wiki/List_of_kanji_radicals_by_stroke_count"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline ml-1"
+              >
+                Wikipedia
+              </a>.
+            </p>
+          </div>
         </div>
       </div>
     </div>

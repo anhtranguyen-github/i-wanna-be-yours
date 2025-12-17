@@ -96,4 +96,4 @@ While **계속** means "to continue," it's useful to compare it with other expre
 Feel free to revisit this lesson to reinforce your understanding of **계속**. Practice by making your own sentences to describe actions that continue over time!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

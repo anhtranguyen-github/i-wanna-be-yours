@@ -146,4 +146,4 @@ Understanding **～ように** enhances your ability to express intentions and h
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

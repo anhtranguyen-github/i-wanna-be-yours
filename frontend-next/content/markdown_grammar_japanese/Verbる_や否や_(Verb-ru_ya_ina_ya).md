@@ -114,4 +114,4 @@ By understanding **や否や**, you can enhance your comprehension of formal Jap
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

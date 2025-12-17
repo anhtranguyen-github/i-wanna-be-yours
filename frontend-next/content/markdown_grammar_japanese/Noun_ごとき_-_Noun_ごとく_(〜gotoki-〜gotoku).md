@@ -114,4 +114,4 @@ By understanding and appropriately using **ごとき** and **ごとく**, you ca
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

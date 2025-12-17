@@ -128,4 +128,4 @@ In Korean culture, modesty and humility are valued. Using **~하는 편이다** 
 By understanding and practicing **~하는 편이다**, you'll be able to express nuances in your Korean conversations, making your speech sound more natural and culturally appropriate.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

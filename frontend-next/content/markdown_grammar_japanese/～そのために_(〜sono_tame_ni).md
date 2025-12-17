@@ -98,4 +98,4 @@ Feel free to review this material and practice using **そのために** in your
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

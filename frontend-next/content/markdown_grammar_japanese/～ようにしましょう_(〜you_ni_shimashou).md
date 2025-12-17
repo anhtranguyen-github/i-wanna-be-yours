@@ -123,4 +123,4 @@ Feel free to practice by making your own sentences using **～ようにしまし
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

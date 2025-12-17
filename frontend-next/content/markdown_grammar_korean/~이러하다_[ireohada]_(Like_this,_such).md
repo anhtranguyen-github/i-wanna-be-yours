@@ -95,4 +95,4 @@ While **이러하다** means "like this" or "such," it can be compared with simi
 Feel free to revisit this lesson to reinforce your understanding of **~이러하다**. Practice by forming your own sentences, and soon you'll master its usage in both formal and informal contexts!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

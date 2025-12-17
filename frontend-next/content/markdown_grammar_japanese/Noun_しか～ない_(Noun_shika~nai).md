@@ -123,4 +123,4 @@ By mastering **しか～ない**, you'll be able to express limitations and excl
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

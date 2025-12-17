@@ -102,4 +102,4 @@ By understanding and practicing **～切れない**, you'll be able to express l
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

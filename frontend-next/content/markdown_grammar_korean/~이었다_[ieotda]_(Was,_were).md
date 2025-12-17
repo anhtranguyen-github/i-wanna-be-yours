@@ -122,4 +122,4 @@ By consistently practicing and being mindful of these rules, you'll become adept
 
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

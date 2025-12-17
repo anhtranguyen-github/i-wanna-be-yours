@@ -104,4 +104,4 @@ The structure of **~거니와** is as follows:
 By understanding and practicing **~거니와**, you can enhance your Korean skills, especially in formal communication!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

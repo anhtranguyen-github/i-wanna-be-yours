@@ -140,4 +140,4 @@ Let's break down the formation:
 By understanding and practicing **~졌다가**, you can more effectively describe sequences of changes in states or conditions, adding greater nuance to your Korean communication. Keep practicing with different adjectives and verbs to become comfortable with this grammar point!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -107,4 +107,4 @@ The Japanese grammar pattern **Verbることになる (〜ることになる)** 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

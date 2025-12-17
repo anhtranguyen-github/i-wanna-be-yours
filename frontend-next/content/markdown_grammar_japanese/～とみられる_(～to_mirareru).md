@@ -122,4 +122,4 @@ By understanding and practicing the use of **～とみられる**, you can enhan
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

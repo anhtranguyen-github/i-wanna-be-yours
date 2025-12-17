@@ -100,4 +100,4 @@ In Japanese society, there is a strong emphasis on procedures and hierarchy. The
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

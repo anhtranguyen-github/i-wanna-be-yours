@@ -144,4 +144,4 @@ By understanding and utilizing **ずにはおかない**, you can express strong
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

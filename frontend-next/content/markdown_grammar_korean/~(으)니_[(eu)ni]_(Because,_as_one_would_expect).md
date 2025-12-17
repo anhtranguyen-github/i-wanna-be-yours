@@ -111,4 +111,4 @@ In this lesson, we'll explore the Korean grammar point **~(으)리니** [(eu)rin
 By understanding and practicing **~(으)리니**, you'll enhance your Korean language skills, particularly in reading and writing formal texts. Remember that while it's not common in everyday speech, it's a valuable tool for expressing formal reasoning and adds a poetic touch to your language.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

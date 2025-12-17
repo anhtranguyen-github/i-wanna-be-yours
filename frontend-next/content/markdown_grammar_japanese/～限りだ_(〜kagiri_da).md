@@ -98,4 +98,4 @@ By incorporating **～限りだ** into your speech, you can express your emotion
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -124,4 +124,4 @@ By mastering **~並み**, you can make more nuanced comparisons and express leve
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

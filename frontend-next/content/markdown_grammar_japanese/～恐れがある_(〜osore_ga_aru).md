@@ -107,4 +107,4 @@ By understanding and properly using **～恐れがある**, you can effectively 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

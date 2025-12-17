@@ -125,4 +125,4 @@ Congratulations! You've learned how to use 「ちなみに」 to make your Japan
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

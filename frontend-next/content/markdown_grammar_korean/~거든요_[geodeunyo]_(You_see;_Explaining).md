@@ -98,4 +98,4 @@ For nouns ending with a vowel:
 Happy studying! Remember, using **~거든요** appropriately will make your Korean sound more natural and polite.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -110,4 +110,4 @@ By mastering **すなわち**, you'll be able to express definitions and clarifi
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

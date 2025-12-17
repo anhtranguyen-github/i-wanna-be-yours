@@ -106,4 +106,4 @@ By understanding **「A。すると B。」**, you can enhance your storytelling
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -105,4 +105,4 @@ Selecting the correct speech level is vital. Combining **(으)ㄹ 때** with pol
 By understanding and practicing **(으)ㄹ 때**, you'll be able to express time-related actions more fluently in Korean. Remember to pay attention to verb endings and context to use this grammar point correctly.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

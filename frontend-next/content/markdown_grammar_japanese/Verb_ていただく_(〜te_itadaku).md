@@ -106,4 +106,4 @@ By understanding and correctly using **〜ていただく**, you can communicate
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

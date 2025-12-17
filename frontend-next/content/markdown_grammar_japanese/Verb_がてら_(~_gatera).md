@@ -97,4 +97,4 @@ Feel free to try creating your own sentences using **がてら** to solidify you
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

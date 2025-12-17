@@ -117,4 +117,4 @@ In Korean culture, **~인/는데** is often used to keep conversations flowing s
 By mastering **~인/는데**, you'll be able to express complex ideas and make your Korean sound more natural. Keep practicing with different verbs, adjectives, and nouns to become more comfortable with this essential grammar point.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

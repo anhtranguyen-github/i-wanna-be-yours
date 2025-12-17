@@ -92,4 +92,4 @@ In Korean culture, direct refusals or negations can be considered impolite. Usin
 By understanding and practicing **~진 않다**, you can express negations more naturally and politely in Korean.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

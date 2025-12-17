@@ -88,4 +88,4 @@ By understanding and practicing **と相まって**, you can enhance your Japane
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

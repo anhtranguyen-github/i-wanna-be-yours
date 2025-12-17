@@ -96,4 +96,4 @@ The structure combines the conditional marker **~(으)면** ("if") with **좋겠
 Keep practicing by expressing your own wishes using **~(으)면 좋겠다**!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

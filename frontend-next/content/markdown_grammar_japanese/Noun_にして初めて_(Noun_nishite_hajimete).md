@@ -97,4 +97,4 @@ By understanding and practicing **「Noun にして初めて」**, you can add d
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

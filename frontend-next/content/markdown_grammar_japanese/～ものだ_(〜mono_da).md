@@ -132,4 +132,4 @@ Understanding how to use **～ものだ** appropriately will enhance your abilit
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

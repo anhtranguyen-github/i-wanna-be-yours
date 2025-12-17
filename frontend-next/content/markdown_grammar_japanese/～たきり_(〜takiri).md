@@ -83,4 +83,4 @@ Practice using **〜たきり** in your own sentences to describe situations whe
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

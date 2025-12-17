@@ -93,4 +93,4 @@ Feel free to practice by making your own sentences and pay attention to this pat
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

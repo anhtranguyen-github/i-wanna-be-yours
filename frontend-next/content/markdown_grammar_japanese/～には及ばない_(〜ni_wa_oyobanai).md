@@ -114,4 +114,4 @@ By understanding and using **～には及ばない**, you can express yourself m
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

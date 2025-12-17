@@ -95,4 +95,4 @@ Congratulations! You have learned how to use **たいてい** to describe usual 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

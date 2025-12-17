@@ -117,4 +117,4 @@ By mastering **〜とおり**, you can more accurately describe situations that 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

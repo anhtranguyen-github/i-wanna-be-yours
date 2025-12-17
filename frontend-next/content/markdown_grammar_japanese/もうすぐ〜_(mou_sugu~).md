@@ -92,4 +92,4 @@ Feel free to create your own sentences using **もうすぐ** to describe events
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

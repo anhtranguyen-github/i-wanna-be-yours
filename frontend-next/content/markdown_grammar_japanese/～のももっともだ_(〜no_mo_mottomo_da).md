@@ -97,4 +97,4 @@ By understanding **～のももっともだ**, you can express empathy and ackno
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

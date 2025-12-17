@@ -13,9 +13,8 @@ function SubtitleInfo() {
       >
         How to get YouTube Subtitles
         <svg
-          className={`w-5 h-5 transform transition-transform ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`w-5 h-5 transform transition-transform ${isOpen ? "rotate-180" : ""
+            }`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -35,8 +34,8 @@ function SubtitleInfo() {
             YouTube subtitles work automatically for self-hosting case.
           </p>
           <p className="text-sm font-bold text-slate-600 mb-2">
-            On hanabira.org website, you need to import subtitles manually
-            (YouTube blocking Hanabira server/datacenter).
+            On hanachan.org website, you need to import subtitles manually
+            (YouTube blocking hanachan server/datacenter).
           </p>
           <div className="text-xs text-slate-600 space-y-1">
             <p>

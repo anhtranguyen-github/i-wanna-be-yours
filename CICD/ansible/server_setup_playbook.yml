@@ -1,5 +1,5 @@
 ---
-- name: Configure Hanabira Server
+- name: Configure hanachan Server
   become: yes
   hosts: all
   tasks:
@@ -63,18 +63,18 @@
         name: podman
         state: restarted
 
-    - name: Create 'hanabira' directory in coil's home
+    - name: Create 'hanachan' directory in coil's home
       file:
-        path: /home/coil/hanabira
+        path: /home/coil/hanachan
         state: directory
         owner: coil
         group: coil
         mode: "0740"
 
-    - name: Ensure docker-compose.yml is present in 'hanabira' directory
+    - name: Ensure docker-compose.yml is present in 'hanachan' directory
       copy:
         src: files/docker-compose_prod.yml
-        dest: /home/coil/hanabira/docker-compose.yml
+        dest: /home/coil/hanachan/docker-compose.yml
         owner: coil
         group: coil
         mode: "0640"

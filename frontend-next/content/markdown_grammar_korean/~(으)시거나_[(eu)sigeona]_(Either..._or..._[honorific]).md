@@ -81,4 +81,4 @@ To form **~(으)시거나**, attach **~(으)시거나** to the verb or adjective
    - **Answer:** **시거나** (보다 → 보시거나)
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

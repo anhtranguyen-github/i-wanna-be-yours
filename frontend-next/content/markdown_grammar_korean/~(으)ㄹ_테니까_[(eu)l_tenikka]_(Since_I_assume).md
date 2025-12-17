@@ -122,4 +122,4 @@ In this lesson, we'll explore the Korean grammar point **~(으)ㄹ 테니까**, 
 By understanding and practicing **~(으)ㄹ 테니까**, you'll be able to make more nuanced suggestions and express your intentions or assumptions clearly in Korean. Remember to pay attention to the subject and context to use this grammar point correctly.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

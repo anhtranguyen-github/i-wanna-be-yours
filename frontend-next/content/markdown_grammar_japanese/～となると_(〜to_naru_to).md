@@ -107,4 +107,4 @@ The expression **～となると** itself is neutral and can be used in both for
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -100,4 +100,4 @@ The Korean sentence ending **~지요** (pronounced *[jiyo]*) is a versatile gram
 By mastering **~지요**, you'll enhance your conversational skills, making your Korean sound more natural and engaging. Keep practicing by incorporating this grammar point into your daily conversations!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

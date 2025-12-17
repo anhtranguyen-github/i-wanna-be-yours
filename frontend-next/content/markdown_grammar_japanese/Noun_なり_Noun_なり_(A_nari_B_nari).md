@@ -117,4 +117,4 @@ By mastering **「A なり B なり」**, you can enhance your Japanese communic
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

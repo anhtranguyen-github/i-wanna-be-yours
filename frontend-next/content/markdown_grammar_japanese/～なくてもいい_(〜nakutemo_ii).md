@@ -98,4 +98,4 @@ By understanding **～なくてもいい**, you can communicate effectively when
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

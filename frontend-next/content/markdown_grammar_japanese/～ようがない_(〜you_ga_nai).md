@@ -115,4 +115,4 @@ By understanding **～ようがない**, you can express situations where someth
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

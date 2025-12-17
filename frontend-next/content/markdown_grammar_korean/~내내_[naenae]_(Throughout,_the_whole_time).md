@@ -130,4 +130,4 @@ A[Noun (Time/Place)] --> B[내내]
 **Congratulations!** You have learned how to use **~내내** to express continuous actions or states in Korean. Remember to attach it directly to nouns and adjust your verb endings to match the appropriate level of politeness.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

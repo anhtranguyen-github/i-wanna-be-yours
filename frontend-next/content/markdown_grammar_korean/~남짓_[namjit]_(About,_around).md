@@ -86,4 +86,4 @@ While **~남짓** is not part of an idiom, it's commonly used in combination wit
 By mastering **~남짓**, you can express approximate amounts more naturally and understand nuances in conversations where precision is less important.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

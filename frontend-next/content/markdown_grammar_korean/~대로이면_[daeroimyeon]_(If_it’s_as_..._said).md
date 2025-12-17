@@ -88,4 +88,4 @@ The structure combines **~대로**, which means **"as"** or **"according to"**, 
    **Translation**: If it's as you say, we will win.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

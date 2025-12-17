@@ -100,4 +100,4 @@ By mastering ～ところ, you can convey precise timing in your conversations, 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

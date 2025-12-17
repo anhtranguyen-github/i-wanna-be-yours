@@ -102,4 +102,4 @@ By mastering **～というのは**, you'll be better equipped to define terms a
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

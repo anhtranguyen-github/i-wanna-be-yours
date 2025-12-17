@@ -138,4 +138,4 @@ By understanding and practicing **～ようと思う**, you'll be better equippe
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

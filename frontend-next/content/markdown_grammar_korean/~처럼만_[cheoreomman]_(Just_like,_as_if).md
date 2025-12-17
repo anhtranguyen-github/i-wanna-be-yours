@@ -111,4 +111,4 @@ The addition of **만** narrows the focus, stressing that the action is limited 
 Congratulations! You've learned how to use **~처럼만** to express precise comparisons in Korean. Keep practicing by creating your own sentences, and soon you'll use this grammar point naturally.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

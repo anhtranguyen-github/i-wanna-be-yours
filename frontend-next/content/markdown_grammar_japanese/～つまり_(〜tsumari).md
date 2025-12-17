@@ -112,4 +112,4 @@ By mastering **「つまり」**, you'll enhance your ability to convey clear an
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

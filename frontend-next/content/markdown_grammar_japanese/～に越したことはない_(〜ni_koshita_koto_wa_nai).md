@@ -100,4 +100,4 @@ By understanding and practicing **～に越したことはない**, you can add 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

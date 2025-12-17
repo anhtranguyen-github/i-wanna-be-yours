@@ -118,4 +118,4 @@ In Korean culture, context and situational factors play a significant role in co
 By mastering **~에 따라**, you can more accurately describe how different factors influence outcomes in Korean. Keep practicing by crafting your own sentences using this grammar point!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -119,4 +119,4 @@ To use **~만** with verbs, nominalize the verb using **~기** or **~는 것** b
 Keep practicing using **~만** in various sentences to become comfortable with expressing exclusivity in Korean!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

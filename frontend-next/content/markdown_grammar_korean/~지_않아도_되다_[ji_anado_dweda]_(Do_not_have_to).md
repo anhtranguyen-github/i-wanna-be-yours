@@ -93,4 +93,4 @@ By understanding and practicing **~지 않아도 되다**, you'll be able to exp
 Feel free to create your own sentences using **~지 않아도 되다** to become more familiar with this grammar pattern!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -107,4 +107,4 @@ In Korean culture, acknowledging the inevitability of certain situations reflect
 3. **비 온 뒤에 땅이 굳기 마련이다.**
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

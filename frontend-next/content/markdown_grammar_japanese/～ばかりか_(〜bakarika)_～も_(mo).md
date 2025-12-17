@@ -114,4 +114,4 @@ By understanding and practicing **～ばかりか ～も**, you'll be able to co
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

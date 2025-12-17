@@ -129,4 +129,4 @@ In Korean culture, especially in formal and professional settings, it's importan
 By mastering **~에 근거하여**, you can effectively express the basis of your thoughts, decisions, and statements in Korean, enhancing your communication in formal contexts.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

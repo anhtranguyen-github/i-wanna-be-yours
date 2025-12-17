@@ -93,4 +93,4 @@ Both **~만이 아니다** and **~뿐만 아니라** mean **"not only"**, but th
 Feel free to practice by creating your own sentences using **~만이 아니다** to reinforce your understanding!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

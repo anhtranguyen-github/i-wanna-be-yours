@@ -144,4 +144,4 @@ By mastering **～だらけ**, you can more accurately describe situations where
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -115,4 +115,4 @@ While both **~던** and **~았/었던** refer to past actions or states, there a
 By understanding and practicing **~(으)던**, you can express past habits and reminisce about ongoing actions or states in Korean, adding depth to your language skills.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

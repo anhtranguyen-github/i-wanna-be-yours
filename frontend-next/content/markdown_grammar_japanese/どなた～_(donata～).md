@@ -97,4 +97,4 @@ Using **どなた** reflects the Japanese cultural emphasis on respect and socia
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

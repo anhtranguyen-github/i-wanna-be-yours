@@ -116,4 +116,4 @@ By mastering **どこも Verbません**, you'll enhance your ability to express
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

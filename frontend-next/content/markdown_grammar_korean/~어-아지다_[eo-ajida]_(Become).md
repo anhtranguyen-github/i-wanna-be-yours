@@ -136,4 +136,4 @@ The formation depends on the vowel harmony of the adjective or verb stem:
 By understanding and practicing the **~어/아지다** pattern, you will be able to describe changes in states and conditions effectively in Korean.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

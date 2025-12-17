@@ -116,4 +116,4 @@ Processing keyword: 지금 [jigeum] (Now)
 Now you have a solid understanding of **지금** and how to use it naturally in Korean sentences. Practice incorporating **지금** into your daily conversations to become more fluent and express present actions effectively!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

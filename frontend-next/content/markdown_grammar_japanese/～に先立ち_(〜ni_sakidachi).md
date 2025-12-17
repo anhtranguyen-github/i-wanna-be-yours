@@ -134,4 +134,4 @@ The grammar point ～に先立ち (〜ni sakidachi) is a formal expression used 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -93,4 +93,4 @@ Using **~게 되다** in formal situations shows respect and politeness, which i
 Feel free to revisit the lesson and practice crafting your own sentences using **~게 되다** to solidify your understanding!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

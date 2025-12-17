@@ -110,4 +110,4 @@ By mastering **～といったらありゃしない**, you'll enhance your abili
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

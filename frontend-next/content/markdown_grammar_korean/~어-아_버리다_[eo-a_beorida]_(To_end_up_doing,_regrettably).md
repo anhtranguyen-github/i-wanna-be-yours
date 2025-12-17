@@ -142,4 +142,4 @@ In Korean culture, there is a strong emphasis on expressing emotions appropriate
 By mastering **~어/아 버리다**, you'll enhance your ability to express nuanced emotions about actions in Korean, making your speech more natural and expressive.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

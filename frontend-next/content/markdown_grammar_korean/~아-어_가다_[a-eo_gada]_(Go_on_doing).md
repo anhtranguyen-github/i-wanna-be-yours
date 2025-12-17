@@ -100,4 +100,4 @@ While **~아/어 가다** itself doesn't change, the verb **가다** should be c
 By understanding and practicing the **~아/어 가다** grammar point, you'll be better equipped to express ongoing actions and changes in Korean, making your speech more natural and fluent.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

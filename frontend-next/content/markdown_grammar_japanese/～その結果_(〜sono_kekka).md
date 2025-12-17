@@ -136,4 +136,4 @@ By understanding and practicing **～その結果 (〜sono kekka)**, you'll enha
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

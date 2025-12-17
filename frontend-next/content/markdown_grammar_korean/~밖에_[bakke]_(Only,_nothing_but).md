@@ -118,4 +118,4 @@ Both **~밖에** and **만** can translate to "only" in English, but they are us
 *By understanding and practicing **~밖에**, you can more accurately express limitations and insufficiencies in Korean, adding depth to your language skills.*
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

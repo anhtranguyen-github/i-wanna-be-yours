@@ -1,13 +1,13 @@
-root@VPS-O2A4-hanabira:/etc/nginx/sites-enabled# cat hanabira.org 
+root@VPS-O2A4-hanachan:/etc/nginx/sites-enabled# cat hanachan.org 
 # Redirect HTTP traffic to HTTPS
 server {
-    if ($host = hanabira.org) {
+    if ($host = hanachan.org) {
         return 301 https://$host$request_uri;
     } # managed by Certbot
 
 
   listen 80;
-  server_name hanabira.org;
+  server_name hanachan.org;
 
   return 301 https://$server_name$request_uri;
 
@@ -16,9 +16,9 @@ server {
 
 server {
   listen 443 ssl;
-  server_name hanabira.org;
-    ssl_certificate /etc/letsencrypt/live/hanabira.org/fullchain.pem; # managed by Certbot
-    ssl_certificate_key /etc/letsencrypt/live/hanabira.org/privkey.pem; # managed by Certbot
+  server_name hanachan.org;
+    ssl_certificate /etc/letsencrypt/live/hanachan.org/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/hanachan.org/privkey.pem; # managed by Certbot
 
   location / {
     proxy_pass http://localhost:3000;
@@ -106,4 +106,4 @@ server {
 }
 
 
-root@VPS-O2A4-hanabira:/etc/nginx/sites-enabled# 
+root@VPS-O2A4-hanachan:/etc/nginx/sites-enabled# 

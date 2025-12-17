@@ -113,4 +113,4 @@ In Korean, expressing when an action takes place in relation to another is essen
 By mastering **~전에** and **~전까지**, you enhance your ability to discuss timelines and deadlines, which is crucial for effective communication in Korean. Keep practicing, and soon it'll become second nature!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

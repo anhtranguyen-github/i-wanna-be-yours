@@ -105,4 +105,4 @@ Noun + (이)네요
 By incorporating **~네요** into your Korean conversations, you can express your spontaneous reactions and make your speech more engaging and authentic.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

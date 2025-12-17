@@ -115,4 +115,4 @@ Using **되다** in different speech levels:
 By mastering **~이 되다**, you can effectively communicate changes and aspirations in Korean, adding depth to your conversations.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

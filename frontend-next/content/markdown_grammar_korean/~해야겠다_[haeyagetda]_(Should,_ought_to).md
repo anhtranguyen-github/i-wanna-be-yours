@@ -124,4 +124,4 @@ In Korean culture, expressing intentions politely and thoughtfully is important.
 By understanding and practicing **~해야겠다**, you'll be better equipped to express your intentions and decisions in Korean naturally and accurately.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -117,4 +117,4 @@ By mastering **Verb 終わる (〜おわる)**, you can effectively express when
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

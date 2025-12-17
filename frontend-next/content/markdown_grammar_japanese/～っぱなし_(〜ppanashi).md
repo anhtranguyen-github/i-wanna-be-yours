@@ -102,4 +102,4 @@ By understanding ～っぱなし, you can express situations where something is 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

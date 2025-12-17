@@ -115,4 +115,4 @@ By understanding and practicing the usage of ～べきだ, you'll be able to giv
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

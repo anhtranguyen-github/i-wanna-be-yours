@@ -99,4 +99,4 @@ Verb Stem + 〮〮〮하다 → Noun Form (Verb Stem + 〮〮〮함) + 에 있�
 By mastering **~함에 있어**, you can enhance your formal Korean writing and better understand advanced texts.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

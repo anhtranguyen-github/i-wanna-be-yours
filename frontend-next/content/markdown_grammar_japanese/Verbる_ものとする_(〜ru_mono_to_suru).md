@@ -85,4 +85,4 @@ By understanding and correctly using **Verbるものとする**, you can accurat
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

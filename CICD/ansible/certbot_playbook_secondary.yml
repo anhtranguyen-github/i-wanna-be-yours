@@ -48,18 +48,18 @@
         mode: '0644'
 
 
-    - name: Obtain SSL certificates for hanabira-dev.org
-      command: certbot --nginx -d hanabira-dev.org --non-interactive --agree-tos -m admin@hanabira-dev.org
+    - name: Obtain SSL certificates for hanachan-dev.org
+      command: certbot --nginx -d hanachan-dev.org --non-interactive --agree-tos -m admin@hanachan-dev.org
 
     - name: Remove default Nginx configuration file
       file:
         path: /etc/nginx/sites-enabled/default
         state: absent
 
-    - name: Copy the Nginx configuration file for hanabira-dev.org
+    - name: Copy the Nginx configuration file for hanachan-dev.org
       copy:
-        src: nginx/hanabira-dev.org
-        dest: /etc/nginx/sites-enabled/hanabira-dev.org
+        src: nginx/hanachan-dev.org
+        dest: /etc/nginx/sites-enabled/hanachan-dev.org
         owner: root
         group: root
         mode: '0644'

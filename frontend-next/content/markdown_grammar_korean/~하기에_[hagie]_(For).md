@@ -100,4 +100,4 @@ The structure of **~하기에** involves attaching it to the verb stem turned in
 By understanding and practicing **~하기에**, you enhance your ability to articulate reasons and causes in Korean, making your communication more precise and natural.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

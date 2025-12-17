@@ -2,7 +2,7 @@
 
 ## Overview
 
-Hanabira.org follows a **guest-friendly access model** where:
+hanachan.org follows a **guest-friendly access model** where:
 
 - **All UI and navigation is visible to guests** - No features are hidden behind login
 - **Authentication is required at action time** - Only when users try to save/personalize

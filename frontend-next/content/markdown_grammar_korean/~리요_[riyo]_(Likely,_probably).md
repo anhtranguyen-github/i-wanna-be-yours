@@ -117,4 +117,4 @@ These expressions are often used to convey hope or certainty about the future.
 By understanding and recognizing **~리요**, you deepen your appreciation for Korean language and its rich literary heritage. While it's not used in everyday conversation, it's a valuable piece of knowledge for advanced learners and enthusiasts of Korean literature and history.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -110,4 +110,4 @@ By understanding and practicing **A かたわら B**, you can express complex se
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -111,4 +111,4 @@ This grammar structure is neutral and appropriate in both spoken and written lan
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

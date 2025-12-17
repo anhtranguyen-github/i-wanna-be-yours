@@ -132,4 +132,4 @@ By incorporating **「Verb ようにする」** into your speech, you can effect
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

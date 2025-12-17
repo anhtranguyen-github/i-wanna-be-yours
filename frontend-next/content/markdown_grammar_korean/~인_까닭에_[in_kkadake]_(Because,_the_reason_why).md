@@ -124,4 +124,4 @@ Both patterns express reasons or causes, but they differ in formality and usage.
 By mastering **~인 까닭에** and its variations, you'll enhance your ability to express reasons and causes formally in Korean. Keep practicing by incorporating this grammar point into your writing and recognizing it in reading materials.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

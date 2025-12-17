@@ -105,4 +105,4 @@ While both forms refer to future actions, they differ in nuance and usage.
 By understanding and practicing **~을/ㄹ게요**, you can effectively express your intentions and promises in a way that is considerate of your listener, aligning with Korean cultural communication styles.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

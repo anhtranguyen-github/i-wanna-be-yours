@@ -1,6 +1,6 @@
 # Backend Services Overview
 
-This document describes the purpose and responsibilities of each backend service in the hanabira.org Japanese learning platform.
+This document describes the purpose and responsibilities of each backend service in the hanachan.org Japanese learning platform.
 
 ---
 

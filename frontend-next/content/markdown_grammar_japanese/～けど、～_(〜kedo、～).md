@@ -139,4 +139,4 @@ By incorporating **けど** into your Japanese, you can express yourself with gr
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -123,4 +123,4 @@ Using **~어도/아도** instead:
 By mastering **~(으)ㄹ지라도**, you can express complex ideas and concessions with a formal tone, enhancing both your comprehension and expression in Korean.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

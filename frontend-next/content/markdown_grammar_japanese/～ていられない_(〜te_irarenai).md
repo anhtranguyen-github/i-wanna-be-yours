@@ -89,4 +89,4 @@ Happy studying! Remember to practice by creating your own sentences using **～�
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

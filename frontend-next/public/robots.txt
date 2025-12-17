@@ -2,4 +2,4 @@ User-Agent: *
 Allow: /
 Disallow: /private/
 
-Sitemap: https://hanabira.org/sitemap.xml
+Sitemap: https://hanachan.org/sitemap.xml

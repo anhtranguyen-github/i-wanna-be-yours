@@ -113,4 +113,4 @@ D -- No --> F[Add -을 테니까]
 By mastering **~테니까**, you'll be able to express reasons based on intentions or assumptions, making your Korean more natural and expressive. Keep practicing with different verbs and contexts!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

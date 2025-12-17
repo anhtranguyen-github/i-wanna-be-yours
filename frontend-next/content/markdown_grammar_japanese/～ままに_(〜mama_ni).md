@@ -88,4 +88,4 @@ The grammar point ～ままに (〜mama ni) is used to express doing something "
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

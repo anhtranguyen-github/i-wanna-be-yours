@@ -87,4 +87,4 @@ The **~았/었지요** ending is used to:
 Feel free to review this lesson and practice using **~았/었지요** in your own sentences to enhance your Korean conversational skills!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

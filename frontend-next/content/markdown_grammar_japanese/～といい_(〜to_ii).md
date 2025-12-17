@@ -97,4 +97,4 @@ By mastering 「～といい」, you can express your hopes and wishes naturally
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -92,4 +92,4 @@ The use of **~기 위해서** is neutral in politeness but often appears in form
 3. **Corrected Sentence**: **한국어 배우기 위해서 한국에 갔어요.**
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

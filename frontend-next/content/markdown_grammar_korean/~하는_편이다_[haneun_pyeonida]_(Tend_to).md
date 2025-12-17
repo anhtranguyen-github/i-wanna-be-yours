@@ -83,4 +83,4 @@ These expressions soften statements, making them sound less absolute and more mo
 Feel free to practice by making your own sentences using **~하는 편이다**!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -93,4 +93,4 @@ In Japanese culture, harmony and avoiding direct confrontation are valued. Howev
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

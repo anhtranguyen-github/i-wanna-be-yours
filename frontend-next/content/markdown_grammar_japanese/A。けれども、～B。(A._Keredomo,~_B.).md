@@ -118,4 +118,4 @@ By mastering **A。けれども、～B。**, you'll be able to express contrasti
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

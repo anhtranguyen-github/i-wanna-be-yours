@@ -126,4 +126,4 @@ The formality can be adjusted by choosing appropriate verbs and polite forms:
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

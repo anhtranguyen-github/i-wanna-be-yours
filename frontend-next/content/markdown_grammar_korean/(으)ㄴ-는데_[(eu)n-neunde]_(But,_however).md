@@ -141,4 +141,4 @@ Using **(으)ㄴ/는데** can make statements sound more polite and less direct,
 By mastering **(으)ㄴ/는데**, you'll enhance your Korean fluency and be able to express complex ideas more naturally. Keep practicing by incorporating this grammar point into your daily conversations!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

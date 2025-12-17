@@ -83,4 +83,4 @@ Keep practicing using **めったに～ない** in your sentences to become more
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -97,4 +97,4 @@ By mastering **～ばかりに**, you'll be able to express nuances of regret an
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

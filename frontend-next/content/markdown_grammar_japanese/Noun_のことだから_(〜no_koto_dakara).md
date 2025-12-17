@@ -112,4 +112,4 @@ By mastering **〜のことだから**, you can express nuanced assumptions in J
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

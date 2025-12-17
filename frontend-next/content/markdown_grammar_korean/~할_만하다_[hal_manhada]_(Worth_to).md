@@ -159,4 +159,4 @@ To form **~할 만하다**, attach **~ㄹ/을 만하다** to the **verb stem** o
 Feel free to use **~할 만하다** in your daily conversations to confidently express the worthiness of actions and experiences!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

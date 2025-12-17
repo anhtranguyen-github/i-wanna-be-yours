@@ -151,4 +151,4 @@ The formation of **~는지 알다/모르다** varies depending on the type of wo
 By mastering **~는지 알다/모르다**, you'll enhance your ability to communicate uncertainties and questions about knowledge in Korean, making your conversations more nuanced and fluent.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

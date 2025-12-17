@@ -86,4 +86,4 @@ The Korean particle **(이)나** [(i)na] is commonly used to connect two or more
 Feel free to practice by making your own sentences using **(이)나**, and soon you'll become comfortable with offering choices in Korean!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

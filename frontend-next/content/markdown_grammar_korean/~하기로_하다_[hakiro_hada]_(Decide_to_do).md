@@ -89,4 +89,4 @@ Let's compare **~하기로 하다** with similar grammar points:
 By understanding and practicing **~하기로 하다**, you'll be able to effectively communicate decisions and plans in Korean, enhancing both your language skills and cultural comprehension.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

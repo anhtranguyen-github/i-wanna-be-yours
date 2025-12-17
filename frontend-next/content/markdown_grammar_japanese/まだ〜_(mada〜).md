@@ -125,4 +125,4 @@ Congratulations on mastering the usage of **まだ (mada)**! Keep practicing by 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

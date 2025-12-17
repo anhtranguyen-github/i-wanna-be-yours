@@ -100,4 +100,4 @@ Using **~하기는** reflects the Korean communication style of indirectly expre
 Try creating your own sentences using **~하기는** to express contrast. Remember to follow the structure and consider the level of politeness appropriate for the context.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

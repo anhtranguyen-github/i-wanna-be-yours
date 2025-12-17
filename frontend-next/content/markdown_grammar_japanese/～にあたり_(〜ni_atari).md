@@ -101,4 +101,4 @@ Thank you for studying **～にあたり**! Practice using this expression in fo
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

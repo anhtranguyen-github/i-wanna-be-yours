@@ -98,4 +98,4 @@ In Japanese communication, there's often an emphasis on the distinction between 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

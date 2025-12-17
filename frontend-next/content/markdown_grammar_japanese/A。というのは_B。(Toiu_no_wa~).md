@@ -91,4 +91,4 @@ A + というのは + B (です / だ)
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -90,4 +90,4 @@ Feel free to create your own sentences using **～はまだしも** to solidify 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

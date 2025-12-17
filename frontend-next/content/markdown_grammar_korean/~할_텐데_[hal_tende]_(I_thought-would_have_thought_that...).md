@@ -106,4 +106,4 @@ The structure of **~할 텐데** depends on whether the verb stem ends with a vo
 By mastering **~할 텐데**, you'll be able to express nuanced thoughts and considerate suggestions in Korean, enhancing both your language skills and cultural understanding.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

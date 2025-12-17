@@ -124,4 +124,4 @@ By understanding and practicing **～か～まいか**, you can enhance your abi
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

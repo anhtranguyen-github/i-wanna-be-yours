@@ -122,4 +122,4 @@ By understanding and practicing **「Noun を皮切りにして」**, you can ef
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -12,26 +12,26 @@ import { GoogleAnalytics } from '@next/third-parties/google'
 import { Providers } from "./providers";
 
 export const metadata = {
-  title: "Hanabira.org - Free Open Source No Ads Japanese Learning Platform",
-  description: "Learn Japanese for free with Hanabira.org, an open-source platform with no ads.",
-  keywords: ["Hanabira", "Japanese Learning", "JLPT", "Open Source", "No Ads"],
-  authors: [{ name: "hanabira.org" }],
-  applicationName: "Hanabira.org",
+  title: "hanachan.org - Free Open Source No Ads Japanese Learning Platform",
+  description: "Learn Japanese for free with hanachan.org, an open-source platform with no ads.",
+  keywords: ["hanachan", "Japanese Learning", "JLPT", "Open Source", "No Ads"],
+  authors: [{ name: "hanachan.org" }],
+  applicationName: "hanachan.org",
   robots: "index, follow",
   openGraph: {
-    title: "Hanabira.org - Free Open Source No Ads Japanese Learning Platform",
-    description: "Learn Japanese for free with Hanabira.org, an open-source platform with no ads.",
-    url: "https://hanabira.org/",
-    images: ["https://hanabira.org/path-to-your-image.jpg"],
+    title: "hanachan.org - Free Open Source No Ads Japanese Learning Platform",
+    description: "Learn Japanese for free with hanachan.org, an open-source platform with no ads.",
+    url: "https://hanachan.org/",
+    images: ["https://hanachan.org/path-to-your-image.jpg"],
     type: "website",
-    siteName: "Hanabira.org"
+    siteName: "hanachan.org"
   },
   twitter: {
     card: "summary_large_image",
-    title: "Hanabira.org - Free Open Source No Ads Japanese Learning Platform",
-    description: "Learn Japanese for free with Hanabira.org, an open-source platform with no ads.",
-    url: "https://hanabira.org/",
-    images: ["https://hanabira.org/path-to-your-image.jpg"]
+    title: "hanachan.org - Free Open Source No Ads Japanese Learning Platform",
+    description: "Learn Japanese for free with hanachan.org, an open-source platform with no ads.",
+    url: "https://hanachan.org/",
+    images: ["https://hanachan.org/path-to-your-image.jpg"]
   },
 };
 

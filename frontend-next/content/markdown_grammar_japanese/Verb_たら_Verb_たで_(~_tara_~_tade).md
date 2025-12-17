@@ -122,4 +122,4 @@ Verb (た-form) + ら + Verb (た-form) + で + [Comment/Result]
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

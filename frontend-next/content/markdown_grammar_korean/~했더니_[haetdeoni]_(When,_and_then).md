@@ -98,4 +98,4 @@ The structure combines a verb in the past tense with **더니**.
 By understanding and practicing **~했더니**, you can effectively express cause-and-effect relationships based on your own experiences in Korean.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

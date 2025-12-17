@@ -133,4 +133,4 @@ By understanding and practicing **～ずつ**, you can accurately express equal 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

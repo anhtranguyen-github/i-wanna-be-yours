@@ -138,4 +138,4 @@ By understanding and practicing **～つもりで**, you can express nuanced tho
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -104,4 +104,4 @@ It conveys the sense of taking advantage of the situation to accomplish more.
 By understanding and practicing **~하는 김에**, you can make your Korean more natural and express efficiency in your actions. Keep using it in daily sentences to become more familiar with its usage!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

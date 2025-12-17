@@ -122,4 +122,4 @@ By understanding and practicing **A というか B というか**, you can add n
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -60,7 +60,7 @@ export default function LoginPage() {
 
                 <div className="text-center mb-8">
                     <h1 className="text-3xl font-display font-black text-brand-dark mb-2">
-                        {isLogin ? 'Welcome Back!' : 'Join Hanabira'}
+                        {isLogin ? 'Welcome Back!' : 'Join hanachan'}
                     </h1>
                     <p className="text-gray-500 font-medium">
                         {isLogin ? 'Continue your learning journey' : 'Start your Japanese adventure'}

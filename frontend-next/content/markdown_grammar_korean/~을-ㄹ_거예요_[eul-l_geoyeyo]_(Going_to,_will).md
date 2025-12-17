@@ -97,4 +97,4 @@ In Korean culture, being clear about one's plans is appreciated, and using **~�
 By mastering **~을/ㄹ 거예요**, you can confidently talk about future events and your plans in Korean. Keep practicing with different verbs to become more comfortable with this essential grammar point!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

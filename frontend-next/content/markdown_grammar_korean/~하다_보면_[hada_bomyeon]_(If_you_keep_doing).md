@@ -118,4 +118,4 @@ In Korean culture, persistence and continuous effort are highly valued. The use 
 By understanding and practicing **~하다 보면**, you can express the concept of gradual change or natural results from continued actions, adding depth to your Korean communication skills.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

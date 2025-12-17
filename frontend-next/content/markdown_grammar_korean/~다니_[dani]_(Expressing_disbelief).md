@@ -100,4 +100,4 @@ The **~다니** ending is attached to verbs and adjectives to express the speake
 By understanding and practicing **~다니**, you can more naturally express your surprise and disbelief in Korean conversations. Remember to pay attention to the context and the formality level of your speech to communicate effectively!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

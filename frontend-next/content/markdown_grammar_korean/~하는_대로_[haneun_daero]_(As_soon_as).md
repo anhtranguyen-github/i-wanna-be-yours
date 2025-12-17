@@ -86,4 +86,4 @@ The usage of **~는 대로** is neutral and can be used in both formal and infor
 **Keep practicing by creating your own sentences using **~하는 대로** to become more comfortable with its usage!**
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

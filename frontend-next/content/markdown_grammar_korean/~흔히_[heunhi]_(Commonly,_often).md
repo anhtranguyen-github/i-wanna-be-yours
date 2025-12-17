@@ -138,4 +138,4 @@ However, sentence a) better reflects commonality among people, aligning closely 
 By mastering **흔히**, you can more accurately describe frequent or widespread actions and enhance the naturalness of your Korean speaking and writing. Remember to pay attention to the nuances that differentiate **흔히** from other similar adverbs.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

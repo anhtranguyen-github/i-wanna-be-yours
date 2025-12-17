@@ -118,4 +118,4 @@ By mastering **～よう**, you can effectively express your intentions and make
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

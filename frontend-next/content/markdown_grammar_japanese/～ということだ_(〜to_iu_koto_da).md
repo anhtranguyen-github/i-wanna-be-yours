@@ -115,4 +115,4 @@ By mastering ～ということだ, you'll improve your ability to convey inform
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

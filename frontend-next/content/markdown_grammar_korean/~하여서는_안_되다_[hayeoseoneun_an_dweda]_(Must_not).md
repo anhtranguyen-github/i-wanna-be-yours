@@ -125,4 +125,4 @@ Another way to express prohibition is **~(으)면 안 되다**, which attaches t
 By mastering **~하여서는 안 되다**, you will be able to understand and use formal prohibitions in Korean, enhancing your comprehension of official notices and improving your formal communication skills.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

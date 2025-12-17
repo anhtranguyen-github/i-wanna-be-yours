@@ -115,4 +115,4 @@ While there are no specific idioms that include **~는데다가**, it's commonly
 By understanding and practicing **~는데다가**, you can effectively convey compounded situations and enhance the cohesiveness of your sentences in Korean.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

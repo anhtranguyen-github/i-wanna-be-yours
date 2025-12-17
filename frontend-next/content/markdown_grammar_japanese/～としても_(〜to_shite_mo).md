@@ -166,4 +166,4 @@ By understanding and practicing "〜としても", you'll be able to express hyp
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

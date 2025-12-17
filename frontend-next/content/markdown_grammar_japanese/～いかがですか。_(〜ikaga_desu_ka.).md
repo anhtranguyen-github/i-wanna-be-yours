@@ -109,4 +109,4 @@ By understanding and correctly using **～いかがですか。**, you can commu
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

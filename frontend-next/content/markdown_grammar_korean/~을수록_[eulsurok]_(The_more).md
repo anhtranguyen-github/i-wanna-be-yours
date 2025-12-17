@@ -107,4 +107,4 @@ Let's break down the formation with examples:
 By understanding and practicing **~을수록**, you can express complex relationships between actions and states, making your Korean more nuanced and natural.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

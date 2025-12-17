@@ -115,4 +115,4 @@ Here are some sentences demonstrating **~아/어 다니다** in various contexts
 By understanding and practicing **~아/어 다니다**, you'll enhance your ability to describe actions that are not just repeated but are part of your movement through different places. Keep observing how native speakers use this expression, and try creating your own sentences to become more comfortable with it. Happy learning!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

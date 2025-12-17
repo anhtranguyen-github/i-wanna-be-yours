@@ -105,4 +105,4 @@ By understanding and appropriately using **～とのことだ**, you can effecti
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

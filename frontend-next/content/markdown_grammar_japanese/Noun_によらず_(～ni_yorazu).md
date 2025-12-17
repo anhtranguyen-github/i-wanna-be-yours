@@ -109,4 +109,4 @@ By understanding and practicing **Noun によらず**, you can express inclusivi
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

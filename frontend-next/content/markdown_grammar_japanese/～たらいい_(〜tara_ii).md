@@ -124,4 +124,4 @@ By understanding and practicing **～たらいい**, you can offer suggestions a
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

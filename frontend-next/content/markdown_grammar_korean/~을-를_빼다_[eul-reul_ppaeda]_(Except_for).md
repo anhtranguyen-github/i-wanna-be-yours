@@ -110,4 +110,4 @@ The structure combines:
 By understanding and practicing **~을/를 빼다**, you can effectively communicate exceptions in Korean and enhance your fluency. Remember to pay attention to particle usage and verb conjugation to ensure your sentences sound natural.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -130,4 +130,4 @@ The verb **싶다** behaves like an adjective and should be conjugated according
 By mastering **~고 싶다**, you enhance your ability to express your desires and intentions clearly in Korean, allowing for more meaningful and accurate communication.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -89,4 +89,4 @@ While **~을/를 틈타** itself is an idiomatic expression, it is often used in
 Feel free to create your own sentences using **~을/를 틈타** to become more comfortable with this grammar point!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

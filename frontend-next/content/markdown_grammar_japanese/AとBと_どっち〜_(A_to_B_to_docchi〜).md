@@ -170,4 +170,4 @@ By understanding and practicing **AとBとどっち〜**, you'll enhance your ab
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

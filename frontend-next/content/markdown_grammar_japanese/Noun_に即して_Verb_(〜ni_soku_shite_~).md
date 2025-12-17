@@ -112,4 +112,4 @@ By understanding **「に即して」**, you can accurately convey actions or de
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

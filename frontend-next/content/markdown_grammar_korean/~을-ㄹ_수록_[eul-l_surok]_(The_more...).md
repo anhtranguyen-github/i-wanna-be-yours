@@ -82,4 +82,4 @@ In Korean, expressing comparative degrees, such as "the more you study, the bett
 Feel free to practice by creating your own sentences using **~을/ㄹ수록**!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

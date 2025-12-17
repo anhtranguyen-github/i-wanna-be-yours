@@ -91,4 +91,4 @@ To conjugate verbs in the past formal tense using **~하였다**:
 By understanding **~하였다**, you enhance your ability to read and write in formal Korean, appreciating the nuances of the language in historical and literary contexts.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -112,4 +112,4 @@ In Korean, negating statements is essential for expressing what something is not
 By understanding and practicing **아니다**, you'll enhance your ability to communicate negations effectively in Korean.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

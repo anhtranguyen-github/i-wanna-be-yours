@@ -96,4 +96,4 @@ Using passive forms can add a level of formality or politeness to statements, as
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

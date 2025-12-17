@@ -108,4 +108,4 @@ Feel free to ask any questions or create your own sentences using **にとどま
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

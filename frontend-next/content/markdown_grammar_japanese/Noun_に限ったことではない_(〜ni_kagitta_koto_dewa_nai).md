@@ -107,4 +107,4 @@ By understanding and practicing **に限ったことではない**, you can effe
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

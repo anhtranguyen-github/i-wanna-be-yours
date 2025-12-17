@@ -104,4 +104,4 @@ Multitasking is common in modern Korean society, and expressing simultaneous act
 By mastering **~간이다**, you can effectively communicate actions happening simultaneously, making your Korean more natural and fluent.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

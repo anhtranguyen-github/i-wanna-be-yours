@@ -94,4 +94,4 @@ In Korean culture, expressions of determination and steadfastness are highly val
 By understanding and practicing **~할지언정**, you can express strong determination and nuanced concessions in Korean, adding depth to your language skills.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

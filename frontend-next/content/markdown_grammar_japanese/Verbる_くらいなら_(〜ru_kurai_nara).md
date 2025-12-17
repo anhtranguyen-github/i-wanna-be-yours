@@ -100,4 +100,4 @@ By understanding and practicing **Verbる くらいなら**, you can more effect
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

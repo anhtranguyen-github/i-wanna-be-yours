@@ -14,7 +14,7 @@ interface AppShellProps {
 const EXCLUDED_ROUTES = ['/landing', '/login', '/signup', '/pricing', '/checkout'];
 
 // Session storage key for tracking modal shown status
-const MODAL_SHOWN_KEY = 'hanabira_modal_shown';
+const MODAL_SHOWN_KEY = 'hanachan_modal_shown';
 
 // Internal component to handle responsive layout consuming context
 function MainLayout({ children }: { children: React.ReactNode }) {

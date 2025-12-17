@@ -122,4 +122,4 @@ By understanding and practicing the use of ～すぎる, you'll be able to expre
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

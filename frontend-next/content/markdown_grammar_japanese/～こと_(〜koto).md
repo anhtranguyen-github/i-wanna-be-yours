@@ -184,4 +184,4 @@ By mastering **～こと**, you'll enhance your ability to express complex ideas
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -97,4 +97,4 @@ By mastering **～かねない**, you can effectively express concerns about pot
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

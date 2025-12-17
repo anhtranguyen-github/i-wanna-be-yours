@@ -5,7 +5,7 @@ from typing import Optional, List, Dict, Any, Union
 from mcp.server.fastmcp import FastMCP
 
 # Initialize FastMCP server
-mcp = FastMCP("Hanabira Tools")
+mcp = FastMCP("hanachan Tools")
 
 # Configuration
 DICTIONARY_API_BASE = "http://localhost:5200/d-api/v1"

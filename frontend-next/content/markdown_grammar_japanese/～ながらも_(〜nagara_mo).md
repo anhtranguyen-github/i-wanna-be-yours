@@ -120,4 +120,4 @@ By understanding and practicing **～ながらも**, you can express contrasting
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

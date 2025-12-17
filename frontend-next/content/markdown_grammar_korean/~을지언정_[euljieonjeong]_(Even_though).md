@@ -85,4 +85,4 @@ Try creating sentences using **~을지언정** with the following verbs/adjectiv
   - *Even if I have to study hard, I won't give up.*
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -120,4 +120,4 @@ Here is a simple diagram to illustrate the formation:
 *By mastering **~하는데**, you've taken another step towards fluency in Korean! Keep practicing by creating your own sentences using this grammar point.*
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

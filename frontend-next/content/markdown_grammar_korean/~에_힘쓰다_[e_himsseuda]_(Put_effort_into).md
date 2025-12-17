@@ -119,4 +119,4 @@ Try using **`~에 힘쓰다`** in sentences about your personal goals or activit
 Feel free to share your sentences for feedback!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

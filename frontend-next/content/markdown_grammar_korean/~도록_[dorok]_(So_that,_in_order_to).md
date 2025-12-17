@@ -114,4 +114,4 @@ Both **~도록** and **~기 위해(서)** can express purpose, but there are nua
 By understanding and practicing **~도록**, you'll be able to express purposes and extents more naturally in Korean, enhancing both your speaking and comprehension skills.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

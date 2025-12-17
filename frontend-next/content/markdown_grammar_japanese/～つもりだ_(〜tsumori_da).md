@@ -130,4 +130,4 @@ By mastering **～つもりだ**, you can effectively communicate your intention
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

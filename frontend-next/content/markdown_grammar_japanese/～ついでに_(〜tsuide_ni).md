@@ -100,4 +100,4 @@ Keep practicing using **～ついでに** in your daily conversations to become 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -100,4 +100,4 @@ The formation of **~하기에는** involves attaching it to the verb stem.
 By mastering **~하기에는**, you enhance your ability to make nuanced evaluations in Korean, adding depth to your language skills.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -125,4 +125,4 @@ Verb Stem + ~아/어 놓다
 By mastering **~아/어 놓다**, you can effectively express actions done in advance or preparations made for future convenience in Korean, adding depth and nuance to your language skills.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -130,4 +130,4 @@ Both **~지 않다** and **~지 못하다** are treated as verbs and are conjuga
 By understanding and practicing these grammar points, you'll be able to express negation accurately and appropriately in various situations in Korean. Remember to pay attention to the formality level and choose the correct structure based on the context.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

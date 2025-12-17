@@ -108,4 +108,4 @@ By understanding and practicing **Verbた ときに**, you'll be able to accurat
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

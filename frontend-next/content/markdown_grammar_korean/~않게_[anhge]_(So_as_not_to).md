@@ -107,4 +107,4 @@ Korean language has different levels of politeness. Using **~지 않게** is neu
 By understanding and practicing **~지 않게**, you can effectively express intentions to avoid actions in Korean, enhancing both your speaking and comprehension skills.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

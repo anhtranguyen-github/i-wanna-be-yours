@@ -107,4 +107,4 @@ In Korean culture, expressing misunderstandings or mistaken beliefs politely is 
 Feel free to revisit any section for clarification, and practice using **~줄 알다** in your own sentences to solidify your understanding!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

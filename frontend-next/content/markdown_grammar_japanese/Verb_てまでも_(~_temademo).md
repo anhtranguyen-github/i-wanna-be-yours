@@ -120,4 +120,4 @@ Try translating the following sentence using **～てまでも**:
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -84,4 +84,4 @@ Verb/Adjective stem + 아/어야만 + [result clause]
 3. **용기를 가져야만 성공할 수 있어요.**
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

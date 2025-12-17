@@ -98,4 +98,4 @@ The verb **나다** itself is neutral, but politeness is conveyed through verb e
 By understanding and practicing the usage of **~나다**, you'll be able to express spontaneous actions and feelings naturally in Korean. Keep practicing to become more familiar with this grammar point!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

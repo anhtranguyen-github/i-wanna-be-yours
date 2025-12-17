@@ -96,4 +96,4 @@ The grammar point ～かける (〜kakeru) is a versatile expression in Japanese
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

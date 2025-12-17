@@ -120,4 +120,4 @@ By mastering **～として**, you enhance your ability to describe roles and ca
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

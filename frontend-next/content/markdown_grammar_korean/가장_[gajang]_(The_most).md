@@ -118,4 +118,4 @@ Here's how **가장** is used in sentences:
 By mastering **가장**, you can effectively express superlatives in Korean, making your descriptions more precise and impactful. Remember to practice using it in various sentences to become more comfortable with its placement and usage.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

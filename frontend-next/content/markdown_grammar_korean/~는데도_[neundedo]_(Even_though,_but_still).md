@@ -110,4 +110,4 @@ Politeness in Korean is often conveyed through verb endings. **~는데도** rema
 By mastering **~는데도**, you can express complex contrasts and enrich your Korean communication. Practice by creating your own sentences, and soon it will become a natural part of your language skills!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

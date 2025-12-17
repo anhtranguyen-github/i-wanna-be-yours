@@ -154,4 +154,4 @@ Certain idiomatic expressions use **~아/어지다** to convey changes in abstra
 By understanding and practicing **~아/어지다**, you'll be better equipped to express changes and states in Korean. Keep practicing with different adjectives and observe how natives use this grammar point in various contexts!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

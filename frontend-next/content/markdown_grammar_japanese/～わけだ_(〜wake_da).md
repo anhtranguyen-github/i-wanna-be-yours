@@ -99,4 +99,4 @@ The basic structure involves attaching ～わけだ to the plain form of verbs, 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

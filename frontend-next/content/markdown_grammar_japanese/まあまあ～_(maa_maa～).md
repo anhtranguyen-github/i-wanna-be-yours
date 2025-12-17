@@ -143,4 +143,4 @@ By understanding and practicing the usage of **まあまあ**, you can add nuanc
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -135,4 +135,4 @@ By understanding and practicing **Verb + つもり**, you'll be able to effectiv
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

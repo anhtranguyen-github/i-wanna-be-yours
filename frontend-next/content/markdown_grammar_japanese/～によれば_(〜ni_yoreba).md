@@ -98,4 +98,4 @@ Feel free to practice using **～によれば** by creating sentences about rece
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -1,4 +1,4 @@
-coil@coil-VM:sites-enabled$ cat hanabira-self-signed.org 
+coil@coil-VM:sites-enabled$ cat hanachan-self-signed.org 
 # Redirect HTTP traffic to HTTPS
 
 server {
@@ -50,8 +50,8 @@ server {
   listen 443 ssl;
   server_name localhost;
 
-  ssl_certificate /home/coil/certs/hanabira.org.crt;
-  ssl_certificate_key /home/coil/certs/hanabira.org.key;
+  ssl_certificate /home/coil/certs/hanachan.org.crt;
+  ssl_certificate_key /home/coil/certs/hanachan.org.key;
 
   location /e-api/v1/ {
     proxy_pass http://localhost:8000/e-api/v1/;

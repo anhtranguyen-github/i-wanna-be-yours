@@ -7,9 +7,9 @@ const PrivacyPolicy = () => {
     <div className="max-w-4xl mx-auto px-4 py-10">
       <h1 className="text-3xl font-bold mb-6">Privacy Policy</h1>
       <p className="mb-4">
-        Welcome to Hanabira.org. Your privacy is important to us. This Privacy
+        Welcome to hanachan.org. Your privacy is important to us. This Privacy
         Policy explains how we collect, use, and protect your information when
-        you visit our website. By using the Hanabira website, you agree to this
+        you visit our website. By using the hanachan website, you agree to this
         Privacy Policy.
       </p>
 
@@ -48,14 +48,14 @@ const PrivacyPolicy = () => {
       </h2>
       <p className="mb-4">
         When you provide us with your email, we may send you updates regarding
-        Hanabira.org. These emails will be related to our platform and any
+        hanachan.org. These emails will be related to our platform and any
         relevant information we think you may find useful. You may opt out of
         these communications at any time.
       </p>
 
       <h2 className="text-2xl font-semibold mt-8 mb-4">No Advertising</h2>
       <p className="mb-4">
-        Hanabira.org does not run any advertisements. Our website is ad-free to
+        hanachan.org does not run any advertisements. Our website is ad-free to
         ensure a smooth, uninterrupted experience focused solely on delivering
         quality content to our users.
       </p>
@@ -69,7 +69,7 @@ const PrivacyPolicy = () => {
 
       <h2 className="text-2xl font-semibold mt-8 mb-4">Your Consent</h2>
       <p className="mb-4">
-        By using Hanabira.org, you consent to our Privacy Policy and the use of
+        By using hanachan.org, you consent to our Privacy Policy and the use of
         cookies as outlined above.
       </p>
 

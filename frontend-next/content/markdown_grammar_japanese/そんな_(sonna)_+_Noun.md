@@ -123,4 +123,4 @@ By mastering **そんな + Noun**, you'll be able to more naturally describe and
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

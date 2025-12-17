@@ -111,4 +111,4 @@ By understanding and practicing **「Noun に即した Noun」**, you'll enhance
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

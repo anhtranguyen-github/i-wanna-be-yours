@@ -102,7 +102,7 @@ export function HybridLandingModal({ isOpen, onClose }: HybridLandingModalProps)
 
                             {/* Description */}
                             <p className="mt-5 text-lg text-gray-600 font-medium max-w-xl mx-auto">
-                                Prepare for JLPT/TOPIK with hanabira.org. Free, Open-Source, and Self-Hostable.
+                                Prepare for JLPT/TOPIK with hanachan.org. Free, Open-Source, and Self-Hostable.
                             </p>
 
                             {/* Social Proof & Trust */}
@@ -205,7 +205,7 @@ export function HybridLandingModal({ isOpen, onClose }: HybridLandingModalProps)
                     <div className="px-6 sm:px-12 py-8 bg-gradient-to-r from-brand-green to-brand-green/90">
                         <div className="max-w-2xl mx-auto text-center text-white">
                             <h3 className="text-xl sm:text-2xl font-bold mb-3">Ready to Start Learning?</h3>
-                            <p className="opacity-90 mb-5">Join thousands mastering Japanese with Hanabira.</p>
+                            <p className="opacity-90 mb-5">Join thousands mastering Japanese with hanachan.</p>
                             <button
                                 onClick={onClose}
                                 className="px-6 py-3 bg-white text-brand-green font-bold rounded-xl hover:bg-slate-100 transition-colors shadow-lg"
@@ -220,10 +220,10 @@ export function HybridLandingModal({ isOpen, onClose }: HybridLandingModalProps)
                         <div className="max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
                             <div className="flex items-center gap-2">
                                 <span className="text-2xl">🌸</span>
-                                <span className="font-display font-bold">Hanabira.org</span>
+                                <span className="font-display font-bold">hanachan.org</span>
                             </div>
                             <div className="flex items-center gap-4 text-slate-400">
-                                <a href="https://github.com/tristcoil/hanabira.org" className="hover:text-white transition-colors">
+                                <a href="https://github.com/tristcoil/hanachan.org" className="hover:text-white transition-colors">
                                     <Github size={20} />
                                 </a>
                                 <a href="#" className="hover:text-white transition-colors">
@@ -234,7 +234,7 @@ export function HybridLandingModal({ isOpen, onClose }: HybridLandingModalProps)
                                 </a>
                             </div>
                             <p className="text-sm text-slate-500">
-                                © 2024 Hanabira. Free & Open Source.
+                                © 2024 hanachan. Free & Open Source.
                             </p>
                         </div>
                     </footer>

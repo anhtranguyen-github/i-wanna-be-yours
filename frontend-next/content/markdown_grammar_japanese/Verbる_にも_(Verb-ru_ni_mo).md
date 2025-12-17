@@ -112,4 +112,4 @@ By understanding and practicing **Verbる にも**, you'll be able to express si
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

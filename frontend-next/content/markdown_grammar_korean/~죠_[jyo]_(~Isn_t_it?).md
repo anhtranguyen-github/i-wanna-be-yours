@@ -117,4 +117,4 @@ The formation of **~죠** depends on whether the verb stem is in the present, pa
 
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

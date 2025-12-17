@@ -106,4 +106,4 @@ While **〜を禁じ得ない** itself is a set phrase, it's often used with cer
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

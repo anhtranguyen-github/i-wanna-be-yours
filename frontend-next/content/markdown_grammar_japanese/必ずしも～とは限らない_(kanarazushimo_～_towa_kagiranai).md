@@ -91,4 +91,4 @@ By understanding and practicing **必ずしも～とは限らない**, you can e
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

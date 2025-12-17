@@ -146,4 +146,4 @@ In Japanese culture, emphasizing the frequency or quality of actions reflects a 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

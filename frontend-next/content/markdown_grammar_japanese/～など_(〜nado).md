@@ -151,4 +151,4 @@ Please fill out this form with your name, date of birth, and so on.
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

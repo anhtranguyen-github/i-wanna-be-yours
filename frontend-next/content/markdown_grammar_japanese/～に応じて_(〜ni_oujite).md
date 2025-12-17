@@ -126,4 +126,4 @@ Feel free to share your sentences with peers or teachers for feedback!
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

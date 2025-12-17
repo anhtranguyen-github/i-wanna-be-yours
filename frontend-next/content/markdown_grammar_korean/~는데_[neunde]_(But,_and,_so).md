@@ -113,4 +113,4 @@ In Korean culture, direct statements can be considered rude. Using **~는데** s
 Feel free to create your own sentences using **~는데** to become more familiar with its usage!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

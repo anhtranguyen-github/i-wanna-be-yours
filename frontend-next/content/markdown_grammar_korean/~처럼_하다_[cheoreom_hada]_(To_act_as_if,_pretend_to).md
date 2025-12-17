@@ -137,4 +137,4 @@ Both **~처럼 하다** and **~인 척하다** are used to express pretending, b
 **Happy learning! Keep practicing the structure to master expressions of pretending in Korean.**
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

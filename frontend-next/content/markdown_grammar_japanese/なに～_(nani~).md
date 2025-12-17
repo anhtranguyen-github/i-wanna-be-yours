@@ -140,4 +140,4 @@ By mastering **なに**, you'll be able to ask a variety of questions and enhanc
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

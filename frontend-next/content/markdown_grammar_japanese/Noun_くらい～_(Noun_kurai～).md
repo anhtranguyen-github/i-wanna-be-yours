@@ -123,4 +123,4 @@ By mastering **Noun くらい～**, you'll enhance your ability to describe quan
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

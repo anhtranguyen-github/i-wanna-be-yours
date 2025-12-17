@@ -98,4 +98,4 @@ The use of **(으)려고** itself does not change with levels of politeness; how
 Feel free to revisit this lesson to strengthen your understanding of **(으)려고** and its usage in expressing intentions in Korean!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

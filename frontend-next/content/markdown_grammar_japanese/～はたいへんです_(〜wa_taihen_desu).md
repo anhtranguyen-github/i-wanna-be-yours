@@ -101,4 +101,4 @@ Feel free to create your own sentences using **～はたいへんです** to exp
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

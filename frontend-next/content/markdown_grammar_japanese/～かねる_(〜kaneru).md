@@ -95,4 +95,4 @@ By understanding and appropriately using ～かねる, you can express polite re
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

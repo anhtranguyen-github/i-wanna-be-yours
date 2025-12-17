@@ -78,4 +78,4 @@ The structure combines a verb or adjective stem with **~해서야**, connecting 
 3. *(Example Answer)* 그는 열심히 연습해서야 경기에 나갈 수 있었다. ("Only after practicing hard could he participate in the game.")
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

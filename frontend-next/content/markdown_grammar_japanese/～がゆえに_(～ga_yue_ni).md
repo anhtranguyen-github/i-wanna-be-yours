@@ -115,4 +115,4 @@ By mastering **～がゆえに**, you can enhance your comprehension of formal J
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

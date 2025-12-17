@@ -104,4 +104,4 @@ While both structures express a progressive increase, they differ slightly:
 By understanding and practicing **~해 갈수록**, you can express progressive changes and deepening states in Korean naturally and accurately.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

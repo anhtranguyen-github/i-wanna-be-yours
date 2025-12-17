@@ -143,4 +143,4 @@ Congratulations on learning the **A。それでは、～B。** grammar pattern! 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

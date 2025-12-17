@@ -104,4 +104,4 @@ In Japanese communication, there is a cultural tendency to be modest and avoid o
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

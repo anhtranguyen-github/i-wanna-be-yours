@@ -103,4 +103,4 @@ Feel free to create your own sentences using **Noun の極み** to express extre
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

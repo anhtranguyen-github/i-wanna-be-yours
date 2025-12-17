@@ -105,4 +105,4 @@ By mastering **～ばかりか〜も**, you can add depth and emphasis to your J
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

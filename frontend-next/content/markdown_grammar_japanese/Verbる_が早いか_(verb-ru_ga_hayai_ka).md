@@ -99,4 +99,4 @@ By mastering **Verbる が早いか**, you can enhance your Japanese writing wit
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -121,4 +121,4 @@ By understanding and practicing **AうとBうと**, you'll be able to express un
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

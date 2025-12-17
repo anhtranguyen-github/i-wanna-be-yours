@@ -100,4 +100,4 @@ By mastering **～極まる**, you can convey strong emotions and judgments, add
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

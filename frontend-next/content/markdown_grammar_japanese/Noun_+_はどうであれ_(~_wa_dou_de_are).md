@@ -97,4 +97,4 @@ By understanding and practicing **はどうであれ**, you can express the conc
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -94,4 +94,4 @@ In Japanese culture, expressing humility is valued, but when discussing impressi
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

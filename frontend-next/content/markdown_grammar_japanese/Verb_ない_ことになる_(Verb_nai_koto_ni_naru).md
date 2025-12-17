@@ -147,4 +147,4 @@ By mastering **Verb ないことになる**, you can effectively communicate dec
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

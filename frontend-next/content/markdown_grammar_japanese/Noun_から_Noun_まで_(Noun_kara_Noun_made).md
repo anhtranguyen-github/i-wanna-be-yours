@@ -130,4 +130,4 @@ By understanding and using **Noun から Noun まで**, you'll enhance your abil
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

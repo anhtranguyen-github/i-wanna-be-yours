@@ -137,4 +137,4 @@ Both expressions indicate an intention to do something, but there are nuances:
 By understanding and practicing **~기로 하다**, you can confidently express your decisions and plans in Korean, enhancing both your spoken and written communication skills.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

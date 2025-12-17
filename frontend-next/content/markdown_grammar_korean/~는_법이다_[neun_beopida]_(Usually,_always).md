@@ -93,4 +93,4 @@ In Korean culture, proverbs and sayings are commonly used to convey wisdom and l
 By mastering **~는 법이다**, you enhance your ability to express natural outcomes and general truths, adding depth to your Korean language skills.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -117,4 +117,4 @@ Feel free to practice by incorporating **それはそうと** into your own sent
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

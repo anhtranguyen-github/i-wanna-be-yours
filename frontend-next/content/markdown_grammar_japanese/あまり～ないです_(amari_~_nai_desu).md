@@ -108,4 +108,4 @@ Feel free to create your own sentences using **あまり～ないです** to exp
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

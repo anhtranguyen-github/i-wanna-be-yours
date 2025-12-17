@@ -109,4 +109,4 @@ Both **처럼** and **같이** can mean **"like"** or **"as"** when comparing no
 By understanding and practicing the use of **처럼**, you'll be able to make more vivid and expressive comparisons in Korean, enhancing both your spoken and written communication.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

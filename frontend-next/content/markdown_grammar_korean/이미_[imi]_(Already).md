@@ -94,4 +94,4 @@ Try translating these sentences using **이미**:
 Feel free to ask any questions or for further clarification on using **이미**!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

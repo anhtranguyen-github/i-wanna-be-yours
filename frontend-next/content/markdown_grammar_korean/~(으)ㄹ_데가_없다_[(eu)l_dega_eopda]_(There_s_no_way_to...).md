@@ -104,4 +104,4 @@ It emphasizes the absence of a place, method, or means to perform a certain acti
 By understanding and practicing **~(으)ㄹ 데가 없다**, you'll be able to express limitations and the absence of options more naturally in Korean conversations.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

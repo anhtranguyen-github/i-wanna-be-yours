@@ -107,4 +107,4 @@ In Japanese culture, the level of politeness and formality is essential in commu
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

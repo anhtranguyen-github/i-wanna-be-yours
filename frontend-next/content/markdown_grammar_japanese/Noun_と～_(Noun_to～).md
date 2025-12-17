@@ -145,4 +145,4 @@ By understanding and practicing these uses of **と**, you'll be able to communi
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

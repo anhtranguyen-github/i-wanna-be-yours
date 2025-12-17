@@ -105,4 +105,4 @@ To form this grammatical structure:
 By understanding and practicing the use of **~하자마자**, you'll be able to express immediate actions naturally in Korean. Keep practicing with different verbs to become more comfortable with this grammar point!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -84,4 +84,4 @@ Feel free to refer back to this guide as you practice using ～もかまわず i
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

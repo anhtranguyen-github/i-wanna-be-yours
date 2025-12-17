@@ -88,4 +88,4 @@ I hope this detailed explanation helps you understand and use **〜ばきりが�
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

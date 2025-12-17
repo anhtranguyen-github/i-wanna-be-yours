@@ -98,4 +98,4 @@ End of lesson on **にあっては (ni atte wa)**. Practice using this grammar p
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -98,4 +98,4 @@ By understanding and applying **～上は**, you'll be able to express firm reso
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

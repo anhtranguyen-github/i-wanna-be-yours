@@ -116,4 +116,4 @@ While there are no specific idioms using **~(으)시든지**, the structure is c
 By mastering **~(으)시든지**, you enhance your ability to communicate respectfully in Korean, acknowledging social hierarchies and cultural norms. Practice forming sentences and using this grammar point in conversations to become more fluent and culturally adept.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

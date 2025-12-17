@@ -122,4 +122,4 @@ The structure of **~려는데** varies slightly depending on whether the verb st
 Feel free to practice by making your own sentences using **~려는데**, and don't hesitate to ask if you have any questions!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

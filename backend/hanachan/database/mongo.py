@@ -9,7 +9,7 @@ import os
 
 # MongoDB connection
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
-MONGO_DB_NAME = os.getenv("MONGO_DB_NAME", "hanabira")
+MONGO_DB_NAME = os.getenv("MONGO_DB_NAME", "hanachan")
 
 # Lazy connection - established on first use
 _client: MongoClient = None
@@ -25,7 +25,7 @@ def get_mongo_client() -> MongoClient:
 
 
 def get_database() -> Database:
-    """Get the hanabira database."""
+    """Get the hanachan database."""
     global _db
     if _db is None:
         client = get_mongo_client()

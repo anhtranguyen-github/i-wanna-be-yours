@@ -102,4 +102,4 @@ Verb (Dictionary Form) + ために + Action Verb/Expression
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

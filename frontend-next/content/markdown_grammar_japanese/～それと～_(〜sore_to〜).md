@@ -90,4 +90,4 @@ By incorporating **それと** into your Japanese, you'll be able to connect you
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

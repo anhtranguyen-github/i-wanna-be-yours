@@ -95,4 +95,4 @@ The structure of **~(으)ㄹ지라도** is attached to the verb stem.
 By understanding and practicing **~(으)ㄹ지라도**, you'll be able to express hypothetical conditions confidently, especially in formal Korean communication. Keep practicing with different verbs to become more comfortable with this grammar point!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

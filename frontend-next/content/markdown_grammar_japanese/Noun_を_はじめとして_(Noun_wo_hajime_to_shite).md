@@ -134,4 +134,4 @@ Feel free to revisit the examples and practice creating your own sentences using
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

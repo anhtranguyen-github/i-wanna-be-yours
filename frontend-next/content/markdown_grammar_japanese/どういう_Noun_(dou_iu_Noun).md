@@ -97,4 +97,4 @@ By understanding and practicing **どういう Noun**, you'll be able to ask for
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

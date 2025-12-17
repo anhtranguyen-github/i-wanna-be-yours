@@ -115,4 +115,4 @@ By mastering **"A より B のほうが～"**, you can express comparisons natur
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

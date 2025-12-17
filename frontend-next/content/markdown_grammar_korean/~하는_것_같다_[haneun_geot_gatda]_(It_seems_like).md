@@ -155,4 +155,4 @@ The structure varies depending on the verb type (action or descriptive), tense, 
 By understanding and practicing **~하는 것 같다**, you'll be able to express your thoughts and assumptions naturally in Korean conversations.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

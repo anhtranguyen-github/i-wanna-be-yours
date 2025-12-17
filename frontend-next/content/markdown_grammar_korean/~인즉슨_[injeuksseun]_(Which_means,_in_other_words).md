@@ -144,4 +144,4 @@ Let's compare **~인즉슨** with similar grammar points:
 By understanding and practicing **~인즉슨**, you'll enhance your ability to express complex ideas clearly and formally in Korean. Remember to consider the context and formality to ensure your speech sounds natural and appropriate.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

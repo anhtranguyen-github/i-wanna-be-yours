@@ -88,4 +88,4 @@ Using **~기로 되다** reflects a passive stance, indicating that the speaker 
 By mastering **~기로 되다**, you'll be able to accurately describe decisions or arrangements that have been made, enhancing both your understanding and communication in Korean.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

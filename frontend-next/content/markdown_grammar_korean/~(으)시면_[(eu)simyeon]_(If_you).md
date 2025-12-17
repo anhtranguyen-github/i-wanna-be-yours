@@ -122,4 +122,4 @@ The Korean grammar point **~(으)시면** (*[eu]simyeon*) is an honorific condit
 By mastering **~(으)시면**, you enhance your ability to communicate respectfully in Korean, aligning with cultural norms and showing proper etiquette.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

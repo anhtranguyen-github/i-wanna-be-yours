@@ -115,4 +115,4 @@ The usage of **까지** itself does not change with politeness levels, but the v
 By mastering **까지**, you enhance your ability to communicate durations and limits effectively in Korean. Keep practicing with different nouns and contexts to become more fluent!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

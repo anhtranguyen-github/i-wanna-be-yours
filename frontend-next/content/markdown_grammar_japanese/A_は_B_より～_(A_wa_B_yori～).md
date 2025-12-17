@@ -130,4 +130,4 @@ By mastering the **AはBより～** structure, you'll enhance your ability to co
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

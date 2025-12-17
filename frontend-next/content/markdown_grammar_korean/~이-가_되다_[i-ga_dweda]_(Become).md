@@ -103,4 +103,4 @@ While **~이/가 되다** is used with nouns to express becoming something, **~�
 By mastering **~이/가 되다**, you can express changes in status or identity confidently in Korean. Keep practicing with different nouns to become more familiar with this essential grammar point!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

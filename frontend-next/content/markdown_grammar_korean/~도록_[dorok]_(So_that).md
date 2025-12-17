@@ -121,4 +121,4 @@ To use **~도록**, follow this simple structure:
 By mastering **~도록**, you enhance your ability to articulate intentions and describe actions more vividly in Korean. Keep practicing by incorporating this grammar point into your daily conversations!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

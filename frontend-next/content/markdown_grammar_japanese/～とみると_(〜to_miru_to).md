@@ -101,4 +101,4 @@ By understanding and practicing **～とみると**, you can enhance your Japane
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

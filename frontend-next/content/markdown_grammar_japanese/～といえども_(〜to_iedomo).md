@@ -120,4 +120,4 @@ By mastering ～といえども, you'll enhance your ability to express nuanced 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

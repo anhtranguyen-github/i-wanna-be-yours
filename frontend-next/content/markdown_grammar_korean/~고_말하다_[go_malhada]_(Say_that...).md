@@ -90,4 +90,4 @@ Indirect speech is prevalent in Korean communication, reflecting the culture's e
 Feel free to revisit this lesson and practice using **~고 말하다** in your own sentences to enhance your understanding and fluency.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

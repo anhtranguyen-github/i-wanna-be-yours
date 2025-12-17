@@ -146,4 +146,4 @@ Keep practicing, and soon using **A にしろ B にしろ** will become second n
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

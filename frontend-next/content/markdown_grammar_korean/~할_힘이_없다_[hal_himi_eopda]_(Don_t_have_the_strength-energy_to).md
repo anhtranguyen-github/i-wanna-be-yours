@@ -105,4 +105,4 @@ To form this expression, you combine a verb stem with the future tense modifier 
 Feel free to practice by creating your own sentences using **~할 힘이 없다** to become more comfortable with this expression!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -116,4 +116,4 @@ Using **이러하다** appropriately shows an understanding of social norms and 
 By understanding **~이러하다**, you enhance your ability to express formal descriptions and grasp the nuances of Korean politeness levels.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

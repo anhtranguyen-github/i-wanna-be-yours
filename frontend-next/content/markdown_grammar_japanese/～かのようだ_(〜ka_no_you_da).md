@@ -103,4 +103,4 @@ In Japanese communication, indirect expressions are often preferred. Using **～
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

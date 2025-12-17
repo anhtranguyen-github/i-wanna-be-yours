@@ -100,4 +100,4 @@ By understanding and practicing the use of **～が、～ (〜ga, 〜)**, you'll
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -106,4 +106,4 @@ In Japanese culture, expressing attempts or intentions politely is important. Th
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

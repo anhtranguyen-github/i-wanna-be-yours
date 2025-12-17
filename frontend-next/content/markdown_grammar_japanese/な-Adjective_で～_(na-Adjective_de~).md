@@ -97,4 +97,4 @@ Using **で** to connect adjectives is acceptable in both formal and informal se
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

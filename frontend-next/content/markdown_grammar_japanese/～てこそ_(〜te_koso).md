@@ -94,4 +94,4 @@ In Japanese culture, emphasis is often placed on effort, humility, and the impor
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

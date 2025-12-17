@@ -112,4 +112,4 @@ By mastering **にもまして**, you can express nuanced comparisons and emphas
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

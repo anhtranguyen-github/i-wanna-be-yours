@@ -88,4 +88,4 @@ The grammar point **~았/었을 텐데** is used in Korean to express an assumpt
 By understanding and practicing **~았/었을 텐데**, you can more naturally express assumptions and regrets about past events in Korean, enhancing both your speaking and comprehension skills.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

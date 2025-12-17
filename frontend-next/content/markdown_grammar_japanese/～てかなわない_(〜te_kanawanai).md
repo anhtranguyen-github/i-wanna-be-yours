@@ -105,4 +105,4 @@ While **〜てかなわない** is itself an expression of intolerance, it's oft
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

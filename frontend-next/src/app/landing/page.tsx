@@ -3,9 +3,9 @@ import { ChevronRightIcon } from "@heroicons/react/20/solid";
 import Image from "next/image";
 import Link from "next/link";
 
-import hanabira_text_parser_tokenization from "@public/img/screenshots/hanabira_text_parser_tokenization.png";
-import hanabira_youtube_parser from "@public/img/screenshots/hanabira_youtube_parser.png";
-import hanabira_grammar_graph from "@public/img/screenshots/hanabira_grammar_graph.png";
+import hanachan_text_parser_tokenization from "@public/img/screenshots/hanachan_text_parser_tokenization.png";
+import hanachan_youtube_parser from "@public/img/screenshots/hanachan_youtube_parser.png";
+import hanachan_grammar_graph from "@public/img/screenshots/hanachan_grammar_graph.png";
 
 import EmailForm from "@/components/EmailForm";
 import { FeatureIconGrid, defaultFeatures } from "@/components/shared/FeatureIconGrid";
@@ -17,9 +17,9 @@ import {
 } from "@heroicons/react/24/outline";
 
 export const metadata: Metadata = {
-    title: "Hanabira.org - Playful Japanese Learning Portal",
+    title: "hanachan.org - Playful Japanese Learning Portal",
     description:
-        "Hanabira.org is a Japanese learning portal focused on immersive learning experiences. Join us to enhance your Japanese language skills through effective immersion techniques. Free, Open-Source, allows for Self-Hosting.",
+        "hanachan.org is a Japanese learning portal focused on immersive learning experiences. Join us to enhance your Japanese language skills through effective immersion techniques. Free, Open-Source, allows for Self-Hosting.",
 };
 
 export default function LandingPage() {
@@ -57,14 +57,14 @@ export default function LandingPage() {
                                 </div>
 
                                 <p className="mt-6 text-xl text-gray-600 font-medium">
-                                    Prepare for JLPT/TOPIK with hanabira.org. Free, Open-Source, and Self-Hostable.
+                                    Prepare for JLPT/TOPIK with hanachan.org. Free, Open-Source, and Self-Hostable.
                                 </p>
 
                                 <div className="mt-8 flex gap-4">
                                     <CTAButton variant="primary" href="/chat">
                                         Get Started
                                     </CTAButton>
-                                    <CTAButton variant="secondary" href="https://github.com/tristcoil/hanabira.org">
+                                    <CTAButton variant="secondary" href="https://github.com/tristcoil/hanachan.org">
                                         GitHub
                                     </CTAButton>
                                 </div>
@@ -87,8 +87,8 @@ export default function LandingPage() {
                                 <p className="font-bold text-lg mb-2">Easily Self-Host with Docker:</p>
                                 <pre className="bg-black/30 p-3 rounded-lg overflow-x-auto">
                                     <code className="text-sm font-mono text-brand-green">
-                                        git clone https://github.com/tristcoil/hanabira.org.git{'\n'}
-                                        cd hanabira.org{'\n'}
+                                        git clone https://github.com/tristcoil/hanachan.org.git{'\n'}
+                                        cd hanachan.org{'\n'}
                                         docker-compose up
                                     </code>
                                 </pre>
@@ -99,17 +99,17 @@ export default function LandingPage() {
                         <div className="hidden lg:block relative">
                             <div className="bg-white p-4 rounded-2xl border border-slate-200 rotate-2 hover:rotate-0 transition-transform duration-500">
                                 <Image
-                                    alt="hanabira_text_parser_tokenization"
+                                    alt="hanachan_text_parser_tokenization"
                                     className="w-full h-auto rounded-xl"
-                                    src={hanabira_text_parser_tokenization}
+                                    src={hanachan_text_parser_tokenization}
                                     priority
                                 />
                             </div>
                             <div className="absolute -bottom-10 -left-10 bg-white p-4 rounded-2xl border border-slate-200 -rotate-3 hover:rotate-0 transition-transform duration-500 w-2/3 z-10">
                                 <Image
-                                    alt="hanabira grammar graph"
+                                    alt="hanachan grammar graph"
                                     className="w-full h-auto rounded-xl"
-                                    src={hanabira_grammar_graph}
+                                    src={hanachan_grammar_graph}
                                 />
                             </div>
                         </div>
@@ -139,7 +139,7 @@ export default function LandingPage() {
                                 </CTAButton>
                             </div>
                             <div className="lg:w-1/2">
-                                <Image src={hanabira_text_parser_tokenization} alt="Text Parser" className="rounded-xl border border-slate-200 hover:scale-105 transition-transform" />
+                                <Image src={hanachan_text_parser_tokenization} alt="Text Parser" className="rounded-xl border border-slate-200 hover:scale-105 transition-transform" />
                             </div>
                         </div>
 
@@ -158,7 +158,7 @@ export default function LandingPage() {
                                 </CTAButton>
                             </div>
                             <div className="lg:w-1/2">
-                                <Image src={hanabira_youtube_parser} alt="YouTube Parser" className="rounded-xl border border-slate-200 hover:scale-105 transition-transform" />
+                                <Image src={hanachan_youtube_parser} alt="YouTube Parser" className="rounded-xl border border-slate-200 hover:scale-105 transition-transform" />
                             </div>
                         </div>
 
@@ -177,7 +177,7 @@ export default function LandingPage() {
                                 </CTAButton>
                             </div>
                             <div className="lg:w-1/2">
-                                <Image src={hanabira_grammar_graph} alt="Grammar Graph" className="rounded-xl border border-slate-200 hover:scale-105 transition-transform" />
+                                <Image src={hanachan_grammar_graph} alt="Grammar Graph" className="rounded-xl border border-slate-200 hover:scale-105 transition-transform" />
                             </div>
                         </div>
 

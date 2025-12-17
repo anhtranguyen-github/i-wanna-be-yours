@@ -130,4 +130,4 @@ By mastering **A。ということは B。**, you'll be able to express logical 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

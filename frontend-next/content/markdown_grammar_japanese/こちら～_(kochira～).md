@@ -109,4 +109,4 @@ By understanding and using **こちら** appropriately, you'll enhance your poli
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

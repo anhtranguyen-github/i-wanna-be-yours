@@ -107,4 +107,4 @@ In Korean, expressing inevitability or the lack of alternative is common in dail
 By understanding and practicing **~(으)ㄹ 수밖에 없다**, you'll be able to express inevitability and unavoidable circumstances naturally in Korean!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

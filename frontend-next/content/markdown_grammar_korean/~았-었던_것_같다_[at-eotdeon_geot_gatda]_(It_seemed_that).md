@@ -120,4 +120,4 @@ The structure is formed by:
 By mastering **~았/었던 것 같다**, you'll enhance your ability to express nuanced thoughts about past events in Korean, aligning with the cultural emphasis on humility and indirect communication.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

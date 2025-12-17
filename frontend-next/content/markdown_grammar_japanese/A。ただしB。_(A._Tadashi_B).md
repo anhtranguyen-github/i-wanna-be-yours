@@ -96,4 +96,4 @@ By mastering **ただし**, you can add depth to your Japanese by expressing exc
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -109,4 +109,4 @@ Thank you for studying **Verb 方（かた）**! Practice creating your own sent
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -1,8 +1,8 @@
 import React from 'react';
 
 export const metadata = {
-    title: 'Admin Dashboard | Hanabira',
-    description: 'Administrative dashboard for Hanabira.org',
+    title: 'Admin Dashboard | hanachan',
+    description: 'Administrative dashboard for hanachan.org',
 };
 
 export default function AdminLayout({

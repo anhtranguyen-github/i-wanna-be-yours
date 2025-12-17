@@ -102,4 +102,4 @@ The use of **~동안** itself does not change with politeness levels, but the ve
 By understanding and practicing **~동안**, you'll be able to describe actions and states that occur over a period of time more naturally in Korean.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -71,7 +71,7 @@ const BlogCards = ({ cards, header }: BlogCardsProps) => {
                     </Link>
                     {/* <Link href={card.link}>Read more</Link> */}
                     <div className="flex flex-col justify-between ml-4 text-xs">
-                      <p className="font-bold text-gray-700">Hanabira</p>
+                      <p className="font-bold text-gray-700">hanachan</p>
                       {/* <p className="text-gray-400 dark:text-gray-300">
                         20 mars 2029 - 6 min read
                       </p> */}

@@ -89,4 +89,4 @@ Using **~혹은** adds a formal tone to your speech, which is appropriate in pro
 By understanding and practicing **~혹은**, you'll be able to express choices more accurately in Korean, especially in formal situations.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

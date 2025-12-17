@@ -95,4 +95,4 @@ In Japanese culture, emphasizing humility and acknowledging others is important.
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

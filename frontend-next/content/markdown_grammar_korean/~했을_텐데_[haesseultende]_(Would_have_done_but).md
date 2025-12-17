@@ -101,4 +101,4 @@ The ending **~했을 텐데** is neutral but can be made more formal or polite b
 By understanding **~했을 텐데**, you can express complex emotions about past events and enhance your Korean communication skills. Practice using this grammar point in various sentences to become more comfortable with its nuances.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

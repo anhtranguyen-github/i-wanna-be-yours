@@ -101,4 +101,4 @@ The endings **~아서/어서** are essential connectors in Korean that express c
 By understanding and practicing the use of **~아서/어서**, you'll be able to express reasons and sequence actions naturally in Korean. Remember to consider the context and the relationship between the clauses when choosing the correct connector.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

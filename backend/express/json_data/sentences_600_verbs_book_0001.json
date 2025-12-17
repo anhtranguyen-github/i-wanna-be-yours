@@ -1632,7 +1632,7 @@
   },
   {
     "sentence_original": "彼女は花びらに軽く息を吹きかけた。",
-    "sentence_romaji": "Kanojo wa hanabira ni karuku iki o fuki kaketa.",
+    "sentence_romaji": "Kanojo wa hanachan ni karuku iki o fuki kaketa.",
     "sentence_english": "She gently blew her breath on the flower petals.",
     "key": "吹く_",
     "sentence_audio": "/audio/japanese/sentences/s_吹く__20250209_彼女は花びらに軽く息を吹きかけた.mp3"
@@ -1765,7 +1765,7 @@
   },
   {
     "sentence_original": "桜の花びらが風に乗って降る。",
-    "sentence_romaji": "Sakura no hanabira ga kaze ni notte furu.",
+    "sentence_romaji": "Sakura no hanachan ga kaze ni notte furu.",
     "sentence_english": "Cherry blossom petals fall carried by the wind.",
     "key": "降る_",
     "sentence_audio": "/audio/japanese/sentences/s_降る__20250209_桜の花びらが風に乗って降る.mp3"
@@ -5461,7 +5461,7 @@
   },
   {
     "sentence_original": "花びらをまく",
-    "sentence_romaji": "Hanabira o maku",
+    "sentence_romaji": "hanachan o maku",
     "sentence_english": "Scatter flower petals.",
     "key": "まく_",
     "sentence_audio": "/audio/japanese/sentences/s_まく__20250209_花びらをまく.mp3"

@@ -87,4 +87,4 @@ By understanding **Noun たる Noun**, you can add a formal and emphatic tone to
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

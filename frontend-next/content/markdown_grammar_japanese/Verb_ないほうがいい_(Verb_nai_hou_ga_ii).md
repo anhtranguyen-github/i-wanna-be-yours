@@ -121,4 +121,4 @@ By understanding and practicing **Verb ないほうがいい**, you'll enhance y
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -94,4 +94,4 @@ By understanding and practicing the use of **それじゃ**, you'll be able to m
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

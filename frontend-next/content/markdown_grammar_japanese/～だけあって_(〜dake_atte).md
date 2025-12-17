@@ -112,4 +112,4 @@ By mastering **～だけあって**, you enhance your ability to express expecte
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

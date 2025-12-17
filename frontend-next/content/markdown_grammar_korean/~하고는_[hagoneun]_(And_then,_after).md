@@ -108,4 +108,4 @@ In Korean storytelling and daily conversation, expressing the unexpected or cont
 By understanding and practicing **~하고는**, you can add depth to your Korean expressions, especially when narrating events with unexpected outcomes. Keep practicing with various verbs and contexts to master this grammar point!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

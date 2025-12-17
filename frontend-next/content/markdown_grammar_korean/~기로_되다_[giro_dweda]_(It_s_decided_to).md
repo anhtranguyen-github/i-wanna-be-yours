@@ -93,4 +93,4 @@ In Korean society, decisions are often made collectively or by those in authorit
 By understanding and utilizing **~기로 되다**, you can accurately express decisions or plans that have been made by others or due to circumstances, which is a common aspect of communication in Korean.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

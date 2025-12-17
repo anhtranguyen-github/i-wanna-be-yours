@@ -236,7 +236,7 @@ function MotivationForm() {
             <p className="text-sm p-4 text-brand-dark"> Learning Japanese is long term commitment.
                 Above form might help you to consider multiple aspects of your learning journey
                 and hopefully to assist you to stay on your learning track.
-                Form data is stored in web browser Local Storage. Data is not sent to hanabira.org server.</p>
+                Form data is stored in web browser Local Storage. Data is not sent to hanachan.org server.</p>
 
             {/* Accordion Content */}
             {isOpen && (

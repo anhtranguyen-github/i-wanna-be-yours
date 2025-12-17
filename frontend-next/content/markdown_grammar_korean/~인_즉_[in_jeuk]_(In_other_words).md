@@ -83,4 +83,4 @@ The structure of **~인즉** is:
 By mastering **~인즉**, you can add clarity and emphasis to your Korean expressions, making your communication more effective and nuanced.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

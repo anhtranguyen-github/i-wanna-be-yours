@@ -100,4 +100,4 @@ Verb Stem + ~든지 말든지
 Feel free to create your own sentences using **~하든지 말든지** to enhance your understanding!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -31,7 +31,7 @@ export default function Downloads() {
 
           <div className="m-2 p-2 sm:m-4 sm:p-4 max-w-sm w-full bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-lg transition-shadow duration-300 ease-in-out">
             <div className="text-md sm:text-lg text-gray-600">
-              <p>Hanabira yori</p>
+              <p>hanachan yori</p>
               <p>Muryou de daunroodo</p>
               <p>Nagareru you</p>
             </div>
@@ -54,10 +54,10 @@ export default function Downloads() {
           </h2>
           <p className="text-gray-600 text-sm mb-4">
             These files are the contents of vocabulary, grammar and example
-            sentences created in-house at hanabira.org. They might still contain
+            sentences created in-house at hanachan.org. They might still contain
             errors and typos. Use with caution. The files can be used for
             personal or commercial purposes for free. We only ask that you
-            credit hanabira.org as the source. Creative Commons License.
+            credit hanachan.org as the source. Creative Commons License.
           </p>
 
           <h3 className="text-lg font-semibold text-gray-800 mb-3">
@@ -65,7 +65,7 @@ export default function Downloads() {
           </h3>
 
           <a
-            href="https://github.com/tristcoil/hanabira.org-japanese-content"
+            href="https://github.com/tristcoil/hanachan.org-japanese-content"
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-600 hover:underline"

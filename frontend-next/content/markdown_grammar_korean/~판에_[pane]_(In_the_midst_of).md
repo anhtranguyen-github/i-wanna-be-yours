@@ -97,4 +97,4 @@ By mastering **~판에**, you can effectively convey situations where timing is 
 *Happy studying!*
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

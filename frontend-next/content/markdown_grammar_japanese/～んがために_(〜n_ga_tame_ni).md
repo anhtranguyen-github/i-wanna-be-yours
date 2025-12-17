@@ -122,4 +122,4 @@ By mastering **〜んがために**, you're adding a powerful tool to express pu
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

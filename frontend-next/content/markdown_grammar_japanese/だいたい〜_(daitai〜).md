@@ -120,4 +120,4 @@ By mastering **だいたい**, you can express approximations and generalities i
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

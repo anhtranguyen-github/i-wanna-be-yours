@@ -100,4 +100,4 @@ The formation of **~자마자** is straightforward:
 By practicing and understanding the use of **~자마자**, you'll be able to convey immediate sequences naturally in Korean conversations.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

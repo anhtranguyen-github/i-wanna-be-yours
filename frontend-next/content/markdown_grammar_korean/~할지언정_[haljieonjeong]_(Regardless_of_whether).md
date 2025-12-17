@@ -134,4 +134,4 @@ In mastering Korean, it's essential to understand various grammatical structures
 By understanding **~할지언정**, you can enhance your ability to express complex contrasts and concessions in Korean, especially in formal contexts.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

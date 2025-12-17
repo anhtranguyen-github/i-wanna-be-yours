@@ -95,4 +95,4 @@ The grammar point **～ことに** is neutral and can be used in both formal and
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

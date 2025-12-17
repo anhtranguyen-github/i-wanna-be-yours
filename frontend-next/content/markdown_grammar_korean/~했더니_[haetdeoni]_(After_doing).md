@@ -112,4 +112,4 @@ The pattern is formed by attaching **았/었더니** to the verb stem.
 By understanding and practicing **~했더니**, you can express personal experiences and their outcomes more naturally in Korean.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

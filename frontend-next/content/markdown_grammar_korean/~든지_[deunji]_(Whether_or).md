@@ -107,4 +107,4 @@ These expressions are commonly used in daily conversations.
 Feel free to revisit this lesson and practice using **~든지** in your own sentences to become more comfortable with this grammar point!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

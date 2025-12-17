@@ -100,4 +100,4 @@ To form sentences using **~려고**, you attach it to the verb stem of the actio
 Feel free to practice using **~려고** in your own sentences to become more comfortable with expressing intentions in Korean!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

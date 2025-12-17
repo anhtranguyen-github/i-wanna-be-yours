@@ -135,4 +135,4 @@ By understanding **じゃあるまいし**, you can add nuance to your Japanese 
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

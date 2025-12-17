@@ -113,4 +113,4 @@ Both **~때** and **~적** are used to indicate "when" something happens, but th
 By understanding and practicing the use of **~적**, you can express times and instances with greater precision and nuance in Korean.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

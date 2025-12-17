@@ -118,4 +118,4 @@ By mastering **～とみえて**, you enhance your ability to describe inference
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

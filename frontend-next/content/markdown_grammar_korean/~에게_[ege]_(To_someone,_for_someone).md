@@ -106,4 +106,4 @@ Korean language has a hierarchical structure of politeness levels. Choosing the 
 By mastering **~에게**, you've taken another step towards fluency in Korean, enabling you to express giving, sending, and communicating actions more naturally and accurately.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

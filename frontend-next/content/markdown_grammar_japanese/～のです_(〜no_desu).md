@@ -123,4 +123,4 @@ By understanding and practicing ～のです, you'll enhance your ability to exp
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

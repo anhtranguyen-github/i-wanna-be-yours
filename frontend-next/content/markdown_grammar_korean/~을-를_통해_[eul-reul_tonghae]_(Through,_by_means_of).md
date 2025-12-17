@@ -101,4 +101,4 @@ In this lesson, we'll explore the Korean grammar point **~을/를 통해** (_eul
 Practice creating sentences using **~을/를 통해** to describe how you achieve or learn things through different mediums or experiences.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

@@ -115,4 +115,4 @@ By mastering **だれか〜 (dareka~)**, you'll enhance your ability to communic
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

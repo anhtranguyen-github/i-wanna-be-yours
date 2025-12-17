@@ -102,4 +102,4 @@ In Korean culture, there is a strong emphasis on humility and reflection. Using 
 By understanding and practicing **~했을 텐데**, you can express nuanced reflections on past events, aligning your Korean language skills more closely with natural and culturally appropriate expressions.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

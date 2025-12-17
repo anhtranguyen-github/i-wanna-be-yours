@@ -105,4 +105,4 @@ In Korean, expressing perceptions about how something appears or seems is essent
 By mastering **~아/어/여 보이다**, you'll enhance your ability to describe perceptions and make observations in Korean, making your expressions more natural and native-like.
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

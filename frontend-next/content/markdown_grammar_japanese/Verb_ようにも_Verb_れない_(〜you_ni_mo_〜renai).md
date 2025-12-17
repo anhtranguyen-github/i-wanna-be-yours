@@ -105,4 +105,4 @@ While **Verb ようにも Verb れない** is itself a grammatical structure, it
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

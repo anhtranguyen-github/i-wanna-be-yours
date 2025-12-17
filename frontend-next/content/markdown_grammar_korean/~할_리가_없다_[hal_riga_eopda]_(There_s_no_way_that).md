@@ -101,4 +101,4 @@ The structure combines a verb stem with **-ㄹ/을 리가 없다**.
 Keep practicing by using **~할 리가 없다** in daily conversations to become more comfortable with expressing disbelief naturally in Korean!
 
 ---
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)

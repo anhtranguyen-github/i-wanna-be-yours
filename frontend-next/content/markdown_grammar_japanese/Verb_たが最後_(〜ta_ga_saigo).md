@@ -103,4 +103,4 @@ By understanding and practicing **たが最後**, you'll be able to express deci
 
 ---
 
-© [Hanabira.org](https://hanabira.org)
+© [hanachan.org](https://hanachan.org)
