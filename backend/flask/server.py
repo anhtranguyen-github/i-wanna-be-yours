@@ -10,7 +10,9 @@ logging.basicConfig(
 )
 
 app = Flask(__name__)
-CORS(app)
+
+# CORS: Open completely for development
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 # Database configuration
 app.config["MONGO_URI_FLASKFLASHCARDDATABASE"] = "mongodb://localhost:27017/flaskFlashcardDB"
@@ -78,6 +80,14 @@ study_plan_module.register_routes(app)
 from modules.decks import DeckModule
 deck_module = DeckModule()
 deck_module.register_routes(app)
+
+from modules.learner_progress import LearnerProgressModule
+learner_progress_module = LearnerProgressModule()
+learner_progress_module.register_routes(app)
+
+from modules.adaptive_learning import AdaptiveLearningModule
+adaptive_learning_module = AdaptiveLearningModule()
+adaptive_learning_module.register_routes(app)
 
 # --------------- End of Class imports ---------------- #
 

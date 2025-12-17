@@ -2,42 +2,25 @@
 
 import Link from "next/link";
 import {
-    Library,
-    Mic,
-    BookOpen,
     Headphones,
     Brain,
-    Bookmark
+    BookOpen
 } from "lucide-react";
 
 const routes = [
     {
-        title: "Podcasts",
-        description: "Listen to Japanese podcasts.",
+        title: "Podcasts & Videos",
+        description: "Listen to Japanese podcasts and videos. Add your own too!",
         href: "/library/podcasts",
         icon: <Headphones className="w-8 h-8 text-brand-blue" />,
         color: "bg-brand-blue"
     },
     {
-        title: "My Podcasts",
-        description: "Your saved podcast library.",
-        href: "/library/my-podcasts",
-        icon: <Mic className="w-8 h-8 text-brand-green" />,
+        title: "Reading",
+        description: "Japanese short stories with translations.",
+        href: "/library/reading",
+        icon: <BookOpen className="w-8 h-8 text-brand-green" />,
         color: "bg-brand-green"
-    },
-    {
-        title: "Articles",
-        description: "Read interesting articles.",
-        href: "/library/articles",
-        icon: <BookOpen className="w-8 h-8 text-brand-peach" />,
-        color: "bg-brand-peach"
-    },
-    {
-        title: "My Vocabulary",
-        description: "Manage your personal vocabulary list.",
-        href: "/library/my-vocabulary",
-        icon: <Library className="w-8 h-8 text-purple-500" />,
-        color: "bg-purple-100"
     },
     {
         title: "Mnemonics",
@@ -54,14 +37,6 @@ export default function LibraryPage() {
             <h1 className="text-4xl font-display font-extrabold text-brand-dark mb-12 text-center">
                 My <span className="text-brand-softBlue">Library</span>
             </h1>
-
-            <div className="clay-card bg-brand-softBlue/10 border-2 border-brand-softBlue/20 p-6 mb-12 flex flex-col sm:flex-row items-center justify-center gap-4 text-center sm:text-left">
-                <Bookmark className="w-10 h-10 text-brand-softBlue" />
-                <div>
-                    <h3 className="font-bold text-brand-dark text-lg">Save your progress!</h3>
-                    <p className="text-gray-600">All your saved articles, vocab, and podcasts live here.</p>
-                </div>
-            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {routes.map((route) => (

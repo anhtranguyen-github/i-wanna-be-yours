@@ -31,7 +31,7 @@ const app = express();
 app.use(bodyParser.json());
 
 let corsOptions = {
-  origin: ["http://localhost:" + originPort],
+  origin: "*",
   credentials: true,
 };
 

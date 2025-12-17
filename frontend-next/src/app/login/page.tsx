@@ -37,7 +37,7 @@ export default function LoginPage() {
 
             if (isLogin) {
                 login(data.user);
-                const redirectUrl = searchParams.get('redirect') || '/user-dashboard';
+                const redirectUrl = searchParams.get('redirect') || '/dashboard';
                 router.push(redirectUrl);
             } else {
                 // After registration, switch to login or auto-login

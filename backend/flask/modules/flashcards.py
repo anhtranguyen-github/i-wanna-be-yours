@@ -1533,6 +1533,7 @@ class FlashcardModule:
             # cardId should be the _id of the UserFlashcardProgress content
             card_id = data.get("cardId") 
             quality = data.get("quality") # 0-5
+            user_id = data.get("userId")
             
             if not card_id or quality is None:
                 return jsonify({"error": "Missing cardId or quality"}), 400
@@ -1541,6 +1542,10 @@ class FlashcardModule:
                 progress = mongo_flaskFlashcardDB.db.user_flashcard_progress.find_one({"_id": ObjectId(card_id)})
                 if not progress:
                     return jsonify({"error": "Card not found"}), 404
+                
+                # Get user_id from progress if not provided
+                if not user_id:
+                    user_id = progress.get("userId")
                 
                 # SRS Logic (SM-2 simplified)
                 srs = progress.get("srs_state", {})
@@ -1554,6 +1559,7 @@ class FlashcardModule:
                 except:
                     quality = 0
                 
+                is_mastered = False
                 if quality >= 3:
                     if reps == 0:
                         interval = 1
@@ -1566,6 +1572,10 @@ class FlashcardModule:
                     ease = ease + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02))
                     if ease < 1.3:
                          ease = 1.3
+                    
+                    # Consider mastered if interval > 21 days
+                    if interval > 21:
+                        is_mastered = True
                 else:
                     reps = 0
                     interval = 1
@@ -1584,6 +1594,32 @@ class FlashcardModule:
                     {"_id": ObjectId(card_id)},
                     {"$set": {"srs_state": new_state}}
                 )
+                
+                # Log activity to learner progress
+                if user_id:
+                    try:
+                        content_type = progress.get("content_type", "vocabulary")
+                        category = "kanji" if content_type == "kanji" else "vocabulary"
+                        
+                        payload = {
+                            "user_id": user_id,
+                            "activity_type": "flashcard_review",
+                            "data": {
+                                "count": 1,
+                                "category": category,
+                                "mastered_count": 1 if is_mastered else 0,
+                            }
+                        }
+                        
+                        import requests as req_lib
+                        req_lib.post(
+                            "http://localhost:5100/f-api/v1/learner/activity",
+                            json=payload,
+                            timeout=3
+                        )
+                    except Exception as log_err:
+                        # Don't fail the answer if logging fails
+                        logging.warning(f"Failed to log flashcard activity: {log_err}")
                 
                 return jsonify({
                     "message": "SRS updated", 

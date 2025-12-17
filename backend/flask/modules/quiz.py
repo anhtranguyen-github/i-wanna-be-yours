@@ -239,6 +239,42 @@ class QuizModule:
         except Exception as e:
             self.logger.error(f"Error updating SRS from quiz: {e}")
 
+    def _log_quiz_to_learner_progress(self, user_id, score, level, category, duration_minutes=None):
+        """
+        Log quiz completion to the learner progress system.
+        
+        This integrates quiz performance with overall learning tracking.
+        """
+        try:
+            import requests
+            
+            # Post to learner progress API
+            payload = {
+                "user_id": user_id,
+                "activity_type": "quiz_completed",
+                "data": {
+                    "score": score,
+                    "level": level if level != "mixed" else None,
+                    "category": category if category != "mixed" else None,
+                    "duration_minutes": duration_minutes,
+                }
+            }
+            
+            response = requests.post(
+                "http://localhost:5100/f-api/v1/learner/activity",
+                json=payload,
+                timeout=5
+            )
+            
+            if response.status_code == 200:
+                self.logger.info(f"Logged quiz activity for user {user_id}, score: {score}%")
+            else:
+                self.logger.warning(f"Failed to log quiz activity: {response.status_code}")
+                
+        except Exception as e:
+            # Don't fail the quiz submission if logging fails
+            self.logger.error(f"Error logging quiz to learner progress: {e}")
+
     def register_routes(self, app):
         # MongoDB connection
         client = MongoClient("mongodb://localhost:27017/")
@@ -432,6 +468,15 @@ class QuizModule:
                     
                     # Phase 4: Trigger SRS updates for weak items
                     self._update_srs_from_quiz(user_id, scoring_result["weak_items"], quiz.get("origin", "system"))
+                    
+                    # Log activity to learner progress system
+                    self._log_quiz_to_learner_progress(
+                        user_id=user_id,
+                        score=scoring_result["percentage"],
+                        level=quiz.get("jlpt_level", "mixed"),
+                        category=quiz.get("category", "mixed"),
+                        duration_minutes=round(time_spent / 60, 1) if time_spent else None
+                    )
                     
                     # Phase 5: AI feedback is optional and can be requested separately
                 

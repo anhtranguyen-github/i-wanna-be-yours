@@ -140,6 +140,130 @@ about their progress, what to study, or needs motivation, reference these detail
 """
         return summary.strip()
 
+    # ============================================
+    # Learner Progress Integration
+    # ============================================
+
+    def get_learner_progress(self) -> Optional[Dict[str, Any]]:
+        """Fetch the user's comprehensive learning progress."""
+        try:
+            response = requests.get(
+                f"{FLASK_API_URL}/f-api/v1/learner/progress/{self.user_id}",
+                timeout=5
+            )
+
+            if response.status_code == 200:
+                return response.json()
+
+            return None
+
+        except requests.RequestException as e:
+            print(f"[StudyPlanContext] Error fetching learner progress: {e}")
+            return None
+
+    def get_recommendations(self) -> Optional[Dict[str, Any]]:
+        """Fetch personalized learning recommendations."""
+        try:
+            response = requests.get(
+                f"{FLASK_API_URL}/f-api/v1/adaptive/recommendations/{self.user_id}",
+                timeout=5
+            )
+
+            if response.status_code == 200:
+                return response.json()
+
+            return None
+
+        except requests.RequestException as e:
+            print(f"[StudyPlanContext] Error fetching recommendations: {e}")
+            return None
+
+    def get_full_context_summary(self) -> str:
+        """
+        Generate a comprehensive text summary including study plan AND learner progress.
+        This is the enhanced version injected into the AI system prompt.
+        """
+        plan_context = self.get_context_summary()
+        
+        # Add learner progress context
+        progress_data = self.get_learner_progress()
+        
+        if progress_data:
+            progress = progress_data.get("progress", {})
+            weekly_stats = progress_data.get("weekly_stats", {})
+            achievements_count = progress_data.get("achievements_count", 0)
+            
+            progress_context = f"""
+USER LEARNING PROGRESS:
+- Vocabulary Mastered: {progress.get('vocabulary_mastered', 0)} words
+- Kanji Learned: {progress.get('kanji_mastered', 0)} characters
+- Grammar Points: {progress.get('grammar_points_learned', 0)} patterns
+- Current Study Streak: {progress.get('current_streak', 0)} days (Longest: {progress.get('longest_streak', 0)})
+- Total Study Time: {progress.get('total_study_time_minutes', 0)} minutes
+- Achievements Earned: {achievements_count}
+- This Week: {weekly_stats.get('flashcard_reviews', 0)} card reviews, {weekly_stats.get('quizzes_completed', 0)} quizzes
+"""
+            plan_context = plan_context + "\n\n" + progress_context.strip()
+
+        # Add recommendations context
+        recommendations = self.get_recommendations()
+        if recommendations:
+            recs = recommendations.get("recommendations", [])
+            if recs:
+                focus = recommendations.get("focus_area", "vocabulary")
+                rec_str = ", ".join([r.get("title", "") for r in recs[:3]])
+                rec_context = f"""
+RECOMMENDED ACTIVITIES:
+- Focus Area: {focus}
+- Suggested Activities: {rec_str}
+- Daily Goal: {recommendations.get('daily_goal_minutes', 30)} minutes
+"""
+                plan_context = plan_context + "\n\n" + rec_context.strip()
+
+        return plan_context
+
+    def get_learner_progress_artifact(self) -> Optional[Dict[str, Any]]:
+        """Generate a learner progress artifact for rich UI display."""
+        progress_data = self.get_learner_progress()
+        if not progress_data:
+            return None
+
+        progress = progress_data.get("progress", {})
+        weekly_stats = progress_data.get("weekly_stats", {})
+        achievements = progress_data.get("achievements", [])
+
+        return {
+            "type": "learner_progress",
+            "title": "Your Learning Progress",
+            "data": {
+                "vocabulary_mastered": progress.get("vocabulary_mastered", 0),
+                "kanji_mastered": progress.get("kanji_mastered", 0),
+                "grammar_points_learned": progress.get("grammar_points_learned", 0),
+                "current_streak": progress.get("current_streak", 0),
+                "longest_streak": progress.get("longest_streak", 0),
+                "total_study_time_minutes": progress.get("total_study_time_minutes", 0),
+                "weekly_goals": progress.get("weekly_goals", {}),
+                "weekly_stats": weekly_stats,
+                "recent_achievements": achievements[:5]
+            }
+        }
+
+    def get_recommendations_artifact(self) -> Optional[Dict[str, Any]]:
+        """Generate a recommendations artifact for rich UI display."""
+        recs = self.get_recommendations()
+        if not recs:
+            return None
+
+        return {
+            "type": "learning_recommendations",
+            "title": "Recommended For You",
+            "data": {
+                "focus_area": recs.get("focus_area"),
+                "daily_goal_minutes": recs.get("daily_goal_minutes"),
+                "recommendations": recs.get("recommendations", [])[:5]
+            }
+        }
+
     def get_plan_status_artifact(self) -> Optional[Dict[str, Any]]:
         """
         Generate a study plan status artifact for rich UI display.
@@ -200,7 +324,7 @@ about their progress, what to study, or needs motivation, reference these detail
 
 def detect_study_plan_intent(prompt: str) -> Optional[str]:
     """
-    Detect if the user's message is related to study planning.
+    Detect if the user's message is related to study planning or learning progress.
     Returns the intent type or None if not related.
     """
     prompt_lower = prompt.lower()
@@ -208,7 +332,8 @@ def detect_study_plan_intent(prompt: str) -> Optional[str]:
     # Progress check intents
     progress_keywords = [
         "progress", "how am i doing", "how's my progress",
-        "am i on track", "behind", "ahead", "status"
+        "am i on track", "behind", "ahead", "status",
+        "how many words", "vocabulary count", "how much have i learned"
     ]
     if any(kw in prompt_lower for kw in progress_keywords):
         return "progress_check"
@@ -216,7 +341,8 @@ def detect_study_plan_intent(prompt: str) -> Optional[str]:
     # What to study intents
     study_keywords = [
         "what should i study", "what to study", "study next",
-        "what's next", "recommend", "today's tasks", "daily tasks"
+        "what's next", "recommend", "today's tasks", "daily tasks",
+        "suggest something", "what do you recommend"
     ]
     if any(kw in prompt_lower for kw in study_keywords):
         return "study_recommendation"
@@ -245,6 +371,22 @@ def detect_study_plan_intent(prompt: str) -> Optional[str]:
     if any(kw in prompt_lower for kw in motivation_keywords):
         return "motivation"
 
+    # Streak/achievement intents
+    streak_keywords = [
+        "streak", "achievement", "achievements", "badges",
+        "how long have i studied", "days in a row", "my record"
+    ]
+    if any(kw in prompt_lower for kw in streak_keywords):
+        return "streak_achievements"
+
+    # Stats/analytics intents
+    stats_keywords = [
+        "statistics", "stats", "analytics", "performance",
+        "how well", "success rate", "accuracy"
+    ]
+    if any(kw in prompt_lower for kw in stats_keywords):
+        return "learning_stats"
+
     return None
 
 
@@ -254,7 +396,8 @@ def enrich_agent_response(
     intent: Optional[str]
 ) -> Dict[str, Any]:
     """
-    Enrich the agent response with study plan artifacts based on detected intent.
+    Enrich the agent response with study plan and learning progress artifacts 
+    based on detected intent.
     """
     if not intent:
         return response
@@ -264,11 +407,19 @@ def enrich_agent_response(
     artifacts = response.get("artifacts", [])
 
     if intent == "progress_check":
+        # Add both study plan status and learner progress
         status_artifact = provider.get_plan_status_artifact()
         if status_artifact:
             artifacts.append(status_artifact)
+        progress_artifact = provider.get_learner_progress_artifact()
+        if progress_artifact:
+            artifacts.append(progress_artifact)
 
     elif intent == "study_recommendation":
+        # Add recommendations and daily tasks
+        recs_artifact = provider.get_recommendations_artifact()
+        if recs_artifact:
+            artifacts.append(recs_artifact)
         tasks_artifact = provider.get_daily_tasks_artifact()
         artifacts.append(tasks_artifact)
 
@@ -282,5 +433,25 @@ def enrich_agent_response(
         if status_artifact:
             artifacts.append(status_artifact)
 
+    elif intent == "streak_achievements":
+        progress_artifact = provider.get_learner_progress_artifact()
+        if progress_artifact:
+            artifacts.append(progress_artifact)
+
+    elif intent == "learning_stats":
+        progress_artifact = provider.get_learner_progress_artifact()
+        if progress_artifact:
+            artifacts.append(progress_artifact)
+
+    elif intent == "motivation":
+        # Provide both progress (to show accomplishments) and recommendations
+        progress_artifact = provider.get_learner_progress_artifact()
+        if progress_artifact:
+            artifacts.append(progress_artifact)
+        recs_artifact = provider.get_recommendations_artifact()
+        if recs_artifact:
+            artifacts.append(recs_artifact)
+
     response["artifacts"] = artifacts
     return response
+
