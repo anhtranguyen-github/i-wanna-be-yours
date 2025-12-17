@@ -2,6 +2,8 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useChatLayout } from './ChatLayoutContext';
+import { useUser } from '@/context/UserContext';
+import { useAuthPrompt } from '@/components/auth/AuthPromptModal';
 import {
     Send,
     Sparkles,
@@ -16,7 +18,9 @@ import {
     RefreshCw,
     FileText,
     CheckSquare,
-    GraduationCap
+    GraduationCap,
+    Crown,
+    Lock
 } from 'lucide-react';
 
 interface Message {
@@ -27,7 +31,7 @@ interface Message {
 }
 
 // Welcome card for new chat
-function WelcomeCard() {
+function WelcomeCard({ isGuest }: { isGuest: boolean }) {
     const suggestions = [
         "Teach me basic Japanese greetings",
         "Explain the difference between は and が",
@@ -126,6 +130,10 @@ interface ChatMainAreaProps {
 }
 
 export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
+    const { user } = useUser();
+    const isGuest = !user;
+    const { showAuthPrompt, AuthPrompt } = useAuthPrompt();
+
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -157,6 +165,15 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
 
     const handleSend = async () => {
         if (!inputValue.trim() || isLoading) return;
+
+        // Gate for guests
+        if (isGuest) {
+            showAuthPrompt(
+                "AI Conversation",
+                "Sign up to chat with Hanachan and get instant feedback on your Japanese!"
+            );
+            return;
+        }
 
         const userMessage: Message = {
             id: Date.now().toString(),
@@ -204,9 +221,11 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
 
     return (
         <div className="flex flex-col h-full bg-white relative">
+            <AuthPrompt />
+
             {/* Messages Area */}
             {showWelcome ? (
-                <WelcomeCard />
+                <WelcomeCard isGuest={isGuest} />
             ) : (
                 <div className="flex-1 overflow-y-auto p-4 space-y-4 pb-4">
                     {messages.map(message => (
