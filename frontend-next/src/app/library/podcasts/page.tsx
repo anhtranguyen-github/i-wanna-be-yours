@@ -2,303 +2,134 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import axios from "axios";
+import { useUser } from "@/context/UserContext";
+import { Plus, Headphones, User, ChevronDown, Trash2 } from "lucide-react";
+import { useAuthPrompt } from "@/components/auth/AuthPromptModal";
 
-// Dummy data for other video categories (replace with your actual data)
-// const podcasts = []; // Replace with your actual data
-// const commonSituations = [];
-// const techReviews = [];
-// const travelVlogs = [];
+// ============================================
+// Types
+// ============================================
 
-const Home = () => {
-  const [podcastVideos, setPodcastVideos] = useState([]);
-  const [situationVideos, setSituationVideos] = useState([]);
-  const [techReviewVideos, setTechReviewVideos] = useState([]);
-  const [travelVlogVideos, setTravelVlogVideos] = useState([]);
-  const [customVideos, setCustomVideos] = useState([]);
+interface Video {
+  id: string;
+  title: string;
+  description: string;
+  thumbnail: string;
+  internalLink: string;
+}
 
-  useEffect(() => {
-    setPodcastVideos(podcasts.map(getVideoData));
-    setSituationVideos(commonSituations.map(getVideoData));
-    setTechReviewVideos(techReviews.map(getVideoData));
-    setTravelVlogVideos(travelVlogs.map(getVideoData));
-  }, []);
+interface CustomVideoInput {
+  url: string;
+  customTitle: string;
+  customDescription: string;
+  userId: string;
+  p_tag: string;
+  s_tag: string;
+  lang: string;
+}
 
+// ============================================
+// Helper Functions
+// ============================================
 
-  return (
-    <div className="container mx-auto p-4">
-
-      {/* YouTube Channels */}
-      <CollapsibleSection title="YouTube Channels">
-        {/* Podcasts */}
-        <h2 className="font-bold mt-4 mb-2">Podcasts</h2>
-        <p>
-          Bite Size Japanese:{" "}
-          <a
-            href="https://www.youtube.com/@the_bitesize_japanese_podcast"
-            className="text-blue-500 underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            https://www.youtube.com/@the_bitesize_japanese_podcast
-          </a>
-        </p>
-        <p>
-          Yoshie 【Wasabi】Listening daily Japanese:{" "}
-          <a
-            href="https://www.youtube.com/@Wasabito.Listening.Japanese"
-            className="text-blue-500 underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            https://www.youtube.com/@Wasabito.Listening.Japanese
-          </a>
-        </p>
-        <p>
-          YUYUの日本語Podcast:{" "}
-          <a
-            href="https://www.youtube.com/@yuyunihongopodcast"
-            className="text-blue-500 underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            https://www.youtube.com/@yuyunihongopodcast
-          </a>
-        </p>
-
-        {/* Daily situations */}
-        <h2 className="font-bold mt-4 mb-2">Daily situations</h2>
-        <p>
-          Akane Nihongo:{" "}
-          <a
-            href="https://www.youtube.com/@Akane-JapaneseClass/videos"
-            className="text-blue-500 underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            https://www.youtube.com/@Akane-JapaneseClass/videos
-          </a>
-        </p>
-
-        {/* Long form */}
-        <h2 className="font-bold mt-4 mb-2">Long form reading</h2>
-        <p>
-          Japanese Listening Shower:{" "}
-          <a
-            href="https://www.youtube.com/@Japanese-Listening-Shower/videos"
-            className="text-blue-500 underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            https://www.youtube.com/@Japanese-Listening-Shower/videos
-          </a>
-        </p>
-
-        {/* Grammar */}
-        <h2 className="font-bold mt-4 mb-2">Grammar</h2>
-        <p>
-          Nihongo No Mori 日本語の森:{" "}
-          <a
-            href="https://www.youtube.com/@nihongonomori2013"
-            className="text-blue-500 underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            https://www.youtube.com/@nihongonomori2013
-          </a>
-        </p>
-        <p>
-          Game Gengo ゲーム言語:{" "}
-          <a
-            href="https://www.youtube.com/@GameGengo"
-            className="text-blue-500 underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            https://www.youtube.com/@GameGengo
-          </a>
-        </p>
-
-        {/* Tech */}
-        <h2 className="font-bold mt-4 mb-2">Tech channels</h2>
-
-        {/* Korean */}
-        <h2 className="font-bold mt-4 mb-2">Korean</h2>
-
-        <p>
-          TTMK Talk To Me In Korean:{" "}
-          <a
-            href="https://www.youtube.com/@talktomeinkorean"
-            className="text-blue-500 underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            https://www.youtube.com/@talktomeinkorean
-          </a>
-        </p>
-
-        <p>
-          Hailey _Your Korean Friend:{" "}
-          <a
-            href="https://www.youtube.com/@koreanfriendhailey"
-            className="text-blue-500 underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            https://www.youtube.com/@koreanfriendhailey
-          </a>
-        </p>
-
-        <p>
-          Dong Grammy Korean:{" "}
-          <a
-            href="https://www.youtube.com/@DongGrammyKorean"
-            className="text-blue-500 underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            https://www.youtube.com/@DongGrammyKorean
-          </a>
-        </p>
-
-
-
-
-
-
-
-        {/* <p>
-          Japanese Listening Shower:{' '}
-          <a
-            href="https://www.youtube.com/@Japanese-Listening-Shower/videos"
-            className="text-blue-500 underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            https://www.youtube.com/@Japanese-Listening-Shower/videos
-          </a>
-        </p>
-        <p>
-          Akane Nihongo:{' '}
-          <a
-            href="https://www.youtube.com/@Akane-JapaneseClass/videos"
-            className="text-blue-500 underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            https://www.youtube.com/@Akane-JapaneseClass/videos
-          </a>
-        </p>
-        <p>
-          Akane Nihongo:{' '}
-          <a
-            href="https://www.youtube.com/@Akane-JapaneseClass/videos"
-            className="text-blue-500 underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            https://www.youtube.com/@Akane-JapaneseClass/videos
-          </a>
-        </p> */}
-
-        {/* Add more channels here if needed */}
-      </CollapsibleSection>
-
-      {/* Video Sections */}
-      <h1 className="text-2xl font-bold mt-5 mb-5">YouTube Videos</h1>
-      <VideoSection title="Podcasts" videos={podcastVideos} />
-      <VideoSection title="Common Situations" videos={situationVideos} />
-      {/* TODO: add tech reviews, travel vlogs and so on */}
-      {/* <VideoSection title="Tech Reviews" videos={techReviewVideos} /> */}
-      {/* <VideoSection title="Travel Vlogs" videos={travelVlogVideos} /> */}
-    </div>
-  );
+const getVideoId = (url: string): string | null => {
+  try {
+    const urlObj = new URL(url);
+    return urlObj.searchParams.get("v");
+  } catch {
+    return null;
+  }
 };
 
-export default Home;
-
-// Helper functions
-const getVideoId = (url) => {
-  const urlObj = new URL(url);
-  return urlObj.searchParams.get("v");
-};
-
-const getVideoData = (video) => {
+const getVideoData = (video: any): Video => {
   const videoId = getVideoId(video.url);
   return {
-    id: video._id || videoId, // Ensure the ID is coming from MongoDB (_id)
+    id: video._id || videoId || Math.random().toString(),
     title: video.customTitle || "Untitled Video",
     description: video.customDescription || "",
-    thumbnail: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
-    internalLink: `/text-parser?type=youtube&url=https://www.youtube.com/watch?v=${videoId}`,
+    thumbnail: videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : "",
+    internalLink: videoId ? `/tools/text-parser?type=youtube&url=https://www.youtube.com/watch?v=${videoId}` : "#",
   };
 };
 
-// VideoSection Component
-const VideoSection = ({
-  title,
-  videos,
-  onDelete = null,
-  initialOpen = true,
-}) => {
-  const [isOpen, setIsOpen] = useState(initialOpen);
+// ============================================
+// Static Podcast Data
+// ============================================
+
+const podcasts = [
+  { url: "https://www.youtube.com/watch?v=-cbuS40rNSw", customTitle: "BSJ Podcast) 仕事", customDescription: "Bite Size Japanese podcast about work" },
+  { url: "https://www.youtube.com/watch?v=UQ05S65tKPc", customTitle: "BSJ Podcast) 外国人", customDescription: "Bite Size Japanese podcast" },
+];
+
+const commonSituations = [
+  { url: "https://www.youtube.com/watch?v=ihRjDwIyxk0", customTitle: "【日本語の会話】飲食店で注文", customDescription: "Ordering at restaurants" },
+  { url: "https://www.youtube.com/watch?v=X9auVKiZgsM", customTitle: "ホテルに泊まる時使う日本語", customDescription: "Hotel vocabulary" },
+  { url: "https://www.youtube.com/watch?v=eShOGfMx9FI", customTitle: "市場で買い物するときの日本語", customDescription: "Shopping at markets" },
+  { url: "https://www.youtube.com/watch?v=faKYinAtlIo", customTitle: "Helpful Japanese at Restaurants", customDescription: "Restaurant vocabulary" },
+  { url: "https://www.youtube.com/watch?v=r20IdWOSBFE", customTitle: "Cafe Conversation", customDescription: "Ordering at cafes" },
+];
+
+const youtubeChannels = [
+  { name: "Bite Size Japanese", url: "https://www.youtube.com/@the_bitesize_japanese_podcast", category: "Podcasts" },
+  { name: "Yoshie Wasabi Listening", url: "https://www.youtube.com/@Wasabito.Listening.Japanese", category: "Podcasts" },
+  { name: "YUYU日本語Podcast", url: "https://www.youtube.com/@yuyunihongopodcast", category: "Podcasts" },
+  { name: "Akane Nihongo", url: "https://www.youtube.com/@Akane-JapaneseClass", category: "Daily Situations" },
+  { name: "Japanese Listening Shower", url: "https://www.youtube.com/@Japanese-Listening-Shower", category: "Long Form" },
+  { name: "Nihongo No Mori", url: "https://www.youtube.com/@nihongonomori2013", category: "Grammar" },
+  { name: "Game Gengo", url: "https://www.youtube.com/@GameGengo", category: "Grammar" },
+];
+
+// ============================================
+// Components
+// ============================================
+
+interface VideoSectionProps {
+  title: string;
+  videos: Video[];
+  onDelete?: (id: string) => void;
+  icon?: React.ReactNode;
+  defaultOpen?: boolean;
+}
+
+function VideoSection({ title, videos, onDelete, icon, defaultOpen = true }: VideoSectionProps) {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
     <div className="mb-8">
-      {/* Collapsible Header */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex justify-between items-center w-full text-left text-xl font-display font-bold mb-4 p-4 bg-brand-cream rounded-xl shadow-clay-sm hover:shadow-clay transition-all focus:outline-none text-brand-dark"
+        className="flex justify-between items-center w-full text-left text-xl font-display font-bold mb-4 p-4 bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-all focus:outline-none text-brand-dark"
       >
-        <span>{title}</span>
-        <svg
-          className={`w-6 h-6 transform transition-transform duration-200 text-brand-indigo ${isOpen ? "rotate-180" : ""
-            }`}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M19 9l-7 7-7-7"
-          />
-        </svg>
+        <span className="flex items-center gap-3">
+          {icon}
+          {title}
+          <span className="text-sm font-normal text-slate-400">({videos.length})</span>
+        </span>
+        <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform ${isOpen ? "rotate-180" : ""}`} />
       </button>
 
-      {/* Collapsible Content */}
       {isOpen && (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {videos.map((video) => (
-            <div
-              key={video.id}
-              className="clay-card overflow-hidden cursor-pointer hover:-translate-y-1 bg-white relative group"
-            >
+            <div key={video.id} className="clay-card overflow-hidden cursor-pointer hover:-translate-y-1 bg-white relative group">
               <Link href={video.internalLink}>
-                <div>
-                  <div className="relative">
-                    <img
-                      src={video.thumbnail}
-                      alt={video.title}
-                      className="w-full h-48 object-cover rounded-t-2xl"
-                    />
-                    <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-all" />
-                  </div>
-                  <div className="p-4">
-                    <h3 className="text-lg font-bold font-display text-brand-dark leading-tight mb-2 line-clamp-2">{video.title}</h3>
-                    <p className="text-sm text-gray-500 line-clamp-3">{video.description}</p>
-                  </div>
+                <div className="relative">
+                  <img src={video.thumbnail} alt={video.title} className="w-full h-40 object-cover" />
+                  <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-all" />
+                </div>
+                <div className="p-4">
+                  <h3 className="text-sm font-bold text-brand-dark leading-tight mb-1 line-clamp-2">{video.title}</h3>
+                  <p className="text-xs text-gray-500 line-clamp-2">{video.description}</p>
                 </div>
               </Link>
               {onDelete && (
-                <div className="p-4 pt-0">
-                  <button
-                    onClick={() => onDelete(video.id)}
-                    className="mt-2 bg-red-100 text-red-600 font-bold p-2 rounded-xl w-full hover:bg-red-200 transition-colors"
-                  >
-                    Delete
-                  </button>
-                </div>
+                <button
+                  onClick={(e) => { e.stopPropagation(); onDelete(video.id); }}
+                  className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                >
+                  <Trash2 size={14} />
+                </button>
               )}
             </div>
           ))}
@@ -306,237 +137,193 @@ const VideoSection = ({
       )}
     </div>
   );
-};
+}
 
-// CollapsibleSection Component
-const CollapsibleSection = ({ title, children, initialOpen = false }) => {
-  const [isOpen, setIsOpen] = useState(initialOpen);
+// ============================================
+// Main Component
+// ============================================
+
+export default function PodcastsPage() {
+  const { user } = useUser();
+  const { showAuthPrompt, AuthPrompt } = useAuthPrompt();
+  const userId = user?.id ? String(user.id) : "";
+  const isGuest = !user;
+
+  const [customVideos, setCustomVideos] = useState<Video[]>([]);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newVideo, setNewVideo] = useState<CustomVideoInput>({
+    url: "",
+    customTitle: "",
+    customDescription: "",
+    userId: "",
+    p_tag: "youtube",
+    s_tag: "video",
+    lang: "jp",
+  });
+
+  // Static videos
+  const podcastVideos = podcasts.map(getVideoData);
+  const situationVideos = commonSituations.map(getVideoData);
+
+  useEffect(() => {
+    setNewVideo((prev) => ({ ...prev, userId }));
+    fetchCustomVideos();
+  }, [userId]);
+
+  const fetchCustomVideos = async () => {
+    try {
+      const response = await axios.get("/f-api/v1/custom-videos");
+      setCustomVideos(response.data.map(getVideoData));
+    } catch (error) {
+      console.error("Error fetching custom videos:", error);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("/f-api/v1/custom-videos", newVideo);
+      setCustomVideos([...customVideos, getVideoData(response.data)]);
+      setNewVideo((prev) => ({ ...prev, url: "", customTitle: "", customDescription: "" }));
+      setShowAddForm(false);
+    } catch (error) {
+      console.error("Error posting new video:", error);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await axios.delete(`/f-api/v1/custom-videos/${id}`);
+      setCustomVideos(customVideos.filter((video) => video.id !== id));
+    } catch (error) {
+      console.error("Error deleting video:", error);
+    }
+  };
 
   return (
-    <div className="mb-12">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex justify-between items-center w-full text-left text-2xl font-display font-bold mb-6 p-5 bg-white border-2 border-brand-indigo/10 rounded-2xl shadow-clay hover:shadow-clay-md transition-all focus:outline-none text-brand-dark"
-      >
-        <span>{title}</span>
-        <svg
-          className={`w-6 h-6 transform transition-transform duration-200 text-brand-indigo ${isOpen ? "rotate-180" : ""
-            }`}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M19 9l-7 7-7-7"
+    <>
+      <AuthPrompt />
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-brand-cream/30">
+        <div className="container mx-auto px-4 py-8 max-w-7xl">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="text-3xl font-display font-extrabold text-brand-dark mb-2">
+                Podcasts & Videos
+              </h1>
+              <p className="text-gray-500">Japanese listening practice from YouTube</p>
+            </div>
+            <button
+              onClick={() => {
+                if (isGuest) {
+                  showAuthPrompt(
+                    'Personal Video Library',
+                    'Add your own YouTube videos to your personal learning library.'
+                  );
+                } else {
+                  setShowAddForm(!showAddForm);
+                }
+              }}
+              className="flex items-center gap-2 px-4 py-2 bg-brand-green text-white font-bold rounded-xl hover:bg-brand-green/90 transition-all shadow-sm"
+            >
+              <Plus size={20} />
+              Add Your Video
+            </button>
+          </div>
+
+          {/* Add Video Form */}
+          {showAddForm && !isGuest && (
+            <div className="clay-card p-6 mb-8 bg-white">
+              <h2 className="text-xl font-bold text-brand-dark mb-4">Add Custom YouTube Video</h2>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-brand-dark font-medium mb-1 text-sm">YouTube URL</label>
+                  <input
+                    type="text"
+                    value={newVideo.url}
+                    onChange={(e) => setNewVideo({ ...newVideo, url: e.target.value })}
+                    className="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-green focus:border-brand-green"
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    required
+                  />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-brand-dark font-medium mb-1 text-sm">Title (optional)</label>
+                    <input
+                      type="text"
+                      value={newVideo.customTitle}
+                      onChange={(e) => setNewVideo({ ...newVideo, customTitle: e.target.value })}
+                      className="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-green focus:border-brand-green"
+                      placeholder="Custom title"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-brand-dark font-medium mb-1 text-sm">Description (optional)</label>
+                    <input
+                      type="text"
+                      value={newVideo.customDescription}
+                      onChange={(e) => setNewVideo({ ...newVideo, customDescription: e.target.value })}
+                      className="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-green focus:border-brand-green"
+                      placeholder="Short description"
+                    />
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <button type="submit" className="px-6 py-2 bg-brand-green text-white font-bold rounded-xl hover:bg-brand-green/90">
+                    Add Video
+                  </button>
+                  <button type="button" onClick={() => setShowAddForm(false)} className="px-6 py-2 bg-slate-100 text-slate-600 font-bold rounded-xl hover:bg-slate-200">
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+
+          {/* My Videos Section */}
+          {customVideos.length > 0 && (
+            <VideoSection
+              title="My Videos"
+              videos={customVideos}
+              onDelete={handleDelete}
+              icon={<User className="w-5 h-5 text-brand-green" />}
+            />
+          )}
+
+          {/* Recommended Channels */}
+          <div className="mb-8 p-6 bg-white rounded-2xl border border-slate-100">
+            <h2 className="text-lg font-bold text-brand-dark mb-4">Recommended YouTube Channels</h2>
+            <div className="flex flex-wrap gap-2">
+              {youtubeChannels.map((channel) => (
+                <a
+                  key={channel.name}
+                  href={channel.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 bg-slate-50 text-slate-600 text-sm font-medium rounded-lg hover:bg-brand-blue hover:text-white transition-all"
+                >
+                  {channel.name}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Curated Videos */}
+          <VideoSection
+            title="Podcasts"
+            videos={podcastVideos}
+            icon={<Headphones className="w-5 h-5 text-brand-blue" />}
           />
-        </svg>
-      </button>
 
-      {/* Collapsible Content */}
-      {isOpen && <div className="p-4 bg-brand-cream/50 rounded-2xl border border-brand-indigo/5">{children}</div>}
-    </div>
+          <VideoSection
+            title="Common Situations"
+            videos={situationVideos}
+            icon={<Headphones className="w-5 h-5 text-brand-peach" />}
+            defaultOpen={false}
+          />
+        </div>
+      </div>
+    </>
   );
-};
-
-// --- //
-
-const podcasts = [
-  {
-    url: "https://www.youtube.com/watch?v=-cbuS40rNSw",
-    customTitle: "BSJ Podcast) 仕事",
-    customDescription: "Description for podcast 1",
-    internalLink:
-      "/text-parser?type=youtube&url=https://www.youtube.com/watch?v=-cbuS40rNSw",
-  },
-  {
-    url: "https://www.youtube.com/watch?v=UQ05S65tKPc",
-    customTitle: "BSJ Podcast) 外国人",
-    customDescription: "Description for podcast 2",
-    internalLink:
-      "/text-parser?type=youtube&url=https://www.youtube.com/watch?v=UQ05S65tKPc",
-  },
-  // Add more podcast data here
-];
-
-const commonSituations = [
-  {
-    url: "https://www.youtube.com/watch?v=ihRjDwIyxk0",
-    customTitle: "【日本語の会話】飲食店で注文したり会計したりするときの日本語",
-    customDescription: "Description for situation 1",
-    internalLink:
-      "/text-parser?type=youtube&url=https://www.youtube.com/watch?v=ihRjDwIyxk0",
-  },
-  {
-    url: "https://www.youtube.com/watch?v=X9auVKiZgsM",
-    customTitle: "ホテルに泊まる時使う日本語ーチェックイン・部屋にあるものー",
-    customDescription: "Description for situation 2",
-    internalLink:
-      "/text-parser?type=youtube&url=https://www.youtube.com/watch?v=X9auVKiZgsM",
-  },
-  {
-    url: "https://www.youtube.com/watch?v=eShOGfMx9FI",
-    customTitle:
-      "【日本語の単語】日本の市場(マーケット)で買い物するときの日本語／野菜の名前も紹介します",
-    customDescription: "Description for situation 2",
-    internalLink:
-      "/text-parser?type=youtube&url=https://www.youtube.com/watch?v=eShOGfMx9FI",
-  },
-  {
-    url: "https://www.youtube.com/watch?v=Loo_gHCBJoE",
-    customTitle: "【日本語の会話】飛行機に乗るとき使う日本語",
-    customDescription: "Description for situation 2",
-    internalLink:
-      "/text-parser?type=youtube&url=https://www.youtube.com/watch?v=Loo_gHCBJoE",
-  },
-  {
-    url: "https://www.youtube.com/watch?v=faKYinAtlIo",
-    customTitle: "Helpful Japanese When Ordering at a Restaurant",
-    customDescription: "Description for situation 2",
-    internalLink:
-      "/text-parser?type=youtube&url=https://www.youtube.com/watch?v=faKYinAtlIo",
-  },
-  {
-    url: "https://www.youtube.com/watch?v=r20IdWOSBFE",
-    customTitle:
-      "【Japanese Conversation】 Cafe Conversation｜Entering, Ordering, and Accounting",
-    customDescription: "Description for situation 2",
-    internalLink:
-      "/text-parser?type=youtube&url=https://www.youtube.com/watch?v=r20IdWOSBFE",
-  },
-  {
-    url: "https://www.youtube.com/watch?v=01xtlnL137o",
-    customTitle:
-      "Transportation Vocabulary in Japanese｜From Haneda Airport to Hamamatsucho",
-    customDescription: "Description for situation 2",
-    internalLink:
-      "/text-parser?type=youtube&url=https://www.youtube.com/watch?v=01xtlnL137o",
-  },
-  {
-    url: "https://www.youtube.com/watch?v=JcxtN746mwM",
-    customTitle: "【千葉Vlog】旅行で使う日本語",
-    customDescription: "Description for situation 2",
-    internalLink:
-      "/text-parser?type=youtube&url=https://www.youtube.com/watch?v=JcxtN746mwM",
-  },
-  {
-    url: "https://www.youtube.com/watch?v=1IfmD0xsye0",
-    customTitle: "【日本語の会話】カフェで店員さんと話す／千葉Vlog",
-    customDescription: "Description for situation 2",
-    internalLink:
-      "/text-parser?type=youtube&url=https://www.youtube.com/watch?v=1IfmD0xsye0",
-  },
-  {
-    url: "https://www.youtube.com/watch?v=Wq4bP5CPd0c",
-    customTitle: "【日本語の単語】旅行するとき持って行くもの",
-    customDescription: "Description for situation 2",
-    internalLink:
-      "/text-parser?type=youtube&url=https://www.youtube.com/watch?v=Wq4bP5CPd0c",
-  },
-  {
-    url: "https://www.youtube.com/watch?v=W1BiwaKK5_I",
-    customTitle: "KFCで注文するときの日本語",
-    customDescription: "Description for situation 2",
-    internalLink:
-      "/text-parser?type=youtube&url=https://www.youtube.com/watch?v=W1BiwaKK5_I",
-  },
-  {
-    url: "https://www.youtube.com/watch?v=YMPE08J4lTw",
-    customTitle: "【千葉Vlog】カフェで注文するときの日本語",
-    customDescription: "Description for situation 2",
-    internalLink:
-      "/text-parser?type=youtube&url=https://www.youtube.com/watch?v=YMPE08J4lTw",
-  },
-  {
-    url: "https://www.youtube.com/watch?v=EiYp4IG528A",
-    customTitle:
-      "【日本語Vlog】羽田エアポートガーデンで食べる！買い物する！泊まる！Tokyo International Airport",
-    customDescription: "Description for situation 2",
-    internalLink:
-      "/text-parser?type=youtube&url=https://www.youtube.com/watch?v=EiYp4IG528A",
-  },
-  // Add more common situation data here
-];
-
-const techReviews = [
-  {
-    url: "https://www.youtube.com/watch?v=example5",
-    customTitle: "Tech Review Title 1",
-    customDescription: "Description for tech review 1",
-    internalLink: "/tech-review/1",
-  },
-  {
-    url: "https://www.youtube.com/watch?v=example6",
-    customTitle: "Tech Review Title 2",
-    customDescription: "Description for tech review 2",
-    internalLink: "/tech-review/2",
-  },
-  // Add more tech review data here
-];
-
-const travelVlogs = [
-  {
-    url: "https://www.youtube.com/watch?v=example3",
-    customTitle: "Situation Title 1",
-    customDescription: "Description for situation 1",
-    internalLink: "/situation/1",
-  },
-  {
-    url: "https://www.youtube.com/watch?v=example4",
-    customTitle: "Situation Title 2",
-    customDescription: "Description for situation 2",
-    internalLink: "/situation/2",
-  },
-  {
-    url: "https://www.youtube.com/watch?v=example4",
-    customTitle: "Situation Title 2",
-    customDescription: "Description for situation 2",
-    internalLink: "/situation/2",
-  },
-  {
-    url: "https://www.youtube.com/watch?v=example4",
-    customTitle: "Situation Title 2",
-    customDescription: "Description for situation 2",
-    internalLink: "/situation/2",
-  },
-  {
-    url: "https://www.youtube.com/watch?v=example4",
-    customTitle: "Situation Title 2",
-    customDescription: "Description for situation 2",
-    internalLink: "/situation/2",
-  },
-  {
-    url: "https://www.youtube.com/watch?v=example4",
-    customTitle: "Situation Title 2",
-    customDescription: "Description for situation 2",
-    internalLink: "/situation/2",
-  },
-  {
-    url: "https://www.youtube.com/watch?v=example4",
-    customTitle: "Situation Title 2",
-    customDescription: "Description for situation 2",
-    internalLink: "/situation/2",
-  },
-  {
-    url: "https://www.youtube.com/watch?v=example4",
-    customTitle: "Situation Title 2",
-    customDescription: "Description for situation 2",
-    internalLink: "/situation/2",
-  },
-  {
-    url: "https://www.youtube.com/watch?v=example4",
-    customTitle: "Situation Title 2",
-    customDescription: "Description for situation 2",
-    internalLink: "/situation/2",
-  },
-  {
-    url: "https://www.youtube.com/watch?v=example4",
-    customTitle: "Situation Title 2",
-    customDescription: "Description for situation 2",
-    internalLink: "/situation/2",
-  },
-
-  // Add more common situation data here
-];
+}
