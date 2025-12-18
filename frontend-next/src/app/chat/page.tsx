@@ -6,12 +6,18 @@ import dynamic from 'next/dynamic';
 // Dynamically import components with no SSR
 const ChatMainArea = dynamic(
     () => import('@/components/chat/ChatMainArea').then(mod => mod.ChatMainArea),
-    { ssr: false }
+    {
+        ssr: false,
+        loading: () => <div className="flex items-center justify-center h-full text-slate-400">Loading Chat Interface...</div>
+    }
 );
 
 const ChatRightSidebar = dynamic(
     () => import('@/components/chat/ChatRightSidebar').then(mod => mod.ChatRightSidebar),
-    { ssr: false }
+    {
+        ssr: false,
+        loading: () => <div className="h-full w-[300px] border-l border-slate-100 bg-white" />
+    }
 );
 
 export default function ChatPage() {

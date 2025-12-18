@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useChatLayout } from './ChatLayoutContext';
 import { useUser } from '@/context/UserContext';
 import { useGlobalAuth } from '@/context/GlobalAuthContext';
+import { useSWRConfig } from 'swr';
 import {
     Send,
     Sparkles,
@@ -24,13 +25,17 @@ import {
     X,
     Loader2
 } from 'lucide-react';
+import { ResourcePreviewModal } from '@/components/resources/ResourcePreviewModal';
 import { aiTutorService } from '@/services/aiTutorService';
+import { Artifact, ArtifactType } from '@/types/artifact';
+import { Layers } from 'lucide-react';
 
 interface Message {
     id: string;
     role: 'user' | 'assistant';
     content: string;
     timestamp: Date;
+    artifacts?: Artifact[];
 }
 
 interface AttachedFile {
@@ -86,7 +91,7 @@ function WelcomeCard({ isGuest }: { isGuest: boolean }) {
 }
 
 // Message bubble component
-function MessageBubble({ message }: { message: Message }) {
+function MessageBubble({ message, onOpenArtifact }: { message: Message; onOpenArtifact: (a: Artifact) => void }) {
     const isUser = message.role === 'user';
 
     return (
@@ -115,6 +120,31 @@ function MessageBubble({ message }: { message: Message }) {
                     <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
                 </div>
 
+                {/* Artifact Cards */}
+                {message.artifacts && message.artifacts.length > 0 && (
+                    <div className="mt-3 space-y-2 w-full max-w-sm">
+                        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Generated Content</p>
+                        {message.artifacts.map((artifact) => (
+                            <button
+                                key={artifact.id}
+                                onClick={() => onOpenArtifact(artifact)}
+                                className="w-full flex items-center gap-3 p-3 rounded-xl bg-white border border-slate-200 hover:border-brand-green/30 hover:shadow-md transition-all group text-left"
+                            >
+                                <div className="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center group-hover:bg-brand-green/10 transition-colors">
+                                    <ArtifactIconSmall type={artifact.type} />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <h4 className="text-sm font-bold text-brand-dark truncate">{artifact.title}</h4>
+                                    <p className="text-xs text-slate-500 capitalize">{artifact.type.replace('_', ' ')}</p>
+                                </div>
+                                <div className="text-brand-green opacity-0 group-hover:opacity-100 transition-opacity text-xs font-bold">
+                                    OPEN
+                                </div>
+                            </button>
+                        ))}
+                    </div>
+                )}
+
                 {/* Actions */}
                 {!isUser && (
                     <div className="flex items-center gap-1 mt-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -137,6 +167,17 @@ function MessageBubble({ message }: { message: Message }) {
     );
 }
 
+function ArtifactIconSmall({ type }: { type: string }) {
+    switch (type) {
+        case 'flashcard': return <Layers size={18} className="text-brand-green" />;
+        case 'flashcard_deck': return <Layers size={18} className="text-brand-green" />;
+        case 'quiz': return <CheckSquare size={18} className="text-purple-500" />;
+        case 'exam': return <GraduationCap size={18} className="text-red-500" />;
+        case 'note': return <FileText size={18} className="text-blue-500" />;
+        default: return <Sparkles size={18} className="text-slate-400" />;
+    }
+}
+
 interface ChatMainAreaProps {
     conversationId?: string;
 }
@@ -156,7 +197,14 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     // Use layout context for interactions
-    const { stagedResourceToProcess, consumeStagedResource, openArtifact } = useChatLayout();
+    const {
+        stagedResourceToProcess,
+        consumeStagedResource,
+        openArtifact,
+        previewResource,
+        closeResourcePreview,
+        stageResource
+    } = useChatLayout();
 
     useEffect(() => {
         console.log('[ChatMainArea] useEffect triggered, stagedResourceToProcess:', stagedResourceToProcess);
@@ -290,8 +338,7 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
         setAttachedFiles(prev => prev.filter(f => f.id !== id));
     };
 
-    // Import mutate from swr to refresh sidebar
-    const { mutate } = require('swr');
+    const { mutate } = useSWRConfig();
 
     const handleSend = async () => {
         if ((!inputValue.trim() && attachedFiles.length === 0) || isLoading) return;
@@ -334,7 +381,7 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
             const sessionId = conversationId || `session-${Date.now()}`;
 
             // Use streamChat instead of simulated response
-            const { reader } = await aiTutorService.streamChat(
+            const { reader, artifacts } = await aiTutorService.streamChat(
                 inputValue.trim() || "Analyze the attached resources",
                 false,
                 conversationId,
@@ -348,6 +395,7 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
                 role: 'assistant',
                 content: "",
                 timestamp: new Date(),
+                artifacts: artifacts // Attach generated artifacts
             };
 
             setMessages(prev => [...prev, assistantMessage]);
@@ -366,9 +414,11 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
             }
 
             // After response is complete, refresh resources sidebar
-            mutate(user ? `${aiTutorService['API_BASE_URL']}/resources?userId=${user.id}` : null);
+            if (user) {
+                mutate(['/f-api/v1/resources', user.id]);
+            }
             // Also try refreshing the global resources if that's what sidebar uses
-            mutate(`${aiTutorService['API_BASE_URL']}/resources`);
+            mutate((key: any) => Array.isArray(key) && key[0] === '/f-api/v1/resources');
 
         } catch (error) {
             console.error("Chat error", error);
@@ -391,13 +441,16 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
         }
     };
 
-    const handleQuickAction = (type: string) => {
+    const handleQuickAction = (type: ArtifactType) => {
         if (openArtifact) {
             // Mock creating a new artifact for now
             openArtifact({
                 id: `new-${Date.now()}`,
                 type: type,
-                title: `New ${type.charAt(0).toUpperCase() + type.slice(1)}`
+                title: `New ${type.charAt(0).toUpperCase() + type.slice(1)}`,
+                data: {},
+                metadata: {},
+                createdAt: new Date().toISOString()
             });
         }
     };
@@ -432,7 +485,7 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
                 <div className="flex-1 overflow-y-auto p-4 space-y-4 pb-4">
                     {messages.map(message => (
                         <div key={message.id} className="group">
-                            <MessageBubble message={message} />
+                            <MessageBubble message={message} onOpenArtifact={openArtifact} />
                         </div>
                     ))}
 
@@ -573,6 +626,22 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
                     </p>
                 </div>
             </div>
+
+            {/* Resource Preview Modal */}
+            <ResourcePreviewModal
+                resource={previewResource}
+                isOpen={!!previewResource}
+                onClose={closeResourcePreview}
+                onAddToChat={() => {
+                    if (previewResource) {
+                        stageResource({
+                            id: previewResource.id,
+                            title: previewResource.title,
+                            type: previewResource.type
+                        });
+                    }
+                }}
+            />
         </div>
     );
 }

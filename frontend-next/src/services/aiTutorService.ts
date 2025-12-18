@@ -1,4 +1,5 @@
-import { Conversation, Message, Resource, Artifact } from "@/types/aiTutorTypes";
+import { Conversation, Message, Resource } from "@/types/aiTutorTypes";
+import { Artifact } from "@/types/artifact";
 import Cookies from 'js-cookie';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -189,7 +190,8 @@ class AITutorService {
         // @ts-ignore
         delete headers['Content-Type'];
 
-        const response = await fetch(`${this.API_BASE_URL}/resources/upload`, {
+        const FLASK_API_URL = process.env.NEXT_PUBLIC_FLASK_API_URL || 'http://localhost:5100';
+        const response = await fetch(`${FLASK_API_URL}/f-api/v1/resources/upload`, {
             method: 'POST',
             headers: headers,
             body: formData
@@ -197,7 +199,11 @@ class AITutorService {
 
         if (!response.ok) throw new Error("Upload failed");
         const data = await response.json();
-        return { id: data.id.toString(), url: data.content };
+        // Flask returns { id: "mongo_id", title: "filename", ... }
+        // The URL field for download is constructed via another endpoint, 
+        // but for now we can just return the ID as the URL or empty string if not strictly needed immediately by UI for simple display
+        // Chat UI might use 'url' to display a link?
+        return { id: data.id, url: data.filePath || "" };
     }
 
     // --- Chat API (Backend) ---
@@ -215,7 +221,7 @@ class AITutorService {
                 user_id: user.id,
                 prompt: query,
                 context_config: {
-                    resource_ids: resourceIds.map(id => parseInt(id))
+                    resource_ids: resourceIds
                 }
             }),
         });
@@ -230,9 +236,12 @@ class AITutorService {
         const artifacts: Artifact[] = data.responses
             .filter((r: any) => r.type !== 'text')
             .map((r: any) => ({
+                id: r.responseId,
                 type: r.type,
                 title: r.content?.title || r.title || r.type,
                 data: r.content?.flashcards || r.content?.quiz || r.content?.vocabulary || r.content || r.data,
+                metadata: { ...r.metadata, ...r.sidebar },
+                createdAt: new Date().toISOString()
             }));
 
         const stream = new ReadableStream({

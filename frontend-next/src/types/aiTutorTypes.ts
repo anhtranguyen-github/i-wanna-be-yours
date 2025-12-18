@@ -25,26 +25,12 @@ export interface Resource {
 
 // === Artifact Types for AI-Generated Content ===
 
-export type ArtifactType =
-    | 'flashcard'
-    | 'flashcard_single'
-    | 'flashcard_deck'
-    | 'quiz'
-    | 'exam'
-    | 'vocabulary'
-    | 'mindmap'
-    | 'task'
-    | 'audio';
-
-export interface Artifact {
-    _id?: string;
-    type: ArtifactType;
-    title: string;
-    data: Record<string, any>;
-    metadata?: Record<string, any>;  // Flexible: level, skill, tags, etc.
-    actions?: ArtifactActions;       // Available actions for this artifact
-    savedToLibrary?: boolean;
-}
+import { Artifact } from '@/types/artifact';
+export type { Artifact };
+// Removed local Artifact definitions in favor of unified types from @/types/artifact
+// export type ArtifactType = ...
+// export interface Artifact = ...
+// export interface ArtifactActions = ...
 
 export interface ArtifactActions {
     canSaveToLibrary?: boolean;

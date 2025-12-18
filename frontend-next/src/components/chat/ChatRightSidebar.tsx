@@ -1,33 +1,40 @@
+
 "use client";
 
 import React from 'react';
-import { useChatLayout, ActiveArtifact } from './ChatLayoutContext';
+import useSWR from 'swr';
+import { useChatLayout } from './ChatLayoutContext';
+import { Artifact, ArtifactType } from '@/types/artifact';
+import { artifactService } from '@/services/artifactService';
+import { useParams } from 'next/navigation';
+import { NoteRenderer } from '../artifacts/NoteRenderer';
+import { FlashcardRenderer } from '../artifacts/FlashcardRenderer';
+import { QuizRenderer } from '../artifacts/QuizRenderer';
 import {
     PanelRightOpen,
     PanelRightClose,
     ChevronLeft,
     ChevronRight,
     FileText,
-    Sparkles,
     CheckSquare,
-    GraduationCap,
-    Edit3,
     Save,
     MoreHorizontal,
     X,
-    Plus
+    Plus,
+    BookOpen,
+    BrainCircuit,
+    Layers
 } from 'lucide-react';
 
-// Mock artifacts (Vocab/Mindmap removed)
-const mockArtifacts = [
-    { id: '1', type: 'flashcard', title: 'N5 Verbs Deck', count: 12 },
-    { id: '2', type: 'quiz', title: 'Grammar Quiz', count: 5 },
-    { id: '3', type: 'flashcard', title: 'Kanji Practice', count: 20 },
-    { id: '4', type: 'quiz', title: 'Listing Practice', count: 3 },
-];
-
 export function ChatRightSidebar() {
-    const { rightSidebar, setRightSidebar, activeArtifact, openArtifact } = useChatLayout();
+    const { rightSidebar, setRightSidebar, activeArtifact, openArtifact, setActiveArtifact } = useChatLayout();
+    const params = useParams();
+    const conversationId = params?.conversationId as string;
+
+    const { data: artifacts, error } = useSWR<Artifact[]>(
+        conversationId ? ['artifacts', conversationId] : null,
+        () => artifactService.listByConversation(conversationId)
+    );
 
     // COLLAPSED STATE
     if (rightSidebar === 'collapsed') {
@@ -65,7 +72,13 @@ export function ChatRightSidebar() {
                 {/* Artifact List */}
                 <div className="flex-1 overflow-y-auto p-3">
                     <div className="space-y-2">
-                        {mockArtifacts.map(artifact => (
+                        {(!artifacts || artifacts.length === 0) && (
+                            <div className="text-center py-8 text-slate-400 text-sm">
+                                No artifacts yet. Ask Hanachan to create some!
+                            </div>
+                        )}
+
+                        {artifacts?.map(artifact => (
                             <button
                                 key={artifact.id}
                                 onClick={() => openArtifact(artifact)}
@@ -78,24 +91,17 @@ export function ChatRightSidebar() {
                                     <h4 className="text-sm font-semibold text-brand-dark truncate group-hover:text-brand-green transition-colors">
                                         {artifact.title}
                                     </h4>
-                                    <p className="text-xs text-slate-400">
-                                        {artifact.type.charAt(0).toUpperCase() + artifact.type.slice(1)} • {artifact.count} items
+                                    <p className="text-xs text-slate-400 flex items-center gap-1">
+                                        {formatArtifactType(artifact.type)}
+                                        {artifact.metadata?.status === 'new' && (
+                                            <span className="w-1.5 h-1.5 rounded-full bg-brand-green" />
+                                        )}
                                     </p>
                                 </div>
                                 <ChevronLeft size={16} className="text-slate-300 group-hover:text-brand-green opacity-0 group-hover:opacity-100 transition-all transform group-hover:-translate-x-1" />
                             </button>
                         ))}
-
-                        {/* New Artifact Button (Inline) */}
-                        <button className="w-full flex items-center gap-3 p-3 rounded-xl border border-dashed border-slate-300 hover:border-brand-green hover:bg-brand-green/5 transition-all group text-left text-slate-400 hover:text-brand-green">
-                            <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-slate-50 group-hover:bg-white transition-colors">
-                                <Plus size={20} />
-                            </div>
-                            <span className="text-sm font-medium">Create New Artifact</span>
-                        </button>
                     </div>
-
-
                 </div>
             </div>
         );
@@ -120,8 +126,8 @@ export function ChatRightSidebar() {
                                 <ArtifactIcon type={activeArtifact.type} />
                             </div>
                             <div>
-                                <h3 className="font-bold text-brand-dark leading-tight">{activeArtifact.title}</h3>
-                                <p className="text-xs text-slate-500 capitalize">{activeArtifact.type} Editor</p>
+                                <h3 className="font-bold text-brand-dark leading-tight line-clamp-1">{activeArtifact.title}</h3>
+                                <p className="text-xs text-slate-500 capitalize">{formatArtifactType(activeArtifact.type)} Viewer</p>
                             </div>
                         </div>
                     )}
@@ -137,9 +143,12 @@ export function ChatRightSidebar() {
                     </button>
                     <div className="w-px h-6 bg-slate-200 mx-1" />
                     <button
-                        onClick={() => setRightSidebar('minimized')}
+                        onClick={() => {
+                            setRightSidebar('minimized');
+                            setActiveArtifact(null);
+                        }}
                         className="p-2 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors"
-                        title="Close Editor"
+                        title="Close Viewer"
                     >
                         <X size={20} />
                     </button>
@@ -163,120 +172,40 @@ export function ChatRightSidebar() {
 
 // --- SUB COMPONENTS ---
 
-function ArtifactContent({ artifact }: { artifact: ActiveArtifact }) {
+function ArtifactContent({ artifact }: { artifact: Artifact }) {
     switch (artifact.type) {
         case 'flashcard':
-            return <FlashcardEditor />;
+        case 'flashcard_deck': // Handle both types
+            return <FlashcardRenderer artifact={artifact} />;
         case 'quiz':
-            return <QuizEditor />;
+        case 'exam':
+            return <QuizRenderer artifact={artifact} />;
+        case 'note':
+            return <NoteRenderer artifact={artifact} />;
         default:
             return (
                 <div className="flex flex-col items-center justify-center h-full text-slate-400">
-                    <p>Editor for {artifact.type} not implemented yet.</p>
+                    <p>Viewer for <strong>{artifact.type}</strong> not implemented yet.</p>
+                    <pre className="mt-4 text-xs bg-slate-100 p-4 rounded text-left overflow-auto max-w-full">
+                        {JSON.stringify(artifact.data, null, 2)}
+                    </pre>
                 </div>
             );
     }
 }
 
-function FlashcardEditor() {
-    return (
-        <div className="max-w-3xl mx-auto space-y-6">
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-lg font-bold text-brand-dark">Deck Settings</h2>
-                    <button className="text-brand-green text-sm font-medium hover:underline">Edit Details</button>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                    <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 text-center">
-                        <div className="text-2xl font-bold text-brand-dark mb-1">12</div>
-                        <div className="text-xs text-slate-500 uppercase tracking-wide">Cards</div>
-                    </div>
-                    <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 text-center">
-                        <div className="text-2xl font-bold text-brand-green mb-1">85%</div>
-                        <div className="text-xs text-slate-500 uppercase tracking-wide">Retention</div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                    <h3 className="font-semibold text-slate-700">Cards Preview</h3>
-                    <button className="flex items-center gap-1 text-sm text-brand-green font-medium">
-                        <Edit3 size={14} /> Add Card
-                    </button>
-                </div>
-                {[1, 2, 3].map((i) => (
-                    <div key={i} className="bg-white p-4 rounded-xl border border-slate-200 hover:shadow-md transition-shadow flex items-center justify-between group">
-                        <div className="flex items-center gap-4">
-                            <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 text-xs font-bold">
-                                {i}
-                            </div>
-                            <div>
-                                <p className="font-jp text-lg font-medium text-brand-dark">食べる</p>
-                                <p className="text-sm text-slate-500">To eat</p>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <div className="px-2 py-1 bg-green-50 text-green-700 text-xs rounded-lg font-medium">
-                                N5
-                            </div>
-                            <button className="p-2 text-slate-300 hover:text-brand-green transition-colors">
-                                <Edit3 size={16} />
-                            </button>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-}
-
-function QuizEditor() {
-    return (
-        <div className="max-w-3xl mx-auto space-y-6">
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-lg font-bold text-brand-dark">Quiz Settings</h2>
-                    <span className="px-2 py-1 bg-purple-50 text-purple-700 text-xs rounded-lg font-bold">Grammar</span>
-                </div>
-                <p className="text-slate-600 text-sm">Practicing particles and simple conjugation forms.</p>
-            </div>
-
-            <div className="grid gap-4">
-                {[1, 2].map((i) => (
-                    <div key={i} className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-brand-green/30 transition-all shadow-sm">
-                        <div className="flex justify-between mb-4">
-                            <span className="font-bold text-slate-400 text-xs uppercase">Question {i}</span>
-                            <button className="text-slate-400 hover:text-brand-dark transition-colors"><MoreHorizontal size={16} /></button>
-                        </div>
-                        <p className="text-lg font-jp mb-6">私は日本____行きます。</p>
-                        <div className="grid grid-cols-2 gap-3">
-                            {['に (ni)', 'を (wo)', 'で (de)', 'が (ga)'].map((opt, idx) => (
-                                <button key={idx} className={`p-3 border rounded-lg text-left transition-colors text-sm ${idx === 0 ? 'border-brand-green bg-brand-green/5 text-brand-dark font-medium' : 'border-slate-200 hover:bg-slate-50'}`}>
-                                    {opt}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </div>
-    )
-}
-
 function ArtifactIcon({ type }: { type: string }) {
     const icons: Record<string, React.ReactNode> = {
-        flashcard: <FileText size={18} className="text-brand-green" />,
+        flashcard: <Layers size={18} className="text-brand-green" />,
+        flashcard_deck: <Layers size={18} className="text-brand-green" />,
         quiz: <CheckSquare size={18} className="text-purple-500" />,
+        exam: <BookOpen size={18} className="text-red-500" />,
+        note: <FileText size={18} className="text-blue-500" />,
+        mindmap: <BrainCircuit size={18} className="text-orange-500" />,
     };
     return icons[type] || <FileText size={18} className="text-slate-400" />;
 }
 
-function QuickActionButton({ icon, label }: { icon: React.ReactNode; label: string }) {
-    return (
-        <button className="flex items-center gap-2 p-2.5 rounded-lg bg-white border border-slate-200 hover:border-brand-green/30 hover:bg-brand-green/5 transition-colors text-sm text-slate-600 hover:text-brand-green">
-            {icon}
-            <span className="font-medium">{label}</span>
-        </button>
-    );
+function formatArtifactType(type: string): string {
+    return type.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase());
 }

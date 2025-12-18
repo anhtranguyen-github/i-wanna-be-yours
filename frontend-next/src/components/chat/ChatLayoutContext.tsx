@@ -1,18 +1,17 @@
+
 "use client";
 
 import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
+import { Resource } from '@/services/resourceService';
+import { Artifact } from '@/types/artifact';
 
 // Types for sidebar states
 export type LeftSidebarState = 'collapsed' | 'expanded';
 export type RightSidebarState = 'collapsed' | 'minimized' | 'expanded';
 export type Viewport = 'desktop' | 'tablet' | 'mobile';
 
-// Artifact type definition
-export interface ActiveArtifact {
-    id: string;
-    type: 'flashcard' | 'quiz' | 'vocabulary' | 'mindmap' | 'document' | string;
-    title: string;
-}
+// Artifact type definition re-export for consumers if needed, usually just use Artifact
+export type ActiveArtifact = Artifact;
 
 export interface ResourceToStage {
     id: string; // backend id
@@ -53,6 +52,11 @@ interface ChatLayoutContextType extends ChatLayoutState {
     stageResource: (resource: ResourceToStage) => void;
     stagedResourceToProcess: ResourceToStage | null;
     consumeStagedResource: () => void;
+
+    // Resource Preview
+    previewResource: Resource | null;
+    openResourcePreview: (resource: Resource) => void;
+    closeResourcePreview: () => void;
 }
 
 const ChatLayoutContext = createContext<ChatLayoutContextType | null>(null);
@@ -114,6 +118,7 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
     const [viewport, setViewport] = useState<Viewport>('desktop');
     const [activeArtifact, setActiveArtifactState] = useState<ActiveArtifact | null>(null);
     const [stagedResourceToProcess, setStagedResourceToProcess] = useState<ResourceToStage | null>(null);
+    const [previewResource, setPreviewResource] = useState<Resource | null>(null);
 
     // Initialize viewport on mount
     useEffect(() => {
@@ -186,6 +191,14 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
         setStagedResourceToProcess(null);
     }, []);
 
+    const openResourcePreview = useCallback((resource: Resource) => {
+        setPreviewResource(resource);
+    }, []);
+
+    const closeResourcePreview = useCallback(() => {
+        setPreviewResource(null);
+    }, []);
+
     return (
         <ChatLayoutContext.Provider
             value={{
@@ -203,6 +216,9 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
                 stageResource,
                 stagedResourceToProcess,
                 consumeStagedResource,
+                previewResource,
+                openResourcePreview,
+                closeResourcePreview,
             }}
         >
             {children}

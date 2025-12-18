@@ -10,6 +10,7 @@ import { useUser } from '@/context/UserContext';
 import { useGlobalAuth } from '@/context/GlobalAuthContext';
 import { useChatLayout } from '@/components/chat/ChatLayoutContext';
 import { useRouter } from 'next/navigation';
+import { resourceService } from '@/services/resourceService';
 import {
     ChevronsLeft,
     ChevronsRight,
@@ -79,7 +80,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
     const { isExpanded, toggle, state } = useSidebar();
     const { user } = useUser();
     const { openAuth } = useGlobalAuth();
-    const { stageResource } = useChatLayout();
+    const { stageResource, openResourcePreview } = useChatLayout();
     const router = useRouter();
     const isGuest = !user;
 
@@ -95,19 +96,17 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
     const isOnChat = pathname?.startsWith('/chat');
 
     // Filter chats based on search
-    // For guests, history is empty
     const filteredChats = isGuest
         ? []
         : mockChats.filter(chat => chat.title.toLowerCase().includes(chatSearch.toLowerCase()));
 
     // Fetch resources using SWR
-    const fetcher = (url: string) => fetch(url).then(res => res.json());
-    const { data: serverResources, error } = useSWR(
-        isOnChat ? `${aiTutorService['API_BASE_URL']}/resources${user ? `?userId=${user.id}` : ''}` : null,
-        fetcher
+    const { data: serverResponse, error } = useSWR(
+        isOnChat && user ? ['/f-api/v1/resources', user.id] : null,
+        () => resourceService.list({ userId: String(user?.id) })
     );
 
-    const resources = serverResources || (isGuest ? [] : defaultResources);
+    const resources = serverResponse?.resources || (isGuest ? [] : defaultResources);
 
     // Filter resources based on search
     const filteredResources = resources.filter((resource: any) =>
@@ -276,7 +275,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                                                 onClick={(e) => {
                                                     e.preventDefault();
                                                     e.stopPropagation();
-                                                    router.push(`/library/${resource.id}`);
+                                                    openResourcePreview(resource as any);
                                                 }}
                                                 className="p-1 hover:bg-brand-green/10 rounded text-slate-400 hover:text-brand-green transition-colors"
                                                 title="View details"
