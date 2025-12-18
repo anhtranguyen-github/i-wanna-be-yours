@@ -268,6 +268,7 @@ class AgentService:
         return AgentResponse(
             sessionId=request_data.session_id,
             userId=request_data.user_id,
+            conversationId=str(conv.id),
             status="completed",
             responses=response_items, 
             proposedTasks=tasks_data,

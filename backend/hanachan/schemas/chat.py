@@ -55,6 +55,7 @@ class ResponseItemDTO(BaseModel):
 class AgentResponse(BaseModel):
     sessionId: str
     userId: str
+    conversationId: Optional[str] = None
     status: str = "completed"
     # The JSON shows 'responses' as the list of artifacts/content
     responses: List[ResponseItemDTO] = [] 

@@ -61,6 +61,7 @@ class MessageArtifact(db.Model):
             'artifactId': self.artifact_external_id,
             'type': self.type,
             'content': content_data,
+            'metadata': self.metadata_,
             'citations': [c.to_dict() for c in self.citations]
         }
 
