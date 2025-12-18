@@ -14,18 +14,19 @@ def create_app(test_config=None):
     # Initialize database
     init_app(app)
     
+    # Import models to ensure they are registered with SQLAlchemy
+    import models
+
     # Register blueprints
     from routes.agent import bp as agent_bp
     from routes.mcp import bp as mcp_bp
     app.register_blueprint(agent_bp)
     app.register_blueprint(mcp_bp)
     
-    from routes.resource import bp as resource_bp
     from routes.conversation import bp as conversation_bp
     from routes.task import bp as task_bp
     from routes.suggestion import bp as suggestion_bp
     from routes.artifacts import bp as artifacts_bp
-    app.register_blueprint(resource_bp)
     app.register_blueprint(conversation_bp)
     app.register_blueprint(task_bp)
     app.register_blueprint(suggestion_bp)

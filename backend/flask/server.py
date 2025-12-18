@@ -85,9 +85,14 @@ from modules.learner_progress import LearnerProgressModule
 learner_progress_module = LearnerProgressModule()
 learner_progress_module.register_routes(app)
 
+
 from modules.adaptive_learning import AdaptiveLearningModule
 adaptive_learning_module = AdaptiveLearningModule()
 adaptive_learning_module.register_routes(app)
+
+from modules.resources import ResourcesModule
+resources_module = ResourcesModule()
+resources_module.register_routes(app)
 
 # --------------- End of Class imports ---------------- #
 

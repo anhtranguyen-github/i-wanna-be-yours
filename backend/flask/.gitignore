@@ -40,4 +40,7 @@ Thumbs.db
 
 # Databases
 *.sqlite
-*.db
+*.dbuploads/
+
+
+uploads/
