@@ -8,7 +8,28 @@ import { X, Sparkles, CheckCircle, Trophy, Zap, BookOpen } from 'lucide-react';
 export default function GlobalAuthModal() {
     const { isOpen, closeAuth, initialMode, featureContext } = useGlobalAuth();
 
+    // Handle ESC key
+    React.useEffect(() => {
+        const handleEsc = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') closeAuth();
+        };
+        if (isOpen) {
+            window.addEventListener('keydown', handleEsc);
+            document.body.style.overflow = 'hidden';
+        }
+        return () => {
+            window.removeEventListener('keydown', handleEsc);
+            document.body.style.overflow = 'unset';
+        };
+    }, [isOpen, closeAuth]);
+
     if (!isOpen) return null;
+
+    const handleBackdropClick = (e: React.MouseEvent) => {
+        if (e.target === e.currentTarget) {
+            closeAuth();
+        }
+    };
 
     // Default benefits if specific feature context isn't provided
     const benefits = [
@@ -20,12 +41,18 @@ export default function GlobalAuthModal() {
     ];
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+        <div
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200 cursor-pointer"
+            onClick={handleBackdropClick}
+        >
             {/* 
                Big Modal Container 
                Size: Max-w-5xl (Large), split screen layout
             */}
-            <div className="relative w-full max-w-5xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[600px] animate-in zoom-in-95 duration-300">
+            <div
+                className="relative w-full max-w-5xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[600px] animate-in zoom-in-95 duration-300 cursor-default"
+                onClick={(e) => e.stopPropagation()}
+            >
 
                 {/* Close Button (Absolute) */}
                 <button

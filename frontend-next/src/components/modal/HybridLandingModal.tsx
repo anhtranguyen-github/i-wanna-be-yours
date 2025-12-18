@@ -47,15 +47,13 @@ export function HybridLandingModal({ isOpen, onClose }: HybridLandingModalProps)
 
     return (
         <div
-            className="fixed inset-0 z-[9999] flex items-end justify-center"
+            className="fixed inset-0 z-[9999] flex items-end justify-center bg-black/70 backdrop-blur-sm cursor-pointer"
             onClick={handleBackdropClick}
         >
-            {/* Backdrop - dark with blur, app visible at edges */}
-            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
 
             {/* Modal Container - wider, anchored to bottom */}
             <div
-                className="relative w-full max-w-6xl max-h-[90vh] bg-white rounded-t-3xl shadow-2xl overflow-hidden flex flex-col animate-slideUp"
+                className="relative w-full max-w-6xl max-h-[90vh] bg-white rounded-t-3xl shadow-2xl overflow-hidden flex flex-col animate-slideUp cursor-default"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Close Button - Fixed position */}
