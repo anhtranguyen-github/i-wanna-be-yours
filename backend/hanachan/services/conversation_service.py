@@ -36,6 +36,14 @@ class ConversationService:
             new_msg.attachments.extend(resources)
 
         saved_msg = self.msg_repo.save(new_msg)
+        
+        # Touch conversation to update timestamp for sorting
+        from datetime import datetime
+        conv = self.conv_repo.get_by_id(conversation_id)
+        if conv:
+            conv.updated_at = datetime.utcnow()
+            self.conv_repo.save(conv)
+
         return saved_msg.to_dict()
 
     def get_conversation_details(self, conversation_id: int) -> dict:

@@ -29,7 +29,14 @@ class AgentService:
         if not conv:
             # Create new if missing
             conv_service = ConversationService()
-            conv_dict = conv_service.create_conversation(request_data.user_id, "New Session")
+            
+            # Generate initial title from first few words of the prompt
+            words = request_data.prompt.split()
+            initial_title = " ".join(words[:5]) if words else "New Conversation"
+            if len(initial_title) > 40:
+                initial_title = initial_title[:37] + "..."
+                
+            conv_dict = conv_service.create_conversation(request_data.user_id, initial_title)
             conv = Conversation.query.get(conv_dict['id'])
             # Update session_id to match request if needed, or query assumption
             conv.session_id = request_data.session_id
@@ -48,6 +55,7 @@ class AgentService:
             pass
             
         db.session.add(user_msg)
+        conv.updated_at = datetime.utcnow()
         db.session.commit()
 
         # 3. Generate Logic (Mocking the complex response structure)
@@ -82,6 +90,9 @@ class AgentService:
             content=content_text
         )
         db.session.add(asst_msg)
+        
+        # Touch conversation to update timestamp for sorting
+        conv.updated_at = datetime.utcnow()
         db.session.commit()
         
         response_items = [

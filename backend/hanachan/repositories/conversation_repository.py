@@ -14,7 +14,7 @@ class ConversationRepository:
         return Conversation.query.filter_by(session_id=session_id).first()
 
     def get_all_by_user(self, user_id: str):
-        return Conversation.query.filter_by(user_id=user_id).all()
+        return Conversation.query.filter_by(user_id=user_id).order_by(Conversation.updated_at.desc()).all()
 
     def delete(self, conversation_id: int):
         conversation = self.get_by_id(conversation_id)
