@@ -35,10 +35,11 @@ interface Message {
 
 interface AttachedFile {
     id: string;
-    file: File;
+    file?: File;
     uploading: boolean;
     error?: boolean;
     backendId?: string;
+    title: string;
 }
 
 // Welcome card for new chat
@@ -154,15 +155,35 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
     const inputRef = useRef<HTMLTextAreaElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    // Use layout context for opening artifacts
-    let openArtifact: any;
-    try {
-        const context = useChatLayout();
-        openArtifact = context.openArtifact;
-    } catch (e) {
-        // Fallback if not in provider
-        openArtifact = () => console.log('Open Artifact');
-    }
+    // Use layout context for interactions
+    const { stagedResourceToProcess, consumeStagedResource, openArtifact } = useChatLayout();
+
+    useEffect(() => {
+        console.log('[ChatMainArea] useEffect triggered, stagedResourceToProcess:', stagedResourceToProcess);
+        if (stagedResourceToProcess) {
+            const { id: backendId, title } = stagedResourceToProcess;
+            console.log('[ChatMainArea] Processing staged resource:', backendId, title);
+
+            // Use functional update to check current state and add if not duplicate
+            setAttachedFiles(prev => {
+                const isAlreadyAttached = prev.some(af => af.backendId === backendId);
+                if (isAlreadyAttached) {
+                    console.log('[ChatMainArea] Resource already attached, skipping');
+                    return prev;
+                }
+
+                console.log('[ChatMainArea] Adding new attachment');
+                return [...prev, {
+                    id: Math.random().toString(36).substr(2, 9),
+                    title: title,
+                    uploading: false,
+                    backendId: backendId
+                }];
+            });
+
+            consumeStagedResource();
+        }
+    }, [stagedResourceToProcess, consumeStagedResource]);
 
     // Auto-scroll to bottom
     useEffect(() => {
@@ -192,6 +213,7 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
         const newAttachments = uniqueFiles.map(file => ({
             id: Math.random().toString(36).substr(2, 9),
             file,
+            title: file.name,
             uploading: true
         }));
 
@@ -226,9 +248,32 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
     const onDrop = async (e: React.DragEvent) => {
         e.preventDefault();
         setIsDragging(false);
+
+        // Check for files
         const files = Array.from(e.dataTransfer.files);
         if (files.length > 0) {
             handleFiles(files);
+            return;
+        }
+
+        // Check for resource metadata (from sidebar)
+        const resourceData = e.dataTransfer.getData('resource');
+        if (resourceData) {
+            try {
+                const { id: backendId, title, type } = JSON.parse(resourceData);
+                const isAlreadyAttached = attachedFiles.some(af => af.backendId === backendId);
+                if (!isAlreadyAttached) {
+                    const newAttachment: AttachedFile = {
+                        id: Math.random().toString(36).substr(2, 9),
+                        title: title,
+                        uploading: false,
+                        backendId: backendId
+                    };
+                    setAttachedFiles(prev => [...prev, newAttachment]);
+                }
+            } catch (err) {
+                console.error("Failed to parse dropped resource", err);
+            }
         }
     };
 
@@ -268,7 +313,7 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
 
         let content = inputValue.trim();
         if (validAttachments.length > 0) {
-            const fileNames = validAttachments.map(f => `[Attachment: ${f.file.name}]`).join('\n');
+            const fileNames = validAttachments.map(f => `[Attachment: ${f.title}]`).join('\n');
             content = content ? `${content}\n\n${fileNames}` : fileNames;
         }
 
@@ -420,15 +465,17 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
                         {attachedFiles.map(file => (
                             <div key={file.id} className="relative flex items-center gap-2 bg-slate-50 px-3 py-2 rounded-xl border border-slate-200 shadow-sm min-w-[160px] max-w-[240px] group">
                                 <div className="w-8 h-8 bg-white rounded-lg border border-slate-100 flex items-center justify-center flex-shrink-0">
-                                    {file.file.type.startsWith('image/') ? (
+                                    {file.file?.type.startsWith('image/') ? (
                                         <span className="text-xs">🖼️</span>
                                     ) : (
                                         <FileText size={16} className="text-slate-400" />
                                     )}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-xs font-medium text-slate-700 truncate">{file.file.name}</p>
-                                    <p className="text-[10px] text-slate-500">{(file.file.size / 1024).toFixed(1)} KB</p>
+                                    <p className="text-xs font-medium text-slate-700 truncate">{file.title}</p>
+                                    <p className="text-[10px] text-slate-500">
+                                        {file.file ? `${(file.file.size / 1024).toFixed(1)} KB` : 'Resource'}
+                                    </p>
                                 </div>
                                 {file.uploading ? (
                                     <div className="w-6 h-6 flex items-center justify-center">

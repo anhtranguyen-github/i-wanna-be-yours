@@ -8,6 +8,8 @@ import { usePathname } from 'next/navigation';
 import { useSidebar, SIDEBAR_WIDTHS } from './SidebarContext';
 import { useUser } from '@/context/UserContext';
 import { useGlobalAuth } from '@/context/GlobalAuthContext';
+import { useChatLayout } from '@/components/chat/ChatLayoutContext';
+import { useRouter } from 'next/navigation';
 import {
     ChevronsLeft,
     ChevronsRight,
@@ -30,7 +32,9 @@ import {
     History,
     CheckSquare,
     Sparkles,
-    Crown
+    Crown,
+    PlusCircle,
+    Eye
 } from 'lucide-react';
 
 // Mock chat history data
@@ -75,6 +79,8 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
     const { isExpanded, toggle, state } = useSidebar();
     const { user } = useUser();
     const { openAuth } = useGlobalAuth();
+    const { stageResource } = useChatLayout();
+    const router = useRouter();
     const isGuest = !user;
 
     const [chatSearch, setChatSearch] = useState('');
@@ -249,14 +255,53 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                         {isExpanded && (
                             <div className="px-2 pt-1 space-y-1 pb-2">
                                 {filteredResources.map(resource => (
-                                    <Link
+                                    <div
                                         key={resource.id}
-                                        href={`/library/${resource.id}`}
-                                        className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-slate-50 transition-colors text-sm text-slate-600 hover:text-brand-dark"
+                                        draggable="true"
+                                        onDragStart={(e) => {
+                                            e.dataTransfer.setData('resource', JSON.stringify({
+                                                id: resource.id,
+                                                title: resource.title,
+                                                type: resource.type
+                                            }));
+                                        }}
+                                        className="group relative flex items-center gap-3 p-2.5 rounded-lg hover:bg-slate-50 transition-colors text-sm text-slate-600 hover:text-brand-dark cursor-grab active:cursor-grabbing"
                                     >
-                                        <FileText size={16} className="flex-shrink-0 text-slate-400" />
-                                        <span className="truncate">{resource.title}</span>
-                                    </Link>
+                                        <FileText size={16} className="flex-shrink-0 text-slate-400 group-hover:text-brand-green transition-colors" />
+                                        <span className="truncate flex-1">{resource.title}</span>
+
+                                        {/* Action Buttons */}
+                                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    router.push(`/library/${resource.id}`);
+                                                }}
+                                                className="p-1 hover:bg-brand-green/10 rounded text-slate-400 hover:text-brand-green transition-colors"
+                                                title="View details"
+                                            >
+                                                <Eye size={14} />
+                                            </button>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    console.log('[Sidebar] Add to chat clicked:', resource.id, resource.title);
+                                                    stageResource({
+                                                        id: resource.id,
+                                                        title: resource.title,
+                                                        type: resource.type || 'document'
+                                                    });
+                                                    console.log('[Sidebar] stageResource called');
+                                                }}
+                                                className="p-1 hover:bg-brand-green/10 rounded text-slate-400 hover:text-brand-green transition-colors"
+                                                title="Add to chat"
+                                            >
+                                                <PlusCircle size={14} />
+                                            </button>
+                                        </div>
+                                    </div>
                                 ))}
                             </div>
                         )}

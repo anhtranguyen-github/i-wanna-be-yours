@@ -14,6 +14,12 @@ export interface ActiveArtifact {
     title: string;
 }
 
+export interface ResourceToStage {
+    id: string; // backend id
+    title: string;
+    type: string;
+}
+
 // Width constants
 export const SIDEBAR_WIDTHS = {
     left: {
@@ -44,6 +50,9 @@ interface ChatLayoutContextType extends ChatLayoutState {
     expandRightSidebar: () => void;
     setActiveArtifact: (artifact: ActiveArtifact | null) => void;
     openArtifact: (artifact: ActiveArtifact) => void;
+    stageResource: (resource: ResourceToStage) => void;
+    stagedResourceToProcess: ResourceToStage | null;
+    consumeStagedResource: () => void;
 }
 
 const ChatLayoutContext = createContext<ChatLayoutContextType | null>(null);
@@ -104,6 +113,7 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
     const [rightSidebar, setRightSidebarState] = useState<RightSidebarState>('minimized');
     const [viewport, setViewport] = useState<Viewport>('desktop');
     const [activeArtifact, setActiveArtifactState] = useState<ActiveArtifact | null>(null);
+    const [stagedResourceToProcess, setStagedResourceToProcess] = useState<ResourceToStage | null>(null);
 
     // Initialize viewport on mount
     useEffect(() => {
@@ -160,15 +170,21 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
             setRightSidebar('expanded');
         }
     }, [rightSidebar, setRightSidebar]);
-
     const openArtifact = useCallback((artifact: ActiveArtifact) => {
         setActiveArtifactState(artifact);
         setRightSidebar('expanded');
-        // Optionally collapse left sidebar
         if (window.innerWidth < 1600) {
             setLeftSidebar('collapsed');
         }
     }, [setRightSidebar, setLeftSidebar]);
+
+    const stageResource = useCallback((resource: ResourceToStage) => {
+        setStagedResourceToProcess(resource);
+    }, []);
+
+    const consumeStagedResource = useCallback(() => {
+        setStagedResourceToProcess(null);
+    }, []);
 
     return (
         <ChatLayoutContext.Provider
@@ -184,6 +200,9 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
                 expandRightSidebar,
                 setActiveArtifact: setActiveArtifactState,
                 openArtifact,
+                stageResource,
+                stagedResourceToProcess,
+                consumeStagedResource,
             }}
         >
             {children}

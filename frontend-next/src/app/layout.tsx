@@ -12,6 +12,7 @@ import GlobalAuthModal from "@/components/auth/GlobalAuthModal";
 import { GoogleAnalytics } from '@next/third-parties/google'
 
 import { Providers } from "./providers";
+import { ChatLayoutProvider } from "@/components/chat/ChatLayoutContext";
 
 export const metadata = {
   title: "hanachan.org - Free Open Source No Ads Japanese Learning Platform",
@@ -48,9 +49,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           <GlobalAuthProvider>
             <GlobalAuthModal />
-            <AppShell>
-              {children}
-            </AppShell>
+            <ChatLayoutProvider>
+              <AppShell>
+                {children}
+              </AppShell>
+            </ChatLayoutProvider>
             <CookieConsent />
             {GA_MEASUREMENT_ID && <GoogleAnalytics gaId={GA_MEASUREMENT_ID} />}
           </GlobalAuthProvider>
