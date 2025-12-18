@@ -13,12 +13,8 @@ const Rows: React.FC<Props> = async ({ p_dashboardId, s_dashboardId }) => {
   const pTag = p_dashboardId;
   const sTag = s_dashboardId;
 
-  let apiUrl;
-  if (process.env.REACT_APP_HOST_IP) {
-    apiUrl = `http://${process.env.REACT_APP_HOST_IP}:8000/e-api/v1/words?p_tag=${pTag}&s_tag=${sTag}`;
-  } else {
-    apiUrl = `http://localhost:8000/e-api/v1/words?p_tag=${pTag}&s_tag=${sTag}`;
-  }
+  const expressUrl = process.env.EXPRESS_API_URL || "http://localhost:8000";
+  const apiUrl = `${expressUrl}/e-api/v1/words?p_tag=${pTag}&s_tag=${sTag}`;
 
 
   // let apiUrl;
@@ -26,10 +22,10 @@ const Rows: React.FC<Props> = async ({ p_dashboardId, s_dashboardId }) => {
   // // Determine the environment (dev or prod) to set the correct host
   // const env = process.env.APP_ENV || "dev"; // Defaults to "dev" if not set
   // const host = env === "prod" ? "express-db" : "localhost";
-  
+
   // // Build the API URL
   // apiUrl = `http://${host}:8000/e-api/v1/words?p_tag=${pTag}&s_tag=${sTag}`;
-  
+
 
 
 
@@ -80,10 +76,9 @@ const Rows: React.FC<Props> = async ({ p_dashboardId, s_dashboardId }) => {
                   return (
                     <div
                       key={index}
-                      className={`bg-gray-200 p-4 rounded-md ${
-                        index >= 2 &&
+                      className={`bg-gray-200 p-4 rounded-md ${index >= 2 &&
                         "hidden md:block" /* Hide extra sentences on small screens */
-                      }`}
+                        }`}
                     >
                       <div className="flex items-start mb-0">
                         <div className="h-8 w-8 p-1 rounded-full flex items-center justify-center bg-white border">

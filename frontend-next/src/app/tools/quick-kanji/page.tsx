@@ -61,11 +61,11 @@ export default function Home() {
           <div className="bg-slate-100 absolute inset-0 transition duration-75 ease-in-out transform hover:opacity-0 rounded-lg shadow-md flex items-center justify-center p-2 border border-gray-200">
             <h5 className="text-2xl text-gray-900">{kanji}</h5>
           </div>
-  
+
           {/* Back of the Card */}
           <div className="bg-slate-300 absolute inset-0 transition duration-75 ease-in-out transform opacity-0 hover:opacity-100 rounded-lg shadow-md flex items-center justify-center p-2 border border-gray-200">
             <h5 className="text-xl text-gray-700">{reading}</h5>
-  
+
             {/* Icon Link at the Bottom Left */}
             <Link
               href={`https://www.japandict.com/kanji/?s=${encodeURIComponent(kanji)}`}
@@ -74,15 +74,15 @@ export default function Home() {
               target="_blank"
               rel="noopener noreferrer"
             >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="12"
-                  height="12"
-                  viewBox="0 -960 960 960"
-                  className="w-4 h-4 text-gray-700"
-                >
-                  <path d="M240-400q-33 0-56.5-23.5T160-480t23.5-56.5T240-560t56.5 23.5T320-480t-23.5 56.5T240-400m240 0q-33 0-56.5-23.5T400-480t23.5-56.5T480-560t56.5 23.5T560-480t-23.5 56.5T480-400m240 0q-33 0-56.5-23.5T640-480t23.5-56.5T720-560t56.5 23.5T800-480t-23.5 56.5T720-400" />
-                </svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="12"
+                height="12"
+                viewBox="0 -960 960 960"
+                className="w-4 h-4 text-gray-700"
+              >
+                <path d="M240-400q-33 0-56.5-23.5T160-480t23.5-56.5T240-560t56.5 23.5T320-480t-23.5 56.5T240-400m240 0q-33 0-56.5-23.5T400-480t23.5-56.5T480-560t56.5 23.5T560-480t-23.5 56.5T480-400m240 0q-33 0-56.5-23.5T640-480t23.5-56.5T720-560t56.5 23.5T800-480t-23.5 56.5T720-400" />
+              </svg>
             </Link>
           </div>
         </div>
@@ -121,7 +121,7 @@ export default function Home() {
   interface KanjiTableProps {
     p_tag: string; // Explicitly stating p_tag is of any type
   }
-  
+
   const KanjiTable: React.FC<KanjiTableProps> = ({ p_tag }) => {
     const [kanjiData, setKanjiData] = useState<KanjiItem[]>([]);
     const [loading, setLoading] = useState(false);
@@ -141,17 +141,11 @@ export default function Home() {
           //const host = "localhost";
           const port = 8000;
 
-
-          // NOTE: process.env propagates to client components only when we prefix our vars as 
-          // - NEXT_PUBLIC_XXXX=${API_URL}
-
           let apiUrl;
-          // If REACT_APP_HOST_IP is defined, use it. Otherwise default to localhost:7000 for VM
           if (process.env.REACT_APP_HOST_IP) {
             apiUrl = `http://${process.env.REACT_APP_HOST_IP}:8000/e-api/v1/kanji?p_tag=${p_tag}`;
           } else {
-            //apiUrl = `http://${host}:${port}/e-api/v1/kanji?p_tag=${p_tag}`;
-            apiUrl = `/e-api/v1/kanji?p_tag=${p_tag}`;   // use for client components
+            apiUrl = `/e-api/v1/kanji?p_tag=${p_tag}`;
           }
 
           const response = await fetch(`${apiUrl}`);
@@ -198,11 +192,10 @@ export default function Home() {
           {["JLPT N5", "JLPT N4", "JLPT N3"].map((tab, index) => (
             <button
               key={index}
-              className={`px-4 py-2 text-lg font-medium ${
-                activeTab === tab.toLowerCase()
-                  ? "text-blue-500 border-b-2 border-blue-500"
-                  : "text-gray-600"
-              }`}
+              className={`px-4 py-2 text-lg font-medium ${activeTab === tab.toLowerCase()
+                ? "text-blue-500 border-b-2 border-blue-500"
+                : "text-gray-600"
+                }`}
               onClick={() => setActiveTab(tab.toLowerCase())}
             >
               {tab}

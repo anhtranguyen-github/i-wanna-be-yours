@@ -348,9 +348,8 @@ const HiraganaCard: React.FC<HiraganaCardProps> = ({
 
         {/* Front of the Card */}
         <div
-          className={`${getCardShade()} transition duration-75 ease-in-out transform hover:bg-slate-200 ${
-            isFlipped ? "opacity-0 z-0" : "opacity-100 z-10"
-          } rounded-lg shadow-md p-4 border border-gray-200 absolute inset-0 flex flex-col items-center justify-center`}
+          className={`${getCardShade()} transition duration-75 ease-in-out transform hover:bg-slate-200 ${isFlipped ? "opacity-0 z-0" : "opacity-100 z-10"
+            } rounded-lg shadow-md p-4 border border-gray-200 absolute inset-0 flex flex-col items-center justify-center`}
         >
           {showReadings && ( // Add this condition
             <h5 className="text-sm text-gray-600">[{reading}]</h5>
@@ -360,9 +359,8 @@ const HiraganaCard: React.FC<HiraganaCardProps> = ({
 
         {/* Back of the Card */}
         <div
-          className={`${getCardShade()} transition duration-75 ease-in-out transform hover:bg-slate-200 ${
-            isFlipped ? "opacity-100 z-10" : "opacity-0 z-0"
-          } rounded-lg shadow-md p-4 border border-gray-200 absolute inset-0 flex flex-col items-center justify-center`}
+          className={`${getCardShade()} transition duration-75 ease-in-out transform hover:bg-slate-200 ${isFlipped ? "opacity-100 z-10" : "opacity-0 z-0"
+            } rounded-lg shadow-md p-4 border border-gray-200 absolute inset-0 flex flex-col items-center justify-center`}
         >
           <h5 className="text-sm text-gray-600">[{reading}]</h5>
           <h5 className="text-2xl text-gray-900">{kanji}</h5>
@@ -556,7 +554,7 @@ const TabComponent = () => {
       }
     }
   }, [activeJLPTTab, vocabSets, activeVocabTab]);
-  
+
 
 
   // This effect saves active JLPT tab and vocab tab to localStorage
@@ -581,11 +579,10 @@ const TabComponent = () => {
         {jlptLevels.map((level, index) => (
           <button
             key={index}
-            className={`px-4 py-2 text-lg font-medium ${
-              activeJLPTTab === level
-                ? "text-blue-500 border-b-2 border-blue-500"
-                : "text-gray-600"
-            }`}
+            className={`px-4 py-2 text-lg font-medium ${activeJLPTTab === level
+              ? "text-blue-500 border-b-2 border-blue-500"
+              : "text-gray-600"
+              }`}
             onClick={() => setActiveJLPTTab(level)}
           >
             {level}
@@ -597,11 +594,10 @@ const TabComponent = () => {
         {vocabSets.map((set) => (
           <button
             key={set}
-            className={`px-2 py-1 text-sm font-medium ${
-              activeVocabTab === set
-                ? "text-blue-500 border-b-2 border-blue-500"
-                : "text-gray-600"
-            }`}
+            className={`px-2 py-1 text-sm font-medium ${activeVocabTab === set
+              ? "text-blue-500 border-b-2 border-blue-500"
+              : "text-gray-600"
+              }`}
             onClick={() => {
               setActiveVocabTab(set);
               localStorage.setItem("activeVocabTab", set.toString());
@@ -679,12 +675,10 @@ const KanjiTable: React.FC<KanjiTableProps> = ({
         const port = 8000;
 
         let apiUrl;
-        //If REACT_APP_HOST_IP is defined, use it. Otherwise default to localhost:8000 for VM
         if (process.env.REACT_APP_HOST_IP) {
           apiUrl = `http://${process.env.REACT_APP_HOST_IP}:8000/e-api/v1/tanos_words?p_tag=${p_tag}&s_tag=${s_tag}`;
         } else {
-          //apiUrl = `http://${host}:${port}/e-api/v1/tanos_words?p_tag=${p_tag}&s_tag=${s_tag}`;
-          apiUrl = `/e-api/v1/tanos_words?p_tag=${p_tag}&s_tag=${s_tag}`; // use for client component
+          apiUrl = `/e-api/v1/tanos_words?p_tag=${p_tag}&s_tag=${s_tag}`;
         }
 
         //apiUrl = `localhost:8000/e-api/v1/tanos_words?p_tag=${p_tag}&s_tag=${s_tag}`;

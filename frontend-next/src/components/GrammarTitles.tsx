@@ -11,12 +11,8 @@ interface GrammarTitlesProps {
 const GrammarTitles: React.FC<GrammarTitlesProps> = async ({ lang, pTag, slug }) => {
   // ... (keeping logs if desired or cleaning them up - I will keep them minimal)
 
-  let apiUrl;
-  if (process.env.REACT_APP_HOST_IP) {
-    apiUrl = `http://${process.env.REACT_APP_HOST_IP}:8000/e-api/v1/grammar-titles?p_tag=${pTag}`;
-  } else {
-    apiUrl = `http://localhost:8000/e-api/v1/grammar-titles?p_tag=${pTag}`;
-  }
+  const expressUrl = process.env.EXPRESS_API_URL || "http://localhost:8000";
+  const apiUrl = `${expressUrl}/e-api/v1/grammar-titles?p_tag=${pTag}`;
 
   try {
     const response = await fetch(apiUrl);

@@ -25,9 +25,8 @@ export async function generateMetadata({
 export default async function GrammarPoint({ params }: GrammarPointProps) {
   const decodedTitle = params.slug ? decodeURIComponent(params.slug) : "";
 
-  const apiUrl = process.env.REACT_APP_HOST_IP
-    ? `http://${process.env.REACT_APP_HOST_IP}:8000/e-api/v1/grammar-details`
-    : `http://localhost:8000/e-api/v1/grammar-details`;
+  const expressUrl = process.env.EXPRESS_API_URL || "http://localhost:8000";
+  const apiUrl = `${expressUrl}/e-api/v1/grammar-details`;
 
   const payload = { title: decodedTitle };
 

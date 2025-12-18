@@ -48,16 +48,16 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
     fetch(...args).then((res) => res.json());
 
   //const apiUrl = "http://localhost:8000/api/kanji?p_tag=JLPT_N3&s_tag=part_1";
- //////// const apiUrl = `http://localhost:8000/e-api/v1/kanji?p_tag=${p_tag}&s_tag=${s_tag}`;
+  //////// const apiUrl = `http://localhost:8000/e-api/v1/kanji?p_tag=${p_tag}&s_tag=${s_tag}`;
 
 
- let apiUrl;
- if (process.env.REACT_APP_HOST_IP) {
-   apiUrl = `http://${process.env.REACT_APP_HOST_IP}:8000/e-api/v1/kanji?p_tag=${p_tag}&s_tag=${s_tag}`;
- } else {
-   /////////////////apiUrl = `/e-api/v1/kanji?p_tag=${p_tag}&s_tag=${s_tag}`;
-   apiUrl = `http://localhost:8000/e-api/v1/kanji?p_tag=${p_tag}&s_tag=${s_tag}`;
- }
+  let apiUrl;
+  if (process.env.REACT_APP_HOST_IP) {
+    apiUrl = `http://${process.env.REACT_APP_HOST_IP}:8000/e-api/v1/kanji?p_tag=${p_tag}&s_tag=${s_tag}`;
+  } else {
+    /////////////////apiUrl = `/e-api/v1/kanji?p_tag=${p_tag}&s_tag=${s_tag}`;
+    apiUrl = `http://localhost:8000/e-api/v1/kanji?p_tag=${p_tag}&s_tag=${s_tag}`;
+  }
 
 
 
@@ -88,23 +88,23 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
   // Function to save flashcard state
   const saveFlashcardState = async () => {
     // if (difficulty) {
-      try {
-        console.log('mocking saving post call');
-        // await axios.post("http://localhost:8000/api/flashcard", {
-        //   userId: "user123", // Replace with the appropriate user ID
-        //   count,
-        //   currentQuestionIndex,
-        //   difficulty,
-        //   kanji: currentQuestion.kanji,
-        //   reading: currentQuestion.reading,
-        //   exampleWord: currentQuestion.exampleWord,
-        //   exampleReading: currentQuestion.exampleReading,
-        // });
-      } catch (error) {
-        console.log("Failed to store flashcard state:", error);
-      } finally {
-        setDifficulty(null);
-      }
+    try {
+      console.log('mocking saving post call');
+      // await axios.post("http://localhost:8000/api/flashcard", {
+      //   userId: "user123", // Replace with the appropriate user ID
+      //   count,
+      //   currentQuestionIndex,
+      //   difficulty,
+      //   kanji: currentQuestion.kanji,
+      //   reading: currentQuestion.reading,
+      //   exampleWord: currentQuestion.exampleWord,
+      //   exampleReading: currentQuestion.exampleReading,
+      // });
+    } catch (error) {
+      console.log("Failed to store flashcard state:", error);
+    } finally {
+      setDifficulty(null);
+    }
     // }
   };
 
@@ -119,7 +119,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
       );
     }
   };
-  
+
 
 
   const handlePreviousQuestion = () => {
@@ -138,7 +138,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
     // If questions are undefined, this function effectively does nothing,
     // as there are no questions to navigate between.
   };
-  
+
 
   // -------------------------------------------------------------
 
@@ -163,47 +163,47 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
       // Optionally, you might want to alert the user or handle this case more gracefully
     }
   };
-  
+
 
   // Example array of kanji characters
-//const kanjis = ["漢", "字", "学", "校", "日", "本", "語"];
-const kanjis = [
-  "漢", // Kan (China, Chinese)
-  "字", // Ji (Character)
-  "学", // Gaku (Study, Learning)
-  "校", // Kō (School)
-  "日", // Hi/Nichi (Day, Sun)
-  "本", // Hon (Book, Origin)
-  "語", // Go (Language)
-  "愛", // Ai (Love)
-  "和", // Wa (Harmony, Peace)
-  "光", // Hikari (Light)
-  "力", // Chikara (Power, Strength)
-  "夢", // Yume (Dream)
-  "美", // Bi (Beauty)
-  "勇", // Yū (Courage, Bravery)
-  "静", // Shizu (Quiet, Calm)
-  "笑", // Wara (Smile, Laugh)
-  "希", // Ki (Hope, Wish)
-  "神", // Kami (God, Deity)
-  "龍", // Ryū (Dragon)
-  "水", // Mizu (Water)
-  "火", // Hi (Fire)
-  "風", // Kaze (Wind)
-  "地", // Chi (Earth)
-  "空", // Sora (Sky)
-  "海", // Umi (Sea)
-  "心", // Kokoro (Heart, Mind)
-  "星"  // Hoshi (Star)
-];
+  //const kanjis = ["漢", "字", "学", "校", "日", "本", "語"];
+  const kanjis = [
+    "漢", // Kan (China, Chinese)
+    "字", // Ji (Character)
+    "学", // Gaku (Study, Learning)
+    "校", // Kō (School)
+    "日", // Hi/Nichi (Day, Sun)
+    "本", // Hon (Book, Origin)
+    "語", // Go (Language)
+    "愛", // Ai (Love)
+    "和", // Wa (Harmony, Peace)
+    "光", // Hikari (Light)
+    "力", // Chikara (Power, Strength)
+    "夢", // Yume (Dream)
+    "美", // Bi (Beauty)
+    "勇", // Yū (Courage, Bravery)
+    "静", // Shizu (Quiet, Calm)
+    "笑", // Wara (Smile, Laugh)
+    "希", // Ki (Hope, Wish)
+    "神", // Kami (God, Deity)
+    "龍", // Ryū (Dragon)
+    "水", // Mizu (Water)
+    "火", // Hi (Fire)
+    "風", // Kaze (Wind)
+    "地", // Chi (Earth)
+    "空", // Sora (Sky)
+    "海", // Umi (Sea)
+    "心", // Kokoro (Heart, Mind)
+    "星"  // Hoshi (Star)
+  ];
 
 
 
-// Function to get a random kanji
-const getRandomKanji = () => {
-  const randomIndex = Math.floor(Math.random() * kanjis.length);
-  return kanjis[randomIndex];
-};
+  // Function to get a random kanji
+  const getRandomKanji = () => {
+    const randomIndex = Math.floor(Math.random() * kanjis.length);
+    return kanjis[randomIndex];
+  };
 
 
 
@@ -231,7 +231,7 @@ const getRandomKanji = () => {
   return (
     <>
 
-{/* <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden m-4 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl">
+      {/* <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden m-4 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl">
   <div className="p-6">
     <div className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-widest">
       Level: {p_tag}
@@ -259,7 +259,7 @@ const getRandomKanji = () => {
 </div> */}
 
 
-{/* <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden m-2 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+      {/* <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden m-2 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl flex flex-col md:flex-row justify-between items-center text-center md:text-left">
   <div className="p-4 flex-grow">
     <div className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-widest">
       Level: {p_tag}
@@ -294,7 +294,7 @@ const getRandomKanji = () => {
 
 
 
-{/* <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden m-2 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+      {/* <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden m-2 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl flex flex-col md:flex-row justify-between items-center text-center md:text-left">
   <div className="p-4 flex-grow">
     <div className="text-sm md:text-lg font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-widest">
       Level: {p_tag}
@@ -327,37 +327,37 @@ const getRandomKanji = () => {
 </div> */}
 
 
-<div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden m-2 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl flex flex-row justify-between items-center text-center sm:text-left">
-  <div className="p-4 flex-grow">
-    <div className="text-xs sm:text-sm md:text-md lg:text-lg font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-widest">
-      Level: {p_tag}
-    </div>
-    <a
-      href="/japanese/flashcards-kanji/#"
-      className="block mt-1 text-xs sm:text-sm md:text-md leading-tight font-semibold text-gray-800 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400"
-      aria-label={`Kanji with one reading ${s_tag}`}
-    >
-      Kanji with one reading {s_tag}
-    </a>
-    <p className="mt-1 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-      Explore the kanji readings and levels interactively.
-    </p>
-    <div className="mt-2">
-      <button
-        type="button"
-        onClick={openModal}
-        className="inline-flex justify-center items-center rounded-md bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 text-gray-800 dark:text-gray-300 text-xs sm:text-sm px-3 py-1.5 transition-colors duration-150"
-      >
-        Open flashcard
-      </button>
-    </div>
-  </div>
-  <div className="flex justify-center items-center pr-2 sm:pr-4 md:pr-8 lg:pr-12">
-    <span className="text-gray-700 dark:text-gray-300 font-bold text-3xl sm:text-4xl md:text-5xl">
-      {getRandomKanji()}
-    </span>
-  </div>
-</div>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden m-2 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl flex flex-row justify-between items-center text-center sm:text-left">
+        <div className="p-4 flex-grow">
+          <div className="text-xs sm:text-sm md:text-md lg:text-lg font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-widest">
+            Level: {p_tag}
+          </div>
+          <a
+            href="/japanese/flashcards-kanji/#"
+            className="block mt-1 text-xs sm:text-sm md:text-md leading-tight font-semibold text-gray-800 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400"
+            aria-label={`Kanji with one reading ${s_tag}`}
+          >
+            Kanji with one reading {s_tag}
+          </a>
+          <p className="mt-1 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+            Explore the kanji readings and levels interactively.
+          </p>
+          <div className="mt-2">
+            <button
+              type="button"
+              onClick={openModal}
+              className="inline-flex justify-center items-center rounded-md bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 text-gray-800 dark:text-gray-300 text-xs sm:text-sm px-3 py-1.5 transition-colors duration-150"
+            >
+              Open flashcard
+            </button>
+          </div>
+        </div>
+        <div className="flex justify-center items-center pr-2 sm:pr-4 md:pr-8 lg:pr-12">
+          <span className="text-gray-700 dark:text-gray-300 font-bold text-3xl sm:text-4xl md:text-5xl">
+            {getRandomKanji()}
+          </span>
+        </div>
+      </div>
 
 
 
@@ -375,7 +375,7 @@ const getRandomKanji = () => {
           as="div"
           className="relative z-30"
           open={isOpen}
-          onClose={() => {}}
+          onClose={() => { }}
         >
           <Transition.Child
             as={Fragment}
@@ -490,15 +490,14 @@ const getRandomKanji = () => {
                             <button
                               key={idx}
                               className={`py-1 px-2 sm:py-3 sm:px-6 rounded-md font-semibold text-xs sm:text-sm transition duration-200 ease-in-out shadow-md
-          ${
-            difficulty === level
-              ? level === "easy"
-                ? "bg-green-500 hover:bg-green-600 text-white"
-                : level === "medium"
-                ? "bg-yellow-500 hover:bg-yellow-600 text-white"
-                : "bg-red-500 hover:bg-red-600 text-white"
-              : "bg-gray-300 hover:bg-gray-400 text-gray-800"
-          }`}
+          ${difficulty === level
+                                  ? level === "easy"
+                                    ? "bg-green-500 hover:bg-green-600 text-white"
+                                    : level === "medium"
+                                      ? "bg-yellow-500 hover:bg-yellow-600 text-white"
+                                      : "bg-red-500 hover:bg-red-600 text-white"
+                                  : "bg-gray-300 hover:bg-gray-400 text-gray-800"
+                                }`}
                               onClick={() => handleDifficultySelection(level)}
                             >
                               {level.charAt(0).toUpperCase() + level.slice(1)}
@@ -550,7 +549,7 @@ export default ComplexFlashcardModal;
 // ------------------------ OLD CODE ------------------------------
 
 
-      {/* <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg ">
+{/* <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg ">
         <div className="p-4">
           <div className="uppercase tracking-wide text-sm text-gray-700 dark:text-gray-300 font-semibold">
             Level: {p_tag}
