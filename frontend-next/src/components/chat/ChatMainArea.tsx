@@ -5,6 +5,7 @@ import { useChatLayout } from './ChatLayoutContext';
 import { useUser } from '@/context/UserContext';
 import { useGlobalAuth } from '@/context/GlobalAuthContext';
 import { useSWRConfig } from 'swr';
+import { useRouter } from 'next/navigation';
 import {
     Send,
     Sparkles,
@@ -190,11 +191,44 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [isHistoryLoading, setIsHistoryLoading] = useState(false);
+    const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
     const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
     const [isDragging, setIsDragging] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLTextAreaElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const router = useRouter();
+
+    // Fetch history if conversationId is provided
+    useEffect(() => {
+        if (conversationId && user) {
+            const fetchHistory = async () => {
+                setIsHistoryLoading(true);
+                try {
+                    const convo = await aiTutorService.getConversation(conversationId);
+                    setCurrentSessionId(convo.sessionId || null);
+                    const mappedMessages: Message[] = convo.messages.map(m => ({
+                        id: m.id,
+                        role: m.role === 'user' ? 'user' : 'assistant',
+                        content: m.content,
+                        timestamp: new Date(m.timestamp || Date.now()),
+                        artifacts: m.artifacts
+                    }));
+                    setMessages(mappedMessages);
+                } catch (err) {
+                    console.error("Failed to fetch history:", err);
+                } finally {
+                    setIsHistoryLoading(false);
+                }
+            };
+            fetchHistory();
+        } else if (!conversationId) {
+            // New chat - clear messages and session
+            setMessages([]);
+            setCurrentSessionId(null);
+        }
+    }, [conversationId, user]);
 
     // Use layout context for interactions
     const {
@@ -377,11 +411,11 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
         setIsLoading(true);
 
         try {
-            // Generate a session ID if not present
-            const sessionId = conversationId || `session-${Date.now()}`;
+            // Use existing session ID if available, else fallback
+            const sessionId = currentSessionId || conversationId || `session-${Date.now()}`;
 
             // Use streamChat instead of simulated response
-            const { reader, artifacts } = await aiTutorService.streamChat(
+            const { reader, artifacts, conversationId: backendConvoId } = await aiTutorService.streamChat(
                 inputValue.trim() || "Analyze the attached resources",
                 false,
                 conversationId,
@@ -416,6 +450,13 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
             // After response is complete, refresh resources sidebar
             if (user) {
                 mutate(['/f-api/v1/resources', user.id]);
+                // Also refresh chat history list
+                mutate(['/h-api/conversations', user.id]);
+            }
+
+            // If this was a new conversation, redirect to its dedicated URL
+            if (backendConvoId && !conversationId) {
+                router.push(`/chat/${backendConvoId}`);
             }
             // Also try refreshing the global resources if that's what sidebar uses
             mutate((key: any) => Array.isArray(key) && key[0] === '/f-api/v1/resources');
@@ -455,7 +496,7 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
         }
     };
 
-    const showWelcome = messages.length === 0 && !conversationId;
+    const showWelcome = messages.length === 0 && !conversationId && !isHistoryLoading;
 
     return (
         <div
@@ -479,7 +520,12 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
             )}
 
             {/* Messages Area */}
-            {showWelcome ? (
+            {isHistoryLoading ? (
+                <div className="flex-1 flex flex-col items-center justify-center p-6 text-slate-400">
+                    <Loader2 className="w-8 h-8 animate-spin mb-2" />
+                    <p className="text-sm font-medium">Loading conversation history...</p>
+                </div>
+            ) : showWelcome ? (
                 <WelcomeCard isGuest={isGuest} />
             ) : (
                 <div className="flex-1 overflow-y-auto p-4 space-y-4 pb-4">

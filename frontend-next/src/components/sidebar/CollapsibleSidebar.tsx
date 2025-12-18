@@ -38,29 +38,7 @@ import {
     Eye
 } from 'lucide-react';
 
-// Mock chat history data
-const mockChats = [
-    { id: '1', title: 'JLPT N3 Grammar Help', date: 'Today' },
-    { id: '2', title: '漢字 Practice Session', date: 'Today' },
-    { id: '3', title: 'Verb Conjugation Q&A', date: 'Yesterday' },
-    { id: '4', title: 'Reading Comprehension', date: 'Yesterday' },
-    { id: '5', title: 'Listening Practice', date: 'Last Week' },
-    { id: '6', title: 'Culture Discussion', date: 'Last Week' },
-    { id: '7', title: 'Travel Phrases', date: 'Last Week' },
-    { id: '8', title: 'Keigo Mastery', date: '2 Weeks Ago' },
-    { id: '9', title: 'Anime Dialogue Breakdown', date: '2 Weeks Ago' },
-    { id: '10', title: 'Particle Wa vs Ga', date: 'Last Month' },
-    { id: '11', title: 'Counters (1-10)', date: 'Last Month' },
-    { id: '12', title: 'Giving Directions', date: 'Last Month' },
-    { id: '13', title: 'Restaurant Ordering', date: '2 Months Ago' },
-    { id: '14', title: 'Self Introduction', date: '2 Months Ago' },
-    { id: '15', title: 'Family Members', date: '3 Months Ago' },
-];
 
-// Mock resources data (Fallback)
-const defaultResources = [
-    { id: 'r1', title: 'N3 Vocabulary List', type: 'flashcard' },
-];
 
 // Main Navigation Icons
 const navIcons = [
@@ -95,10 +73,16 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
     const width = SIDEBAR_WIDTHS[state];
     const isOnChat = pathname?.startsWith('/chat');
 
+    // Fetch chat history using SWR
+    const { data: chats } = useSWR(
+        isOnChat && user ? ['/h-api/conversations', user.id] : null,
+        () => aiTutorService.getConversations()
+    );
+
     // Filter chats based on search
     const filteredChats = isGuest
         ? []
-        : mockChats.filter(chat => chat.title.toLowerCase().includes(chatSearch.toLowerCase()));
+        : (chats || []).filter(chat => chat.title.toLowerCase().includes(chatSearch.toLowerCase()));
 
     // Fetch resources using SWR
     const { data: serverResponse, error } = useSWR(
@@ -106,7 +90,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
         () => resourceService.list({ userId: String(user?.id) })
     );
 
-    const resources = serverResponse?.resources || (isGuest ? [] : defaultResources);
+    const resources = serverResponse?.resources || [];
 
     // Filter resources based on search
     const filteredResources = resources.filter((resource: any) =>
@@ -179,15 +163,17 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                             <div className="px-2 pt-1 space-y-1 pb-2">
                                 {filteredChats.map(chat => (
                                     <Link
-                                        key={chat.id}
-                                        href={`/chat/${chat.id}`}
-                                        className={`block p-2.5 rounded-lg hover:bg-slate-50 transition-colors group ${pathname === `/chat/${chat.id}` ? 'bg-brand-green/10 border-l-2 border-brand-green' : ''
+                                        key={chat._id}
+                                        href={`/chat/${chat._id}`}
+                                        className={`block p-2.5 rounded-lg hover:bg-slate-50 transition-colors group ${pathname === `/chat/${chat._id}` ? 'bg-brand-green/10 border-l-2 border-brand-green' : ''
                                             }`}
                                     >
                                         <p className="text-sm font-medium text-slate-700 truncate group-hover:text-brand-dark">
                                             {chat.title}
                                         </p>
-                                        <p className="text-xs text-slate-400 mt-0.5">{chat.date}</p>
+                                        <p className="text-xs text-slate-400 mt-0.5">
+                                            {new Date(chat.updated_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                                        </p>
                                     </Link>
                                 ))}
 
