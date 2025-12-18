@@ -3,7 +3,6 @@
 import React from 'react';
 import { useParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import { ChatLayoutProvider } from '@/components/chat/ChatLayoutContext';
 
 // Dynamically import components with no SSR
 const ChatMainArea = dynamic(
@@ -21,17 +20,15 @@ export default function ChatConversationPage() {
     const conversationId = params?.conversationId as string;
 
     return (
-        <ChatLayoutProvider>
-            <div className="flex flex-1 h-full">
-                {/* Main Chat Area */}
-                <main className="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-white">
-                    <ChatMainArea conversationId={conversationId} />
-                </main>
+        <div className="flex flex-1 h-full">
+            {/* Main Chat Area */}
+            <main className="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-white">
+                <ChatMainArea conversationId={conversationId} />
+            </main>
 
-                {/* Right Sidebar */}
-                <ChatRightSidebarWrapper />
-            </div>
-        </ChatLayoutProvider>
+            {/* Right Sidebar */}
+            <ChatRightSidebarWrapper />
+        </div>
     );
 }
 
