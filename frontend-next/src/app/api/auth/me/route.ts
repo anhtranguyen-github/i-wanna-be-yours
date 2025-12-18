@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+export const dynamic = 'force-dynamic';
 import { verifyAccessToken } from '@/lib/auth';
 import { cookies } from 'next/headers';
 

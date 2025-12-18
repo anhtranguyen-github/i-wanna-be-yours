@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+export const dynamic = 'force-dynamic';
 import { cookies } from 'next/headers';
 
 const EXPRESS_API_URL = process.env.EXPRESS_API_URL || 'http://localhost:8000';
