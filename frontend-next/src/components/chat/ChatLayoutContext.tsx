@@ -132,9 +132,9 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
         // If expanding right sidebar to max, maybe auto-collapse left sidebar on smaller desktop?
         let nextLeft = leftSidebar;
         if (state === 'expanded' && viewport !== 'desktop') {
-             nextLeft = 'collapsed';
+            nextLeft = 'collapsed';
         }
-        
+
         const validated = validateState(nextLeft, state, viewport);
         setRightSidebarState(validated.right);
         if (validated.left !== leftSidebar) setLeftSidebarState(validated.left);
