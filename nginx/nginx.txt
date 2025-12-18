@@ -1,7 +1,7 @@
 coil@coil-VM:/etc/nginx/sites-enabled$ cat zen-lingo-self-signed.com 
 # Redirect HTTP traffic to HTTPS
 server {
-  listen 8080;
+  listen 8000;
   server_name localhost;
   
   return 301 https://$server_name$request_uri;

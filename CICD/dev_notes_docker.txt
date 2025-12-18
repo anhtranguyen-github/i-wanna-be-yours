@@ -111,7 +111,7 @@ docker run -d   -p 5100:5100   -v /home/coil/user_db:/var/lib/mongodb --add-host
 
 NGINX
 nginx is installed locally for now 
-on dev VM go to localhost:8080 and it will redirect to https 
+on dev VM go to localhost:8000 and it will redirect to https 
 and will link to containers on ports 3000 and 8000
 
 
