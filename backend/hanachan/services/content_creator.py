@@ -11,9 +11,9 @@ class ContentCreatorService:
     
     # Intent patterns for content creation
     FLASHCARD_PATTERNS = [
-        r"create\s+flashcard",
-        r"make\s+flashcard",
-        r"generate\s+flashcard",
+        r"create\s+.*flashcard",
+        r"make\s+.*flashcard",
+        r"generate\s+.*flashcard",
         r"flashcard.*for",
         r"flashcard.*about",
         r"フラッシュカード",

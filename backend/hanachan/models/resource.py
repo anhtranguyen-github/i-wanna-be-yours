@@ -5,6 +5,7 @@ class Resource(db.Model):
     __tablename__ = 'resources'
     
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String(120), nullable=True) # Optional for global resources, but used for ingestion flow
     title = db.Column(db.String(255), nullable=False)
     type = db.Column(db.String(50), nullable=False) # e.g., 'document', 'url', 'image'
     content = db.Column(db.Text, nullable=True) # Text content or URL
@@ -15,6 +16,7 @@ class Resource(db.Model):
     def to_dict(self):
         return {
             'id': self.id,
+            'userId': self.user_id,
             'title': self.title,
             'type': self.type,
             'content': self.content,

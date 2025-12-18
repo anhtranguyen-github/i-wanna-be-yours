@@ -10,10 +10,36 @@ def create_resource():
     resource = service.create_resource(data)
     return jsonify(resource), 201
 
+@bp.route('/upload', methods=['POST'])
+def upload_resource():
+    # Simple file upload implementation for MVP
+    if 'file' not in request.files:
+        return jsonify({"error": "No file part"}), 400
+    
+    file = request.files['file']
+    user_id = request.form.get('userId') or request.form.get('user_id')
+    
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
+    
+    # In a real app, we'd save the file to disk/S3
+    # For MVP, we'll create a resource record with metadata
+    data = {
+        "title": file.filename,
+        "type": "document", # Default to document, can be refined by extension
+        "content": f"[Physical File: {file.filename}]", 
+        "userId": user_id
+    }
+    
+    service = ResourceService()
+    resource = service.create_resource(data)
+    return jsonify(resource), 201
+
 @bp.route('/', methods=['GET'])
 def list_resources():
+    user_id = request.args.get('userId')
     service = ResourceService()
-    resources = service.list_resources()
+    resources = service.list_resources(user_id=user_id)
     return jsonify(resources)
 
 @bp.route('/<int:resource_id>', methods=['GET'])

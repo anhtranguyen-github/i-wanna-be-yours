@@ -7,6 +7,7 @@ class ResourceService:
 
     def create_resource(self, data: dict) -> dict:
         new_resource = Resource(
+            user_id=data.get('userId') or data.get('user_id'),
             title=data.get('title'),
             type=data.get('type'),
             content=data.get('content')
@@ -20,8 +21,12 @@ class ResourceService:
             return resource.to_dict()
         return None
 
-    def list_resources(self) -> list:
+    def list_resources(self, user_id: str = None) -> list:
+        # If user_id provided, return only user-owned resources + global ones (where user_id is null)
         resources = self.resource_repo.get_all()
+        if user_id:
+            # Simple filtering logic for MVP
+            resources = [r for r in resources if r.user_id == user_id or r.user_id is None]
         return [r.to_dict() for r in resources]
 
     def delete_resource(self, resource_id: int) -> bool:

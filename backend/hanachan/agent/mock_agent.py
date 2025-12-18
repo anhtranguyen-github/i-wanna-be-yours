@@ -21,6 +21,17 @@ class MockAgent:
         
         creation_intent = ContentCreatorService.detect_creation_intent(prompt)
         
+        # Build Metadata ACK first so it's available for both branches
+        metadata_ack_items = []
+        if attachments:
+            for res in attachments:
+                r_title = getattr(res, 'title', 'Unknown')
+                r_type = getattr(res, 'type', 'Unknown')
+                r_id = getattr(res, 'id', 'Unknown')
+                metadata_ack_items.append(f"- **Filename**: `{r_title}` (Type: {r_type}, ID: {r_id})")
+        
+        metadata_ack = "Hanachan has successfully received and parsed metadata for:\n" + "\n".join(metadata_ack_items) if metadata_ack_items else ""
+
         if creation_intent:
             # Use the content creator to generate response
             creation_response = ContentCreatorService.generate_creation_response(
@@ -29,8 +40,12 @@ class MockAgent:
                 user_id=user_id
             )
             
+            content = creation_response["content"]
+            if metadata_ack:
+                content += "\n\n" + "### 📂 Context Ingested\n" + metadata_ack
+
             return {
-                "content": creation_response["content"],
+                "content": content,
                 "tasks": [],
                 "suggestions": creation_response.get("suggestions", []),
                 "artifacts": creation_response.get("artifacts", [])
@@ -92,6 +107,9 @@ class MockAgent:
 
 **Attached Resources:**
 {resources_str}
+
+**Resource Metadata Acknowledgement:**
+{metadata_ack if metadata_ack else "No resources were attached for this request."}
 
 **Study Plan Intent:** `{study_intent or 'None detected'}`
 

@@ -2,9 +2,9 @@ import { Conversation, Message, Resource, Artifact } from "@/types/aiTutorTypes"
 import Cookies from 'js-cookie';
 import { v4 as uuidv4 } from 'uuid';
 
-const API_BASE_URL = 'http://localhost:5400';
-
 class AITutorService {
+    public readonly API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/h-api';
+
     // --- Auth Helper ---
     private async getCurrentUser() {
         try {
@@ -30,15 +30,14 @@ class AITutorService {
 
     async getConversations(search?: string, tag?: string): Promise<Conversation[]> {
         const user = await this.getCurrentUser();
-        if (!user) return []; // Or throw error
+        if (!user) return [];
 
-        const res = await fetch(`${API_BASE_URL}/conversations/user/${user.id}`, {
+        const res = await fetch(`${this.API_BASE_URL}/conversations/user/${user.id}`, {
             headers: this.getHeaders()
         });
         if (!res.ok) throw new Error('Failed to fetch conversations');
-        const conversationsRaw = await res.json(); // Array of dicts
+        const conversationsRaw = await res.json();
 
-        // Map backend format to frontend Conversation interface
         let convos: Conversation[] = conversationsRaw.map((c: any) => ({
             _id: c.id.toString(),
             sessionId: c.sessionId,
@@ -60,14 +59,13 @@ class AITutorService {
     }
 
     async getConversation(id: string): Promise<Conversation> {
-        const res = await fetch(`${API_BASE_URL}/conversations/${id}`, {
+        const res = await fetch(`${this.API_BASE_URL}/conversations/${id}`, {
             headers: this.getHeaders()
         });
 
         if (!res.ok) throw new Error('Failed to fetch history');
         const data = await res.json();
 
-        // data is { id, sessionId, title, history: [...], ... }
         const messages: Message[] = (data.history || []).map((m: any) => ({
             id: m.id?.toString() || uuidv4(),
             role: m.role,
@@ -88,7 +86,7 @@ class AITutorService {
         const user = await this.getCurrentUser();
         if (!user) throw new Error("User must be logged in");
 
-        const res = await fetch(`${API_BASE_URL}/conversations/`, {
+        const res = await fetch(`${this.API_BASE_URL}/conversations/`, {
             method: 'POST',
             headers: this.getHeaders(),
             body: JSON.stringify({
@@ -100,10 +98,6 @@ class AITutorService {
         if (!res.ok) throw new Error("Failed to create conversation");
         const c = await res.json();
 
-        // If initial message, we might want to send it immediately?
-        // But the UI usually handles sending the first message.
-        // For now, return the empty conversation.
-
         return {
             _id: c.id.toString(),
             sessionId: c.sessionId,
@@ -114,27 +108,11 @@ class AITutorService {
     }
 
     async deleteConversation(id: string): Promise<void> {
-        // Backend might not have DELETE endpoint yet, based on routes/conversation.py
-        // Assuming it doesn't exist yet, we'll log it.
         console.warn("Delete conversation not implemented in backend yet.");
-        /*
-        await fetch(`${API_BASE_URL}/conversations/${id}`, {
-            method: 'DELETE',
-            headers: this.getHeaders()
-        });
-        */
     }
 
     async addMessage(convoId: string, role: 'user' | 'ai', text: string): Promise<Message> {
-        // This is called by UI for optimistic updates.
-        // Actual persistence happens in streamChat for 'ai' role (wait, no)
-        // or 'sendMessage' for user.
-        // But wait, the UI calls this to SAVE the AI message after streaming?
-        // If we use 'invoke', backend saves it.
-        // So this might be redundant or valid only for manual user messages?
-        // Let's implement it calling POST /conversations/<id>/messages
-
-        const res = await fetch(`${API_BASE_URL}/conversations/${convoId}/messages`, {
+        const res = await fetch(`${this.API_BASE_URL}/conversations/${convoId}/messages`, {
             method: 'POST',
             headers: this.getHeaders(),
             body: JSON.stringify({
@@ -157,13 +135,12 @@ class AITutorService {
     // --- Resources (Backend) ---
 
     async getResources(): Promise<Resource[]> {
-        const res = await fetch(`${API_BASE_URL}/resources`, {
+        const res = await fetch(`${this.API_BASE_URL}/resources/`, {
             headers: this.getHeaders()
         });
         if (!res.ok) return [];
         const data = await res.json();
 
-        // Backend returns array directly
         return (Array.isArray(data) ? data : []).map((r: any) => ({
             _id: r.id.toString(),
             type: r.type,
@@ -173,15 +150,15 @@ class AITutorService {
         }));
     }
 
-    async createResource(type: 'note' | 'link' | 'document', content: string, title: string): Promise<Resource> {
-        const res = await fetch(`${API_BASE_URL}/resources`, {
+    async createResource(type: string, content: string, title: string): Promise<Resource> {
+        const res = await fetch(`${this.API_BASE_URL}/resources/`, {
             method: 'POST',
             headers: this.getHeaders(),
             body: JSON.stringify({ type, content, title })
         });
 
         if (!res.ok) throw new Error('Failed to create resource');
-        const r = await res.json(); // Backend returns object directly
+        const r = await res.json();
 
         return {
             _id: r.id.toString(),
@@ -193,38 +170,53 @@ class AITutorService {
     }
 
     async deleteResource(id: string): Promise<void> {
-        await fetch(`${API_BASE_URL}/resources/${id}`, {
+        await fetch(`${this.API_BASE_URL}/resources/${id}`, {
             method: 'DELETE',
             headers: this.getHeaders()
         });
     }
 
-    async uploadFile(file: File): Promise<{ url: string }> {
-        console.log('Uploading file:', file.name);
-        return new Promise(resolve => {
-            setTimeout(() => {
-                resolve({ url: `[File: ${file.name}]` });
-            }, 500);
+    async uploadFile(file: File): Promise<{ id: string; url: string }> {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const user = await this.getCurrentUser();
+        if (user) {
+            formData.append('userId', user.id);
+        }
+
+        const headers = this.getHeaders();
+        // @ts-ignore
+        delete headers['Content-Type'];
+
+        const response = await fetch(`${this.API_BASE_URL}/resources/upload`, {
+            method: 'POST',
+            headers: headers,
+            body: formData
         });
+
+        if (!response.ok) throw new Error("Upload failed");
+        const data = await response.json();
+        return { id: data.id.toString(), url: data.content };
     }
 
     // --- Chat API (Backend) ---
 
-    // Modified to accept conversationId and sessionId, and simulate streaming
-    // Returns artifacts alongside the stream reader
-    async streamChat(query: string, thinking: boolean = false, conversationId?: string, sessionId?: string): Promise<{ reader: ReadableStreamDefaultReader<Uint8Array>; artifacts: Artifact[] }> {
+    async streamChat(query: string, thinking: boolean = false, conversationId?: string, sessionId?: string, resourceIds: string[] = []): Promise<{ reader: ReadableStreamDefaultReader<Uint8Array>; artifacts: Artifact[] }> {
         const user = await this.getCurrentUser();
         if (!user) throw new Error("User not logged in");
         if (!sessionId) throw new Error("Session ID missing");
 
-        const response = await fetch(`${API_BASE_URL}/agent/invoke`, {
+        const response = await fetch(`${this.API_BASE_URL}/agent/invoke`, {
             method: 'POST',
             headers: this.getHeaders(),
             body: JSON.stringify({
                 session_id: sessionId,
                 user_id: user.id,
                 prompt: query,
-                // context_config could be added here
+                context_config: {
+                    resource_ids: resourceIds.map(id => parseInt(id))
+                }
             }),
         });
 
@@ -233,26 +225,19 @@ class AITutorService {
         }
 
         const data = await response.json();
-        // data matches AgentResponse Pydantic model
-        // responses: Array of { type: 'text' | 'flashcard' | 'quiz' | etc, content: '...' }
-
         const textContent = data.responses.find((r: any) => r.type === 'text')?.content || "No response content.";
 
-        // Extract artifacts from responses
         const artifacts: Artifact[] = data.responses
             .filter((r: any) => r.type !== 'text')
             .map((r: any) => ({
                 type: r.type,
-                title: r.content?.title || r.type,
-                data: r.content?.flashcards || r.content?.quiz || r.content?.vocabulary || r.content,
+                title: r.content?.title || r.title || r.type,
+                data: r.content?.flashcards || r.content?.quiz || r.content?.vocabulary || r.content || r.data,
             }));
 
-        // Simulate streaming
         const stream = new ReadableStream({
             start(controller) {
                 const encoder = new TextEncoder();
-                // Simulate chunks for better feel? Or just one big chunk.
-                // One chunk is fine for functionality.
                 controller.enqueue(encoder.encode(textContent));
                 controller.close();
             }

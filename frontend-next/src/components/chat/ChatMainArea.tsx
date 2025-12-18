@@ -38,6 +38,7 @@ interface AttachedFile {
     file: File;
     uploading: boolean;
     error?: boolean;
+    backendId?: string;
 }
 
 // Welcome card for new chat
@@ -177,7 +178,18 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
     }, [inputValue]);
 
     const handleFiles = async (files: File[]) => {
-        const newAttachments = files.map(file => ({
+        // Prevent duplicates by name and size
+        const uniqueFiles = files.filter(file =>
+            !attachedFiles.some(af => af.file.name === file.name && af.file.size === file.size)
+        );
+
+        if (uniqueFiles.length < files.length) {
+            console.warn("Some duplicate files were ignored");
+        }
+
+        if (uniqueFiles.length === 0) return;
+
+        const newAttachments = uniqueFiles.map(file => ({
             id: Math.random().toString(36).substr(2, 9),
             file,
             uploading: true
@@ -188,9 +200,9 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
         // Process uploads
         for (const attachment of newAttachments) {
             try {
-                await aiTutorService.uploadFile(attachment.file);
+                const response = await aiTutorService.uploadFile(attachment.file);
                 setAttachedFiles(prev => prev.map(f =>
-                    f.id === attachment.id ? { ...f, uploading: false } : f
+                    f.id === attachment.id ? { ...f, uploading: false, backendId: response.id } : f
                 ));
             } catch (error) {
                 console.error("Upload failed", error);
@@ -233,13 +245,16 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
         setAttachedFiles(prev => prev.filter(f => f.id !== id));
     };
 
+    // Import mutate from swr to refresh sidebar
+    const { mutate } = require('swr');
+
     const handleSend = async () => {
         if ((!inputValue.trim() && attachedFiles.length === 0) || isLoading) return;
 
         // Prevent sending if uploads are in progress
         if (attachedFiles.some(f => f.uploading)) return;
 
-        // Gate for guests
+        // Gate for guests - they can stage but not commit
         if (isGuest) {
             openAuth('REGISTER', {
                 title: "AI Conversation",
@@ -248,9 +263,12 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
             return;
         }
 
+        const validAttachments = attachedFiles.filter(f => !f.error && f.backendId);
+        const resourceIds = validAttachments.map(f => f.backendId as string);
+
         let content = inputValue.trim();
-        if (attachedFiles.length > 0) {
-            const fileNames = attachedFiles.map(f => `[Attachment: ${f.file.name}]`).join('\n');
+        if (validAttachments.length > 0) {
+            const fileNames = validAttachments.map(f => `[Attachment: ${f.file.name}]`).join('\n');
             content = content ? `${content}\n\n${fileNames}` : fileNames;
         }
 
@@ -263,20 +281,62 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
 
         setMessages(prev => [...prev, userMessage]);
         setInputValue('');
-        setAttachedFiles([]);
+        setAttachedFiles([]); // Optimistic clear
         setIsLoading(true);
 
-        // Simulate response (replace with actual API call)
-        setTimeout(() => {
+        try {
+            // Generate a session ID if not present
+            const sessionId = conversationId || `session-${Date.now()}`;
+
+            // Use streamChat instead of simulated response
+            const { reader } = await aiTutorService.streamChat(
+                inputValue.trim() || "Analyze the attached resources",
+                false,
+                conversationId,
+                sessionId,
+                resourceIds
+            );
+
+            let assistantText = "";
             const assistantMessage: Message = {
                 id: (Date.now() + 1).toString(),
                 role: 'assistant',
-                content: `I'd be happy to help you with that! Here's what I can tell you about "${userMessage.content}"...\n\nThis is a demo response. In the real implementation, this would come from the Hanachan AI backend.`,
+                content: "",
                 timestamp: new Date(),
             };
+
             setMessages(prev => [...prev, assistantMessage]);
+
+            const decoder = new TextDecoder();
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value, { stream: true });
+                assistantText += chunk;
+
+                setMessages(prev => prev.map(m =>
+                    m.id === assistantMessage.id ? { ...m, content: assistantText } : m
+                ));
+            }
+
+            // After response is complete, refresh resources sidebar
+            mutate(user ? `${aiTutorService['API_BASE_URL']}/resources?userId=${user.id}` : null);
+            // Also try refreshing the global resources if that's what sidebar uses
+            mutate(`${aiTutorService['API_BASE_URL']}/resources`);
+
+        } catch (error) {
+            console.error("Chat error", error);
+            const errorMessage: Message = {
+                id: (Date.now() + 1).toString(),
+                role: 'assistant',
+                content: "Error: Failed to connect to Hanachan AI. Please try again later.",
+                timestamp: new Date(),
+            };
+            setMessages(prev => [...prev, errorMessage]);
+        } finally {
             setIsLoading(false);
-        }, 1000);
+        }
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {

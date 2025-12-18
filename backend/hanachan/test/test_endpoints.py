@@ -2,7 +2,7 @@ import requests
 import json
 import time
 
-BASE_URL = "http://127.0.0.1:5000"
+BASE_URL = "http://127.0.0.1:5400"
 
 def log(msg, status="INFO"):
     colors = {
@@ -29,18 +29,30 @@ def test_endpoints():
         # 2. Resources CRUD
         log("\nTesting Resources CRUD...", "INFO")
         
-        # Create
+        # Create via JSON
         res_payload = {
-            "title": "E2E Test Doc",
+            "title": "JSON Test Doc",
             "type": "document",
-            "content": "Content for testing"
+            "content": "Content for testing",
+            "userId": "user-123"
         }
         r = requests.post(f"{BASE_URL}/resources/", json=res_payload)
         if r.status_code == 201:
-            res_id = r.json()['id']
-            log("Create Resource Passed", "PASS")
+            log("Create Resource (JSON) Passed", "PASS")
         else:
-            log(f"Create Resource Failed: {r.text}", "FAIL")
+            log(f"Create Resource (JSON) Failed: {r.text}", "FAIL")
+
+        # Create via Upload
+        files = {
+            'file': ('test.txt', 'Hello World', 'text/plain')
+        }
+        data = {'userId': 'user-123'}
+        r = requests.post(f"{BASE_URL}/resources/upload", files=files, data=data)
+        if r.status_code == 201:
+            res_id = r.json()['id']
+            log("Create Resource (Upload) Passed", "PASS")
+        else:
+            log(f"Create Resource (Upload) Failed: {r.text}", "FAIL")
             res_id = None
 
         # List
@@ -81,10 +93,12 @@ def test_endpoints():
         r = requests.post(f"{BASE_URL}/agent/invoke", json=agent_payload_snake)
         if r.status_code == 200:
             resp_data = r.json()
-            if len(resp_data.get('responses', [])) > 0 and resp_data['responses'][0]['type'] == 'flashcard':
+            responses = resp_data.get('responses', [])
+            has_flashcard = any(item['type'] == 'flashcard' for item in responses)
+            if has_flashcard:
                 log("Agent Invoke (Flashcard Mock) Passed", "PASS")
             else:
-                log(f"Agent Invoke (Flashcard Mock) Failed: No flashcard in response", "FAIL")
+                log(f"Agent Invoke (Flashcard Mock) Failed: No flashcard in response types: {[i['type'] for i in responses]}", "FAIL")
         else:
             log(f"Agent Invoke Failed: {r.text}", "FAIL")
 

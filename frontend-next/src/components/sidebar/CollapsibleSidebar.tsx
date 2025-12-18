@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import useSWR from 'swr';
+import { aiTutorService } from '@/services/aiTutorService';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSidebar, SIDEBAR_WIDTHS } from './SidebarContext';
@@ -50,20 +52,9 @@ const mockChats = [
     { id: '15', title: 'Family Members', date: '3 Months Ago' },
 ];
 
-// Mock resources data
-const mockResources = [
+// Mock resources data (Fallback)
+const defaultResources = [
     { id: 'r1', title: 'N3 Vocabulary List', type: 'flashcard' },
-    { id: 'r2', title: 'Grammar Notes', type: 'document' },
-    { id: 'r3', title: 'Kanji Study Set', type: 'flashcard' },
-    { id: 'r4', title: 'Particle Cheat Sheet', type: 'document' },
-    { id: 'r5', title: 'Common Adjectives', type: 'flashcard' },
-    { id: 'r6', title: 'Verb Groups 1,2,3', type: 'document' },
-    { id: 'r7', title: 'Katakana Chart', type: 'image' },
-    { id: 'r8', title: 'Discussion Topics', type: 'document' },
-    { id: 'r9', title: 'N4 Practice Test', type: 'quiz' },
-    { id: 'r10', title: 'Daily Life Vocab', type: 'flashcard' },
-    { id: 'r11', title: 'Onomatopoeia', type: 'flashcard' },
-    { id: 'r12', title: 'Business Email Template', type: 'document' },
 ];
 
 // Main Navigation Icons
@@ -103,11 +94,19 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
         ? []
         : mockChats.filter(chat => chat.title.toLowerCase().includes(chatSearch.toLowerCase()));
 
+    // Fetch resources using SWR
+    const fetcher = (url: string) => fetch(url).then(res => res.json());
+    const { data: serverResources, error } = useSWR(
+        isOnChat ? `${aiTutorService['API_BASE_URL']}/resources${user ? `?userId=${user.id}` : ''}` : null,
+        fetcher
+    );
+
+    const resources = serverResources || (isGuest ? [] : defaultResources);
+
     // Filter resources based on search
-    // For guests, resources are empty
-    const filteredResources = isGuest
-        ? []
-        : mockResources.filter(resource => resource.title.toLowerCase().includes(resourceSearch.toLowerCase()));
+    const filteredResources = resources.filter((resource: any) =>
+        resource.title?.toLowerCase().includes(resourceSearch.toLowerCase())
+    );
 
     // --- RENDER HELPERS ---
 
