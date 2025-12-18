@@ -452,12 +452,24 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
                 mutate(['/f-api/v1/resources', user.id]);
                 // Also refresh chat history list
                 mutate(['/h-api/conversations', user.id]);
+
+                // NEW: Refresh artifacts list for the right sidebar
+                const convoIdToMutate = backendConvoId || conversationId;
+                if (convoIdToMutate) {
+                    mutate(['artifacts', convoIdToMutate.toString()]);
+                }
             }
 
             // If this was a new conversation, redirect to its dedicated URL
             if (backendConvoId && !conversationId) {
                 router.push(`/chat/${backendConvoId}`);
             }
+
+            // AUTO-OPEN: If new artifacts were created, open the first one
+            if (artifacts && artifacts.length > 0) {
+                openArtifact(artifacts[0]);
+            }
+
             // Also try refreshing the global resources if that's what sidebar uses
             mutate((key: any) => Array.isArray(key) && key[0] === '/f-api/v1/resources');
 

@@ -57,6 +57,7 @@ interface ChatLayoutContextType extends ChatLayoutState {
     previewResource: Resource | null;
     openResourcePreview: (resource: Resource) => void;
     closeResourcePreview: () => void;
+    resetRightSidebar: () => void;
 }
 
 const ChatLayoutContext = createContext<ChatLayoutContextType | null>(null);
@@ -108,11 +109,16 @@ function validateState(
     return { left, right };
 }
 
+import { usePathname, useParams } from 'next/navigation';
+
 interface ChatLayoutProviderProps {
     children: ReactNode;
 }
 
 export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
+    const pathname = usePathname();
+    const params = useParams();
+    const conversationId = params?.conversationId;
     const [leftSidebar, setLeftSidebarState] = useState<LeftSidebarState>('expanded');
     const [rightSidebar, setRightSidebarState] = useState<RightSidebarState>('minimized');
     const [viewport, setViewport] = useState<Viewport>('desktop');
@@ -135,7 +141,23 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
         updateViewport();
         window.addEventListener('resize', updateViewport);
         return () => window.removeEventListener('resize', updateViewport);
-    }, [leftSidebar, rightSidebar]);
+    }, [leftSidebar, rightSidebar, viewport]);
+
+    const resetRightSidebar = useCallback(() => {
+        setActiveArtifactState(null);
+        setRightSidebarState('minimized');
+    }, []);
+
+    // EFFECT: Reset right sidebar when the conversation session changes
+    useEffect(() => {
+        // We reset when:
+        // 1. Pathname is exactly /chat (User explicitly clicked "New Chat")
+        // 2. conversationId changes (User switched between two existing chats)
+        resetRightSidebar();
+
+        // Note: We don't want to reset if we just navigated to an artifact URL
+        // but currently artifacts are state-based, not URL-based.
+    }, [pathname, conversationId, resetRightSidebar]);
 
     const setLeftSidebar = useCallback((state: LeftSidebarState) => {
         const validated = validateState(state, rightSidebar, viewport);
@@ -219,6 +241,7 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
                 previewResource,
                 openResourcePreview,
                 closeResourcePreview,
+                resetRightSidebar,
             }}
         >
             {children}
