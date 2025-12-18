@@ -1,11 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-    Headphones,
-    Brain,
-    BookOpen
-} from "lucide-react";
+import { Headphones, Brain, BookOpen, FileText } from "lucide-react";
 
 const routes = [
     {
@@ -28,6 +24,13 @@ const routes = [
         href: "/library/mnemonics",
         icon: <Brain className="w-8 h-8 text-orange-500" />,
         color: "bg-orange-100"
+    },
+    {
+        title: "Resources & Assets",
+        description: "Your uploaded files, PDFs, and learning materials.",
+        href: "/library/resources",
+        icon: <FileText className="w-8 h-8 text-indigo-500" />,
+        color: "bg-indigo-500"
     },
 ];
 
