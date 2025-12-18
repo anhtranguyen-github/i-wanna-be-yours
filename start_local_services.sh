@@ -37,25 +37,70 @@ check_and_free_port() {
     local port=$1
     local name=$2
     
-    # Find all PIDs using the port (comma separated)
-    local pids=$(lsof -t -i:$port)
+    # Find all PIDs using the port
+    local pids=$(lsof -t -i:$port 2>/dev/null)
     
     if [ -n "$pids" ]; then
         log "⚠️  Port $port ($name) is in use by PID(s) $pids. Killing them..."
+        
         # Try graceful kill first
-        kill $pids 2>/dev/null
+        kill $pids 2>/dev/null || true
         sleep 1
         
-        # Check if still alive
-        if lsof -t -i:$port >/dev/null; then
+        # Check if still alive, then force kill
+        local still_alive=$(lsof -t -i:$port 2>/dev/null)
+        if [ -n "$still_alive" ]; then
              log "⚠️  Port $port ($name) still active. Force killing..."
-             kill -9 $(lsof -t -i:$port) 2>/dev/null
+             kill -9 $still_alive 2>/dev/null || true
+        fi
+        
+        # Final check
+        if lsof -t -i:$port >/dev/null; then
+            log "❌ Failed to free port $port. Manual intervention required."
+            return 1
         fi
         
         log "✅ Port $port freed."
     else
         log "✅ Port $port is free."
     fi
+}
+
+# Aggressively kill known service markers
+kill_existing_processes() {
+    log "🧹 Cleaning up existing zombie processes..."
+    
+    # 1. Kill by Ports first (most reliable)
+    local ports=(3000 5100 5200 5400 8000)
+    for port in "${ports[@]}"; do
+        if lsof -t -i:$port >/dev/null; then
+            log "  Killing process on port $port..."
+            lsof -t -i:$port | xargs -r kill -9 2>/dev/null || true
+        fi
+    done
+    
+    # 2. Kill by Name (to catch non-listening zombies or startup scripts)
+    local patterns=(
+        "next-server"
+        "flask/bin/gunicorn"
+        "python3 app.py"
+        "express-db/my_server.js"
+        "dictionary-db/main_server.js"
+        "hanachan/app.py"
+        "node main_server.js" # generic node servers
+        "node my_server.js"
+    )
+    
+    for pattern in "${patterns[@]}"; do
+        if pgrep -f "$pattern" >/dev/null; then
+             log "  Killing legacy process matching: $pattern"
+             pkill -9 -f "$pattern" 2>/dev/null || true
+        fi
+    done
+    
+    # Small wait to let OS clean up
+    sleep 1
+    log "✅ Cleanup phase complete."
 }
 
 # Cleanup function to kill all background jobs upon script exit/interrupt
@@ -165,9 +210,11 @@ done
 log "=== Initializing Startup Script ==="
 
 # ======================================================================
-# 0. Pre-flight Checks: Ports
+# 0. Clean Slate
 # ======================================================================
-log "=== Checking Ports (Parallel) ==="
+kill_existing_processes
+# Double check ports just in case
+log "=== Verifying Ports are Free ==="
 check_and_free_port 3000 "frontend-next" &
 check_and_free_port 5100 "flask-dynamic-db" &
 check_and_free_port 5200 "dictionary-db" &
