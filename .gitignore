@@ -43,3 +43,5 @@ mcp-builder/
 .agent/
 
 .shared/
+
+.gemini/

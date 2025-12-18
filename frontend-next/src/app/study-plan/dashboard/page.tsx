@@ -461,7 +461,7 @@ function DashboardContent() {
                                 </Link>
 
                                 <Link
-                                    href="/chat/ai-tutor"
+                                    href="/chat"
                                     className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group"
                                 >
                                     <div className="p-2 rounded-lg bg-brand-green/10 group-hover:bg-brand-green group-hover:text-white transition-all">
