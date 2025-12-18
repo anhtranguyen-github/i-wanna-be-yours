@@ -183,6 +183,7 @@ class ContentCreatorService:
         return {
             "type": "flashcard",
             "title": title,
+            "sidebar": {"group": "Flashcards", "status": "new"},
             "data": {
                 "title": title,
                 "level": level,
@@ -247,6 +248,7 @@ class ContentCreatorService:
         return {
             "type": "quiz",
             "title": title,
+            "sidebar": {"group": "Quizzes", "status": "new"},
             "data": {
                 "title": title,
                 "description": f"Practice quiz for {level} {skill}",
@@ -310,6 +312,7 @@ class ContentCreatorService:
         return {
             "type": "quiz",  # Uses same quiz artifact type
             "title": title,
+            "sidebar": {"group": "Exams", "status": "new"},
             "data": {
                 "title": title,
                 "description": f"Comprehensive {level} practice exam covering vocabulary and grammar",

@@ -27,6 +27,7 @@ class MessageArtifact(db.Model):
     # Legacy / Common fields
     title = db.Column(db.String(255), nullable=True)
     summary = db.Column(db.Text, nullable=True)
+    metadata_ = db.Column(db.JSON, nullable=True) # UI/System metadata (sidebar state, status, etc)
 
     # Relationships
     flashcard_set = db.relationship('FlashcardSet', backref='artifacts', uselist=False)

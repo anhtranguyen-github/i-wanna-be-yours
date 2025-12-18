@@ -11,7 +11,7 @@ class ContextConfigurationDTO(BaseModel):
     model_name: Optional[str] = 'gpt-4o'
     temperature: Optional[float] = 0.7
     max_tokens: Optional[int] = 1000
-    resource_ids: Optional[List[int]] = []
+    resource_ids: Optional[List[str]] = []
 
 class ChatMessageDTO(BaseModel):
     id: Optional[int] = None
@@ -49,6 +49,8 @@ class ResponseItemDTO(BaseModel):
     type: str # 'flashcard', 'mindmap', 'audio'
     content: Any # Can be ArtifactContent or plain text string
     citations: Optional[List[Dict[str, str]]] = []
+    sidebar: Optional[Dict[str, Any]] = None
+    metadata: Optional[Dict[str, Any]] = None
 
 class AgentResponse(BaseModel):
     sessionId: str

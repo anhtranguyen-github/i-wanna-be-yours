@@ -1,5 +1,5 @@
 from typing import List, Dict, Any
-
+from services.resource_processor import ResourceProcessor
 
 class MockAgent:
     def generate_debug_response(self, 
@@ -8,12 +8,21 @@ class MockAgent:
                                 user_id: str, 
                                 context_config: Dict[str, Any], 
                                 message_id: int, 
-                                attachments: List[Any]) -> str:
+                                resource_ids: List[str] = None) -> Dict[str, Any]:
         """
         Generates a markdown debug response echoing all received data.
         Enhanced with study plan context awareness and content creation.
         """
+        resource_ids = resource_ids or []
         
+        # Fetch resources content
+        processor = ResourceProcessor()
+        resources_content = []
+        for rid in resource_ids:
+            content = processor.get_resource_content(rid)
+            if content:
+                resources_content.append(content)
+
         # =====================================================================
         # 1. Check for CONTENT CREATION intent (flashcards, quiz, exam)
         # =====================================================================
@@ -23,17 +32,17 @@ class MockAgent:
         
         # Build Metadata ACK first so it's available for both branches
         metadata_ack_items = []
-        if attachments:
-            for res in attachments:
-                r_title = getattr(res, 'title', 'Unknown')
-                r_type = getattr(res, 'type', 'Unknown')
-                r_id = getattr(res, 'id', 'Unknown')
-                metadata_ack_items.append(f"- **Filename**: `{r_title}` (Type: {r_type}, ID: {r_id})")
+        for res in resources_content:
+            r_title = res.get('title', 'Unknown')
+            r_type = res.get('type', 'Unknown')
+            r_len = len(res.get('content', ''))
+            metadata_ack_items.append(f"- **{r_title}** ({r_type}): {r_len} chars")
         
         metadata_ack = "Hanachan has successfully received and parsed metadata for:\n" + "\n".join(metadata_ack_items) if metadata_ack_items else ""
 
         if creation_intent:
             # Use the content creator to generate response
+            # Pass resources context to content creator if needed (future improvement)
             creation_response = ContentCreatorService.generate_creation_response(
                 intent=creation_intent,
                 prompt=prompt,
@@ -84,15 +93,7 @@ class MockAgent:
         # =====================================================================
         # 3. Build Resource String
         # =====================================================================
-        resource_info = []
-        if attachments:
-            for res in attachments:
-                r_id = getattr(res, 'id', 'Unknown')
-                r_title = getattr(res, 'title', 'Unknown')
-                r_type = getattr(res, 'type', 'Unknown')
-                resource_info.append(f"- [{r_id}] {r_title} ({r_type})")
-        
-        resources_str = "\n".join(resource_info) if resource_info else "None"
+        resources_str = "\n".join([f"- {r['title']} ({len(r['content'])} chars)" for r in resources_content]) if resources_content else "None"
         
         # =====================================================================
         # 4. Build debug content
@@ -205,6 +206,7 @@ All artifact types generated for UI testing:
             {
                 "type": "flashcard_single",
                 "title": "Sample Single Card",
+                "sidebar": {"group": "Debug", "status": "new"},
                 "metadata": {
                     "level": "N5",
                     "skill": "vocabulary",
@@ -232,6 +234,7 @@ All artifact types generated for UI testing:
             {
                 "type": "flashcard_deck",
                 "title": "Debug Deck - N5 Verbs",
+                "sidebar": {"group": "Debug", "status": "new"},
                 "metadata": {
                     "level": "N5",
                     "skill": "vocabulary",
@@ -258,6 +261,7 @@ All artifact types generated for UI testing:
             {
                 "type": "quiz",
                 "title": "Debug Quiz - Grammar",
+                "sidebar": {"group": "Debug", "status": "new"},
                 "metadata": {
                     "level": "N4",
                     "skill": "grammar",
@@ -319,6 +323,7 @@ All artifact types generated for UI testing:
             {
                 "type": "exam",
                 "title": "Debug Exam - N3 Full Practice",
+                "sidebar": {"group": "Debug", "status": "new"},
                 "metadata": {
                     "level": "N3",
                     "skill": "mixed",
@@ -377,6 +382,7 @@ All artifact types generated for UI testing:
             {
                 "type": "vocabulary",
                 "title": "Debug Vocabulary Set",
+                "sidebar": {"group": "Debug", "status": "new"},
                 "metadata": {
                     "level": "N4",
                     "category": "nouns"
@@ -394,6 +400,7 @@ All artifact types generated for UI testing:
             {
                 "type": "mindmap",
                 "title": "Debug Mindmap - Japanese Verbs",
+                "sidebar": {"group": "Debug", "status": "new"},
                 "metadata": {
                     "topic": "verbs"
                 },
@@ -414,6 +421,7 @@ All artifact types generated for UI testing:
             {
                 "type": "task",
                 "title": "Debug Task",
+                "sidebar": {"group": "Debug", "status": "new"},
                 "metadata": {
                     "priority": "medium",
                     "category": "study"

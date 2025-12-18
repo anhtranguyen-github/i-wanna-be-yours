@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import List, Dict, Any
 from schemas.chat import AgentRequest, AgentResponse, ResponseItemDTO, ArtifactContent, ChatMessageDTO
 from services.conversation_service import ConversationService
+from services.artifact_service import ArtifactService
 from models.message import ChatMessage
 from models.artifact import MessageArtifact
 from models.action import ProposedTask, Suggestion
@@ -42,29 +43,30 @@ class AgentService:
             context_configuration=request_data.context_config.dict() if request_data.context_config else None
         )
         if request_data.context_config and request_data.context_config.resource_ids:
-            # Link attachments
-            from models.resource import Resource
-            resources = Resource.query.filter(Resource.id.in_(request_data.context_config.resource_ids)).all()
-            user_msg.attachments.extend(resources)
+            # We skip linking old Postgres 'Resource' objects (attachments)
+            # Instead we rely on context_configuration storing the IDs
+            pass
             
         db.session.add(user_msg)
         db.session.commit()
 
         # 3. Generate Logic (Mocking the complex response structure)
         # Verify persistence and get attachments
-        saved_user_msg = ChatMessage.query.get(user_msg.id)
+        # saved_user_msg = ChatMessage.query.get(user_msg.id) # No longer needed for attachments
         
         # Use MockAgent from agent folder
         from agent.mock_agent import MockAgent
         agent = MockAgent()
         
+        resource_ids = request_data.context_config.resource_ids if request_data.context_config else []
+
         debug_response = agent.generate_debug_response(
             prompt=request_data.prompt,
             session_id=request_data.session_id,
             user_id=request_data.user_id,
             context_config=request_data.context_config.dict() if request_data.context_config else {},
             message_id=user_msg.id,
-            attachments=saved_user_msg.attachments
+            resource_ids=resource_ids
         )
         
         # Extract fields
@@ -99,8 +101,24 @@ class AgentService:
             new_artifact = MessageArtifact(
                 message_id=asst_msg.id,
                 type=a_type,
-                title=a_title
+                title=a_title,
+                metadata_=art.get("sidebar", {})
             )
+
+            # Sync to Mongo for Sidebar API
+            mongo_artifact = ArtifactService.create_artifact(
+                user_id=request_data.user_id,
+                artifact_type=a_type,
+                title=a_title,
+                data=a_data,
+                metadata=art.get("sidebar", {}),
+                conversation_id=str(conv.id),
+                message_id=str(asst_msg.id),
+                save_to_library=False
+            )
+            
+            # Update SQL artifact with Mongo ID link
+            new_artifact.artifact_external_id = mongo_artifact["_id"]
             
             content_dto = ArtifactContent(title=a_title)
             
@@ -236,9 +254,11 @@ class AgentService:
             db.session.flush()
             
             resp_item = ResponseItemDTO(
-                responseId=str(new_artifact.id),
+                responseId=mongo_artifact["_id"],
                 type=a_type,
-                content=content_dto
+                content=content_dto,
+                sidebar=art.get("sidebar"),
+                metadata=art.get("metadata")
             )
             response_items.append(resp_item)
 
