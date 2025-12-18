@@ -1,7 +1,7 @@
 export interface Message {
     id: string;
-    role: 'user' | 'ai';
-    text: string;
+    role: 'user' | 'assistant' | 'system';
+    content: string;
     timestamp?: number;
     artifacts?: Artifact[];
 }

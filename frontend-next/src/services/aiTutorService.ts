@@ -27,6 +27,27 @@ class AITutorService {
         };
     }
 
+    private mapArtifact(r: any): Artifact {
+        return {
+            id: r.id?.toString() || r.artifactId || uuidv4(),
+            type: r.type,
+            title: r.content?.title || r.title || r.type,
+            data: r.content?.flashcards || r.content?.quiz || r.content?.vocabulary || r.content || r.data,
+            metadata: { ...r.metadata },
+            createdAt: r.created_at || new Date().toISOString()
+        };
+    }
+
+    private mapMessage(m: any): Message {
+        return {
+            id: m.id?.toString() || uuidv4(),
+            role: m.role as any,
+            content: m.content,
+            timestamp: m.created_at ? new Date(m.created_at).getTime() : Date.now(),
+            artifacts: (m.artifacts || []).map((a: any) => this.mapArtifact(a))
+        };
+    }
+
     // --- Conversations (Backend) ---
 
     async getConversations(search?: string, tag?: string): Promise<Conversation[]> {
@@ -43,12 +64,7 @@ class AITutorService {
             _id: c.id.toString(),
             sessionId: c.sessionId,
             title: c.title || 'Untitled',
-            messages: c.lastMessage ? [{
-                id: c.lastMessage.id?.toString() || uuidv4(),
-                role: c.lastMessage.role,
-                text: c.lastMessage.content,
-                timestamp: new Date(c.lastMessage.created_at || Date.now()).getTime()
-            }] : [],
+            messages: c.lastMessage ? [this.mapMessage(c.lastMessage)] : [],
             updated_at: c.updatedAt ? new Date(c.updatedAt).getTime() : Date.now()
         }));
 
@@ -67,12 +83,7 @@ class AITutorService {
         if (!res.ok) throw new Error('Failed to fetch history');
         const data = await res.json();
 
-        const messages: Message[] = (data.history || []).map((m: any) => ({
-            id: m.id?.toString() || uuidv4(),
-            role: m.role,
-            text: m.content,
-            timestamp: m.created_at ? new Date(m.created_at).getTime() : Date.now()
-        }));
+        const messages: Message[] = (data.history || []).map((m: any) => this.mapMessage(m));
 
         return {
             _id: data.id.toString(),
@@ -112,7 +123,7 @@ class AITutorService {
         console.warn("Delete conversation not implemented in backend yet.");
     }
 
-    async addMessage(convoId: string, role: 'user' | 'ai', text: string): Promise<Message> {
+    async addMessage(convoId: string, role: 'user' | 'assistant' | 'system', text: string): Promise<Message> {
         const res = await fetch(`${this.API_BASE_URL}/conversations/${convoId}/messages`, {
             method: 'POST',
             headers: this.getHeaders(),
@@ -125,12 +136,7 @@ class AITutorService {
         if (!res.ok) throw new Error("Failed to add message");
         const m = await res.json();
 
-        return {
-            id: m.id?.toString() || uuidv4(),
-            role: role,
-            text: text,
-            timestamp: Date.now(),
-        };
+        return this.mapMessage(m);
     }
 
     // --- Resources (Backend) ---
@@ -208,7 +214,7 @@ class AITutorService {
 
     // --- Chat API (Backend) ---
 
-    async streamChat(query: string, thinking: boolean = false, conversationId?: string, sessionId?: string, resourceIds: string[] = []): Promise<{ reader: ReadableStreamDefaultReader<Uint8Array>; artifacts: Artifact[] }> {
+    async streamChat(query: string, thinking: boolean = false, conversationId?: string, sessionId?: string, resourceIds: string[] = []): Promise<{ reader: ReadableStreamDefaultReader<Uint8Array>; artifacts: Artifact[]; conversationId?: string }> {
         const user = await this.getCurrentUser();
         if (!user) throw new Error("User not logged in");
         if (!sessionId) throw new Error("Session ID missing");
@@ -235,14 +241,7 @@ class AITutorService {
 
         const artifacts: Artifact[] = data.responses
             .filter((r: any) => r.type !== 'text')
-            .map((r: any) => ({
-                id: r.responseId,
-                type: r.type,
-                title: r.content?.title || r.title || r.type,
-                data: r.content?.flashcards || r.content?.quiz || r.content?.vocabulary || r.content || r.data,
-                metadata: { ...r.metadata, ...r.sidebar },
-                createdAt: new Date().toISOString()
-            }));
+            .map((r: any) => this.mapArtifact(r));
 
         const stream = new ReadableStream({
             start(controller) {
@@ -252,7 +251,7 @@ class AITutorService {
             }
         });
 
-        return { reader: stream.getReader(), artifacts };
+        return { reader: stream.getReader(), artifacts, conversationId: data.conversationId };
     }
 }
 
