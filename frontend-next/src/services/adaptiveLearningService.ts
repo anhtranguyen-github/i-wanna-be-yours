@@ -7,7 +7,7 @@
  * - Manage difficulty settings
  */
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_FLASK_API_URL || 'http://localhost:5100';
+const API_BASE_URL = process.env.NEXT_PUBLIC_FLASK_API_URL || '/f-api';
 
 // ============================================
 // Types

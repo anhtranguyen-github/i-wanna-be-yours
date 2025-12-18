@@ -1,6 +1,6 @@
 import { Deck } from "@/types/decks";
 
-const API_BASE_URL = "http://localhost:5100/api/v1";
+const API_BASE_URL = "/f-api/api/v1";
 
 export const fetchDeckById = async (id: string): Promise<Deck> => {
     try {

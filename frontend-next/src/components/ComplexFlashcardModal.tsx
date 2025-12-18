@@ -51,13 +51,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
   //////// const apiUrl = `http://localhost:8000/e-api/v1/kanji?p_tag=${p_tag}&s_tag=${s_tag}`;
 
 
-  let apiUrl;
-  if (process.env.REACT_APP_HOST_IP) {
-    apiUrl = `http://${process.env.REACT_APP_HOST_IP}:8000/e-api/v1/kanji?p_tag=${p_tag}&s_tag=${s_tag}`;
-  } else {
-    /////////////////apiUrl = `/e-api/v1/kanji?p_tag=${p_tag}&s_tag=${s_tag}`;
-    apiUrl = `http://localhost:8000/e-api/v1/kanji?p_tag=${p_tag}&s_tag=${s_tag}`;
-  }
+  const apiUrl = `/e-api/v1/kanji?p_tag=${p_tag}&s_tag=${s_tag}`;
 
 
 

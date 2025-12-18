@@ -25,7 +25,7 @@ const DictionaryEntryWrapper: React.FC<DictionaryEntryWrapperProps> = ({ searchS
 
       try {
         const encodedWord = encodeURIComponent(searchString);
-        const response = await fetch(`http://localhost:5200/vocabulary/${encodedWord}`);
+        const response = await fetch(`/d-api/vocabulary/${encodedWord}`);
         console.log("Response received:", response.status, response.statusText);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

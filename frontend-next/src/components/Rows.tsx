@@ -13,7 +13,7 @@ const Rows: React.FC<Props> = async ({ p_dashboardId, s_dashboardId }) => {
   const pTag = p_dashboardId;
   const sTag = s_dashboardId;
 
-  const expressUrl = process.env.EXPRESS_API_URL || "http://localhost:8000";
+  const expressUrl = process.env.EXPRESS_API_URL || process.env.NEXT_PUBLIC_EXPRESS_API_URL || "";
   const apiUrl = `${expressUrl}/e-api/v1/words?p_tag=${pTag}&s_tag=${sTag}`;
 
 
