@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import { getQuiz, submitQuiz, Quiz, QuizSubmissionResult } from "@/services/quizService";
+import { useGlobalAuth } from "@/context/GlobalAuthContext";
 import Link from "next/link";
 
 export default function QuizPlayerPage() {
@@ -21,6 +22,7 @@ export default function QuizPlayerPage() {
     const params = useParams();
     const quizId = params?.id as string;
     const { user } = useUser();
+    const { openAuth } = useGlobalAuth();
 
     // Quiz state
     const [quiz, setQuiz] = useState<Quiz | null>(null);
@@ -217,7 +219,7 @@ export default function QuizPlayerPage() {
                         {/* Guest message */}
                         {!user && (
                             <div className="bg-blue-50 text-blue-700 px-4 py-3 rounded-xl mb-6 text-sm">
-                                <Link href="/login" className="font-bold underline">Log in</Link> to save your progress and track your scores.
+                                <button onClick={() => openAuth('LOGIN')} className="font-bold underline">Log in</button> to save your progress and track your scores.
                             </div>
                         )}
 

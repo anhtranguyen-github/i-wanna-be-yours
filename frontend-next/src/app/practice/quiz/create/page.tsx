@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { createQuiz } from '@/services/quizService';
-import { useAuthPrompt } from '@/components/auth/AuthPromptModal';
+import { useGlobalAuth } from "@/context/GlobalAuthContext";
 
 const JLPT_LEVELS = ['N5', 'N4', 'N3', 'N2', 'N1', 'mixed'];
 const CATEGORIES = ['vocabulary', 'grammar', 'kanji', 'reading', 'mixed'];
@@ -35,7 +35,7 @@ interface QuizQuestion {
 export default function CreateQuizPage() {
     const router = useRouter();
     const { user, loading: userLoading } = useUser();
-    const { showAuthPrompt, AuthPrompt } = useAuthPrompt();
+    const { openAuth } = useGlobalAuth();
     const isGuest = !user;
 
     // Quiz metadata
@@ -123,10 +123,10 @@ export default function CreateQuizPage() {
     const handleSave = async () => {
         // Check auth first
         if (isGuest) {
-            showAuthPrompt(
-                'Save Your Quiz',
-                'Create a free account to save and share your custom quizzes.'
-            );
+            openAuth('REGISTER', {
+                title: 'Save Your Quiz',
+                description: 'Create a free account to save and share your custom quizzes.'
+            });
             return;
         }
 
@@ -186,7 +186,7 @@ export default function CreateQuizPage() {
 
     return (
         <>
-            <AuthPrompt />
+
             <div className="min-h-screen bg-brand-cream pb-20">
                 {/* Guest Banner */}
                 {isGuest && (
@@ -195,9 +195,9 @@ export default function CreateQuizPage() {
                             <p className="text-sm">
                                 <span className="font-bold">🎓 Try the quiz creator!</span> Create a free account to save your quizzes.
                             </p>
-                            <a href="/login" className="px-4 py-1 bg-white text-blue-600 text-sm font-bold rounded-lg hover:bg-white/90">
+                            <button onClick={() => openAuth('REGISTER')} className="px-4 py-1 bg-white text-blue-600 text-sm font-bold rounded-lg hover:bg-white/90">
                                 Sign Up
-                            </a>
+                            </button>
                         </div>
                     </div>
                 )}

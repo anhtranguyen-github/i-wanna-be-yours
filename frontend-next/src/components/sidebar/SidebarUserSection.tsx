@@ -4,33 +4,35 @@ import React from 'react';
 import Link from 'next/link';
 import { useSidebar } from './SidebarContext';
 import { useUser } from '@/context/UserContext';
+import { useGlobalAuth } from '@/context/GlobalAuthContext';
 import { LogOut, User as UserIcon } from 'lucide-react';
 
 export function SidebarUserSection() {
     const { isExpanded } = useSidebar();
     const { user, logout } = useUser();
+    const { openAuth } = useGlobalAuth();
 
     if (!user) {
         return (
             <div className="p-3 border-t border-slate-100">
                 {isExpanded ? (
-                    <Link
-                        href="/login"
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-brand-green transition-colors"
+                    <button
+                        onClick={() => openAuth('LOGIN')}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-brand-green transition-colors text-left"
                     >
                         <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center">
                             <UserIcon size={18} />
                         </div>
                         <span className="font-semibold text-sm">Login</span>
-                    </Link>
+                    </button>
                 ) : (
-                    <Link
-                        href="/login"
-                        className="flex justify-center p-2 rounded-xl text-slate-400 hover:bg-slate-50 hover:text-brand-green transition-colors"
+                    <button
+                        onClick={() => openAuth('LOGIN')}
+                        className="flex justify-center p-2 rounded-xl text-slate-400 hover:bg-slate-50 hover:text-brand-green transition-colors w-full"
                         title="Login"
                     >
                         <UserIcon size={20} />
-                    </Link>
+                    </button>
                 )}
             </div>
         );

@@ -5,7 +5,7 @@ import Link from "next/link";
 import axios from "axios";
 import { useUser } from "@/context/UserContext";
 import { Plus, Headphones, User, ChevronDown, Trash2 } from "lucide-react";
-import { useAuthPrompt } from "@/components/auth/AuthPromptModal";
+import { useGlobalAuth } from "@/context/GlobalAuthContext";
 
 // ============================================
 // Types
@@ -143,9 +143,13 @@ function VideoSection({ title, videos, onDelete, icon, defaultOpen = true }: Vid
 // Main Component
 // ============================================
 
+
+
+// ... (keep previous lines)
+
 export default function PodcastsPage() {
   const { user } = useUser();
-  const { showAuthPrompt, AuthPrompt } = useAuthPrompt();
+  const { openAuth } = useGlobalAuth();
   const userId = user?.id ? String(user.id) : "";
   const isGuest = !user;
 
@@ -202,7 +206,6 @@ export default function PodcastsPage() {
 
   return (
     <>
-      <AuthPrompt />
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-brand-cream/30">
         <div className="container mx-auto px-4 py-8 max-w-7xl">
           {/* Header */}
@@ -216,10 +219,10 @@ export default function PodcastsPage() {
             <button
               onClick={() => {
                 if (isGuest) {
-                  showAuthPrompt(
-                    'Personal Video Library',
-                    'Add your own YouTube videos to your personal learning library.'
-                  );
+                  openAuth('REGISTER', {
+                    title: 'Personal Video Library',
+                    description: 'Add your own YouTube videos to your personal learning library.'
+                  });
                 } else {
                   setShowAddForm(!showAddForm);
                 }

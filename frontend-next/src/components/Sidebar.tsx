@@ -14,10 +14,12 @@ import {
     CalendarDays
 } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { useGlobalAuth } from "@/context/GlobalAuthContext";
 
 const Sidebar = () => {
     const pathname = usePathname();
     const { user, logout } = useUser();
+    const { openAuth } = useGlobalAuth();
     const isChat = pathname?.startsWith('/chat');
 
     return (
@@ -63,12 +65,15 @@ const Sidebar = () => {
                         </button>
                     </div>
                 ) : (
-                    <Link href="/login" className="flex flex-col items-center gap-1 text-xs font-bold text-gray-400 hover:text-brand-salmon transition-colors">
+                    <button
+                        onClick={() => openAuth('LOGIN')}
+                        className="flex flex-col items-center gap-1 text-xs font-bold text-gray-400 hover:text-brand-salmon transition-colors"
+                    >
                         <div className="p-2 rounded-xl bg-gray-100 hover:bg-brand-salmon hover:text-white transition-all">
                             <UserIcon size={20} />
                         </div>
                         <span>Login</span>
-                    </Link>
+                    </button>
                 )}
             </div>
         </div>

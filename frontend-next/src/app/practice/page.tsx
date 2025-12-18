@@ -14,6 +14,7 @@ import {
     Lock
 } from "lucide-react";
 import { useUser } from "@/context/UserContext";
+import { useGlobalAuth } from "@/context/GlobalAuthContext";
 
 interface PracticeCategory {
     id: string;
@@ -78,6 +79,7 @@ const practiceCategories: PracticeCategory[] = [
 
 export default function PracticePage() {
     const { user } = useUser();
+    const { openAuth } = useGlobalAuth();
 
     return (
         <div className="min-h-screen bg-brand-cream text-brand-dark pb-20">
@@ -123,12 +125,12 @@ export default function PracticePage() {
                         <p className="text-slate-500 mb-6 max-w-md mx-auto">
                             Log in to save your quiz scores, track your daily streak, and see personalized recommendations.
                         </p>
-                        <Link
-                            href="/login"
+                        <button
+                            onClick={() => openAuth('LOGIN')}
                             className="inline-block px-8 py-3 bg-brand-green text-white font-bold rounded-xl shadow-clay-img hover:bg-brand-green/90 transition-all"
                         >
                             Log In
-                        </Link>
+                        </button>
                     </div>
                 )}
             </div>

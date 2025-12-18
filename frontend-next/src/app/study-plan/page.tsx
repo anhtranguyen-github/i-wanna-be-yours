@@ -15,12 +15,14 @@ import {
     JLPT_LEVELS
 } from '@/types/studyPlanTypes';
 import studyPlanService from '@/services/studyPlanService';
-import { useAuthPrompt } from '@/components/auth/AuthPromptModal';
+import { useGlobalAuth } from "@/context/GlobalAuthContext";
+
+// ... (keep previous lines)
 
 export default function StudyPlanPage() {
     const { user, loading: userLoading } = useUser();
     const router = useRouter();
-    const { showAuthPrompt, AuthPrompt } = useAuthPrompt();
+    const { openAuth } = useGlobalAuth();
     const [templates, setTemplates] = useState<PlanTemplateListItem[]>([]);
     const [selectedLevel, setSelectedLevel] = useState<JLPTLevel | null>(null);
     const [loading, setLoading] = useState(true);
@@ -41,14 +43,8 @@ export default function StudyPlanPage() {
     };
 
     const handleGetStarted = () => {
-        if (!user) {
-            showAuthPrompt(
-                'Study Plans',
-                'Create a personalized JLPT study plan tailored to your exam date and goals.'
-            );
-        } else {
-            router.push('/study-plan/setup');
-        }
+        // Allow all users (including guests) to proceed to setup
+        router.push('/study-plan/setup');
     };
 
     const filteredTemplates = selectedLevel
@@ -62,7 +58,6 @@ export default function StudyPlanPage() {
 
     return (
         <>
-            <AuthPrompt />
             <div className="min-h-screen bg-gradient-to-br from-slate-50 to-brand-cream/30">
                 {/* Hero Section */}
                 <section className="relative overflow-hidden py-16 lg:py-24">
@@ -95,10 +90,10 @@ export default function StudyPlanPage() {
                                     onClick={(e) => {
                                         if (!user) {
                                             e.preventDefault();
-                                            showAuthPrompt(
-                                                'Your Study Plans',
-                                                'View and manage your personalized study plans.'
-                                            );
+                                            openAuth('LOGIN', {
+                                                title: 'Your Study Plans',
+                                                description: 'View and manage your personalized study plans.'
+                                            });
                                         }
                                     }}
                                     className="btnSecondary text-lg px-8 py-4"
