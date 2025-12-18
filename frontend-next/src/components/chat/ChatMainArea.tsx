@@ -20,14 +20,24 @@ import {
     CheckSquare,
     GraduationCap,
     Crown,
-    Lock
+    Lock,
+    X,
+    Loader2
 } from 'lucide-react';
+import { aiTutorService } from '@/services/aiTutorService';
 
 interface Message {
     id: string;
     role: 'user' | 'assistant';
     content: string;
     timestamp: Date;
+}
+
+interface AttachedFile {
+    id: string;
+    file: File;
+    uploading: boolean;
+    error?: boolean;
 }
 
 // Welcome card for new chat
@@ -137,8 +147,11 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
+    const [isDragging, setIsDragging] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLTextAreaElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     // Use layout context for opening artifacts
     let openArtifact: any;
@@ -163,8 +176,68 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
         }
     }, [inputValue]);
 
+    const handleFiles = async (files: File[]) => {
+        const newAttachments = files.map(file => ({
+            id: Math.random().toString(36).substr(2, 9),
+            file,
+            uploading: true
+        }));
+
+        setAttachedFiles(prev => [...prev, ...newAttachments]);
+
+        // Process uploads
+        for (const attachment of newAttachments) {
+            try {
+                await aiTutorService.uploadFile(attachment.file);
+                setAttachedFiles(prev => prev.map(f =>
+                    f.id === attachment.id ? { ...f, uploading: false } : f
+                ));
+            } catch (error) {
+                console.error("Upload failed", error);
+                setAttachedFiles(prev => prev.map(f =>
+                    f.id === attachment.id ? { ...f, uploading: false, error: true } : f
+                ));
+            }
+        }
+    };
+
+    const handleDragOver = (e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragging(true);
+    };
+
+    const handleDragLeave = (e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragging(false);
+    };
+
+    const onDrop = async (e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragging(false);
+        const files = Array.from(e.dataTransfer.files);
+        if (files.length > 0) {
+            handleFiles(files);
+        }
+    };
+
+    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            const files = Array.from(e.target.files);
+            handleFiles(files);
+            // Reset input so same file can be selected again if needed
+            e.target.value = '';
+        }
+    };
+
+    const removeAttachment = (id: string) => {
+        setAttachedFiles(prev => prev.filter(f => f.id !== id));
+    };
+
     const handleSend = async () => {
-        if (!inputValue.trim() || isLoading) return;
+        if ((!inputValue.trim() && attachedFiles.length === 0) || isLoading) return;
+
+        // Prevent sending if uploads are in progress
+        if (attachedFiles.some(f => f.uploading)) return;
 
         // Gate for guests
         if (isGuest) {
@@ -175,15 +248,22 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
             return;
         }
 
+        let content = inputValue.trim();
+        if (attachedFiles.length > 0) {
+            const fileNames = attachedFiles.map(f => `[Attachment: ${f.file.name}]`).join('\n');
+            content = content ? `${content}\n\n${fileNames}` : fileNames;
+        }
+
         const userMessage: Message = {
             id: Date.now().toString(),
             role: 'user',
-            content: inputValue.trim(),
+            content: content,
             timestamp: new Date(),
         };
 
         setMessages(prev => [...prev, userMessage]);
         setInputValue('');
+        setAttachedFiles([]);
         setIsLoading(true);
 
         // Simulate response (replace with actual API call)
@@ -220,8 +300,26 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
     const showWelcome = messages.length === 0 && !conversationId;
 
     return (
-        <div className="flex flex-col h-full bg-white relative">
+        <div
+            className="flex flex-col h-full bg-white relative"
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={onDrop}
+        >
             <AuthPrompt />
+
+            {/* Drag Overlay */}
+            {isDragging && (
+                <div className="absolute inset-0 z-50 bg-brand-green/10 backdrop-blur-sm border-2 border-dashed border-brand-green flex items-center justify-center pointer-events-none">
+                    <div className="bg-white p-6 rounded-2xl shadow-xl text-center">
+                        <div className="w-16 h-16 bg-brand-green/10 rounded-full flex items-center justify-center mx-auto mb-4 text-brand-green">
+                            <Paperclip size={32} />
+                        </div>
+                        <h3 className="text-lg font-bold text-brand-dark">Drop files to attach</h3>
+                        <p className="text-slate-500 text-sm mt-1">Upload files to chat context</p>
+                    </div>
+                </div>
+            )}
 
             {/* Messages Area */}
             {showWelcome ? (
@@ -256,9 +354,52 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
 
             {/* Input Area */}
             <div className="border-t border-slate-100 pt-4 px-4 pb-6 bg-white z-10 w-full max-w-3xl mx-auto">
+
+                {/* Attachment Tray */}
+                {attachedFiles.length > 0 && (
+                    <div className="flex gap-2 overflow-x-auto mb-3 pb-2 scrollbar-thin scrollbar-thumb-slate-200">
+                        {attachedFiles.map(file => (
+                            <div key={file.id} className="relative flex items-center gap-2 bg-slate-50 px-3 py-2 rounded-xl border border-slate-200 shadow-sm min-w-[160px] max-w-[240px] group">
+                                <div className="w-8 h-8 bg-white rounded-lg border border-slate-100 flex items-center justify-center flex-shrink-0">
+                                    {file.file.type.startsWith('image/') ? (
+                                        <span className="text-xs">🖼️</span>
+                                    ) : (
+                                        <FileText size={16} className="text-slate-400" />
+                                    )}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-xs font-medium text-slate-700 truncate">{file.file.name}</p>
+                                    <p className="text-[10px] text-slate-500">{(file.file.size / 1024).toFixed(1)} KB</p>
+                                </div>
+                                {file.uploading ? (
+                                    <div className="w-6 h-6 flex items-center justify-center">
+                                        <Loader2 size={14} className="animate-spin text-brand-green" />
+                                    </div>
+                                ) : (
+                                    <button
+                                        onClick={() => removeAttachment(file.id)}
+                                        className="w-6 h-6 flex items-center justify-center rounded-full hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors"
+                                    >
+                                        <X size={14} />
+                                    </button>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                )}
+
                 <div className="relative flex items-end gap-2 bg-slate-50 rounded-2xl border border-slate-200 focus-within:border-brand-green focus-within:ring-2 focus-within:ring-brand-green/20 transition-all">
+                    {/* File Input */}
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleFileSelect}
+                        className="hidden"
+                        multiple
+                    />
                     {/* Attachment button */}
                     <button
+                        onClick={() => fileInputRef.current?.click()}
                         className="p-2.5 text-slate-400 hover:text-brand-green transition-colors"
                         title="Attach file"
                     >
@@ -286,7 +427,7 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
                         </button>
                         <button
                             onClick={handleSend}
-                            disabled={!inputValue.trim() || isLoading}
+                            disabled={(!inputValue.trim() && attachedFiles.length === 0) || isLoading || attachedFiles.some(f => f.uploading)}
                             className="p-2 bg-brand-green text-white rounded-xl hover:bg-brand-green/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                             title="Send message"
                         >
