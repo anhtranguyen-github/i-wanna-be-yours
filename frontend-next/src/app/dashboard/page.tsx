@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/context/UserContext";
+import { useGlobalAuth } from "@/context/GlobalAuthContext";
 import learnerProgressService from "@/services/learnerProgressService";
 import {
     ProgressSummaryResponse,
@@ -301,6 +302,7 @@ function QuickAction({ label, icon, href, color }: QuickActionProps) {
 
 export default function LearningDashboardPage() {
     const { user, loading: userLoading } = useUser();
+    const { openAuth } = useGlobalAuth();
     const router = useRouter();
 
     const [progressData, setProgressData] = useState<ProgressSummaryResponse | null>(null);
@@ -406,22 +408,23 @@ export default function LearningDashboardPage() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
                 {/* Guest Banner */}
-                {isGuest && (
-                    <div className="mb-6 p-4 bg-gradient-to-r from-brand-green to-brand-blue rounded-2xl text-white flex flex-col sm:flex-row items-center justify-between gap-4">
-                        <div>
-                            <p className="font-bold text-lg">👋 You're viewing demo data</p>
-                            <p className="text-white/80 text-sm">Create a free account to track your real progress and unlock all features.</p>
+                {
+                    isGuest && (
+                        <div className="mb-6 p-4 bg-gradient-to-r from-brand-green to-brand-blue rounded-2xl text-white flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div>
+                                <p className="font-bold text-lg">👋 You're viewing demo data</p>
+                                <p className="text-white/80 text-sm">Create a free account to track your real progress and unlock all features.</p>
+                            </div>
+                            <button
+                                onClick={() => openAuth('REGISTER')}
+                                className="px-6 py-2 bg-white text-brand-green font-bold rounded-xl hover:bg-white/90 transition-all whitespace-nowrap"
+                            >
+                                Sign Up Free
+                            </button>
                         </div>
-                        <a
-                            href="/login"
-                            className="px-6 py-2 bg-white text-brand-green font-bold rounded-xl hover:bg-white/90 transition-all whitespace-nowrap"
-                        >
-                            Sign Up Free
-                        </a>
-                    </div>
-                )}
+                    )
+                }
 
                 {/* Header */}
                 <div className="mb-8">
@@ -667,7 +670,7 @@ export default function LearningDashboardPage() {
                         </p>
                     )}
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 }

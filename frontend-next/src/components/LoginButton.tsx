@@ -5,9 +5,11 @@ import { useUser } from '@/context/UserContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { UserIcon } from './icons';
+import { useGlobalAuth } from '@/context/GlobalAuthContext';
 
 const LoginButton = () => {
   const { user, logout } = useUser();
+  const { openAuth } = useGlobalAuth();
   const [showDropdown, setShowDropdown] = useState(false);
   const router = useRouter();
 
@@ -32,12 +34,12 @@ const LoginButton = () => {
       <span className="text-sm font-bold text-brand-dark/60">
         not log in
       </span>
-      <Link
-        href="/login"
+      <button
+        onClick={() => openAuth('LOGIN')}
         className="clay-button bg-brand-green hover:bg-brand-green/90 text-brand-dark px-6 py-2 font-bold"
       >
         Log in
-      </Link>
+      </button>
     </div>
   );
 };

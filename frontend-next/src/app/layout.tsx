@@ -6,6 +6,8 @@ import { Inter } from "next/font/google";
 // Import directly from file to avoid barrel file issues
 import { AppShell } from "@/components/sidebar/AppShell";
 import CookieConsent from "@/components/CookieConsent";
+import { GlobalAuthProvider } from "@/context/GlobalAuthContext";
+import GlobalAuthModal from "@/components/auth/GlobalAuthModal";
 
 import { GoogleAnalytics } from '@next/third-parties/google'
 
@@ -44,11 +46,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={inter.className}>
         <Providers>
-          <AppShell>
-            {children}
-          </AppShell>
-          <CookieConsent />
-          {GA_MEASUREMENT_ID && <GoogleAnalytics gaId={GA_MEASUREMENT_ID} />}
+          <GlobalAuthProvider>
+            <GlobalAuthModal />
+            <AppShell>
+              {children}
+            </AppShell>
+            <CookieConsent />
+            {GA_MEASUREMENT_ID && <GoogleAnalytics gaId={GA_MEASUREMENT_ID} />}
+          </GlobalAuthProvider>
         </Providers>
       </body>
     </html>

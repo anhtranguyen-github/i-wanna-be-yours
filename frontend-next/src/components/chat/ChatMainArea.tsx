@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useChatLayout } from './ChatLayoutContext';
 import { useUser } from '@/context/UserContext';
-import { useAuthPrompt } from '@/components/auth/AuthPromptModal';
+import { useGlobalAuth } from '@/context/GlobalAuthContext';
 import {
     Send,
     Sparkles,
@@ -142,7 +142,7 @@ interface ChatMainAreaProps {
 export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
     const { user } = useUser();
     const isGuest = !user;
-    const { showAuthPrompt, AuthPrompt } = useAuthPrompt();
+    const { openAuth } = useGlobalAuth();
 
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputValue, setInputValue] = useState('');
@@ -241,10 +241,10 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
 
         // Gate for guests
         if (isGuest) {
-            showAuthPrompt(
-                "AI Conversation",
-                "Sign up to chat with Hanachan and get instant feedback on your Japanese!"
-            );
+            openAuth('REGISTER', {
+                title: "AI Conversation",
+                description: "Sign up to chat with Hanachan and get instant feedback on your Japanese!"
+            });
             return;
         }
 
@@ -306,7 +306,6 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
             onDragLeave={handleDragLeave}
             onDrop={onDrop}
         >
-            <AuthPrompt />
 
             {/* Drag Overlay */}
             {isDragging && (

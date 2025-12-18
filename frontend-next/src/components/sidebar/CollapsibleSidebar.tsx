@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSidebar, SIDEBAR_WIDTHS } from './SidebarContext';
 import { useUser } from '@/context/UserContext';
-import { useAuthPrompt } from '@/components/auth/AuthPromptModal';
+import { useGlobalAuth } from '@/context/GlobalAuthContext';
 import {
     ChevronsLeft,
     ChevronsRight,
@@ -83,7 +83,7 @@ interface CollapsibleSidebarProps {
 export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) {
     const { isExpanded, toggle, state } = useSidebar();
     const { user } = useUser();
-    const { showAuthPrompt, AuthPrompt } = useAuthPrompt();
+    const { openAuth } = useGlobalAuth();
     const isGuest = !user;
 
     const [chatSearch, setChatSearch] = useState('');
@@ -190,7 +190,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                                 {isGuest && (
                                     <div className="pt-2 mt-2 border-t border-slate-100">
                                         <button
-                                            onClick={() => showAuthPrompt("Chat History", "Sign up to save unlimited chat history and access it from any device.")}
+                                            onClick={() => openAuth('REGISTER', { title: "Chat History", description: "Sign up to save unlimited chat history and access it from any device." })}
                                             className="w-full block p-3 rounded-xl bg-gradient-to-r from-slate-50 to-white border border-slate-200 shadow-sm hover:shadow-md hover:border-brand-green/30 transition-all group text-left"
                                         >
                                             <div className="flex items-center gap-2 mb-1">
@@ -370,7 +370,6 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
             className={`fixed left-0 top-0 bottom-0 z-40 flex flex-col bg-white border-r border-slate-200 transition-all duration-300 ease-out shadow-lg ${className}`}
             style={{ width }}
         >
-            <AuthPrompt />
             {/* Header */}
             <div className="flex-shrink-0 flex items-center justify-between p-4 border-b border-slate-100 h-[72px]">
                 {isExpanded ? (
