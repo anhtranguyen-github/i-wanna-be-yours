@@ -1,0 +1,16 @@
+[project]
+name = "python-dictionary"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.125.0",
+    "motor>=3.7.1",
+    "pydantic>=2.12.5",
+    "pydantic-settings>=2.12.0",
+    "pymongo>=4.15.5",
+    "sudachidict-full>=20251022",
+    "sudachipy>=0.6.10",
+    "uvicorn>=0.38.0",
+]
