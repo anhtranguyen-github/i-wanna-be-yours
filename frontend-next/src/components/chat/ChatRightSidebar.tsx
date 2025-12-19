@@ -6,7 +6,6 @@ import useSWR from 'swr';
 import { useChatLayout } from './ChatLayoutContext';
 import { Artifact, ArtifactType } from '@/types/artifact';
 import { artifactService } from '@/services/artifactService';
-import { useParams } from 'next/navigation';
 import { useUser } from '@/context/UserContext';
 import { NoteRenderer } from '../artifacts/NoteRenderer';
 import { FlashcardRenderer } from '../artifacts/FlashcardRenderer';
@@ -29,15 +28,13 @@ import {
 } from 'lucide-react';
 
 export function ChatRightSidebar() {
-    const { rightSidebar, setRightSidebar, activeArtifact, openArtifact, setActiveArtifact } = useChatLayout();
-    const params = useParams();
-    const conversationId = params?.conversationId as string;
+    const { rightSidebar, setRightSidebar, activeArtifact, openArtifact, setActiveArtifact, effectiveConversationId } = useChatLayout();
     const { user } = useUser();
 
-    // Only fetch artifacts if user is authenticated - security guard
+    // Only fetch artifacts if user is authenticated and we have a conversation - security guard
     const { data: artifacts, error } = useSWR<Artifact[]>(
-        conversationId && user ? ['artifacts', conversationId, user.id] : null,
-        () => artifactService.listByConversation(conversationId, user?.id?.toString())
+        effectiveConversationId && user ? ['artifacts', effectiveConversationId, user.id] : null,
+        () => artifactService.listByConversation(effectiveConversationId!, user?.id?.toString())
     );
 
     // COLLAPSED STATE

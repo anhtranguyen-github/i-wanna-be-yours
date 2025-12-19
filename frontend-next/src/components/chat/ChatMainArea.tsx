@@ -251,7 +251,8 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
         openArtifact,
         previewResource,
         closeResourcePreview,
-        stageResource
+        stageResource,
+        setEffectiveConversationId
     } = useChatLayout();
 
     useEffect(() => {
@@ -483,6 +484,9 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
 
                 // Update local conversation ID for subsequent messages
                 setLocalConversationId(backendConvoId.toString());
+
+                // Update context so ChatRightSidebar can fetch artifacts
+                setEffectiveConversationId(backendConvoId.toString());
 
                 // Refresh left sidebar conversation history
                 if (user) {

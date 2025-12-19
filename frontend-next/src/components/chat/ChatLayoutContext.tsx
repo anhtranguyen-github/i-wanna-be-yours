@@ -38,6 +38,7 @@ interface ChatLayoutState {
     rightSidebar: RightSidebarState;
     viewport: Viewport;
     activeArtifact: ActiveArtifact | null;
+    effectiveConversationId: string | null;
 }
 
 // Context interface
@@ -52,6 +53,7 @@ interface ChatLayoutContextType extends ChatLayoutState {
     stageResource: (resource: ResourceToStage) => void;
     stagedResourceToProcess: ResourceToStage | null;
     consumeStagedResource: () => void;
+    setEffectiveConversationId: (id: string | null) => void;
 
     // Resource Preview
     previewResource: Resource | null;
@@ -118,13 +120,25 @@ interface ChatLayoutProviderProps {
 export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
     const pathname = usePathname();
     const params = useParams();
-    const conversationId = params?.conversationId;
+    const conversationIdFromParams = params?.conversationId as string | undefined;
     const [leftSidebar, setLeftSidebarState] = useState<LeftSidebarState>('expanded');
     const [rightSidebar, setRightSidebarState] = useState<RightSidebarState>('minimized');
     const [viewport, setViewport] = useState<Viewport>('desktop');
     const [activeArtifact, setActiveArtifactState] = useState<ActiveArtifact | null>(null);
     const [stagedResourceToProcess, setStagedResourceToProcess] = useState<ResourceToStage | null>(null);
     const [previewResource, setPreviewResource] = useState<Resource | null>(null);
+    // Effective conversation ID - can be updated after shallow URL update
+    const [effectiveConversationId, setEffectiveConversationId] = useState<string | null>(conversationIdFromParams || null);
+
+    // Sync effectiveConversationId when params change (user navigated via Next.js router)
+    useEffect(() => {
+        if (conversationIdFromParams) {
+            setEffectiveConversationId(conversationIdFromParams);
+        } else if (pathname === '/chat') {
+            // User navigated to new chat
+            setEffectiveConversationId(null);
+        }
+    }, [conversationIdFromParams, pathname]);
 
     // Initialize viewport on mount
     useEffect(() => {
@@ -258,6 +272,7 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
                 rightSidebar,
                 viewport,
                 activeArtifact,
+                effectiveConversationId,
                 setLeftSidebar,
                 setRightSidebar,
                 toggleLeftSidebar,
@@ -268,6 +283,7 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
                 stageResource,
                 stagedResourceToProcess,
                 consumeStagedResource,
+                setEffectiveConversationId,
                 previewResource,
                 openResourcePreview,
                 closeResourcePreview,
