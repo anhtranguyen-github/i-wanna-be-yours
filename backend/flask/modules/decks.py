@@ -180,7 +180,7 @@ class DeckModule:
         # --------------------------------------------------------------------------
         # ENDPOINT: GET /api/v1/decks
         # --------------------------------------------------------------------------
-        @app.route("/api/v1/decks", methods=["GET"])
+        @app.route("/v1/decks", methods=["GET"])
         def get_all_decks():
             decks = []
             
@@ -211,7 +211,7 @@ class DeckModule:
         # --------------------------------------------------------------------------
         # ENDPOINT: GET /api/v1/decks/<deck_id>
         # --------------------------------------------------------------------------
-        @app.route("/api/v1/decks/<deck_id>", methods=["GET"])
+        @app.route("/v1/decks/<deck_id>", methods=["GET"])
         def get_deck_by_id(deck_id):
             target_config = None
             
@@ -266,7 +266,7 @@ class DeckModule:
         # --------------------------------------------------------------------------
         # ENDPOINT: POST /api/v1/cards/batch
         # --------------------------------------------------------------------------
-        @app.route("/api/v1/cards/batch", methods=["POST"])
+        @app.route("/v1/cards/batch", methods=["POST"])
         def get_cards_batch():
             try:
                 data = request.json

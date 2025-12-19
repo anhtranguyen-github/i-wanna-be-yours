@@ -21,8 +21,8 @@ class LibraryTexts:
 
         # --------------------- Custom texts ------------------------- #
 
-        #curl -X GET http://localhost:5100/f-api/v1/japanese-texts/testUserId
-        @app.route("/f-api/v1/japanese-texts/<userId>", methods=["GET"])
+        #curl -X GET http://localhost:5100/v1/japanese-texts/testUserId
+        @app.route("/v1/japanese-texts/<userId>", methods=["GET"])
         def get_texts(userId):
             try:
                 # Filter documents by the given userId
@@ -53,7 +53,7 @@ class LibraryTexts:
 
 
 
-        # curl -X POST http://localhost:5100/f-api/v1/japanese-texts \
+        # curl -X POST http://localhost:5100/v1/japanese-texts \
         # -H "Content-Type: application/json" \
         # -d '{
         #  "topic": "Japanese Grammar",
@@ -64,7 +64,7 @@ class LibraryTexts:
         #  "userId": "testUser",
         #  "lang": "Japanese"
         # }'
-        @app.route("/f-api/v1/japanese-texts", methods=["POST"])
+        @app.route("/v1/japanese-texts", methods=["POST"])
         def create_text():
             data = request.json
             required_fields = [
@@ -104,8 +104,8 @@ class LibraryTexts:
                 return jsonify({"message": "Error saving text"}), 500
 
 
-        # curl -X DELETE http://localhost:5100/f-api/v1/japanese-texts/<id>
-        @app.route("/f-api/v1/japanese-texts/<id>", methods=["DELETE"])
+        # curl -X DELETE http://localhost:5100/v1/japanese-texts/<id>
+        @app.route("/v1/japanese-texts/<id>", methods=["DELETE"])
         def delete_text(id):
             try:
                 result = self.texts_collection.delete_one({"_id": ObjectId(id)})
@@ -122,11 +122,11 @@ class LibraryTexts:
 
         # ------------------------------ Custom Videos ----------------------------- #
 
-        # GET /f-api/v1/custom-videos
+        # GET /v1/custom-videos
         # Can filter by userId, p_tag, s_tag, lang
-        @app.route("/f-api/v1/custom-videos", methods=["GET"])
+        @app.route("/v1/custom-videos", methods=["GET"])
         def get_videos():
-            logging.info("Received GET request for /f-api/v1/custom-videos")
+            logging.info("Received GET request for /v1/custom-videos")
             try:
                 userId = request.args.get('userId')
                 p_tag = request.args.get('p_tag')
@@ -156,11 +156,11 @@ class LibraryTexts:
                 return jsonify({"message": str(err)}), 500
 
 
-        # POST /f-api/v1/custom-videos
+        # POST /v1/custom-videos
         # Requires url, customTitle, customDescription, userId, p_tag, s_tag, lang
-        @app.route("/f-api/v1/custom-videos", methods=["POST"])
+        @app.route("/v1/custom-videos", methods=["POST"])
         def create_video():
-            logging.info("Received POST request for /f-api/v1/custom-videos")
+            logging.info("Received POST request for /v1/custom-videos")
             data = request.json
             required_fields = ["url", "customTitle", "customDescription", "userId", "p_tag", "s_tag", "lang"]
 
@@ -189,10 +189,10 @@ class LibraryTexts:
                 return jsonify({"message": str(err)}), 500
 
 
-        # DELETE /f-api/v1/custom-videos/:id
-        @app.route("/f-api/v1/custom-videos/<id>", methods=["DELETE"])
+        # DELETE /v1/custom-videos/:id
+        @app.route("/v1/custom-videos/<id>", methods=["DELETE"])
         def delete_video(id):
-            logging.info(f"Received DELETE request for /f-api/v1/custom-videos/{id}")
+            logging.info(f"Received DELETE request for /v1/custom-videos/{id}")
             try:
                 result = self.videos_collection.delete_one({"_id": ObjectId(id)})
                 if result.deleted_count == 0:

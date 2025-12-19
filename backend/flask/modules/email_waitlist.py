@@ -18,8 +18,8 @@ class EmailWaitlist:
         #  curl -X POST \
         #  -H "Content-Type: application/json" \
         #  -d '{"email":"test@example.com"}' \
-        #  http://localhost:5100/f-api/v1/submit_email
-        @app.route('/f-api/v1/submit_email', methods=['POST'])
+        #  http://localhost:5100/v1/submit_email
+        @app.route('/v1/submit_email', methods=['POST'])
         def submit_email():
             data = request.get_json()
             email = data.get('email')

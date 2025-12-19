@@ -8,7 +8,7 @@ This module tracks comprehensive learner progress across all learning activities
 - Vocabulary/Kanji/Grammar mastery
 - Achievements and streaks
 
-API Prefix: /f-api/v1/learner/
+API Prefix: /v1/learner/
 """
 
 import logging
@@ -561,7 +561,7 @@ class LearnerProgressModule:
     def register_routes(self, app):
         """Register learner progress routes with Flask app."""
 
-        @app.route("/f-api/v1/learner/progress/<user_id>", methods=["GET"])
+        @app.route("/v1/learner/progress/<user_id>", methods=["GET"])
         def get_learner_progress(user_id):
             """Get user's progress summary."""
             try:
@@ -571,7 +571,7 @@ class LearnerProgressModule:
                 self.logger.error(f"Error getting progress: {e}")
                 return jsonify({"error": str(e)}), 500
 
-        @app.route("/f-api/v1/learner/activity", methods=["POST"])
+        @app.route("/v1/learner/activity", methods=["POST"])
         def log_learner_activity():
             """Log a learning activity."""
             try:
@@ -591,7 +591,7 @@ class LearnerProgressModule:
                 self.logger.error(f"Error logging activity: {e}")
                 return jsonify({"error": str(e)}), 500
 
-        @app.route("/f-api/v1/learner/stats/<user_id>", methods=["GET"])
+        @app.route("/v1/learner/stats/<user_id>", methods=["GET"])
         def get_learner_stats(user_id):
             """Get detailed stats for user."""
             try:
@@ -602,7 +602,7 @@ class LearnerProgressModule:
                 self.logger.error(f"Error getting stats: {e}")
                 return jsonify({"error": str(e)}), 500
 
-        @app.route("/f-api/v1/learner/achievements/<user_id>", methods=["GET"])
+        @app.route("/v1/learner/achievements/<user_id>", methods=["GET"])
         def get_learner_achievements(user_id):
             """Get user's achievements."""
             try:
@@ -612,7 +612,7 @@ class LearnerProgressModule:
                 self.logger.error(f"Error getting achievements: {e}")
                 return jsonify({"error": str(e)}), 500
 
-        @app.route("/f-api/v1/learner/session/start", methods=["POST"])
+        @app.route("/v1/learner/session/start", methods=["POST"])
         def start_learner_session():
             """Start a study session."""
             try:
@@ -629,7 +629,7 @@ class LearnerProgressModule:
                 self.logger.error(f"Error starting session: {e}")
                 return jsonify({"error": str(e)}), 500
 
-        @app.route("/f-api/v1/learner/session/<session_id>/end", methods=["POST"])
+        @app.route("/v1/learner/session/<session_id>/end", methods=["POST"])
         def end_learner_session(session_id):
             """End a study session."""
             try:

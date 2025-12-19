@@ -18,7 +18,7 @@ class MecabUserVocabulary:
 
         # API endpoint to receive POST calls w vocab knowledge status
         # curl -X POST \
-        #   http://localhost:5100/f-api/v1/user-vocabulary \
+        #   http://localhost:5100/v1/user-vocabulary \
         #   -H 'Content-Type: application/json' \
         #   -d '{
         #     "userId": "example_user",
@@ -27,7 +27,7 @@ class MecabUserVocabulary:
         #     "furigana": "いき",
         #     "status": "seen"
         # }'
-        @app.route("/f-api/v1/user-vocabulary", methods=["POST"])
+        @app.route("/v1/user-vocabulary", methods=["POST"])
         def add_user_vocabulary():
             data = request.json
             logging.info(f"Incoming payload: {data}")
@@ -60,7 +60,7 @@ class MecabUserVocabulary:
 
         # API endpoint to receive POST calls with the payload
         # curl -X POST \
-        #   /f-api/v1/enhance-vocabulary \
+        #   /v1/enhance-vocabulary \
         #   -H 'Content-Type: application/json' \
         #   -d '{
         #         "userId": "example_user",
@@ -85,7 +85,7 @@ class MecabUserVocabulary:
         #             ]
         #         ]
         #     }'
-        @app.route("/f-api/v1/enhance-vocabulary", methods=["POST"])
+        @app.route("/v1/enhance-vocabulary", methods=["POST"])
         def enhance_vocabulary():
             data = request.json
             logging.info(f"Incoming payload: {data}")
@@ -118,7 +118,7 @@ class MecabUserVocabulary:
 
 # # API endpoint to receive POST calls w vocab knowledge status
 # # curl -X POST \
-# #   /f-api/v1/user-vocabulary \
+# #   /v1/user-vocabulary \
 # #   -H 'Content-Type: application/json' \
 # #   -d '{
 # #     "userId": "example_user",
@@ -127,7 +127,7 @@ class MecabUserVocabulary:
 # #     "furigana": "いき",
 # #     "status": "seen"
 # # }'
-# @app.route("/f-api/v1/user-vocabulary", methods=["POST"])
+# @app.route("/v1/user-vocabulary", methods=["POST"])
 # def add_user_vocabulary():
 #     data = request.json
 #     logging.info(f"Incoming payload: {data}")
@@ -158,7 +158,7 @@ class MecabUserVocabulary:
 
 # # API endpoint to receive POST calls with the payload
 # # curl -X POST \
-# #   /f-api/v1/enhance-vocabulary \
+# #   /v1/enhance-vocabulary \
 # #   -H 'Content-Type: application/json' \
 # #   -d '{
 # #         "userId": "example_user",
@@ -183,7 +183,7 @@ class MecabUserVocabulary:
 # #             ]
 # #         ]
 # #     }'
-# @app.route("/f-api/v1/enhance-vocabulary", methods=["POST"])
+# @app.route("/v1/enhance-vocabulary", methods=["POST"])
 # def enhance_vocabulary():
 #     data = request.json
 #     logging.info(f"Incoming payload: {data}")

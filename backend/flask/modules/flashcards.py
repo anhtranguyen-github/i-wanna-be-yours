@@ -107,11 +107,11 @@ class FlashcardModule:
         # ------------------------------- PROD READY ----------------------------------------------
 
         # curl calls:
-        # curl -X POST http://localhost:5100/f-api/v1/clone-static-collection-kanji -H "Content-Type: application/json" -d '{"userId": "testUser", "collection": "kanji", "p_tag": "JLPT_N3", "s_tag": "part_1"}'  # likely we do not need to clone such small parts
-        # curl -X POST http://localhost:5100/f-api/v1/clone-static-collection-kanji -H "Content-Type: application/json" -d '{"userId": "testUser", "collection": "kanji", "p_tag": "JLPT_N3"}'  # w only p_tag
+        # curl -X POST http://localhost:5100/v1/clone-static-collection-kanji -H "Content-Type: application/json" -d '{"userId": "testUser", "collection": "kanji", "p_tag": "JLPT_N3", "s_tag": "part_1"}'  # likely we do not need to clone such small parts
+        # curl -X POST http://localhost:5100/v1/clone-static-collection-kanji -H "Content-Type: application/json" -d '{"userId": "testUser", "collection": "kanji", "p_tag": "JLPT_N3"}'  # w only p_tag
         # POST endpoint to retrieve and clone a collection from sourceDB to flashcardDB
         # we clone only given kanji and specific tags, and then we add SRS specific info - difficulty and so on
-        @app.route("/f-api/v1/clone-static-collection-kanji", methods=["POST"])
+        @app.route("/v1/clone-static-collection-kanji", methods=["POST"])
         def clone_static_collection_kanji():
             """clones static collection from static db calling static api endpoint
             static prod endpoint runs typically on port 8000
@@ -152,7 +152,7 @@ class FlashcardModule:
             #      "__v":0},
             # ]
 
-            logging.info("received POST at /f-api/v1/clone-static-collection-kanji")
+            logging.info("received POST at /v1/clone-static-collection-kanji")
 
             try:
                 data = request.json
@@ -235,12 +235,12 @@ class FlashcardModule:
                 return jsonify({"error": str(e)}), 500
 
         # curl calls:
-        # curl -X POST http://localhost:5100/f-api/v1/clone-static-collection-words -H "Content-Type: application/json" -d '{"userId": "testUser", "collection": "words", "p_tag": "essential_600_verbs", "s_tag": "part_1"}'  # likely we do not need to clone such small parts
-        # curl -X POST http://localhost:5100/f-api/v1/clone-static-collection-words -H "Content-Type: application/json" -d '{"userId": "testUser", "collection": "words", "p_tag": "suru_essential_600_verbs"}'  # w only p_tag
-        # curl -X POST http://localhost:5100/f-api/v1/clone-static-collection-words -H "Content-Type: application/json" -d '{"userId": "testUser", "collection": "words", "p_tag": "essential_600_verbs"}'  # w only p_tag
+        # curl -X POST http://localhost:5100/v1/clone-static-collection-words -H "Content-Type: application/json" -d '{"userId": "testUser", "collection": "words", "p_tag": "essential_600_verbs", "s_tag": "part_1"}'  # likely we do not need to clone such small parts
+        # curl -X POST http://localhost:5100/v1/clone-static-collection-words -H "Content-Type: application/json" -d '{"userId": "testUser", "collection": "words", "p_tag": "suru_essential_600_verbs"}'  # w only p_tag
+        # curl -X POST http://localhost:5100/v1/clone-static-collection-words -H "Content-Type: application/json" -d '{"userId": "testUser", "collection": "words", "p_tag": "essential_600_verbs"}'  # w only p_tag
         # POST endpoint to retrieve and clone a collection from sourceDB to flashcardDB
         # we clone only given kanji and specific tags, and then we add SRS specific info - difficulty and so on
-        @app.route("/f-api/v1/clone-static-collection-words", methods=["POST"])
+        @app.route("/v1/clone-static-collection-words", methods=["POST"])
         def clone_static_collection_words():
             """clones static collection from static db calling static api endpoint
             static prod endpoint runs typically on port 8000
@@ -290,7 +290,7 @@ class FlashcardModule:
             #       ]
             #      },
 
-            logging.info("received POST at /f-api/v1/clone-static-collection-words")
+            logging.info("received POST at /v1/clone-static-collection-words")
 
             try:
                 data = request.json
@@ -376,13 +376,13 @@ class FlashcardModule:
             except Exception as e:
                 return jsonify({"error": str(e)}), 500
 
-        # curl -X POST http://localhost:5100/f-api/v1/combine-flashcard-data-kanji -H "Content-Type: application/json" -d '{"userId": "testUser", "collectionName": "kanji", "p_tag": "JLPT_N3", "s_tag": "part_1"}'
+        # curl -X POST http://localhost:5100/v1/combine-flashcard-data-kanji -H "Content-Type: application/json" -d '{"userId": "testUser", "collectionName": "kanji", "p_tag": "JLPT_N3", "s_tag": "part_1"}'
         # to get full card data, we need to combine dynamic and static DB data
         # (because we do not want to store full flashcard data separately for each user
         # it would take lots of space and would be difficult to fix typos)
-        # curl -X POST http://localhost:5100/f-api/v1/combine-flashcard-data -H "Content-Type: application/json" -d '{"userId": "testUser", "collectionName": "kanji", "p_tag": "JLPT_N3", "s_tag": "part_1"}'
-        # curl -X GET -H "Content-Type: application/json" "http://localhost:5100/f-api/v1/combine-flashcard-data?userId=testUser&collectionName=kanji&p_tag=JLPT_N3&s_tag=part_1"
-        @app.route("/f-api/v1/combine-flashcard-data-kanji", methods=["GET", "POST"])
+        # curl -X POST http://localhost:5100/v1/combine-flashcard-data -H "Content-Type: application/json" -d '{"userId": "testUser", "collectionName": "kanji", "p_tag": "JLPT_N3", "s_tag": "part_1"}'
+        # curl -X GET -H "Content-Type: application/json" "http://localhost:5100/v1/combine-flashcard-data?userId=testUser&collectionName=kanji&p_tag=JLPT_N3&s_tag=part_1"
+        @app.route("/v1/combine-flashcard-data-kanji", methods=["GET", "POST"])
         def combine_flashcard_data_kanji():
             try:
                 # Determine the request method and extract parameters accordingly
@@ -458,13 +458,13 @@ class FlashcardModule:
             except Exception as e:
                 return jsonify({"error": str(e)}), 500
 
-        # curl -X POST http://localhost:5100/f-api/v1/combine-flashcard-data-words -H "Content-Type: application/json" -d '{"userId": "testUser", "collectionName": "words", "p_tag": "essential_600_verbs", "s_tag": "verbs-1"}'
+        # curl -X POST http://localhost:5100/v1/combine-flashcard-data-words -H "Content-Type: application/json" -d '{"userId": "testUser", "collectionName": "words", "p_tag": "essential_600_verbs", "s_tag": "verbs-1"}'
         # to get full card data, we need to combine dynamic and static DB data
         # (because we do not want to store full flashcard data separately for each user
         # it would take lots of space and would be difficult to fix typos)
-        # curl -X POST http://localhost:5100/f-api/v1/combine-flashcard-data-words -H "Content-Type: application/json" -d '{"userId": "testUser", "collectionName": "words", "p_tag": "essential_600_verbs", "s_tag": "verbs-1"}'
-        # curl -X GET -H "Content-Type: application/json" "http://localhost:5100/f-api/v1/combine-flashcard-data-words?userId=testUser&collectionName=words&p_tag=essential_600_verbs&s_tag=verbs-1"
-        @app.route("/f-api/v1/combine-flashcard-data-words", methods=["GET", "POST"])
+        # curl -X POST http://localhost:5100/v1/combine-flashcard-data-words -H "Content-Type: application/json" -d '{"userId": "testUser", "collectionName": "words", "p_tag": "essential_600_verbs", "s_tag": "verbs-1"}'
+        # curl -X GET -H "Content-Type: application/json" "http://localhost:5100/v1/combine-flashcard-data-words?userId=testUser&collectionName=words&p_tag=essential_600_verbs&s_tag=verbs-1"
+        @app.route("/v1/combine-flashcard-data-words", methods=["GET", "POST"])
         def combine_flashcard_data_words():
             try:
                 # Determine the request method and extract parameters accordingly
@@ -561,15 +561,15 @@ class FlashcardModule:
         ###########################################################
 
         # Example curl calls:
-        #   curl -X POST http://localhost:5100/f-api/v1/clone-static-collection-grammars \
+        #   curl -X POST http://localhost:5100/v1/clone-static-collection-grammars \
         #       -H "Content-Type: application/json" \
         #       -d '{"userId": "testUser", "collection": "grammars", "p_tag": "JLPT_N3", "s_tag": "10"}'
         #
-        #   curl -X POST http://localhost:5100/f-api/v1/clone-static-collection-grammars \
+        #   curl -X POST http://localhost:5100/v1/clone-static-collection-grammars \
         #       -H "Content-Type: application/json" \
         #       -d '{"userId": "testUser", "collection": "grammars", "p_tag": "JLPT_N3"}'  # only p_tag
 
-        @app.route("/f-api/v1/clone-static-collection-grammars", methods=["POST"])
+        @app.route("/v1/clone-static-collection-grammars", methods=["POST"])
         def clone_static_collection_grammars():
             """
             Clones static grammar collection from the static DB into the user's flashcard DB.
@@ -579,7 +579,7 @@ class FlashcardModule:
             -d '{"userId": "testUser", "collection": "grammars", "p_tag": "JLPT_N3", "s_tag": "10"}'
             """
 
-            logging.info("received POST at /f-api/v1/clone-static-collection-grammars")
+            logging.info("received POST at /v1/clone-static-collection-grammars")
 
             try:
                 data = request.json
@@ -648,15 +648,15 @@ class FlashcardModule:
 
         # # Example curl calls:
         # #   POST:
-        # #       curl -X POST http://localhost:5100/f-api/v1/combine-flashcard-data-grammars \
+        # #       curl -X POST http://localhost:5100/v1/combine-flashcard-data-grammars \
         # #           -H "Content-Type: application/json" \
         # #           -d '{"userId": "testUser", "collectionName": "grammars", "p_tag": "JLPT_N3", "s_tag": "10"}'
         # #
         # #   GET:
         # #       curl -X GET -H "Content-Type: application/json" \
-        # #           "http://localhost:5100/f-api/v1/combine-flashcard-data-grammars?userId=testUser&collectionName=grammars&p_tag=JLPT_N3&s_tag=10"
+        # #           "http://localhost:5100/v1/combine-flashcard-data-grammars?userId=testUser&collectionName=grammars&p_tag=JLPT_N3&s_tag=10"
 
-        # @app.route("/f-api/v1/combine-flashcard-data-grammars", methods=["GET", "POST"])
+        # @app.route("/v1/combine-flashcard-data-grammars", methods=["GET", "POST"])
         # def combine_flashcard_data_grammars():
         #     """
         #     Merges the user's dynamic flashcard info (e.g., difficulty, userId, etc.)
@@ -734,7 +734,7 @@ class FlashcardModule:
 
 
 
-        @app.route("/f-api/v1/combine-flashcard-data-grammars", methods=["GET", "POST"])
+        @app.route("/v1/combine-flashcard-data-grammars", methods=["GET", "POST"])
         def combine_flashcard_data_grammars():
             """
             Merges the user's dynamic flashcard info (e.g., difficulty, userId, etc.)
@@ -880,7 +880,7 @@ class FlashcardModule:
 
         # GET endpoint to retrieve flashcard states for a specific user
         # for given collection and tags
-        # @app.route("/f-api/v1/flashcard/<userId>", methods=["GET"])
+        # @app.route("/v1/flashcard/<userId>", methods=["GET"])
         # def get_flashcard_states(userId):
         #     try:
 
@@ -921,7 +921,7 @@ class FlashcardModule:
         #         )
 
 
-        @app.route("/f-api/v1/flashcard/<userId>", methods=["GET"])
+        @app.route("/v1/flashcard/<userId>", methods=["GET"])
         def get_flashcard_states(userId):
             try:
                 data = request.args.to_dict()  # Convert ImmutableMultiDict to dict
@@ -978,7 +978,7 @@ class FlashcardModule:
         # for given collection and given element
         # (kanji collection and specific kanji, kanji can be duplicate,
         # hence we need tags and of course user to localise specific kanji to update)
-        # @app.route("/f-api/v1/flashcard", methods=["POST"])
+        # @app.route("/v1/flashcard", methods=["POST"])
         # def store_flashcard_state():
         #     data = request.json
         #     print("received flashcard update POST payload:")
@@ -1108,7 +1108,7 @@ class FlashcardModule:
         # hence we need tags and of course user to localise specific kanji to update)
         # example
         #{"userId":"testUserId","difficulty":"hard","collectionName":"grammars","title":"～から～にかけて (〜kara 〜ni kakete)","p_tag":"JLPT_N3","s_tag":"10"}
-        @app.route("/f-api/v1/flashcard", methods=["POST"])
+        @app.route("/v1/flashcard", methods=["POST"])
         def store_flashcard_state():
             data = request.json
             print("received flashcard update POST payload:")
@@ -1282,13 +1282,13 @@ class FlashcardModule:
         #  UNIFIED FLASHCARD SYSTEM (PHASE 1)
         # -----------------------------------------------------------------------------------------
 
-        @app.route("/f-api/v1/cards/personal", methods=["POST"])
+        @app.route("/v1/cards/personal", methods=["POST"])
         def create_personal_card():
             """
             Creates a new Personal Card and initializes its progress.
             Schema: PersonalCard + UserFlashcardProgress
             """
-            logging.info("received POST at /f-api/v1/cards/personal")
+            logging.info("received POST at /v1/cards/personal")
             data = request.json
             user_id = data.get("userId")
             front = data.get("front")
@@ -1350,7 +1350,7 @@ class FlashcardModule:
         #  PHASE 2: UNIFIED REVIEW API
         # -----------------------------------------------------------------------------------------
 
-        @app.route("/f-api/v1/study/due", methods=["GET"])
+        @app.route("/v1/study/due", methods=["GET"])
         def get_due_flashcards():
             """
             Fetches all flashcards due for review for a given user.
@@ -1439,7 +1439,7 @@ class FlashcardModule:
             except Exception as e:
                 return jsonify({"error": str(e)}), 500
 
-        @app.route("/f-api/v1/public/sample", methods=["GET"])
+        @app.route("/v1/public/sample", methods=["GET"])
         def get_public_sample():
             """
             Returns a sample deck for guest users.
@@ -1474,7 +1474,7 @@ class FlashcardModule:
             except Exception as e:
                 return jsonify({"error": str(e)}), 500
 
-        @app.route("/f-api/v1/cards/personal/<card_id>", methods=["PUT"])
+        @app.route("/v1/cards/personal/<card_id>", methods=["PUT"])
         def update_personal_card(card_id):
             """
             Updates Personal Card content and its associated progress metadata (Deck/Tags).
@@ -1505,7 +1505,7 @@ class FlashcardModule:
             except Exception as e:
                 return jsonify({"error": str(e)}), 500
 
-        @app.route("/f-api/v1/cards/personal/<card_id>", methods=["DELETE"])
+        @app.route("/v1/cards/personal/<card_id>", methods=["DELETE"])
         def delete_personal_card(card_id):
             """
             Hard delete of Personal Card and its progress.
@@ -1523,7 +1523,7 @@ class FlashcardModule:
             except Exception as e:
                 return jsonify({"error": str(e)}), 500
 
-        @app.route("/f-api/v1/study/answer", methods=["POST"])
+        @app.route("/v1/study/answer", methods=["POST"])
         def answer_flashcard():
             """
             Updates the SRS state of a flashcard based on user quality rating (0-5).
@@ -1613,7 +1613,7 @@ class FlashcardModule:
                         
                         import requests as req_lib
                         req_lib.post(
-                            "http://localhost:5100/f-api/v1/learner/activity",
+                            "http://localhost:5100/v1/learner/activity",
                             json=payload,
                             timeout=3
                         )

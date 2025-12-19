@@ -20,7 +20,7 @@ class SentenceMiningModule:
 
 
         #TODO: VOCAB CARD DIFFICULTY UPDTATE CAUSES CREATION OF NEW DB ENTRY, WE SHOULD USE PATCH OR SOMETHING IN THE LOGIC
-        @app.route("/f-api/v1/store-vocabulary-data", methods=["POST"])
+        @app.route("/v1/store-vocabulary-data", methods=["POST"])
         def store_vocabulary_data():
             data = request.json
             logging.info(f"Incoming vocabulary data: {data}")
@@ -62,7 +62,7 @@ class SentenceMiningModule:
 
 
         # OVERWRITES GIVEN ENTRY, WORD CAN BE ONLY ONCE IN DB
-        # @app.route("/f-api/v1/store-vocabulary-data", methods=["POST"])
+        # @app.route("/v1/store-vocabulary-data", methods=["POST"])
         # def store_vocabulary_data():
         #     data = request.json
         #     logging.info(f"Incoming vocabulary data: {data}")
@@ -118,11 +118,11 @@ class SentenceMiningModule:
         #
         # Example curl:
         # curl -X GET -H "Content-Type: application/json" \
-        # "http://localhost:5100/f-api/v1/text-parser-words?userId=testUser&collectionName=vocabulary&p_tag=sentence_mining&s_tag=verbs-1"
+        # "http://localhost:5100/v1/text-parser-words?userId=testUser&collectionName=vocabulary&p_tag=sentence_mining&s_tag=verbs-1"
         # -------------------------------------------------------------------------------------
-        @app.route("/f-api/v1/text-parser-words", methods=["GET"])
+        @app.route("/v1/text-parser-words", methods=["GET"])
         def get_vocabulary():
-            logging.info("Processing GET request for /f-api/v1/text-parser-words")
+            logging.info("Processing GET request for /v1/text-parser-words")
             try:
                 data = request.args.to_dict()
                 logging.info(f"Query string data: {data}")
@@ -189,11 +189,11 @@ class SentenceMiningModule:
         #   "vocabulary_original": "紹介",
         #   "p_tag": "sentence_mining",
         #   "s_tag": "verbs-1"
-        # }' "http://localhost:5100/f-api/v1/text-parser-words"
+        # }' "http://localhost:5100/v1/text-parser-words"
         # -------------------------------------------------------------------------------------
-        @app.route("/f-api/v1/text-parser-words", methods=["POST"])
+        @app.route("/v1/text-parser-words", methods=["POST"])
         def create_vocabulary_record():
-            logging.info("Processing POST request for /f-api/v1/text-parser-words")
+            logging.info("Processing POST request for /v1/text-parser-words")
             try:
                 data = request.json
                 logging.info(f"Request data: {data}")
@@ -248,11 +248,11 @@ class SentenceMiningModule:
         # Example curl:
         # curl -X PATCH -H "Content-Type: application/json" \
         # -d '{"difficulty": "medium"}' \
-        # "http://localhost:5100/f-api/v1/text-parser-words/INSERT_RECORD_ID_HERE"
+        # "http://localhost:5100/v1/text-parser-words/INSERT_RECORD_ID_HERE"
         # -------------------------------------------------------------------------------------
-        @app.route("/f-api/v1/text-parser-words/<string:record_id>", methods=["PATCH"])
+        @app.route("/v1/text-parser-words/<string:record_id>", methods=["PATCH"])
         def update_vocabulary_record(record_id):
-            logging.info(f"Processing PATCH request for /f-api/v1/text-parser-words/{record_id}")
+            logging.info(f"Processing PATCH request for /v1/text-parser-words/{record_id}")
             try:
                 data = request.json
                 logging.info(f"Request data for PATCH: {data}")
@@ -298,11 +298,11 @@ class SentenceMiningModule:
         #   "collectionName": "vocabulary",
         #   "p_tag": "sentence_mining",
         #   "s_tag": "verbs-1"
-        # }' "http://localhost:5100/f-api/v1/text-parser-words"
+        # }' "http://localhost:5100/v1/text-parser-words"
         # -------------------------------------------------------------------------------------
-        @app.route("/f-api/v1/text-parser-words", methods=["DELETE"])
+        @app.route("/v1/text-parser-words", methods=["DELETE"])
         def delete_vocabulary():
-            logging.info("Processing DELETE request for /f-api/v1/text-parser-words")
+            logging.info("Processing DELETE request for /v1/text-parser-words")
             try:
                 data = request.json
                 logging.info(f"Request data: {data}")

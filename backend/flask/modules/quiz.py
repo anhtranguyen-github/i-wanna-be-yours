@@ -261,7 +261,7 @@ class QuizModule:
             }
             
             response = requests.post(
-                "http://localhost:5100/f-api/v1/learner/activity",
+                "http://localhost:5100/v1/learner/activity",
                 json=payload,
                 timeout=5
             )
@@ -291,9 +291,9 @@ class QuizModule:
         attempts_collection.create_index([("user_id", 1), ("completed_at", -1)])
         
         # ----------------------------------------------------------------
-        # GET /f-api/v1/quizzes - List available quizzes
+        # GET /v1/quizzes - List available quizzes
         # ----------------------------------------------------------------
-        @app.route("/f-api/v1/quizzes", methods=["GET"])
+        @app.route("/v1/quizzes", methods=["GET"])
         def list_quizzes():
             try:
                 # Query parameters
@@ -356,9 +356,9 @@ class QuizModule:
                 return jsonify({"error": "Failed to fetch quizzes"}), 500
         
         # ----------------------------------------------------------------
-        # GET /f-api/v1/quizzes/<quiz_id> - Get quiz for taking
+        # GET /v1/quizzes/<quiz_id> - Get quiz for taking
         # ----------------------------------------------------------------
-        @app.route("/f-api/v1/quizzes/<quiz_id>", methods=["GET"])
+        @app.route("/v1/quizzes/<quiz_id>", methods=["GET"])
         def get_quiz(quiz_id):
             try:
                 quiz = quizzes_collection.find_one({
@@ -407,9 +407,9 @@ class QuizModule:
                 return jsonify({"error": "Failed to fetch quiz"}), 500
         
         # ----------------------------------------------------------------
-        # POST /f-api/v1/quizzes/<quiz_id>/submit - Submit quiz attempt
+        # POST /v1/quizzes/<quiz_id>/submit - Submit quiz attempt
         # ----------------------------------------------------------------
-        @app.route("/f-api/v1/quizzes/<quiz_id>/submit", methods=["POST"])
+        @app.route("/v1/quizzes/<quiz_id>/submit", methods=["POST"])
         def submit_quiz(quiz_id):
             try:
                 data = request.get_json()
@@ -495,9 +495,9 @@ class QuizModule:
                 return jsonify({"error": "Failed to submit quiz"}), 500
         
         # ----------------------------------------------------------------
-        # GET /f-api/v1/quiz-attempts - User's attempt history
+        # GET /v1/quiz-attempts - User's attempt history
         # ----------------------------------------------------------------
-        @app.route("/f-api/v1/quiz-attempts", methods=["GET"])
+        @app.route("/v1/quiz-attempts", methods=["GET"])
         def list_attempts():
             try:
                 user_id = request.args.get("user_id")
@@ -544,9 +544,9 @@ class QuizModule:
                 return jsonify({"error": "Failed to fetch attempts"}), 500
         
         # ----------------------------------------------------------------
-        # GET /f-api/v1/quiz-attempts/<attempt_id> - Specific attempt details
+        # GET /v1/quiz-attempts/<attempt_id> - Specific attempt details
         # ----------------------------------------------------------------
-        @app.route("/f-api/v1/quiz-attempts/<attempt_id>", methods=["GET"])
+        @app.route("/v1/quiz-attempts/<attempt_id>", methods=["GET"])
         def get_attempt(attempt_id):
             try:
                 attempt = attempts_collection.find_one({"_id": ObjectId(attempt_id)})
@@ -576,9 +576,9 @@ class QuizModule:
                 return jsonify({"error": "Failed to fetch attempt"}), 500
         
         # ----------------------------------------------------------------
-        # POST /f-api/v1/quizzes - Create custom quiz (authenticated)
+        # POST /v1/quizzes - Create custom quiz (authenticated)
         # ----------------------------------------------------------------
-        @app.route("/f-api/v1/quizzes", methods=["POST"])
+        @app.route("/v1/quizzes", methods=["POST"])
         def create_quiz():
             try:
                 data = request.get_json()

@@ -8,7 +8,7 @@ This module implements personalized JLPT study planning with:
 - Daily task generation
 - Progress calculation and adaptive adjustments
 
-API Prefix: /f-api/v1/study-plan/
+API Prefix: /v1/study-plan/
 """
 
 import logging
@@ -1034,7 +1034,7 @@ class StudyPlanModule:
 
         # ---- PUBLIC ENDPOINTS (No Auth Required) ----
 
-        @app.route("/f-api/v1/study-plan/templates", methods=["GET"])
+        @app.route("/v1/study-plan/templates", methods=["GET"])
         def list_templates():
             """List all public plan templates."""
             try:
@@ -1064,7 +1064,7 @@ class StudyPlanModule:
                 self.logger.error(f"Error listing templates: {e}")
                 return jsonify({"error": "Failed to fetch templates"}), 500
 
-        @app.route("/f-api/v1/study-plan/templates/<template_id>", methods=["GET"])
+        @app.route("/v1/study-plan/templates/<template_id>", methods=["GET"])
         def get_template(template_id):
             """Get a specific template with milestone details."""
             try:
@@ -1088,7 +1088,7 @@ class StudyPlanModule:
                 self.logger.error(f"Error fetching template: {e}")
                 return jsonify({"error": "Failed to fetch template"}), 500
 
-        @app.route("/f-api/v1/study-plan/jlpt-info", methods=["GET"])
+        @app.route("/v1/study-plan/jlpt-info", methods=["GET"])
         def get_jlpt_info():
             """Get JLPT level requirements and exam info."""
             return jsonify({
@@ -1099,7 +1099,7 @@ class StudyPlanModule:
 
         # ---- AUTHENTICATED ENDPOINTS ----
 
-        @app.route("/f-api/v1/study-plan/plans", methods=["POST"])
+        @app.route("/v1/study-plan/plans", methods=["POST"])
         def create_plan():
             """Create a personalized study plan."""
             try:
@@ -1146,7 +1146,7 @@ class StudyPlanModule:
                 self.logger.error(f"Error creating plan: {e}")
                 return jsonify({"error": "Failed to create plan"}), 500
 
-        @app.route("/f-api/v1/study-plan/plans", methods=["GET"])
+        @app.route("/v1/study-plan/plans", methods=["GET"])
         def list_plans():
             """List user's study plans."""
             try:
@@ -1187,7 +1187,7 @@ class StudyPlanModule:
                 self.logger.error(f"Error listing plans: {e}")
                 return jsonify({"error": "Failed to fetch plans"}), 500
 
-        @app.route("/f-api/v1/study-plan/plans/<plan_id>", methods=["GET"])
+        @app.route("/v1/study-plan/plans/<plan_id>", methods=["GET"])
         def get_plan(plan_id):
             """Get detailed plan information."""
             try:
@@ -1246,7 +1246,7 @@ class StudyPlanModule:
                 self.logger.error(f"Error fetching plan: {e}")
                 return jsonify({"error": "Failed to fetch plan"}), 500
 
-        @app.route("/f-api/v1/study-plan/plans/<plan_id>", methods=["PATCH"])
+        @app.route("/v1/study-plan/plans/<plan_id>", methods=["PATCH"])
         def update_plan(plan_id):
             """Update plan settings."""
             try:
@@ -1282,7 +1282,7 @@ class StudyPlanModule:
                 self.logger.error(f"Error updating plan: {e}")
                 return jsonify({"error": "Failed to update plan"}), 500
 
-        @app.route("/f-api/v1/study-plan/plans/<plan_id>", methods=["DELETE"])
+        @app.route("/v1/study-plan/plans/<plan_id>", methods=["DELETE"])
         def delete_plan(plan_id):
             """Abandon/delete a study plan."""
             try:
@@ -1304,7 +1304,7 @@ class StudyPlanModule:
 
         # ---- MILESTONE ENDPOINTS ----
 
-        @app.route("/f-api/v1/study-plan/milestones/<milestone_id>", methods=["GET"])
+        @app.route("/v1/study-plan/milestones/<milestone_id>", methods=["GET"])
         def get_milestone(milestone_id):
             """Get milestone details."""
             try:
@@ -1335,7 +1335,7 @@ class StudyPlanModule:
                 self.logger.error(f"Error fetching milestone: {e}")
                 return jsonify({"error": "Failed to fetch milestone"}), 500
 
-        @app.route("/f-api/v1/study-plan/milestones/<milestone_id>/complete", methods=["PATCH"])
+        @app.route("/v1/study-plan/milestones/<milestone_id>/complete", methods=["PATCH"])
         def complete_milestone(milestone_id):
             """Mark a milestone as complete."""
             try:
@@ -1385,7 +1385,7 @@ class StudyPlanModule:
 
         # ---- DAILY TASKS ENDPOINTS ----
 
-        @app.route("/f-api/v1/study-plan/daily-tasks", methods=["GET"])
+        @app.route("/v1/study-plan/daily-tasks", methods=["GET"])
         def get_daily_tasks():
             """Get tasks for today or a specific date."""
             try:
@@ -1450,7 +1450,7 @@ class StudyPlanModule:
                 self.logger.error(f"Error fetching daily tasks: {e}")
                 return jsonify({"error": "Failed to fetch tasks"}), 500
 
-        @app.route("/f-api/v1/study-plan/daily-tasks/<task_id>/complete", methods=["PATCH"])
+        @app.route("/v1/study-plan/daily-tasks/<task_id>/complete", methods=["PATCH"])
         def complete_task(task_id):
             """Mark a task as complete."""
             try:
@@ -1471,7 +1471,7 @@ class StudyPlanModule:
                 self.logger.error(f"Error completing task: {e}")
                 return jsonify({"error": "Failed to complete task"}), 500
 
-        @app.route("/f-api/v1/study-plan/progress/<plan_id>", methods=["GET"])
+        @app.route("/v1/study-plan/progress/<plan_id>", methods=["GET"])
         def get_progress(plan_id):
             """Get detailed progress report for a plan."""
             try:
@@ -1516,7 +1516,7 @@ class StudyPlanModule:
 
         # ---- ADAPTIVE ADJUSTMENT ENDPOINTS ----
 
-        @app.route("/f-api/v1/study-plan/plans/<plan_id>/health", methods=["GET"])
+        @app.route("/v1/study-plan/plans/<plan_id>/health", methods=["GET"])
         def check_plan_health(plan_id):
             """Get plan health analysis with recommendations."""
             try:
@@ -1528,7 +1528,7 @@ class StudyPlanModule:
                 self.logger.error(f"Error checking plan health: {e}")
                 return jsonify({"error": "Failed to check plan health"}), 500
 
-        @app.route("/f-api/v1/study-plan/plans/<plan_id>/recalculate", methods=["POST"])
+        @app.route("/v1/study-plan/plans/<plan_id>/recalculate", methods=["POST"])
         def recalculate_plan(plan_id):
             """Recalculate milestone timelines."""
             try:
@@ -1554,7 +1554,7 @@ class StudyPlanModule:
                 self.logger.error(f"Error recalculating plan: {e}")
                 return jsonify({"error": "Failed to recalculate plan"}), 500
 
-        @app.route("/f-api/v1/study-plan/plans/<plan_id>/quiz-update", methods=["POST"])
+        @app.route("/v1/study-plan/plans/<plan_id>/quiz-update", methods=["POST"])
         def update_from_quiz(plan_id):
             """Update milestone progress based on quiz results."""
             try:
@@ -1580,7 +1580,7 @@ class StudyPlanModule:
                 self.logger.error(f"Error updating from quiz: {e}")
                 return jsonify({"error": "Failed to update from quiz"}), 500
 
-        @app.route("/f-api/v1/study-plan/srs-update", methods=["POST"])
+        @app.route("/v1/study-plan/srs-update", methods=["POST"])
         def update_from_srs():
             """Update milestone progress based on SRS statistics."""
             try:
@@ -1609,7 +1609,7 @@ class StudyPlanModule:
                 self.logger.error(f"Error updating from SRS: {e}")
                 return jsonify({"error": "Failed to update from SRS"}), 500
 
-        @app.route("/f-api/v1/study-plan/log-activity", methods=["POST"])
+        @app.route("/v1/study-plan/log-activity", methods=["POST"])
         def log_activity_route():
             try:
                 data = request.json

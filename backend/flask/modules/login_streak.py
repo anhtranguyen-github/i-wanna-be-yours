@@ -14,12 +14,12 @@ class LoginStreak:
 
     def register_routes(self, app):
 
-        #  curl -X POST http://localhost:5100/f-api/v1/notify-login \
+        #  curl -X POST http://localhost:5100/v1/notify-login \
         #  -H "Content-Type: application/json" \
         #  -d '{
         #        "userId": "example_user"
         #      }'
-        @app.route("/f-api/v1/notify-login", methods=["POST"])
+        @app.route("/v1/notify-login", methods=["POST"])
         def notify_login():
             data = request.json
             userId = data.get("userId")
@@ -48,8 +48,8 @@ class LoginStreak:
                 logging.error("Login attempt without a userId in the request.")
                 return jsonify({"error": "userId not provided"}), 400
 
-        # curl -X GET http://localhost:5100/f-api/v1/get-logins/example_user
-        @app.route("/f-api/v1/get-logins/<userId>", methods=["GET"])
+        # curl -X GET http://localhost:5100/v1/get-logins/example_user
+        @app.route("/v1/get-logins/<userId>", methods=["GET"])
         def get_logins(userId):
             if not userId:
                 return jsonify({"error": "userId is required"}), 400
@@ -70,8 +70,8 @@ class LoginStreak:
                     500,
                 )
 
-        # curl -X GET http://localhost:5100/f-api/v1/streak/example_user
-        @app.route("/f-api/v1/streak/<userId>", methods=["GET"])
+        # curl -X GET http://localhost:5100/v1/streak/example_user
+        @app.route("/v1/streak/<userId>", methods=["GET"])
         def longest_streak(userId):
             # Fetch all login docs for the given userId, sorted by date
             logins = list(

@@ -7,7 +7,7 @@ This module provides intelligent learning recommendations and adaptive adjustmen
 - Adjust difficulty levels
 - Predict optimal review times
 
-API Prefix: /f-api/v1/adaptive/
+API Prefix: /v1/adaptive/
 """
 
 import logging
@@ -465,7 +465,7 @@ class AdaptiveLearningModule:
     def register_routes(self, app):
         """Register adaptive learning routes with Flask app."""
 
-        @app.route("/f-api/v1/adaptive/recommendations/<user_id>", methods=["GET"])
+        @app.route("/v1/adaptive/recommendations/<user_id>", methods=["GET"])
         def get_recommendations(user_id):
             """Get personalized learning recommendations."""
             try:
@@ -475,7 +475,7 @@ class AdaptiveLearningModule:
                 self.logger.error(f"Error getting recommendations: {e}")
                 return jsonify({"error": str(e)}), 500
 
-        @app.route("/f-api/v1/adaptive/performance/<user_id>", methods=["GET"])
+        @app.route("/v1/adaptive/performance/<user_id>", methods=["GET"])
         def analyze_performance(user_id):
             """Analyze user's learning performance."""
             try:
@@ -486,7 +486,7 @@ class AdaptiveLearningModule:
                 self.logger.error(f"Error analyzing performance: {e}")
                 return jsonify({"error": str(e)}), 500
 
-        @app.route("/f-api/v1/adaptive/difficulty/<user_id>", methods=["GET"])
+        @app.route("/v1/adaptive/difficulty/<user_id>", methods=["GET"])
         def get_difficulty(user_id):
             """Get user's difficulty settings."""
             try:
@@ -496,7 +496,7 @@ class AdaptiveLearningModule:
                 self.logger.error(f"Error getting difficulty: {e}")
                 return jsonify({"error": str(e)}), 500
 
-        @app.route("/f-api/v1/adaptive/difficulty/<user_id>/adjust", methods=["POST"])
+        @app.route("/v1/adaptive/difficulty/<user_id>/adjust", methods=["POST"])
         def adjust_difficulty_route(user_id):
             """Manually trigger difficulty adjustment."""
             try:
@@ -510,7 +510,7 @@ class AdaptiveLearningModule:
                 self.logger.error(f"Error adjusting difficulty: {e}")
                 return jsonify({"error": str(e)}), 500
 
-        @app.route("/f-api/v1/adaptive/optimal-time/<user_id>", methods=["GET"])
+        @app.route("/v1/adaptive/optimal-time/<user_id>", methods=["GET"])
         def get_optimal_time(user_id):
             """Get optimal study time recommendations."""
             try:

@@ -113,7 +113,7 @@ class ResourcesModule:
 
     def register_routes(self, app):
         
-        @app.route("/f-api/v1/resources/upload", methods=["POST"])
+        @app.route("/v1/resources/upload", methods=["POST"])
         def upload_resource():
             try:
                 if 'file' not in request.files:
@@ -166,7 +166,7 @@ class ResourcesModule:
                 return jsonify({"error": "Upload failed"}), 500
         
         
-        @app.route("/f-api/v1/resources", methods=["GET"])
+        @app.route("/v1/resources", methods=["GET"])
         def list_resources():
             user_id = request.args.get('userId')
             resource_type = request.args.get('type')
@@ -204,7 +204,7 @@ class ResourcesModule:
             }), 200
         
         
-        @app.route("/f-api/v1/resources/<id>", methods=["GET"])
+        @app.route("/v1/resources/<id>", methods=["GET"])
         def get_resource(id):
             try:
                 resource = self.resources_collection.find_one({
@@ -231,7 +231,7 @@ class ResourcesModule:
                 return jsonify({"error": str(e)}), 500
         
         
-        @app.route("/f-api/v1/resources/<id>/download", methods=["GET"])
+        @app.route("/v1/resources/<id>/download", methods=["GET"])
         def download_resource(id):
             try:
                 resource = self.resources_collection.find_one({
@@ -254,7 +254,7 @@ class ResourcesModule:
                 return jsonify({"error": str(e)}), 500
         
         
-        @app.route("/f-api/v1/resources/<id>", methods=["PUT"])
+        @app.route("/v1/resources/<id>", methods=["PUT"])
         def update_resource(id):
             try:
                 data = request.json or {}
@@ -280,7 +280,7 @@ class ResourcesModule:
                 return jsonify({"error": str(e)}), 500
         
         
-        @app.route("/f-api/v1/resources/<id>", methods=["DELETE"])
+        @app.route("/v1/resources/<id>", methods=["DELETE"])
         def delete_resource(id):
             try:
                 resource = self.resources_collection.find_one({
@@ -301,7 +301,7 @@ class ResourcesModule:
                 return jsonify({"error": str(e)}), 500
         
         
-        @app.route("/f-api/v1/resources/search", methods=["GET"])
+        @app.route("/v1/resources/search", methods=["GET"])
         def search_resources():
             query_text = request.args.get('q', '')
             user_id = request.args.get('userId')
