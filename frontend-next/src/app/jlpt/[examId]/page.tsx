@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import {
     Clock,
@@ -24,6 +24,8 @@ import {
     DisplayMode,
     QuestionStatus,
 } from "@/types/practice";
+import { useExamTimer } from "@/hooks/useExamTimer";
+import * as jlptService from "@/services/jlptService";
 
 // ============================================================================
 // EXAM SESSION PAGE - Now at /jlpt/[examId]
@@ -50,47 +52,70 @@ export default function ExamSessionPage() {
     const [answers, setAnswers] = useState<Record<string, UserAnswer>>({});
     const [flagged, setFlagged] = useState<Set<string>>(new Set());
     const [displayMode, setDisplayMode] = useState<DisplayMode>("FOCUS");
-    const [timeRemaining, setTimeRemaining] = useState<number>(0);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
+    const [startedAt] = useState<Date>(new Date());
 
-    // Initialize timer
-    useEffect(() => {
-        if (examConfig?.timerMode !== "UNLIMITED" && examConfig?.timeLimitMinutes) {
-            setTimeRemaining(examConfig.timeLimitMinutes * 60);
+    // Submit exam
+    const handleSubmit = useCallback(async () => {
+        if (isSubmitted) return;
+
+        const completedAt = new Date();
+
+        // Calculate the result
+        const attempt = jlptService.calculateExamResult({
+            examId,
+            examTitle: examConfig?.title || 'Unknown Exam',
+            examMode: examConfig?.mode || 'QUIZ',
+            level: examConfig?.level || 'N3',
+            questions,
+            answers,
+            startedAt,
+            completedAt,
+        });
+
+        // Save to local storage
+        jlptService.saveLocalAttempt(attempt);
+
+        // If user is logged in, try to save to API
+        // if (user) {
+        //     try { await jlptService.saveAttempt(attempt); } catch (e) { console.error(e); }
+        // }
+
+        setIsSubmitted(true);
+        setShowSubmitConfirm(false);
+
+        // Store attempt ID in session storage for the result page to pick up
+        sessionStorage.setItem('last_exam_attempt', JSON.stringify(attempt));
+    }, [isSubmitted, examId, examConfig, questions, answers, startedAt]);
+
+    // Handle submit callback for timer
+    const handleTimerSubmit = useCallback(() => {
+        handleSubmit();
+    }, [handleSubmit]);
+
+    // Use exam timer hook with persistence
+    const {
+        timeRemaining,
+        formattedTime,
+        timerStyles,
+        isTimeLow,
+        isTimeUp,
+    } = useExamTimer({
+        examId: examId || 'unknown',
+        initialSeconds: examConfig?.timeLimitMinutes ? examConfig.timeLimitMinutes * 60 : 0,
+        timerMode: examConfig?.timerMode || 'UNLIMITED',
+        onTimeUp: handleTimerSubmit,
+        autoStart: true,
+    });
+
+    // Auto-submit when time is up
+    React.useEffect(() => {
+        if (isTimeUp && !isSubmitted) {
+            setIsSubmitted(true);
         }
-    }, [examConfig]);
-
-    // Timer countdown
-    useEffect(() => {
-        if (isSubmitted || !timeRemaining || examConfig?.timerMode === "UNLIMITED") return;
-
-        const interval = setInterval(() => {
-            setTimeRemaining((prev) => {
-                if (prev <= 1) {
-                    clearInterval(interval);
-                    handleSubmit();
-                    return 0;
-                }
-                return prev - 1;
-            });
-        }, 1000);
-
-        return () => clearInterval(interval);
-    }, [isSubmitted, examConfig?.timerMode]);
-
-    // Format time display
-    const formatTime = (seconds: number) => {
-        const hrs = Math.floor(seconds / 3600);
-        const mins = Math.floor((seconds % 3600) / 60);
-        const secs = seconds % 60;
-
-        if (hrs > 0) {
-            return `${hrs}:${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
-        }
-        return `${mins}:${secs.toString().padStart(2, "0")}`;
-    };
+    }, [isTimeUp, isSubmitted]);
 
     // Get question status
     const getQuestionStatus = (questionId: string): QuestionStatus => {
@@ -135,11 +160,7 @@ export default function ExamSessionPage() {
         }
     };
 
-    // Submit exam
-    const handleSubmit = () => {
-        setIsSubmitted(true);
-        setShowSubmitConfirm(false);
-    };
+
 
     // View results - Updated URL
     const handleViewResults = () => {
@@ -169,7 +190,6 @@ export default function ExamSessionPage() {
     }
 
     const currentQuestion = questions[currentIndex];
-    const isTimeLow = timeRemaining > 0 && timeRemaining <= 300;
 
     return (
         <div className="min-h-screen bg-slate-50 flex flex-col">
@@ -194,12 +214,11 @@ export default function ExamSessionPage() {
                     <div
                         className={`
                             flex items-center gap-2 px-4 py-2 rounded-xl font-mono font-bold text-lg
-                            ${isTimeLow ? "bg-red-100 text-red-600 animate-pulse" : "bg-slate-100 text-slate-700"}
-                            ${examConfig.timerMode === "UNLIMITED" ? "hidden" : ""}
+                            ${timerStyles}
                         `}
                     >
                         <Clock size={20} />
-                        {formatTime(timeRemaining)}
+                        {formattedTime}
                     </div>
 
                     {/* Right: Controls */}

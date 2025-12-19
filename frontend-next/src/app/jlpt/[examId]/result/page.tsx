@@ -18,7 +18,8 @@ import {
     BarChart3,
 } from "lucide-react";
 import { mockExamConfigs, getQuestionsForExam } from "@/data/mockPractice";
-import { SkillType, JLPTLevel } from "@/types/practice";
+import { SkillType, JLPTLevel, ExamAttempt } from "@/types/practice";
+import { formatTimeDisplay } from "@/hooks/useExamTimer";
 
 // ============================================================================
 // RESULT PAGE - Now at /jlpt/[examId]/result
@@ -39,10 +40,43 @@ export default function ExamResultPage() {
         return getQuestionsForExam(examId);
     }, [examId]);
 
-    // Mock results
-    const mockResults = useMemo(() => {
+    // Load saved attempt if it exists
+    const savedAttempt = useMemo(() => {
+        try {
+            const saved = sessionStorage.getItem('last_exam_attempt');
+            if (saved) {
+                const attempt = JSON.parse(saved) as ExamAttempt;
+                if (attempt.examId === examId) return attempt;
+            }
+        } catch (e) {
+            console.error('Error loading saved attempt:', e);
+        }
+        return null;
+    }, [examId]);
+
+    // Format data for display
+    const resultData = useMemo(() => {
+        if (savedAttempt) {
+            return {
+                totalQuestions: savedAttempt.totalQuestions,
+                correctAnswers: savedAttempt.correctAnswers,
+                incorrectAnswers: savedAttempt.incorrectAnswers,
+                unanswered: savedAttempt.unansweredQuestions,
+                scorePercentage: savedAttempt.scorePercentage,
+                timeTakenSeconds: savedAttempt.timeTakenSeconds,
+                skillBreakdown: savedAttempt.skillBreakdown.map(s => ({
+                    skill: s.skill,
+                    total: s.totalQuestions,
+                    correct: s.correctAnswers,
+                    percentage: s.percentage
+                })),
+                passed: savedAttempt.passed
+            };
+        }
+
         if (!questions.length) return null;
 
+        // Fallback to mock results for demo purposes if no real result
         const totalQuestions = questions.length;
         const correctAnswers = Math.floor(totalQuestions * 0.7);
         const incorrectAnswers = Math.floor(totalQuestions * 0.2);
@@ -85,9 +119,9 @@ export default function ExamResultPage() {
             skillBreakdown,
             passed: correctAnswers / totalQuestions >= 0.6,
         };
-    }, [questions]);
+    }, [questions, savedAttempt]);
 
-    if (!examConfig || !mockResults) {
+    if (!examConfig || !resultData) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-slate-50">
                 <div className="text-center">
@@ -162,7 +196,7 @@ export default function ExamResultPage() {
                 <div
                     className={`
                         relative overflow-hidden rounded-3xl p-8 mb-8 text-white
-                        bg-gradient-to-br ${getScoreBgColor(mockResults.scorePercentage)}
+                        bg-gradient-to-br ${getScoreBgColor(resultData.scorePercentage)}
                     `}
                 >
                     <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
@@ -189,12 +223,12 @@ export default function ExamResultPage() {
                                         stroke="white"
                                         strokeWidth="12"
                                         strokeLinecap="round"
-                                        strokeDasharray={`${mockResults.scorePercentage * 4.4} 440`}
+                                        strokeDasharray={`${resultData.scorePercentage * 4.4} 440`}
                                         className="transition-all duration-1000"
                                     />
                                 </svg>
                                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                    <span className="text-5xl font-black">{mockResults.scorePercentage}%</span>
+                                    <span className="text-5xl font-black">{resultData.scorePercentage}%</span>
                                     <span className="text-sm opacity-80">Score</span>
                                 </div>
                             </div>
@@ -203,7 +237,7 @@ export default function ExamResultPage() {
                         {/* Status & Stats */}
                         <div className="flex-1 text-center md:text-left">
                             <div className="flex items-center justify-center md:justify-start gap-3 mb-4">
-                                {mockResults.passed ? (
+                                {resultData.passed ? (
                                     <>
                                         <Trophy size={32} />
                                         <div>
@@ -226,17 +260,17 @@ export default function ExamResultPage() {
                             <div className="grid grid-cols-3 gap-4 mt-6">
                                 <div className="bg-white/20 backdrop-blur rounded-xl p-3 text-center">
                                     <CheckCircle2 size={20} className="mx-auto mb-1" />
-                                    <p className="text-2xl font-bold">{mockResults.correctAnswers}</p>
+                                    <p className="text-2xl font-bold">{resultData.correctAnswers}</p>
                                     <p className="text-xs opacity-80">Correct</p>
                                 </div>
                                 <div className="bg-white/20 backdrop-blur rounded-xl p-3 text-center">
                                     <XCircle size={20} className="mx-auto mb-1" />
-                                    <p className="text-2xl font-bold">{mockResults.incorrectAnswers}</p>
+                                    <p className="text-2xl font-bold">{resultData.incorrectAnswers}</p>
                                     <p className="text-xs opacity-80">Incorrect</p>
                                 </div>
                                 <div className="bg-white/20 backdrop-blur rounded-xl p-3 text-center">
                                     <Clock size={20} className="mx-auto mb-1" />
-                                    <p className="text-2xl font-bold">{formatTime(mockResults.timeTakenSeconds).split("m")[0]}m</p>
+                                    <p className="text-2xl font-bold">{formatTime(resultData.timeTakenSeconds).split("m")[0]}m</p>
                                     <p className="text-xs opacity-80">Time</p>
                                 </div>
                             </div>
@@ -257,7 +291,7 @@ export default function ExamResultPage() {
                     </div>
 
                     <div className="space-y-4">
-                        {mockResults.skillBreakdown.map((skill) => (
+                        {resultData.skillBreakdown.map((skill) => (
                             <div key={skill.skill} className="flex items-center gap-4">
                                 <div className="w-32 sm:w-40 flex items-center gap-2">
                                     <span className="text-xl">{skillIcons[skill.skill]}</span>
@@ -300,7 +334,7 @@ export default function ExamResultPage() {
                     </div>
 
                     <ul className="space-y-2 text-sm text-amber-800">
-                        {mockResults.skillBreakdown
+                        {resultData.skillBreakdown
                             .filter((s) => s.percentage < 70)
                             .map((skill) => (
                                 <li key={skill.skill} className="flex items-start gap-2">
@@ -311,7 +345,7 @@ export default function ExamResultPage() {
                                     </span>
                                 </li>
                             ))}
-                        {mockResults.skillBreakdown.every((s) => s.percentage >= 70) && (
+                        {resultData.skillBreakdown.every((s) => s.percentage >= 70) && (
                             <li className="flex items-center gap-2">
                                 <Award size={16} />
                                 <span>Excellent work! Try a higher difficulty level to challenge yourself.</span>
