@@ -46,6 +46,7 @@ const navIcons = [
     { icon: Wrench, label: 'Tools', href: '/tools' },
     { icon: Gamepad2, label: 'Game', href: '/game' },
     { icon: Library, label: 'Library', href: '/library' },
+    { icon: BookOpen, label: 'Dictionary', href: '/dictionary' },
     { icon: CalendarDays, label: 'Study Plan', href: '/study-plan' },
     { icon: GraduationCap, label: 'Practice', href: '/practice' },
 ];
@@ -341,10 +342,11 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
         </div>
     );
 
+
     const renderStandardModeContent = () => (
-        <>
+        <div className="flex flex-col h-full overflow-hidden">
             {/* Standard Vertical Navigation */}
-            <div className="flex-1 overflow-y-auto px-2 py-3 space-y-1">
+            <div className="flex-1 overflow-y-auto min-h-0 px-2 py-3 space-y-1">
                 {navIcons.map((item, idx) => (
                     <Link
                         key={idx}
@@ -391,7 +393,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     </button>
                 </div>
             </div>
-        </>
+        </div>
     );
 
     return (
@@ -425,6 +427,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     </button>
                 )}
             </div>
+
 
             {/* Render Content Based on Route */}
             {isOnChat ? renderChatModeContent() : renderStandardModeContent()}
