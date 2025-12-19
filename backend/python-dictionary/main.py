@@ -84,5 +84,12 @@ async def unified_search(payload: Dict[str, str]):
         raise HTTPException(status_code=400, detail="No text provided")
     return await search_service.search(text)
 
+@app.post("/d-api/v1/sentences")
+async def get_sentences(payload: Dict[str, str]):
+    query = payload.get("query")
+    if not query:
+        raise HTTPException(status_code=400, detail="No query provided")
+    return await search_service.get_sentences(query)
+
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=5200, reload=True)
