@@ -127,3 +127,53 @@ export interface FilterState {
     level: JLPTLevel | 'ALL';
     skill: SkillType | 'ALL';
 }
+
+// --- Personal Collections ---
+
+export interface ExamAttempt {
+    id: string;
+    userId?: string;
+    examId: string;
+    examTitle: string;
+    examMode: Exclude<PracticeMode, 'ALL'>;
+    level: JLPTLevel;
+
+    // Results
+    totalQuestions: number;
+    correctAnswers: number;
+    incorrectAnswers: number;
+    unansweredQuestions: number;
+    scorePercentage: number;
+    passed: boolean;
+
+    // Timing
+    startedAt: Date | string;
+    completedAt: Date | string;
+    timeTakenSeconds: number;
+
+    // Details
+    skillBreakdown: SkillBreakdown[];
+    answers: Record<string, UserAnswer>;
+}
+
+export interface UserCreatedExam {
+    id: string;
+    userId: string;
+
+    // Config
+    config: ExamConfig;
+    questions: Question[];
+
+    // Metadata
+    origin: 'manual' | 'chatbot';
+    createdAt: Date | string;
+    updatedAt: Date | string;
+
+    // Visibility
+    isPublic: boolean;
+    shareUrl?: string;
+
+    // Stats
+    timesAttempted: number;
+    averageScore?: number;
+}
