@@ -200,7 +200,19 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
     const inputRef = useRef<HTMLTextAreaElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    // Effective conversation ID: use local state (updated after first message) or prop
+    // Use layout context for interactions
+    const {
+        stagedResourceToProcess,
+        consumeStagedResource,
+        openArtifact,
+        previewResource,
+        closeResourcePreview,
+        stageResource,
+        setEffectiveConversationId,
+        effectiveConversationId: contextConversationId
+    } = useChatLayout();
+
+    // Effective conversation ID: use local state (updated after first message) or prop or context
     const effectiveConversationId = localConversationId || conversationId;
 
     // Sync local conversation ID when prop changes (user navigated to different chat)
@@ -210,10 +222,17 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
         } else {
             // User navigated to /chat (new chat)
             setLocalConversationId(null);
-            setMessages([]);
-            setCurrentSessionId(null);
         }
     }, [conversationId]);
+
+    // Clear messages when context's effectiveConversationId becomes null (user clicked New Chat)
+    useEffect(() => {
+        if (contextConversationId === null) {
+            setMessages([]);
+            setCurrentSessionId(null);
+            setLocalConversationId(null);
+        }
+    }, [contextConversationId]);
 
     // Fetch history if conversationId is provided
     useEffect(() => {
@@ -241,19 +260,7 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
             };
             fetchHistory();
         }
-        // Note: We don't clear messages here when !conversationId - that's handled in the sync effect above
     }, [conversationId, user]);
-
-    // Use layout context for interactions
-    const {
-        stagedResourceToProcess,
-        consumeStagedResource,
-        openArtifact,
-        previewResource,
-        closeResourcePreview,
-        stageResource,
-        setEffectiveConversationId
-    } = useChatLayout();
 
     useEffect(() => {
         console.log('[ChatMainArea] useEffect triggered, stagedResourceToProcess:', stagedResourceToProcess);
