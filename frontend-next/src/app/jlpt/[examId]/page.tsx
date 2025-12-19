@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import {
     Clock,
@@ -153,12 +153,77 @@ export default function ExamSessionPage() {
         });
     };
 
+    const contentRef = React.useRef<HTMLDivElement>(null);
+
+    // Helper to find the scrollable parent (AppShell's overflow-auto div)
+    const getScrollContainer = () => {
+        if (!contentRef.current) return window;
+        let parent = contentRef.current.parentElement;
+        while (parent) {
+            const overflow = window.getComputedStyle(parent).overflowY;
+            if (overflow === "auto" || overflow === "scroll") return parent;
+            parent = parent.parentElement;
+        }
+        return window;
+    };
+
     // Navigation
     const goToQuestion = (index: number) => {
         if (index >= 0 && index < questions.length) {
             setCurrentIndex(index);
+            if (displayMode === "SCROLL") {
+                const element = document.getElementById(`question-${index}`);
+                const container = getScrollContainer();
+
+                if (element) {
+                    const headerOffset = 100;
+                    if (container === window) {
+                        const elementPosition = element.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                        window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+                    } else {
+                        const containerElement = container as HTMLElement;
+                        const elementPosition = element.offsetTop;
+                        containerElement.scrollTo({
+                            top: elementPosition - headerOffset,
+                            behavior: "smooth"
+                        });
+                    }
+                }
+            }
         }
     };
+
+    // Sync active question on scroll (for SCROLL mode)
+    useEffect(() => {
+        if (displayMode !== "SCROLL") return;
+
+        const container = getScrollContainer();
+        const handleScroll = () => {
+            const questionElements = questions.map((_, i) => document.getElementById(`question-${i}`));
+            const scrollThreshold = 150;
+
+            let currentScroll = 0;
+            if (container === window) {
+                currentScroll = window.scrollY;
+            } else {
+                currentScroll = (container as HTMLElement).scrollTop;
+            }
+
+            for (let i = questionElements.length - 1; i >= 0; i--) {
+                const el = questionElements[i];
+                if (el && el.offsetTop <= currentScroll + scrollThreshold) {
+                    if (currentIndex !== i) {
+                        setCurrentIndex(i);
+                    }
+                    break;
+                }
+            }
+        };
+
+        container.addEventListener("scroll", handleScroll);
+        return () => container.removeEventListener("scroll", handleScroll);
+    }, [displayMode, questions, currentIndex]);
 
 
 
@@ -264,17 +329,16 @@ export default function ExamSessionPage() {
             </header>
 
             {/* ===== MAIN CONTENT ===== */}
-            <div className="flex-1 flex">
-                {/* ===== LEFT SIDEBAR ===== */}
+            <div ref={contentRef} className="flex-1 flex">
                 <aside
                     className={`
-                        fixed lg:static inset-y-0 left-0 z-40 w-64 bg-white border-r border-slate-200 
+                        fixed lg:sticky lg:top-[5.5rem] lg:h-fit inset-y-0 lg:inset-y-auto left-0 lg:left-auto z-30 w-64 lg:w-80 
                         transform transition-transform duration-300 lg:transform-none
                         ${isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-                        pt-16 lg:pt-0
+                        pt-16 lg:pt-0 lg:pl-6
                     `}
                 >
-                    <div className="p-4 h-full flex flex-col">
+                    <div className="p-4 h-full lg:h-auto bg-white lg:rounded-2xl lg:border lg:border-slate-200 lg:shadow-sm flex flex-col">
                         {/* Test Info */}
                         <div className="mb-4 pb-4 border-b border-slate-100">
                             <p className="text-sm text-slate-500">
@@ -341,7 +405,7 @@ export default function ExamSessionPage() {
                 </aside>
 
                 {/* ===== QUESTION AREA ===== */}
-                <main className="flex-1 overflow-y-auto p-6">
+                <main className="flex-1 p-6 lg:p-8">
                     {displayMode === "FOCUS" ? (
                         <FocusModeView
                             question={currentQuestion}

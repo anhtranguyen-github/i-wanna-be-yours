@@ -37,7 +37,7 @@ class FlashcardService {
             creator: 'user'
         };
 
-        const res = await fetch(`${API_BASE_URL}/f-api/v1/cards/personal`, {
+        const res = await fetch(`${API_BASE_URL}/v1/cards/personal`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -54,7 +54,7 @@ class FlashcardService {
     }
 
     async updatePersonalCard(id: string, updates: any) {
-        const res = await fetch(`${API_BASE_URL}/f-api/v1/cards/personal/${id}`, {
+        const res = await fetch(`${API_BASE_URL}/v1/cards/personal/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updates)
@@ -64,7 +64,7 @@ class FlashcardService {
     }
 
     async deletePersonalCard(id: string) {
-        const res = await fetch(`${API_BASE_URL}/f-api/v1/cards/personal/${id}`, {
+        const res = await fetch(`${API_BASE_URL}/v1/cards/personal/${id}`, {
             method: 'DELETE'
         });
         if (!res.ok) throw new Error('Failed to delete card');
@@ -78,12 +78,12 @@ class FlashcardService {
         if (!user) {
             // Guest mode: return sample deck
             console.log("Guest user: fetching sample deck");
-            const res = await fetch(`${API_BASE_URL}/f-api/v1/public/sample`);
+            const res = await fetch(`${API_BASE_URL}/v1/public/sample`);
             if (!res.ok) throw new Error('Failed to fetch sample cards');
             return await res.json();
         }
 
-        const res = await fetch(`${API_BASE_URL}/f-api/v1/study/due?userId=${user.id}`);
+        const res = await fetch(`${API_BASE_URL}/v1/study/due?userId=${user.id}`);
         if (!res.ok) throw new Error('Failed to fetch due cards');
 
         return await res.json();
@@ -94,7 +94,7 @@ class FlashcardService {
         // user check optional if backend doesn't require it for answer (we use cardId), 
         // but cleaner to ensure auth
 
-        const res = await fetch(`${API_BASE_URL}/f-api/v1/study/answer`, {
+        const res = await fetch(`${API_BASE_URL}/v1/study/answer`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ cardId, quality })
