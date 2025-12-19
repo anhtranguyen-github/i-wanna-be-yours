@@ -26,6 +26,27 @@ const routes = [
         color: "bg-orange-100"
     },
     {
+        title: "Grammar Library",
+        description: "Comprehensive JLPT grammar patterns and usage.",
+        href: "/library/grammar",
+        icon: <BookOpen className="w-8 h-8 text-pink-500" />,
+        color: "bg-pink-100"
+    },
+    {
+        title: "Vocabulary",
+        description: "Essential words for all JLPT levels.",
+        href: "/library/vocabulary",
+        icon: <BookOpen className="w-8 h-8 text-teal-500" />,
+        color: "bg-teal-100"
+    },
+    {
+        title: "Kanji",
+        description: "Master kanji and their readings.",
+        href: "/library/kanji",
+        icon: <span className="text-3xl font-jp font-bold text-red-500">漢</span>,
+        color: "bg-red-100"
+    },
+    {
         title: "Resources & Assets",
         description: "Your uploaded files, PDFs, and learning materials.",
         href: "/library/resources",
