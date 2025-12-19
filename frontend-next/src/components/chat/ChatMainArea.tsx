@@ -5,7 +5,6 @@ import { useChatLayout } from './ChatLayoutContext';
 import { useUser } from '@/context/UserContext';
 import { useGlobalAuth } from '@/context/GlobalAuthContext';
 import { useSWRConfig } from 'swr';
-import { useRouter } from 'next/navigation';
 import {
     Send,
     Sparkles,
@@ -195,38 +194,31 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
     const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
     const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
     const [isDragging, setIsDragging] = useState(false);
+    // Local conversation ID for tracking after shallow URL update
+    const [localConversationId, setLocalConversationId] = useState<string | null>(conversationId || null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLTextAreaElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const router = useRouter();
+
+    // Effective conversation ID: use local state (updated after first message) or prop
+    const effectiveConversationId = localConversationId || conversationId;
+
+    // Sync local conversation ID when prop changes (user navigated to different chat)
+    useEffect(() => {
+        if (conversationId) {
+            setLocalConversationId(conversationId);
+        } else {
+            // User navigated to /chat (new chat)
+            setLocalConversationId(null);
+            setMessages([]);
+            setCurrentSessionId(null);
+        }
+    }, [conversationId]);
 
     // Fetch history if conversationId is provided
     useEffect(() => {
+        // Only fetch if we have a conversationId prop (not localConversationId from shallow update)
         if (conversationId && user) {
-            // Check for pending messages from navigation bridge
-            if (typeof window !== 'undefined') {
-                const pendingConvoId = sessionStorage.getItem('hanabira:pendingConvoId');
-                const pendingMessages = sessionStorage.getItem('hanabira:pendingMessages');
-
-                if (pendingConvoId === conversationId && pendingMessages) {
-                    try {
-                        const restored = JSON.parse(pendingMessages);
-                        // Convert timestamp strings back to Date objects
-                        const restoredMessages: Message[] = restored.map((m: any) => ({
-                            ...m,
-                            timestamp: new Date(m.timestamp)
-                        }));
-                        setMessages(restoredMessages);
-                    } catch (e) {
-                        console.error('Failed to restore messages:', e);
-                    }
-                    // Clear sessionStorage
-                    sessionStorage.removeItem('hanabira:pendingConvoId');
-                    sessionStorage.removeItem('hanabira:pendingMessages');
-                    return; // Skip fetch, we have the messages
-                }
-            }
-
             // Normal fetch from backend
             const fetchHistory = async () => {
                 setIsHistoryLoading(true);
@@ -248,11 +240,8 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
                 }
             };
             fetchHistory();
-        } else if (!conversationId) {
-            // New chat - clear messages and session
-            setMessages([]);
-            setCurrentSessionId(null);
         }
+        // Note: We don't clear messages here when !conversationId - that's handled in the sync effect above
     }, [conversationId, user]);
 
     // Use layout context for interactions
@@ -437,13 +426,13 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
 
         try {
             // Use existing session ID if available, else fallback
-            const sessionId = currentSessionId || conversationId || `session-${Date.now()}`;
+            const sessionId = currentSessionId || effectiveConversationId || `session-${Date.now()}`;
 
             // Use streamChat instead of simulated response
             const { reader, artifacts, conversationId: backendConvoId } = await aiTutorService.streamChat(
                 inputValue.trim() || "Analyze the attached resources",
                 false,
-                conversationId,
+                effectiveConversationId || undefined,
                 sessionId,
                 resourceIds
             );
@@ -479,24 +468,26 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
                 mutate(['/h-api/conversations', user.id]);
 
                 // NEW: Refresh artifacts list for the right sidebar
-                const convoIdToMutate = backendConvoId || conversationId;
+                const convoIdToMutate = backendConvoId || effectiveConversationId;
                 if (convoIdToMutate) {
                     mutate(['artifacts', convoIdToMutate.toString()]);
                 }
             }
 
-            // If this was a new conversation, redirect to its dedicated URL
+            // If this was a new conversation, update URL without navigation
             if (backendConvoId && !conversationId) {
-                // Save current messages to sessionStorage for navigation bridge
+                // Shallow URL update - no page reload, components don't remount
                 if (typeof window !== 'undefined') {
-                    // Get the latest messages including the assistant response
-                    setMessages(prev => {
-                        sessionStorage.setItem('hanabira:pendingConvoId', backendConvoId.toString());
-                        sessionStorage.setItem('hanabira:pendingMessages', JSON.stringify(prev));
-                        return prev;
-                    });
+                    window.history.replaceState(null, '', `/chat/${backendConvoId}`);
                 }
-                router.push(`/chat/${backendConvoId}`);
+
+                // Update local conversation ID for subsequent messages
+                setLocalConversationId(backendConvoId.toString());
+
+                // Refresh left sidebar conversation history
+                if (user) {
+                    mutate(['/h-api/conversations', user.id]);
+                }
             }
 
             // Note: Auto-open artifact behavior has been removed for better UX
