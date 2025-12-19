@@ -217,8 +217,7 @@ kill_existing_processes
 log "=== Verifying Ports are Free ==="
 check_and_free_port 3000 "frontend-next" &
 check_and_free_port 5100 "flask-dynamic-db" &
-check_and_free_port 5200 "dictionary-db" &
-check_and_free_port 5200 "python-dictionary" &
+check_and_free_port 5200 "dictionary-python" &
 check_and_free_port 8000 "express-db" &
 check_and_free_port 5400 "hanachan" &
 wait
@@ -325,25 +324,25 @@ pid=$!
 PIDS+=($pid)
 log "✅ Started flask-dynamic-db (PID: $pid)"
 
-# --- Start DICTIONARY-DB (port 5200) ---
-(
-    log "🚀 Starting dictionary-db (port 5200)..."
-    cd backend/dictionary || exit 1
-
-    if [ "$SHOULD_SEED" = true ]; then
-        log "🌱 Seeding dictionary..."
-        node seed_jmdict_data.js > "$LOG_ROOT/dictionary-db/dict_seed.log" 2>&1 || true
-    else
-        log "ℹ️  Skipping dictionary seeding (use 'seed' arg to enable)"
-    fi
-
-    PORT=5200 node main_server.js \
-    > "$LOG_ROOT/dictionary-db/dict_5200.log" 2>&1
-    on_error "dictionary-db" $?
-) &
-pid=$!
-PIDS+=($pid)
-log "✅ Started dictionary-db (PID: $pid)"
+# --- Start DICTIONARY-DB (Legacy Node.js - DECOMMISSIONED) ---
+# (
+#     log "🚀 Starting legacy dictionary-db (port 5200)..."
+#     cd backend/dictionary || exit 1
+#
+#     if [ "$SHOULD_SEED" = true ]; then
+#         log "🌱 Seeding dictionary..."
+#         node seed_jmdict_data.js > "$LOG_ROOT/dictionary-db/dict_seed.log" 2>&1 || true
+#     else
+#         log "ℹ️  Skipping dictionary seeding (use 'seed' arg to enable)"
+#     fi
+#
+#     PORT=5200 node main_server.js \
+#     > "$LOG_ROOT/dictionary-db/dict_5200.log" 2>&1
+#     on_error "dictionary-db" $?
+# ) &
+# pid=$!
+# PIDS+=($pid)
+# log "✅ Started legacy dictionary-db (PID: $pid)"
 
 # --- Start PYTHON-DICTIONARY (port 5200) ---
 (
@@ -352,6 +351,7 @@ log "✅ Started dictionary-db (PID: $pid)"
     
     if [ "$SHOULD_SEED" = true ]; then
         log "🌱 Seeding dictionary (Full JMDict + Kanjidic)..."
+        # The reseed script handles both JMDict and Kanjidic
         cd ../../ && ./reseed_dictionary.sh > "$LOG_ROOT/dictionary-db/full_seed.log" 2>&1 || true
         cd backend/python-dictionary || exit 1
     fi
