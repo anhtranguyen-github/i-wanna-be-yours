@@ -19,7 +19,7 @@ const wordSchema = new Schema({
   vocabulary_simplified: String,
   vocabulary_english: { type: String, unique: false, required: false },  // TODO: huh, some are missing, you need to review source data
   vocabulary_audio: String,
-  word_type:{ type: String, unique: false, required: false },
+  word_type: { type: String, unique: false, required: false },
   p_tag: String, // parent tag 'JLPT_N3'
   s_tag: String, // sub tag '100'
   //sentences: [{ type: Schema.Types.ObjectId, ref: "Sentence" }],
@@ -61,14 +61,29 @@ const Word = mongoose.model("tanosWord", wordSchema);
   try {
     await connectToDb();
 
+    // Check if the collection exists and drop if so
+    try {
+      // Using a simple check via the native driver capability exposed by mongoose to avoid casting errors if empty
+      // or just attempting to drop.
+      // 'tanoswords' is the collection name derived from model 'tanosWord' (mongoose lowercases and pluralizes)
+      await mongoose.connection.db.dropCollection('tanoswords');
+      console.log("Dropped tanoswords collection.");
+    } catch (e) {
+      if (e.codeName === 'NamespaceNotFound') {
+        console.log("Collection tanoswords does not exist, proceeding to seed.");
+      } else {
+        console.log("Note on collection drop: " + e.message);
+      }
+    }
+
     // improved seeding with error handling
-    await Word.insertMany(words_data)
-      .then(() => console.log("Data insertion successful"))
-      .catch((err) => {
-        console.error("Error during insertion: ", err);
-        mongoose.connection.close();
-        console.log("error caught, closed db connection");
-      });
+    const insertedData = await Word.insertMany(words_data);
+    console.log(`Data insertion successful. Count: ${insertedData.length}`);
+
+    // Log unique p_tags
+    const uniqueTags = [...new Set(insertedData.map(item => item.p_tag))];
+    console.log("Unique p_tags inserted:", uniqueTags);
+
   } catch (err) {
     console.log(err);
     // mongoose.connection.close();      // do not close connection to db on error, we have mess in some relationships, we will skip them for now

@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const fs = require("fs"); // Import the fs module to read files
+const path = require("path");
 
 // Create Express app
 const app = express();
@@ -12,7 +13,8 @@ mongoose.connect("mongodb://localhost:27017/zenRelationshipsAutomated", {
 });
 
 // Define the kanji directory path as a variable
-const kanjiDir = "./kanji";
+const kanjiDir = path.join(__dirname, '..', 'kanji');
+
 
 // --------------------------- schemas -----------------------------
 
@@ -20,7 +22,7 @@ const kanjiDir = "./kanji";
 const kanjiSchema = new mongoose.Schema({
   kanji: String,
   onYomi: String,
-  kunYomi: String,    
+  kunYomi: String,
   reading: String,
   k_audio: String,
   exampleWord: String,
@@ -68,7 +70,7 @@ const seedKanji = async () => {
     const kanjiData9 = JSON.parse(
       fs.readFileSync(`${kanjiDir}/n4kanji3.json`, "utf8")
     );
-    
+
     const kanjiData10 = JSON.parse(
       fs.readFileSync(`${kanjiDir}/n5kanji1.json`, "utf8")
     );

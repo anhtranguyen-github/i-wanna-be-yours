@@ -84,26 +84,30 @@ console.log('--------- Seeding grammar to DB -------------');
 
     // Check if the Grammar collection exists
     const collectionExists = await Grammar.exists();
-    
+
     if (collectionExists) {
-      // Drop the Grammar collection
-      await Grammar.collection.drop();
-      console.log('Dropped Grammar collection.');
+      try {
+        await Grammar.collection.drop();
+        console.log('Dropped Grammar collection.');
+      } catch (e) {
+        console.log("Could not drop collection (might not exist): " + e.message);
+      }
     } else {
       console.log('Grammar collection does not exist.');
     }
 
     // Insert data
-    await Grammar.insertMany(grammar_data)
-      .then(() => console.log("Data insertion successful"))
-      .catch((err) => {
-        console.error("Error during insertion: ", err);
-        mongoose.connection.close();
-        console.log("error caught, closed db connection");
-      });
-    
-    console.log('example of seeded data:');
-    console.log(grammar_data[0]);
+    const insertedData = await Grammar.insertMany(grammar_data);
+    console.log(`Data insertion successful. Count: ${insertedData.length}`);
+
+    // Log unique p_tags to verify coverage
+    const uniqueTags = [...new Set(insertedData.map(item => item.p_tag))];
+    console.log("Unique p_tags inserted:", uniqueTags);
+
+    if (insertedData.length > 0) {
+      console.log('example of seeded data:');
+      console.log(JSON.stringify(insertedData[0], null, 2));
+    }
 
 
     // need to await so db connection can be dropped after this completes

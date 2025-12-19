@@ -8,16 +8,23 @@ const suffix = '.json'; // suffix for the files
 let data = []; // create an empty array to store the data from all the JSON files
 
 try {
-    // use the 'fs.readdirSync' method to read all files in the directory
-    const files = fs.readdirSync(`./${directory}/`);
+    // Resolve absolute path to avoid CWD issues
+    const absDirectory = path.join(__dirname, '..', 'json_data');
+
+    // Check if directory exists
+    if (!fs.existsSync(absDirectory)) {
+        console.error(`Directory not found: ${absDirectory}`);
+    }
+
+    const files = fs.readdirSync(absDirectory);
 
     // use forEach loop to iterate through the files
     files.forEach((file) => {
-        // only process files that match the naming convention 'words_*.json'
+        // only process files that match the naming convention 'wordsTanos_*.json'
         if (path.basename(file).startsWith(prefix) && path.extname(file) === suffix) {
             // use the 'fs.readFileSync' method to read the contents of the file
             // and assign the result to a variable 'jsonString'
-            const jsonString = fs.readFileSync(`./${directory}/${file}`);
+            const jsonString = fs.readFileSync(path.join(absDirectory, file));
 
             // use the 'JSON.parse' method to parse the contents of the jsonString variable as JSON
             // and push the result to the 'data' array
