@@ -146,42 +146,43 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
     const resetRightSidebar = useCallback(() => {
         setActiveArtifactState(null);
         setRightSidebarState('minimized');
+        // Clear sessionStorage when explicitly resetting
+        if (typeof window !== 'undefined') {
+            sessionStorage.removeItem('hanabira:rightSidebar');
+            sessionStorage.removeItem('hanabira:activeArtifact');
+        }
     }, []);
 
-    // EFFECT: Reset right sidebar when the conversation session changes
-    // BUT: Skip reset if there's pending state from a new-chat redirect
+    // EFFECT: Restore sidebar state from sessionStorage on mount (for navigation bridge)
     useEffect(() => {
-        // Check if there's pending sidebar state from navigation
-        const pendingSidebar = sessionStorage.getItem('hanabira:pendingSidebar');
-        const pendingArtifact = sessionStorage.getItem('hanabira:pendingArtifact');
-        const pendingConvoId = sessionStorage.getItem('hanabira:pendingConvoId');
+        if (typeof window === 'undefined') return;
 
-        // If we have pending state AND it matches the current conversation, restore it
-        if (pendingSidebar && pendingConvoId === conversationId) {
-            setRightSidebarState(pendingSidebar as RightSidebarState);
+        const savedSidebar = sessionStorage.getItem('hanabira:rightSidebar');
+        const savedArtifact = sessionStorage.getItem('hanabira:activeArtifact');
 
-            if (pendingArtifact) {
-                try {
-                    const artifact = JSON.parse(pendingArtifact);
-                    setActiveArtifactState(artifact);
-                } catch (e) {
-                    console.error('Failed to parse pending artifact:', e);
-                }
-            }
-
-            // Clear sessionStorage after restore
-            sessionStorage.removeItem('hanabira:pendingSidebar');
-            sessionStorage.removeItem('hanabira:pendingArtifact');
-            sessionStorage.removeItem('hanabira:pendingConvoId');
-            return; // Skip reset
+        if (savedSidebar) {
+            setRightSidebarState(savedSidebar as RightSidebarState);
+            sessionStorage.removeItem('hanabira:rightSidebar');
         }
 
-        // Otherwise, reset as normal when changing conversations
-        // But only if pathname is exactly /chat (new chat) or conversationId actually changed
+        if (savedArtifact) {
+            try {
+                setActiveArtifactState(JSON.parse(savedArtifact));
+            } catch (e) {
+                console.error('Failed to parse saved artifact:', e);
+            }
+            sessionStorage.removeItem('hanabira:activeArtifact');
+        }
+    }, []); // Only on mount
+
+    // EFFECT: Reset right sidebar ONLY when navigating to /chat (new chat) or switching between different chats
+    useEffect(() => {
+        // Only reset when pathname is exactly /chat (user clicked New Chat)
         if (pathname === '/chat') {
             resetRightSidebar();
         }
-    }, [pathname, conversationId, resetRightSidebar]);
+        // Note: We no longer reset when conversationId changes, as this breaks the navigation bridge
+    }, [pathname, resetRightSidebar]);
 
     const setLeftSidebar = useCallback((state: LeftSidebarState) => {
         const validated = validateState(state, rightSidebar, viewport);
@@ -226,6 +227,11 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
         setRightSidebar('expanded');
         if (window.innerWidth < 1600) {
             setLeftSidebar('collapsed');
+        }
+        // Persist to sessionStorage for navigation bridge
+        if (typeof window !== 'undefined') {
+            sessionStorage.setItem('hanabira:rightSidebar', 'expanded');
+            sessionStorage.setItem('hanabira:activeArtifact', JSON.stringify(artifact));
         }
     }, [setRightSidebar, setLeftSidebar]);
 

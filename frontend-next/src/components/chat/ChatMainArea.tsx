@@ -201,36 +201,33 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
     const router = useRouter();
 
     // Fetch history if conversationId is provided
-    // But first check sessionStorage for pending messages from new-chat redirect
     useEffect(() => {
         if (conversationId && user) {
-            // Check for pending messages from sessionStorage (new chat redirect)
-            const pendingMessages = sessionStorage.getItem('hanabira:pendingMessages');
-            const pendingConvoId = sessionStorage.getItem('hanabira:pendingConvoId');
-            const pendingSessionId = sessionStorage.getItem('hanabira:pendingSessionId');
+            // Check for pending messages from navigation bridge
+            if (typeof window !== 'undefined') {
+                const pendingConvoId = sessionStorage.getItem('hanabira:pendingConvoId');
+                const pendingMessages = sessionStorage.getItem('hanabira:pendingMessages');
 
-            // If we have pending messages for THIS conversation, use them
-            if (pendingMessages && pendingConvoId === conversationId) {
-                try {
-                    const msgs = JSON.parse(pendingMessages);
-                    setMessages(msgs.map((m: any) => ({
-                        ...m,
-                        timestamp: new Date(m.timestamp)
-                    })));
-                    if (pendingSessionId) {
-                        setCurrentSessionId(pendingSessionId);
+                if (pendingConvoId === conversationId && pendingMessages) {
+                    try {
+                        const restored = JSON.parse(pendingMessages);
+                        // Convert timestamp strings back to Date objects
+                        const restoredMessages: Message[] = restored.map((m: any) => ({
+                            ...m,
+                            timestamp: new Date(m.timestamp)
+                        }));
+                        setMessages(restoredMessages);
+                    } catch (e) {
+                        console.error('Failed to restore messages:', e);
                     }
-                    // Clear sessionStorage after restore
-                    sessionStorage.removeItem('hanabira:pendingMessages');
+                    // Clear sessionStorage
                     sessionStorage.removeItem('hanabira:pendingConvoId');
-                    sessionStorage.removeItem('hanabira:pendingSessionId');
-                    return; // Skip fetch
-                } catch (e) {
-                    console.error('Failed to parse pending messages:', e);
+                    sessionStorage.removeItem('hanabira:pendingMessages');
+                    return; // Skip fetch, we have the messages
                 }
             }
 
-            // Otherwise, fetch from backend as normal
+            // Normal fetch from backend
             const fetchHistory = async () => {
                 setIsHistoryLoading(true);
                 try {
@@ -488,35 +485,22 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
                 }
             }
 
-            // AUTO-OPEN: If new artifacts were created, open the first one
-            // Do this BEFORE navigation to set the state
-            if (artifacts && artifacts.length > 0) {
-                openArtifact(artifacts[0]);
-            }
-
             // If this was a new conversation, redirect to its dedicated URL
             if (backendConvoId && !conversationId) {
-                // Save current state to sessionStorage BEFORE navigation
-                // This allows the new page to restore without refetching
-                setMessages(prev => {
-                    // Save messages to sessionStorage
-                    sessionStorage.setItem('hanabira:pendingMessages', JSON.stringify(prev));
-                    sessionStorage.setItem('hanabira:pendingConvoId', backendConvoId.toString());
-                    if (currentSessionId) {
-                        sessionStorage.setItem('hanabira:pendingSessionId', currentSessionId);
-                    }
-
-                    // Save sidebar state
-                    sessionStorage.setItem('hanabira:pendingSidebar', 'expanded');
-                    if (artifacts && artifacts.length > 0) {
-                        sessionStorage.setItem('hanabira:pendingArtifact', JSON.stringify(artifacts[0]));
-                    }
-
-                    return prev;
-                });
-
+                // Save current messages to sessionStorage for navigation bridge
+                if (typeof window !== 'undefined') {
+                    // Get the latest messages including the assistant response
+                    setMessages(prev => {
+                        sessionStorage.setItem('hanabira:pendingConvoId', backendConvoId.toString());
+                        sessionStorage.setItem('hanabira:pendingMessages', JSON.stringify(prev));
+                        return prev;
+                    });
+                }
                 router.push(`/chat/${backendConvoId}`);
             }
+
+            // Note: Auto-open artifact behavior has been removed for better UX
+            // Users can click on artifacts in the message bubble to view them
 
             // Also try refreshing the global resources if that's what sidebar uses
             mutate((key: any) => Array.isArray(key) && key[0] === '/f-api/v1/resources');
