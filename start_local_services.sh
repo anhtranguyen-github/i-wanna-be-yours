@@ -218,6 +218,7 @@ log "=== Verifying Ports are Free ==="
 check_and_free_port 3000 "frontend-next" &
 check_and_free_port 5100 "flask-dynamic-db" &
 check_and_free_port 5200 "dictionary-db" &
+check_and_free_port 5200 "python-dictionary" &
 check_and_free_port 8000 "express-db" &
 check_and_free_port 5400 "hanachan" &
 wait
@@ -343,6 +344,25 @@ log "✅ Started flask-dynamic-db (PID: $pid)"
 pid=$!
 PIDS+=($pid)
 log "✅ Started dictionary-db (PID: $pid)"
+
+# --- Start PYTHON-DICTIONARY (port 5200) ---
+(
+    log "🚀 Starting python-dictionary (port 5200)..."
+    cd backend/python-dictionary || exit 1
+    
+    if [ "$SHOULD_SEED" = true ]; then
+        log "🌱 Seeding dictionary (Full JMDict + Kanjidic)..."
+        cd ../../ && ./reseed_dictionary.sh > "$LOG_ROOT/dictionary-db/full_seed.log" 2>&1 || true
+        cd backend/python-dictionary || exit 1
+    fi
+
+    uv run uvicorn main:app --host 0.0.0.0 --port 5200 \
+    > "$LOG_ROOT/dictionary-db/python_dict_5200.log" 2>&1
+    on_error "python-dictionary" $?
+) &
+pid=$!
+PIDS+=($pid)
+log "✅ Started python-dictionary (PID: $pid)"
 
 # --- Start HANACHAN (port 5400) ---
 (

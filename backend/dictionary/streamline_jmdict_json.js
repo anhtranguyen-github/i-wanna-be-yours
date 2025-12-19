@@ -65,31 +65,49 @@ function processFile(filePath) {
 function extractMeanings(contentArray) {
     let meanings = [];
 
-    // Ensure that the contentArray itself is properly formatted
     if (!Array.isArray(contentArray)) {
-        console.error('Meanings content is not an array:', contentArray);
         return meanings;
+    }
+
+    function processContent(item) {
+        if (!item) return;
+
+        // If it's a glossary item, extract its content
+        if (item.data && item.data.content === "glossary" && item.content) {
+            if (Array.isArray(item.content)) {
+                item.content.forEach(li => {
+                    if (typeof li === 'string') meanings.push(li);
+                    else if (li.content) meanings.push(li.content);
+                });
+            } else if (typeof item.content === 'object' && item.content.content) {
+                meanings.push(item.content.content);
+            } else if (typeof item.content === 'string') {
+                meanings.push(item.content);
+            }
+            return;
+        }
+
+        // Recursively process arrays
+        if (Array.isArray(item)) {
+            item.forEach(processContent);
+        } 
+        // Recursively process objects with content field
+        else if (typeof item === 'object' && item.content) {
+            processContent(item.content);
+        }
+        // Take strings
+        else if (typeof item === 'string') {
+            meanings.push(item);
+        }
     }
 
     contentArray.forEach(contentItem => {
         if (contentItem.type === 'structured-content' && contentItem.content) {
-            if (Array.isArray(contentItem.content)) {
-                contentItem.content.forEach(item => {
-                    if (item.data && item.data.content === "glossary" && item.content) {
-                        if (Array.isArray(item.content)) {
-                            meanings.push(...item.content.map(li => li.content));
-                        } else {
-                            console.error('Expected an array of items:', item.content);
-                        }
-                    }
-                });
-            } else {
-                console.error('Structured contentItem.content is not an array:', contentItem.content);
-            }
+            processContent(contentItem.content);
         } else if (typeof contentItem === 'string') {
             meanings.push(contentItem);
         }
     });
 
-    return meanings;
+    return [...new Set(meanings)]; // Unique meanings
 }
