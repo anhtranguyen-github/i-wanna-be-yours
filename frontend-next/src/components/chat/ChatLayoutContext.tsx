@@ -149,14 +149,38 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
     }, []);
 
     // EFFECT: Reset right sidebar when the conversation session changes
+    // BUT: Skip reset if there's pending state from a new-chat redirect
     useEffect(() => {
-        // We reset when:
-        // 1. Pathname is exactly /chat (User explicitly clicked "New Chat")
-        // 2. conversationId changes (User switched between two existing chats)
-        resetRightSidebar();
+        // Check if there's pending sidebar state from navigation
+        const pendingSidebar = sessionStorage.getItem('hanabira:pendingSidebar');
+        const pendingArtifact = sessionStorage.getItem('hanabira:pendingArtifact');
+        const pendingConvoId = sessionStorage.getItem('hanabira:pendingConvoId');
 
-        // Note: We don't want to reset if we just navigated to an artifact URL
-        // but currently artifacts are state-based, not URL-based.
+        // If we have pending state AND it matches the current conversation, restore it
+        if (pendingSidebar && pendingConvoId === conversationId) {
+            setRightSidebarState(pendingSidebar as RightSidebarState);
+
+            if (pendingArtifact) {
+                try {
+                    const artifact = JSON.parse(pendingArtifact);
+                    setActiveArtifactState(artifact);
+                } catch (e) {
+                    console.error('Failed to parse pending artifact:', e);
+                }
+            }
+
+            // Clear sessionStorage after restore
+            sessionStorage.removeItem('hanabira:pendingSidebar');
+            sessionStorage.removeItem('hanabira:pendingArtifact');
+            sessionStorage.removeItem('hanabira:pendingConvoId');
+            return; // Skip reset
+        }
+
+        // Otherwise, reset as normal when changing conversations
+        // But only if pathname is exactly /chat (new chat) or conversationId actually changed
+        if (pathname === '/chat') {
+            resetRightSidebar();
+        }
     }, [pathname, conversationId, resetRightSidebar]);
 
     const setLeftSidebar = useCallback((state: LeftSidebarState) => {

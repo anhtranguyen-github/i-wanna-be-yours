@@ -201,8 +201,36 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
     const router = useRouter();
 
     // Fetch history if conversationId is provided
+    // But first check sessionStorage for pending messages from new-chat redirect
     useEffect(() => {
         if (conversationId && user) {
+            // Check for pending messages from sessionStorage (new chat redirect)
+            const pendingMessages = sessionStorage.getItem('hanabira:pendingMessages');
+            const pendingConvoId = sessionStorage.getItem('hanabira:pendingConvoId');
+            const pendingSessionId = sessionStorage.getItem('hanabira:pendingSessionId');
+
+            // If we have pending messages for THIS conversation, use them
+            if (pendingMessages && pendingConvoId === conversationId) {
+                try {
+                    const msgs = JSON.parse(pendingMessages);
+                    setMessages(msgs.map((m: any) => ({
+                        ...m,
+                        timestamp: new Date(m.timestamp)
+                    })));
+                    if (pendingSessionId) {
+                        setCurrentSessionId(pendingSessionId);
+                    }
+                    // Clear sessionStorage after restore
+                    sessionStorage.removeItem('hanabira:pendingMessages');
+                    sessionStorage.removeItem('hanabira:pendingConvoId');
+                    sessionStorage.removeItem('hanabira:pendingSessionId');
+                    return; // Skip fetch
+                } catch (e) {
+                    console.error('Failed to parse pending messages:', e);
+                }
+            }
+
+            // Otherwise, fetch from backend as normal
             const fetchHistory = async () => {
                 setIsHistoryLoading(true);
                 try {
@@ -460,14 +488,34 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
                 }
             }
 
-            // If this was a new conversation, redirect to its dedicated URL
-            if (backendConvoId && !conversationId) {
-                router.push(`/chat/${backendConvoId}`);
-            }
-
             // AUTO-OPEN: If new artifacts were created, open the first one
+            // Do this BEFORE navigation to set the state
             if (artifacts && artifacts.length > 0) {
                 openArtifact(artifacts[0]);
+            }
+
+            // If this was a new conversation, redirect to its dedicated URL
+            if (backendConvoId && !conversationId) {
+                // Save current state to sessionStorage BEFORE navigation
+                // This allows the new page to restore without refetching
+                setMessages(prev => {
+                    // Save messages to sessionStorage
+                    sessionStorage.setItem('hanabira:pendingMessages', JSON.stringify(prev));
+                    sessionStorage.setItem('hanabira:pendingConvoId', backendConvoId.toString());
+                    if (currentSessionId) {
+                        sessionStorage.setItem('hanabira:pendingSessionId', currentSessionId);
+                    }
+
+                    // Save sidebar state
+                    sessionStorage.setItem('hanabira:pendingSidebar', 'expanded');
+                    if (artifacts && artifacts.length > 0) {
+                        sessionStorage.setItem('hanabira:pendingArtifact', JSON.stringify(artifacts[0]));
+                    }
+
+                    return prev;
+                });
+
+                router.push(`/chat/${backendConvoId}`);
             }
 
             // Also try refreshing the global resources if that's what sidebar uses
