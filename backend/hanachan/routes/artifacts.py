@@ -50,13 +50,20 @@ def create_artifact():
 
 @bp.route('/<artifact_id>', methods=['GET'])
 def get_artifact(artifact_id):
-    """Get artifact by ID."""
-    user_id = request.args.get("userId")  # Optional ownership check
+    """
+    Get artifact by ID.
+    Requires userId for authorization - only the artifact owner can access it.
+    """
+    user_id = request.args.get("userId")
+    
+    # SECURITY: Require userId to prevent unauthorized access
+    if not user_id:
+        return jsonify({"error": "userId required for authorization"}), 400
     
     artifact = ArtifactService.get_artifact(artifact_id, user_id)
     
     if not artifact:
-        return jsonify({"error": "Artifact not found"}), 404
+        return jsonify({"error": "Artifact not found or not owned"}), 404
     
     return jsonify(artifact)
 
@@ -197,8 +204,15 @@ def delete_artifact(artifact_id):
 
 @bp.route('/conversation/<conversation_id>', methods=['GET'])
 def get_conversation_artifacts(conversation_id):
-    """Get all artifacts from a conversation."""
+    """
+    Get all artifacts from a conversation.
+    Requires userId for authorization - only the conversation owner can access artifacts.
+    """
     user_id = request.args.get("userId")
+    
+    # SECURITY: Require userId to prevent unauthorized access to conversation artifacts
+    if not user_id:
+        return jsonify({"error": "userId required for authorization"}), 400
     
     artifacts = ArtifactService.get_conversation_artifacts(conversation_id, user_id)
     
@@ -206,3 +220,4 @@ def get_conversation_artifacts(conversation_id):
         "artifacts": artifacts,
         "count": len(artifacts)
     })
+
