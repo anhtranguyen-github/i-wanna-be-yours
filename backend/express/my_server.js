@@ -45,6 +45,10 @@ connectDB();
 const authRoutes = require("./routes/authRoutes");
 app.use("/e-api/v1/auth", authRoutes);
 
+// --- JLPT Routes ---
+const jlptRoutes = require("./routes/jlptRoutes");
+app.use("/e-api/v1/jlpt", jlptRoutes);
+
 // ---------------- Function Definitions ------------------ //
 const getAllWords = async (req, res) => {
   try {
