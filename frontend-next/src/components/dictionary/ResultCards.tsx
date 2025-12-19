@@ -1,5 +1,5 @@
 import React from 'react';
-import { DictionaryEntry, ExampleSentence } from '@/services/dictionaryServiceMock';
+import { DictionaryEntry, ExampleSentence } from '@/services/dictionaryService';
 import { Volume2, BookOpen, MessageSquare, PenTool } from 'lucide-react';
 
 interface VocabCardProps {

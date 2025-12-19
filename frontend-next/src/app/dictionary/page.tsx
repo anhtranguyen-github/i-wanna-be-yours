@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Search, BookOpen, X, Sparkles, Book, ArrowRight, Volume2, Mic, PenTool, Image as ImageIcon, ChevronDown } from 'lucide-react';
-import { dictionaryServiceMock, DictionaryEntry, ExampleSentence } from '@/services/dictionaryServiceMock';
+import { dictionaryService, DictionaryEntry, ExampleSentence } from '@/services/dictionaryService';
 import { TabNavigator, DictionaryTab } from '@/components/dictionary/TabNavigator';
 import { ItemSelector } from '@/components/dictionary/ItemSelector';
 import { VocabCard, KanjiCard, GrammarCard, SentenceCard } from '@/components/dictionary/ResultCards';
@@ -33,7 +33,7 @@ export default function DictionaryPage() {
         const debounce = setTimeout(async () => {
             setIsLoading(true);
             try {
-                const result = await dictionaryServiceMock.parseInput(query);
+                const result = await dictionaryService.search(query);
                 setParseResult(result);
 
                 // Auto-select first items
@@ -57,9 +57,9 @@ export default function DictionaryPage() {
             if (!selectedVocabId || !parseResult) return;
             const token = parseResult.tokens.find((t: any) => t.id === selectedVocabId);
             if (token) {
-                const details = await dictionaryServiceMock.getVocabDetails(token.head);
+                const details = await dictionaryService.getVocabDetails(token.head);
                 setVocabDetails(details || token);
-                const exs = await dictionaryServiceMock.getExamples(token.head);
+                const exs = await dictionaryService.getExamples(token.head);
                 setAssociatedExamples(exs);
             }
         };
@@ -71,7 +71,7 @@ export default function DictionaryPage() {
             if (!selectedKanjiId || !parseResult) return;
             const k = parseResult.kanji.find((t: any) => t.id === selectedKanjiId);
             if (k) {
-                const details = await dictionaryServiceMock.getKanjiDetails(k.head);
+                const details = await dictionaryService.getKanjiDetails(k.head);
                 setDictionaryKanjiDetails(details || k);
             }
         };
@@ -83,7 +83,7 @@ export default function DictionaryPage() {
             if (!selectedGrammarId || !parseResult) return;
             const g = parseResult.grammar.find((t: any) => t.id === selectedGrammarId);
             if (g) {
-                const details = await dictionaryServiceMock.getGrammarDetails(g.head);
+                const details = await dictionaryService.getGrammarDetails(g.head);
                 setGrammarDetails(details || g);
             }
         };
@@ -146,8 +146,8 @@ export default function DictionaryPage() {
                                     key={token.id}
                                     onClick={() => setSelectedVocabId(token.id)}
                                     className={`w-full text-left p-3 rounded-xl transition-all ${selectedVocabId === token.id
-                                            ? 'bg-brand-green/10 text-brand-dark font-bold border border-brand-green/20'
-                                            : 'text-slate-600 hover:bg-slate-50'
+                                        ? 'bg-brand-green/10 text-brand-dark font-bold border border-brand-green/20'
+                                        : 'text-slate-600 hover:bg-slate-50'
                                         }`}
                                 >
                                     <div className="text-lg">{token.head}</div>
@@ -161,8 +161,8 @@ export default function DictionaryPage() {
                                     key={k.id}
                                     onClick={() => setSelectedKanjiId(k.id)}
                                     className={`w-full text-left p-3 rounded-xl transition-all ${selectedKanjiId === k.id
-                                            ? 'bg-brand-blue/10 text-brand-dark font-bold border border-brand-blue/20'
-                                            : 'text-slate-600 hover:bg-slate-50'
+                                        ? 'bg-brand-blue/10 text-brand-dark font-bold border border-brand-blue/20'
+                                        : 'text-slate-600 hover:bg-slate-50'
                                         }`}
                                 >
                                     <div className="flex items-center justify-between">
