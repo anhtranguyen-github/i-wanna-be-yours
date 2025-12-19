@@ -1,7 +1,7 @@
 const fs = require('fs'); // import the 'fs' module
 const path = require('path'); // import the 'path' module
 
-const directory = './json_data'; // parent directory name
+const directory = path.join(__dirname, '../json_data'); // parent directory name
 const prefix = 'sentences_'; // prefix for the files
 const suffix = '.json'; // suffix for the files
 
@@ -9,7 +9,7 @@ let data = []; // create an empty array to store the data from all the JSON file
 
 try {
     // use the 'fs.readdirSync' method to read all files in the directory
-    const files = fs.readdirSync(`./${directory}/`);
+    const files = fs.readdirSync(directory);
 
     // use forEach loop to iterate through the files
     files.forEach((file) => {
@@ -17,7 +17,7 @@ try {
         if (path.basename(file).startsWith(prefix) && path.extname(file) === suffix) {
             // use the 'fs.readFileSync' method to read the contents of the file
             // and assign the result to a variable 'jsonString'
-            const jsonString = fs.readFileSync(`./${directory}/${file}`);
+            const jsonString = fs.readFileSync(path.join(directory, file));
 
             // use the 'JSON.parse' method to parse the contents of the jsonString variable as JSON
             // and push the result to the 'data' array
