@@ -41,6 +41,9 @@ export default function DictionaryPage() {
                 if (result.kanji.length > 0) setSelectedKanjiId(result.kanji[0].id);
                 if (result.grammar.length > 0) setSelectedGrammarId(result.grammar[0].id);
 
+                // Set sentences from unified search as initial example pool
+                if (result.sentences) setAssociatedExamples(result.sentences);
+
             } catch (e) {
                 console.error(e);
             } finally {
@@ -59,8 +62,13 @@ export default function DictionaryPage() {
             if (token) {
                 const details = await dictionaryService.getVocabDetails(token.head);
                 setVocabDetails(details || token);
+
+                // Only fetch specific examples if they weren't in the unified set or if we want refined ones
+                // For now, if we have unified sentences, we use them, but we could fetch more
                 const exs = await dictionaryService.getExamples(token.head);
-                setAssociatedExamples(exs);
+                if (exs && exs.length > 0) {
+                    setAssociatedExamples(exs);
+                }
             }
         };
         fetchVocab();
@@ -207,8 +215,12 @@ export default function DictionaryPage() {
                                         </div>
                                         <div className="text-xl text-slate-500 flex items-center gap-3">
                                             <span>{vocabDetails.reading}</span>
-                                            <span className="text-slate-300">|</span>
-                                            <span className="text-brand-blue uppercase font-bold text-sm tracking-widest">{vocabDetails.tags?.[0]}</span>
+                                            {vocabDetails.tags && vocabDetails.tags.length > 0 && (
+                                                <>
+                                                    <span className="text-slate-300">|</span>
+                                                    <span className="text-brand-blue uppercase font-bold text-sm tracking-widest">{vocabDetails.tags[0]}</span>
+                                                </>
+                                            )}
                                         </div>
                                     </div>
                                     <div className="flex gap-2">

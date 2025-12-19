@@ -26,10 +26,11 @@ export interface ParseResult {
     tokens: any[];
     kanji: any[];
     grammar: any[];
+    sentences: ExampleSentence[];
 }
 
 export const dictionaryService = {
-    async search(text: string) {
+    async search(text: string): Promise<ParseResult> {
         try {
             const response = await axios.post(`${API_BASE_URL}/d-api/v1/search`, { text });
             const data = response.data;
@@ -53,7 +54,12 @@ export const dictionaryService = {
                     strokes: k.stroke_count,
                     jlpt: k.jlpt
                 })),
-                grammar: [] // To be implemented
+                grammar: [], // To be implemented
+                sentences: (data.sentences || []).map((s: any) => ({
+                    ja: s.original,
+                    en: s.english,
+                    id: s.id
+                }))
             };
         } catch (error) {
             console.error('Unified search failed:', error);
@@ -101,10 +107,17 @@ export const dictionaryService = {
     },
 
     async getExamples(query: string): Promise<ExampleSentence[]> {
-        // For now, return mock as sentences tab is generated/supplemental
-        return [
-            { ja: `${query}を使った例文です。`, en: `This is an example sentence using ${query}.` },
-            { ja: `これは${query}の別の例です。`, en: `This is another example of ${query}.` }
-        ];
+        try {
+            const response = await axios.post(`${API_BASE_URL}/d-api/v1/sentences`, { query });
+            const data = response.data;
+            return (data || []).map((s: any) => ({
+                ja: s.original,
+                en: s.english,
+                id: s.id
+            }));
+        } catch (error) {
+            console.error('Fetch examples failed:', error);
+            return [];
+        }
     }
 };
