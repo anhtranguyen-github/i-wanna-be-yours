@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { X, Sparkles, Save, Loader2 } from 'lucide-react';
 import { ExamConfigForm } from './ExamConfigForm';
 import { ExamChatAssistant } from './ExamChatAssistant';
+import { ExamPreview } from './ExamPreview';
 import { JLPTLevel, SkillType, TimerMode, Question, UserCreatedExam } from '@/types/practice';
 import * as jlptService from '@/services/jlptService';
 import { useUser } from '@/context/UserContext';
@@ -214,6 +215,12 @@ export function CreateExamModal({ isOpen, onClose, onExamCreated }: CreateExamMo
                             onUpdate={updateFormState}
                             generatedQuestionsCount={generatedQuestions.length}
                         />
+
+                        {generatedQuestions.length > 0 && (
+                            <div className="p-6 border-t border-slate-200 bg-slate-50/50">
+                                <ExamPreview questions={generatedQuestions} />
+                            </div>
+                        )}
                     </div>
 
                     {/* Right: AI Chat */}
