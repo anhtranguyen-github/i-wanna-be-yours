@@ -310,20 +310,8 @@ export default function LearningDashboardPage() {
     const [error, setError] = useState<string | null>(null);
     const isGuest = !user;
 
-    // Demo data for guests
-    const demoProgress = {
-        vocabulary_mastered: 127,
-        kanji_mastered: 34,
-        grammar_points_learned: 18,
-        total_study_time_minutes: 480,
-        current_streak: 5,
-        longest_streak: 12,
-        weekly_goals: {
-            flashcard_reviews: { current: 45, target: 100 },
-            quizzes_completed: { current: 2, target: 5 },
-            study_minutes: { current: 65, target: 150 },
-        }
-    };
+    // No demo data for guests, just placeholders
+    const progress = progressData?.progress;
 
     // Fetch progress data for logged-in users
     useEffect(() => {
@@ -376,15 +364,9 @@ export default function LearningDashboardPage() {
         );
     }
 
-    // Use demo data for guests, real data for logged-in users
-    const progress = isGuest ? demoProgress : progressData?.progress;
-    const weeklyStats = isGuest ? { flashcard_reviews: 45, quizzes_completed: 2, avg_quiz_score: 78, days_active: 5 } : progressData?.weekly_stats;
-    const achievements = isGuest ? [
-        { id: '1', name: 'First Steps', description: 'Complete your first lesson', icon: '🎯', earned: true },
-        { id: '2', name: 'Week Warrior', description: '7-day study streak', icon: '🔥', earned: true },
-        { id: '3', name: 'Vocab Builder', description: 'Learn 100 words', icon: '📚', earned: true },
-        { id: '4', name: 'Kanji Master', description: 'Learn 100 kanji', icon: '✍️', earned: false },
-    ] : progressData?.achievements || [];
+    const weeklyStats = progressData?.weekly_stats;
+    const achievements = progressData?.achievements || [];
+
     const recentActivities = progressData?.recent_activities || [];
 
     // Calculate overall weekly progress with null safety
@@ -408,23 +390,75 @@ export default function LearningDashboardPage() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {/* Guest Banner */}
-                {
-                    isGuest && (
-                        <div className="mb-6 p-4 bg-gradient-to-r from-brand-green to-brand-blue rounded-2xl text-white flex flex-col sm:flex-row items-center justify-between gap-4">
-                            <div>
-                                <p className="font-bold text-lg">👋 You're viewing demo data</p>
-                                <p className="text-white/80 text-sm">Create a free account to track your real progress and unlock all features.</p>
+                {/* Premium Guest Banner */}
+                {isGuest && (
+                    <div className="relative mb-10 p-1 md:p-1.5 rounded-[2rem] bg-gradient-to-r from-brand-softBlue via-brand-pink to-brand-peach overflow-hidden shadow-2xl shadow-brand-softBlue/10 group">
+                        <div className="absolute inset-0 bg-white/20 backdrop-blur-3xl rounded-[1.8rem] transition-all group-hover:backdrop-blur-2xl" />
+
+                        <div className="relative z-10 p-6 md:p-10 rounded-[1.8rem] flex flex-col lg:flex-row items-center justify-between gap-8">
+                            <div className="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
+                                <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center text-4xl shadow-xl shadow-brand-softBlue/20 animate-bounce-slow">
+                                    🌸
+                                </div>
+                                <div>
+                                    <h2 className="text-2xl md:text-3xl font-black text-brand-dark mb-2 tracking-tight">
+                                        Your Personalized <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-softBlue to-brand-peach">Japanese Engine</span>
+                                    </h2>
+                                    <p className="text-slate-600 font-medium max-w-xl">
+                                        You&apos;re currently in Preview Mode. Create an account to save your progress, unlock AI deep-dives, and sync across all your devices.
+                                    </p>
+                                </div>
                             </div>
+
+                            <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+                                <button
+                                    onClick={() => openAuth('REGISTER', { flowType: 'GENERAL' })}
+                                    className="px-8 py-4 bg-brand-dark text-white font-black rounded-2xl hover:bg-black hover:scale-105 hover:shadow-2xl transition-all whitespace-nowrap"
+                                >
+                                    Claim Your Progress
+                                </button>
+                                <button
+                                    onClick={() => openAuth('LOGIN')}
+                                    className="px-8 py-4 bg-white/50 backdrop-blur text-brand-dark border border-white/60 font-black rounded-2xl hover:bg-white transition-all whitespace-nowrap"
+                                >
+                                    Login
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* AI Tutor Insights (Guest specific or Premium) */}
+                {isGuest && (
+                    <div className="bg-white/40 backdrop-blur-xl border border-white/80 rounded-3xl p-6 md:p-8 mb-10 shadow-lg shadow-brand-softBlue/5 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 p-4 transform translate-x-4 -translate-y-4 opacity-5 group-hover:scale-110 transition-transform">
+                            <SparklesIcon className="w-32 h-32 text-brand-softBlue" />
+                        </div>
+
+                        <div className="w-20 h-20 bg-gradient-to-br from-brand-softBlue to-indigo-400 rounded-full flex items-center justify-center shrink-0 shadow-lg shadow-brand-softBlue/20">
+                            <ChatBubbleLeftRightIcon className="w-10 h-10 text-white" />
+                        </div>
+
+                        <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                                <span className="px-3 py-1 bg-brand-softBlue text-white text-[10px] font-black uppercase tracking-widest rounded-full">AI Insight</span>
+                                <h3 className="text-xl font-black text-brand-dark tracking-tight">Hanachan&apos;s Recommendations</h3>
+                            </div>
+                            <p className="text-slate-600 font-medium leading-relaxed italic max-w-2xl">
+                                &quot;You&apos;re making amazing progress with N3 vocabulary! Based on our demo patterns, your retention is 15% higher in the morning. I recommend focusing on Kanji tomorrow to maintain your 5-day streak!&quot;
+                            </p>
+                        </div>
+
+                        <div className="shrink-0">
                             <button
-                                onClick={() => openAuth('REGISTER')}
-                                className="px-6 py-2 bg-white text-brand-green font-bold rounded-xl hover:bg-white/90 transition-all whitespace-nowrap"
+                                onClick={() => openAuth('REGISTER', { flowType: 'CHAT', title: 'Unlock Your Mentor' })}
+                                className="group flex items-center gap-2 text-brand-softBlue font-black hover:gap-3 transition-all"
                             >
-                                Sign Up Free
+                                Get Personal Insights <ArrowTrendingUpIcon className="w-5 h-5" />
                             </button>
                         </div>
-                    )
-                }
+                    </div>
+                )}
 
                 {/* Header */}
                 <div className="mb-8">
@@ -603,12 +637,35 @@ export default function LearningDashboardPage() {
                                 </h3>
                                 <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
                                     <TrophyIcon className="w-4 h-4 text-yellow-500" />
-                                    <span>{progressData?.achievements_count || 0}/{progressData?.total_achievements_available || 0}</span>
+                                    <span>{isGuest ? "0/12" : `${progressData?.achievements_count || 0}/${progressData?.total_achievements_available || 0}`}</span>
                                 </div>
                             </div>
 
                             <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
-                                {achievements.length > 0 ? (
+                                {isGuest ? (
+                                    <div className="space-y-3 opacity-60">
+                                        {[
+                                            { name: 'Day 1 Warrior', desc: 'Start your first lesson', icon: '🎯' },
+                                            { name: 'Kanji Sensei', desc: 'Master 100 Kanji', icon: '✍️' },
+                                            { name: 'Polyglot', desc: 'Complete 5 levels', icon: '📚' },
+                                            { name: 'Perfect Score', desc: '100% on any N3 quiz', icon: '⭐' },
+                                        ].map((mock, i) => (
+                                            <div key={i} className="flex items-center gap-3 p-4 rounded-xl border border-dashed border-gray-200 grayscale">
+                                                <span className="text-3xl">{mock.icon}</span>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="font-semibold text-gray-900 truncate">{mock.name}</p>
+                                                    <p className="text-xs text-gray-500 truncate">{mock.desc}</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                        <button
+                                            onClick={() => openAuth('REGISTER', { flowType: 'GENERAL' })}
+                                            className="w-full py-3 bg-slate-100 text-slate-600 font-black rounded-xl text-sm hover:bg-brand-softBlue/10 hover:text-brand-softBlue transition-all"
+                                        >
+                                            Collect Them All
+                                        </button>
+                                    </div>
+                                ) : achievements.length > 0 ? (
                                     achievements.slice(0, 8).map((achievement) => (
                                         <AchievementCard key={achievement.id} achievement={achievement} />
                                     ))
@@ -618,12 +675,6 @@ export default function LearningDashboardPage() {
                                     </p>
                                 )}
                             </div>
-
-                            {achievements.length > 8 && (
-                                <button className="w-full mt-4 py-2 text-sm text-blue-500 hover:text-blue-600 transition">
-                                    View all achievements →
-                                </button>
-                            )}
                         </div>
                     </div>
                 </div>
@@ -633,7 +684,20 @@ export default function LearningDashboardPage() {
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                         Recent Activity
                     </h3>
-                    {recentActivities.length > 0 ? (
+                    {isGuest ? (
+                        <div className="py-12 text-center group cursor-pointer" onClick={() => openAuth('REGISTER', { flowType: 'GENERAL' })}>
+                            <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                                <ClockIcon className="w-8 h-8 text-blue-400" />
+                            </div>
+                            <h4 className="text-lg font-black text-brand-dark mb-2">Unlock Your Timeline</h4>
+                            <p className="text-slate-500 max-w-sm mx-auto mb-6 font-medium">
+                                Track every quiz, flashcard session, and milestone with a detailed history of your Japanese journey.
+                            </p>
+                            <button className="px-6 py-2 bg-brand-dark text-white font-bold rounded-xl hover:scale-105 transition-all">
+                                Create Account
+                            </button>
+                        </div>
+                    ) : recentActivities.length > 0 ? (
                         <div className="space-y-3">
                             {recentActivities.map((activity, index) => (
                                 <div
