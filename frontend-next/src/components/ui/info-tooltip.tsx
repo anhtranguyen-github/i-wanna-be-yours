@@ -31,19 +31,21 @@ export function InfoTooltip({
         <TooltipProvider delayDuration={200}>
             <Tooltip>
                 <TooltipTrigger asChild>
-                    <button
-                        type="button"
+                    <span
+                        role="button"
+                        tabIndex={0}
                         className={cn(
-                            'inline-flex items-center justify-center rounded-full',
+                            'inline-flex items-center justify-center rounded-full cursor-pointer',
                             'text-slate-400 hover:text-blue-500 hover:bg-blue-50',
                             'transition-colors duration-200 p-0.5',
                             'focus:outline-none focus:ring-2 focus:ring-blue-500/20',
                             className
                         )}
                         aria-label={`Info about ${title}`}
+                        onClick={(e) => e.stopPropagation()}
                     >
                         <HelpCircle size={iconSize} />
-                    </button>
+                    </span>
                 </TooltipTrigger>
                 <TooltipContent
                     side={side}
