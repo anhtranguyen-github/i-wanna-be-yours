@@ -7,6 +7,7 @@ export { OKRObjectiveCard } from './OKRObjectiveCard';
 export { PACTDailyCard } from './PACTDailyCard';
 export { PriorityMatrixCard } from './PriorityMatrixCard';
 export { ContextCheckInModal } from './ContextCheckInModal';
+export { ReviewCycleCard } from './ReviewCycleCard';
 
 // Re-export types
 export type {
