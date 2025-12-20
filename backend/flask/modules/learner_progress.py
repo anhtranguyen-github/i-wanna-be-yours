@@ -15,7 +15,7 @@ import logging
 from flask import request, jsonify
 from pymongo import MongoClient
 from bson import ObjectId
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, List, Optional, Any
 
 # ============================================
@@ -125,8 +125,8 @@ class LearnerProgressModule:
                     "study_minutes": {"target": 150, "current": 0}
                 },
                 "last_activity_date": None,
-                "created_at": datetime.utcnow(),
-                "updated_at": datetime.utcnow()
+                "created_at": datetime.now(timezone.utc),
+                "updated_at": datetime.now(timezone.utc)
             }
             self.progress_collection.insert_one(progress)
             progress = self.progress_collection.find_one({"user_id": user_id})
@@ -146,7 +146,7 @@ class LearnerProgressModule:
         achievements = list(self.achievements_collection.find({"user_id": user_id}))
 
         # Calculate weekly stats
-        week_start = datetime.utcnow() - timedelta(days=7)
+        week_start = datetime.now(timezone.utc) - timedelta(days=7)
         weekly_activities = list(self.activities_collection.find({
             "user_id": user_id,
             "timestamp": {"$gte": week_start}
@@ -218,7 +218,7 @@ class LearnerProgressModule:
         activity = {
             "user_id": user_id,
             "activity_type": activity_type,
-            "timestamp": datetime.utcnow(),
+            "timestamp": datetime.now(timezone.utc),
             **data
         }
 
@@ -237,8 +237,8 @@ class LearnerProgressModule:
             {
                 "$inc": updates.get("$inc", {}),
                 "$set": {
-                    "updated_at": datetime.utcnow(),
-                    "last_activity_date": datetime.utcnow(),
+                    "updated_at": datetime.now(timezone.utc),
+                    "last_activity_date": datetime.now(timezone.utc),
                     **updates.get("$set", {})
                 }
             },
@@ -297,7 +297,7 @@ class LearnerProgressModule:
         """Update user's study streak."""
         progress = self.progress_collection.find_one({"user_id": user_id})
         
-        today = datetime.utcnow().date()
+        today = datetime.now(timezone.utc).date()
         updates = {"$set": {}}
 
         if progress:
@@ -380,7 +380,7 @@ class LearnerProgressModule:
                 achievement = {
                     "user_id": user_id,
                     "achievement_id": achievement_id,
-                    "earned_at": datetime.utcnow(),
+                    "earned_at": datetime.now(timezone.utc),
                     **ACHIEVEMENT_DEFINITIONS.get(achievement_id, {})
                 }
                 try:
@@ -420,7 +420,7 @@ class LearnerProgressModule:
 
     def get_detailed_stats(self, user_id: str, days: int = 30) -> Dict:
         """Get detailed learning statistics for the specified period."""
-        start_date = datetime.utcnow() - timedelta(days=days)
+        start_date = datetime.now(timezone.utc) - timedelta(days=days)
 
         activities = list(self.activities_collection.find({
             "user_id": user_id,
@@ -474,7 +474,7 @@ class LearnerProgressModule:
         session = {
             "user_id": user_id,
             "focus_area": focus_area,
-            "started_at": datetime.utcnow(),
+            "started_at": datetime.now(timezone.utc),
             "ended_at": None,
             "duration_minutes": 0,
             "activities": []
@@ -492,7 +492,7 @@ class LearnerProgressModule:
         if not session:
             return {"error": "Session not found"}
 
-        ended_at = datetime.utcnow()
+        ended_at = datetime.now(timezone.utc)
         duration = (ended_at - session["started_at"]).total_seconds() / 60
 
         self.sessions_collection.update_one(
@@ -548,7 +548,7 @@ class LearnerProgressModule:
                     "weekly_goals.flashcard_reviews.current": 0,
                     "weekly_goals.quizzes_completed.current": 0,
                     "weekly_goals.study_minutes.current": 0,
-                    "updated_at": datetime.utcnow()
+                    "updated_at": datetime.now(timezone.utc)
                 }
             }
         )

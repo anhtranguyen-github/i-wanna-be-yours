@@ -14,7 +14,7 @@ import logging
 from flask import request, jsonify
 from pymongo import MongoClient
 from bson import ObjectId
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, List, Optional, Any
 import math
 
@@ -87,7 +87,7 @@ class AdaptiveLearningModule:
         Returns:
             Performance breakdown by category, strengths, weaknesses
         """
-        start_date = datetime.utcnow() - timedelta(days=days)
+        start_date = datetime.now(timezone.utc) - timedelta(days=days)
 
         # Get recent activities
         activities = list(self.activities_collection.find({
@@ -309,8 +309,8 @@ class AdaptiveLearningModule:
                     "listening": "beginner"
                 },
                 "auto_adjust": True,
-                "created_at": datetime.utcnow(),
-                "updated_at": datetime.utcnow()
+                "created_at": datetime.now(timezone.utc),
+                "updated_at": datetime.now(timezone.utc)
             }
             self.difficulty_settings_collection.insert_one(settings)
 
@@ -364,7 +364,7 @@ class AdaptiveLearningModule:
                 {
                     "$set": {
                         f"category_levels.{category}": new_level,
-                        "updated_at": datetime.utcnow()
+                        "updated_at": datetime.now(timezone.utc)
                     }
                 }
             )
@@ -381,7 +381,7 @@ class AdaptiveLearningModule:
 
     def _get_recent_category_scores(self, user_id: str, category: str, days: int) -> List[float]:
         """Get recent scores for a category."""
-        start_date = datetime.utcnow() - timedelta(days=days)
+        start_date = datetime.now(timezone.utc) - timedelta(days=days)
         activities = self.activities_collection.find({
             "user_id": user_id,
             "category": category,
@@ -400,7 +400,7 @@ class AdaptiveLearningModule:
         Analyze user's activity patterns to suggest optimal study times.
         """
         # Get last 30 days of activity
-        start_date = datetime.utcnow() - timedelta(days=30)
+        start_date = datetime.now(timezone.utc) - timedelta(days=30)
         activities = list(self.activities_collection.find({
             "user_id": user_id,
             "timestamp": {"$gte": start_date}

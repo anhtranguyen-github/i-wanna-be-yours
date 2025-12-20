@@ -15,7 +15,7 @@ import logging
 from flask import request, jsonify
 from pymongo import MongoClient
 from bson import ObjectId
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, List, Optional, Any
 
 # ============================================
@@ -325,7 +325,7 @@ class StudyPlanModule:
                     "milestones": get_n5_milestones_12_weeks(),
                     "daily_minutes_recommended": 60,
                     "is_public": True,
-                    "created_at": datetime.utcnow(),
+                    "created_at": datetime.now(timezone.utc),
                 },
                 {
                     "target_level": "N5",
@@ -335,7 +335,7 @@ class StudyPlanModule:
                     "milestones": get_n5_milestones_12_weeks(),  # Will be scaled
                     "daily_minutes_recommended": 30,
                     "is_public": True,
-                    "created_at": datetime.utcnow(),
+                    "created_at": datetime.now(timezone.utc),
                 },
                 # N4 Templates
                 {
@@ -346,7 +346,7 @@ class StudyPlanModule:
                     "milestones": get_n4_milestones_24_weeks(),
                     "daily_minutes_recommended": 45,
                     "is_public": True,
-                    "created_at": datetime.utcnow(),
+                    "created_at": datetime.now(timezone.utc),
                 },
                 {
                     "target_level": "N4",
@@ -356,7 +356,7 @@ class StudyPlanModule:
                     "milestones": get_n4_milestones_24_weeks(),  # Will be scaled
                     "daily_minutes_recommended": 30,
                     "is_public": True,
-                    "created_at": datetime.utcnow(),
+                    "created_at": datetime.now(timezone.utc),
                 },
                 # N3 Templates
                 {
@@ -367,7 +367,7 @@ class StudyPlanModule:
                     "milestones": get_n3_milestones_52_weeks(),
                     "daily_minutes_recommended": 45,
                     "is_public": True,
-                    "created_at": datetime.utcnow(),
+                    "created_at": datetime.now(timezone.utc),
                 },
                 {
                     "target_level": "N3",
@@ -377,7 +377,7 @@ class StudyPlanModule:
                     "milestones": get_n3_milestones_52_weeks(),  # Will be scaled
                     "daily_minutes_recommended": 60,
                     "is_public": True,
-                    "created_at": datetime.utcnow(),
+                    "created_at": datetime.now(timezone.utc),
                 },
                 # N2 Templates (Simplified for now)
                 {
@@ -393,7 +393,7 @@ class StudyPlanModule:
                     ],
                     "daily_minutes_recommended": 60,
                     "is_public": True,
-                    "created_at": datetime.utcnow(),
+                    "created_at": datetime.now(timezone.utc),
                 },
                 # N1 Templates
                 {
@@ -409,7 +409,7 @@ class StudyPlanModule:
                     ],
                     "daily_minutes_recommended": 90,
                     "is_public": True,
-                    "created_at": datetime.utcnow(),
+                    "created_at": datetime.now(timezone.utc),
                 },
             ]
 
@@ -418,6 +418,19 @@ class StudyPlanModule:
 
         except Exception as e:
             self.logger.error(f"Error seeding templates: {e}")
+
+    # ============================================
+    # Datetime Helpers
+    # ============================================
+
+    def _ensure_tz_aware(self, dt: datetime) -> datetime:
+        """Ensure a datetime is timezone-aware (UTC). Handles legacy naive datetimes."""
+        if dt is None:
+            return None
+        if dt.tzinfo is None:
+            # Assume UTC for naive datetimes from legacy data
+            return dt.replace(tzinfo=timezone.utc)
+        return dt
 
     # ============================================
     # Plan Generation Logic
@@ -476,7 +489,7 @@ class StudyPlanModule:
         Returns:
             Created plan document
         """
-        today = datetime.utcnow()
+        today = datetime.now(timezone.utc)
         total_days = (exam_date - today).days
 
         if total_days <= 0:
@@ -714,7 +727,7 @@ class StudyPlanModule:
         if not milestones:
             return {"health_status": "unknown", "issues": ["No milestones found"]}
 
-        today = datetime.utcnow()
+        today = datetime.now(timezone.utc)
         issues = []
         recommendations = []
 
@@ -727,12 +740,12 @@ class StudyPlanModule:
                     "type": "overdue_milestone",
                     "milestone_id": str(m["_id"]),
                     "title": m["title"],
-                    "days_overdue": (today - m["target_end_date"]).days,
+                    "days_overdue": (today - self._ensure_tz_aware(m["target_end_date"])).days,
                 })
 
         # Calculate expected vs actual progress
         total_days = plan.get("total_days", 1)
-        elapsed_days = (today - plan["start_date"]).days
+        elapsed_days = (today - self._ensure_tz_aware(plan["start_date"])).days
         expected_progress = min(100, (elapsed_days / total_days) * 100)
         actual_progress = self.calculate_plan_progress(plan_id)
         progress_gap = expected_progress - actual_progress
@@ -798,8 +811,8 @@ class StudyPlanModule:
         if not plan:
             return {"success": False, "error": "Plan not found"}
 
-        today = datetime.utcnow()
-        exam_date = new_exam_date or plan["exam_date"]
+        today = datetime.now(timezone.utc)
+        exam_date = self._ensure_tz_aware(new_exam_date or plan["exam_date"])
         remaining_days = (exam_date - today).days
 
         if remaining_days <= 0:
@@ -850,7 +863,7 @@ class StudyPlanModule:
 
         # Update plan if exam date changed
         if new_exam_date:
-            new_total_days = (new_exam_date - plan["start_date"]).days
+            new_total_days = (self._ensure_tz_aware(new_exam_date) - self._ensure_tz_aware(plan["start_date"])).days
             self.plans_collection.update_one(
                 {"_id": plan_id},
                 {"$set": {
@@ -935,7 +948,7 @@ class StudyPlanModule:
                 {"_id": current_milestone_id},
                 {"$set": {
                     "status": "completed",
-                    "actual_end_date": datetime.utcnow(),
+                    "actual_end_date": datetime.now(timezone.utc),
                 }}
             )
             
@@ -950,14 +963,14 @@ class StudyPlanModule:
                     {"_id": plan_id},
                     {"$set": {
                         "current_milestone_id": next_milestone["_id"],
-                        "updated_at": datetime.utcnow(),
+                        "updated_at": datetime.now(timezone.utc),
                     }}
                 )
                 self.milestones_collection.update_one(
                     {"_id": next_milestone["_id"]},
                     {"$set": {
                         "status": "in_progress",
-                        "actual_start_date": datetime.utcnow(),
+                        "actual_start_date": datetime.now(timezone.utc),
                     }}
                 )
 
@@ -1164,7 +1177,7 @@ class StudyPlanModule:
                 result = []
                 for p in plans:
                     # Calculate days remaining
-                    days_remaining = (p["exam_date"] - datetime.utcnow()).days
+                    days_remaining = (self._ensure_tz_aware(p["exam_date"]) - datetime.now(timezone.utc)).days
                     days_remaining = max(0, days_remaining)
 
                     # Calculate progress
@@ -1219,7 +1232,7 @@ class StudyPlanModule:
                     })
 
                 # Calculate days remaining
-                days_remaining = (plan["exam_date"] - datetime.utcnow()).days
+                days_remaining = (self._ensure_tz_aware(plan["exam_date"]) - datetime.now(timezone.utc)).days
                 days_remaining = max(0, days_remaining)
 
                 # Overall progress
@@ -1270,7 +1283,7 @@ class StudyPlanModule:
                     updates["status"] = data["status"]
 
                 if updates:
-                    updates["updated_at"] = datetime.utcnow()
+                    updates["updated_at"] = datetime.now(timezone.utc)
                     self.plans_collection.update_one(
                         {"_id": ObjectId(plan_id)},
                         {"$set": updates}
@@ -1293,7 +1306,7 @@ class StudyPlanModule:
                 # Mark as abandoned (soft delete)
                 self.plans_collection.update_one(
                     {"_id": ObjectId(plan_id)},
-                    {"$set": {"status": "abandoned", "updated_at": datetime.utcnow()}}
+                    {"$set": {"status": "abandoned", "updated_at": datetime.now(timezone.utc)}}
                 )
 
                 return jsonify({"message": "Plan abandoned successfully"}), 200
@@ -1348,7 +1361,7 @@ class StudyPlanModule:
                     {"_id": ObjectId(milestone_id)},
                     {"$set": {
                         "status": "completed",
-                        "actual_end_date": datetime.utcnow(),
+                        "actual_end_date": datetime.now(timezone.utc),
                         "progress_percent": 100,
                     }}
                 )
@@ -1366,14 +1379,14 @@ class StudyPlanModule:
                             {"_id": milestone["plan_id"]},
                             {"$set": {
                                 "current_milestone_id": next_milestone["_id"],
-                                "updated_at": datetime.utcnow(),
+                                "updated_at": datetime.now(timezone.utc),
                             }}
                         )
                         self.milestones_collection.update_one(
                             {"_id": next_milestone["_id"]},
                             {"$set": {
                                 "status": "in_progress",
-                                "actual_start_date": datetime.utcnow(),
+                                "actual_start_date": datetime.now(timezone.utc),
                             }}
                         )
 
@@ -1398,9 +1411,9 @@ class StudyPlanModule:
                     try:
                         target_date = datetime.fromisoformat(date_str.replace("Z", "+00:00")).date()
                     except:
-                        target_date = datetime.utcnow().date()
+                        target_date = datetime.now(timezone.utc).date()
                 else:
-                    target_date = datetime.utcnow().date()
+                    target_date = datetime.now(timezone.utc).date()
 
                 # Find active plan
                 plan = self.plans_collection.find_one({
@@ -1460,7 +1473,7 @@ class StudyPlanModule:
                     {"_id": ObjectId(task_id)},
                     {"$set": {
                         "status": "completed",
-                        "completed_at": datetime.utcnow(),
+                        "completed_at": datetime.now(timezone.utc),
                         "score": data.get("score"),
                     }}
                 )
@@ -1495,7 +1508,7 @@ class StudyPlanModule:
                     })
 
                 # Days remaining
-                days_remaining = max(0, (plan["exam_date"] - datetime.utcnow()).days)
+                days_remaining = max(0, (self._ensure_tz_aware(plan["exam_date"]) - datetime.now(timezone.utc)).days)
 
                 # Study streak (placeholder)
                 study_streak = 0
@@ -1641,7 +1654,7 @@ class StudyPlanModule:
             "plan_id": "optional_plan_id"
         }
         """
-        today = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+        today = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
         
         # 1. Update Daily Tasks
         # Find pending tasks for today that match the activity type
@@ -1664,7 +1677,7 @@ class StudyPlanModule:
                 {"_id": task["_id"]},
                 {"$set": {
                     "status": "completed", 
-                    "completed_at": datetime.utcnow(),
+                    "completed_at": datetime.now(timezone.utc),
                     "actual_duration": activity_data.get("duration_seconds", 0) / 60
                 }}
             )

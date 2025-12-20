@@ -3,7 +3,7 @@ import os
 import uuid
 import logging
 import shutil
-from datetime import datetime
+from datetime import datetime, timezone
 from flask import request, jsonify, send_file
 from pymongo import MongoClient
 from bson.objectid import ObjectId
@@ -142,8 +142,8 @@ class ResourcesModule:
                     "originalFilename": file.filename,
                     "tags": tags,
                     "metadata": {},
-                    "createdAt": datetime.utcnow(),
-                    "updatedAt": datetime.utcnow(),
+                    "createdAt": datetime.now(timezone.utc),
+                    "updatedAt": datetime.now(timezone.utc),
                     "deletedAt": None
                 }
                 
@@ -259,7 +259,7 @@ class ResourcesModule:
             try:
                 data = request.json or {}
                 
-                update_fields = {"updatedAt": datetime.utcnow()}
+                update_fields = {"updatedAt": datetime.now(timezone.utc)}
                 if "title" in data:
                     update_fields["title"] = data["title"]
                 if "description" in data:
@@ -293,7 +293,7 @@ class ResourcesModule:
                 # Soft delete (keep file for now)
                 self.resources_collection.update_one(
                     {"_id": ObjectId(id)},
-                    {"$set": {"deletedAt": datetime.utcnow()}}
+                    {"$set": {"deletedAt": datetime.now(timezone.utc)}}
                 )
                 
                 return jsonify({"message": "Resource deleted", "id": id}), 200
