@@ -220,6 +220,7 @@ export default function PodcastsPage() {
               onClick={() => {
                 if (isGuest) {
                   openAuth('REGISTER', {
+                    flowType: 'LIBRARY',
                     title: 'Personal Video Library',
                     description: 'Add your own YouTube videos to your personal learning library.'
                   });

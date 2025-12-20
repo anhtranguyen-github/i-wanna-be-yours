@@ -54,7 +54,11 @@ export default function GrammarDetailPage() {
 
     const handleAddToStudyList = async () => {
         if (!user) {
-            openAuth("LOGIN");
+            openAuth("REGISTER", {
+                flowType: 'LIBRARY',
+                title: "Add to Your Reviews",
+                description: "Sign up to track this grammar point and get SRS review reminders from Hanachan."
+            });
             return;
         }
 
@@ -150,8 +154,8 @@ export default function GrammarDetailPage() {
                                 onClick={handleAddToStudyList}
                                 disabled={added || adding}
                                 className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all transform active:scale-95 ${added
-                                        ? "bg-green-100 text-green-700 border border-green-200 cursor-default"
-                                        : "bg-brand-dark text-white hover:bg-black hover:shadow-lg"
+                                    ? "bg-green-100 text-green-700 border border-green-200 cursor-default"
+                                    : "bg-brand-dark text-white hover:bg-black hover:shadow-lg"
                                     }`}
                             >
                                 {adding ? <Loader2 size={18} className="animate-spin" /> :
