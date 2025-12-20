@@ -16,6 +16,7 @@ import {
     PlanTemplateDetail,
 } from '@/types/studyPlanTypes';
 import studyPlanService from '@/services/studyPlanService';
+import { useGlobalAuth } from '@/context/GlobalAuthContext';
 
 // Known JLPT exam dates (approximate - July and December)
 const getNextExamDates = (): Date[] => {
@@ -42,6 +43,7 @@ function SetupWizardContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const { user, loading: userLoading } = useUser();
+    const { openAuth } = useGlobalAuth();
 
     const [step, setStep] = useState(1);
     const [targetLevel, setTargetLevel] = useState<JLPTLevel | null>(null);
@@ -58,12 +60,7 @@ function SetupWizardContent() {
 
     const nextExamDates = getNextExamDates();
 
-    // Check auth on mount
-    useEffect(() => {
-        if (!userLoading && !user) {
-            router.push('/login?redirect=/study-plan/setup');
-        }
-    }, [user, userLoading, router]);
+    // Check auth removed - allowing guests to browse wizard
 
     // Load template if provided
     useEffect(() => {
@@ -100,8 +97,18 @@ function SetupWizardContent() {
     };
 
     const handleCreatePlan = async () => {
-        if (!targetLevel || !examDate || !user) {
+        if (!targetLevel || !examDate) {
             setError('Please complete all required fields');
+            return;
+        }
+
+        if (!user) {
+            // Trigger contextual auth for Study Plan
+            openAuth('REGISTER', {
+                flowType: 'STUDY_PLAN',
+                title: "Activate Your Study Plan",
+                description: "Your personalized road map is ready. Lock it in and start your journey today."
+            });
             return;
         }
 

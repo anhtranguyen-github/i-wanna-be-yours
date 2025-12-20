@@ -7,7 +7,7 @@ import { useUser } from '@/context/UserContext';
 import {
     Calendar, Target, Clock, CheckCircle2, Circle,
     ChevronRight, Play, Loader2, AlertCircle, Settings,
-    TrendingUp, BookOpen, Sparkles, Award
+    TrendingUp, BookOpen, Sparkles, Award, Lock
 } from 'lucide-react';
 import {
     StudyPlanDetail,
@@ -16,11 +16,13 @@ import {
     Milestone,
 } from '@/types/studyPlanTypes';
 import studyPlanService from '@/services/studyPlanService';
+import { useGlobalAuth } from '@/context/GlobalAuthContext';
 
 function DashboardContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const { user, loading: userLoading } = useUser();
+    const { openAuth } = useGlobalAuth();
 
     const [plan, setPlan] = useState<StudyPlanDetail | null>(null);
     const [tasks, setTasks] = useState<DailyTask[]>([]);
@@ -30,7 +32,12 @@ function DashboardContent() {
 
     useEffect(() => {
         if (!userLoading && !user) {
-            router.push('/login?redirect=/study-plan/dashboard');
+            // Contextual Auth for Dashboard
+            openAuth('REGISTER', {
+                flowType: 'STUDY_PLAN',
+                title: "Track Your Progress",
+                description: "Log in to see your daily tasks, milestone progress, and study statistics."
+            });
             return;
         }
 
@@ -113,16 +120,46 @@ function DashboardContent() {
             <div className="min-h-screen bg-gradient-to-br from-slate-50 to-brand-cream/30 py-12">
                 <div className="container mx-auto px-6 max-w-2xl text-center">
                     <div className="clay-card p-12">
-                        <Target className="w-16 h-16 mx-auto mb-6 text-gray-300" />
-                        <h2 className="text-2xl font-black text-brand-dark mb-4">
-                            No Active Study Plan
-                        </h2>
-                        <p className="text-gray-500 mb-8">
-                            Create a personalized study plan to start your JLPT journey.
-                        </p>
-                        <Link href="/study-plan/setup" className="btnPrimary">
-                            Create Study Plan
-                        </Link>
+                        {user ? (
+                            <>
+                                <Target className="w-16 h-16 mx-auto mb-6 text-gray-300" />
+                                <h2 className="text-2xl font-black text-brand-dark mb-4">
+                                    No Active Study Plan
+                                </h2>
+                                <p className="text-gray-500 mb-8">
+                                    Create a personalized study plan to start your JLPT journey.
+                                </p>
+                                <Link href="/study-plan/setup" className="btnPrimary">
+                                    Create Study Plan
+                                </Link>
+                            </>
+                        ) : (
+                            <>
+                                <div className="relative w-20 h-20 mx-auto mb-8">
+                                    <div className="absolute inset-0 bg-brand-salmon/20 rounded-full animate-ping" />
+                                    <div className="relative z-10 w-20 h-20 bg-brand-salmon rounded-full flex items-center justify-center">
+                                        <Lock className="text-white" size={32} />
+                                    </div>
+                                </div>
+                                <h2 className="text-2xl font-black text-brand-dark mb-4">
+                                    Guest Dashboard Locked
+                                </h2>
+                                <p className="text-gray-500 mb-8">
+                                    Your personal study dashboard and progress tracking are only available to logged-in students.
+                                </p>
+                                <button
+                                    onClick={() => openAuth('REGISTER', { flowType: 'STUDY_PLAN' })}
+                                    className="btnPrimary"
+                                >
+                                    Login to View Dashboard
+                                </button>
+                                <div className="mt-6">
+                                    <Link href="/study-plan/setup" className="text-sm font-bold text-brand-salmon hover:underline">
+                                        Or create a new plan as a guest
+                                    </Link>
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>
@@ -144,7 +181,7 @@ function DashboardContent() {
                     <div className="mb-6 p-4 bg-brand-green/10 border border-brand-green/30 rounded-2xl flex items-center gap-3 animate-fadeIn">
                         <Sparkles className="text-brand-green" size={24} />
                         <span className="font-bold text-brand-dark">
-                            Your study plan has been created! Let's get started.
+                            Your study plan has been created! Let&apos;s get started.
                         </span>
                     </div>
                 )}
@@ -244,7 +281,7 @@ function DashboardContent() {
                             <div className="flex items-center justify-between mb-6">
                                 <h2 className="text-lg font-black text-brand-dark flex items-center gap-2">
                                     <BookOpen size={20} />
-                                    Today's Tasks
+                                    Today&apos;s Tasks
                                 </h2>
                                 <span className="text-sm text-gray-500 font-medium">
                                     {completedTasks}/{totalTasks} completed

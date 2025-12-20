@@ -364,7 +364,7 @@ export default function MilestoneDetailPage() {
                         <CheckCircle2 className="w-12 h-12 text-brand-green mx-auto mb-3" />
                         <h3 className="text-xl font-black text-brand-dark mb-2">Milestone Complete!</h3>
                         <p className="text-gray-600">
-                            Great job! You've successfully completed this milestone.
+                            Great job! You&apos;ve successfully completed this milestone.
                         </p>
                     </div>
                 )}

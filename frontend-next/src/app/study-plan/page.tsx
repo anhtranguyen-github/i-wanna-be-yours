@@ -91,6 +91,7 @@ export default function StudyPlanPage() {
                                         if (!user) {
                                             e.preventDefault();
                                             openAuth('LOGIN', {
+                                                flowType: 'STUDY_PLAN',
                                                 title: 'Your Study Plans',
                                                 description: 'View and manage your personalized study plans.'
                                             });
