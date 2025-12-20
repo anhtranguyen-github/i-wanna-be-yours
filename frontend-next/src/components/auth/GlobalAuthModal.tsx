@@ -31,14 +31,66 @@ export default function GlobalAuthModal() {
         }
     };
 
-    // Default benefits if specific feature context isn't provided
-    const benefits = [
-        "Track your learning progress & milestones",
-        "Personalized AI tutor with memory",
-        "Custom flashcard decks & SRS study",
-        "Save your chat conversations forever",
-        "Sync progress across all your devices"
-    ];
+    // Context-specific content mapping
+    const flowContent = {
+        CHAT: {
+            benefits: [
+                "Save your chat conversations forever",
+                "Personalized AI tutor with memory",
+                "Real-time feedback on your grammar",
+                "Review corrections from previous chats"
+            ],
+            title: "Continue Your Conversation",
+            description: "Sign up to save this chat and let Hanachan remember your learning style."
+        },
+        PRACTICE: {
+            benefits: [
+                "Unlock deep AI error analysis",
+                "Track your score history over time",
+                "Get targeted drills for your weak spots",
+                "Earn achievement badges & trophies"
+            ],
+            title: "Unlock Deep Insights",
+            description: "Hanachan has analyzed your practice results. Join now to see where to improve."
+        },
+        STUDY_PLAN: {
+            benefits: [
+                "Activate your daily study tasks",
+                "Get milestone reminders & tracking",
+                "Adaptive scheduling based on progress",
+                "Stay on track for your exam date"
+            ],
+            title: "Activate Your Study Plan",
+            description: "Your personalized road map is ready. Lock it in and start your journey today."
+        },
+        LIBRARY: {
+            benefits: [
+                "Sync your resources across devices",
+                "Upload & categorize your own files",
+                "Save vocabulary from any text",
+                "Access premium reading materials"
+            ],
+            title: "Build Your Personal Library",
+            description: "Keep all your Japanese learning materials in one place, accessible anywhere."
+        },
+        GENERAL: {
+            benefits: [
+                "Track your learning progress & milestones",
+                "Personalized AI tutor with memory",
+                "Custom flashcard decks & SRS study",
+                "Save your chat conversations forever",
+                "Sync progress across all your devices"
+            ],
+            title: "Unlock Your Japanese Potential",
+            description: "Join thousands of learners mastering Japanese with our AI-powered platform."
+        }
+    };
+
+    const currentFlow = featureContext?.flowType || 'GENERAL';
+    const activeContent = flowContent[currentFlow as keyof typeof flowContent];
+    const displayBenefits = activeContent.benefits;
+    const displayTitle = featureContext?.title || activeContent.title;
+    const displayDescription = featureContext?.description || activeContent.description;
 
     return (
         <div
@@ -78,15 +130,15 @@ export default function GlobalAuthModal() {
                         </div>
 
                         <h2 className="text-4xl font-display font-black mb-4 leading-tight">
-                            {featureContext?.title || "Unlock Your Japanese Potential"}
+                            {displayTitle}
                         </h2>
 
                         <p className="text-lg text-white/80 mb-10 leading-relaxed font-medium">
-                            {featureContext?.description || "Join thousands of learners mastering Japanese with our AI-powered platform."}
+                            {displayDescription}
                         </p>
 
                         <div className="space-y-5">
-                            {benefits.map((benefit, idx) => (
+                            {displayBenefits.map((benefit, idx) => (
                                 <div key={idx} className="flex items-start gap-4 group">
                                     <div className="mt-1 p-1 rounded-full bg-white/10 group-hover:bg-brand-green group-hover:text-white transition-colors">
                                         <CheckCircle size={16} className="text-brand-green group-hover:text-white transition-colors" />
@@ -104,13 +156,24 @@ export default function GlobalAuthModal() {
 
                 {/* Right Column: The "Gate" / Auth Forms */}
                 <div className="flex-1 bg-white p-8 md:p-12 flex items-center justify-center relative">
-                    {/* Mobile Header (Only visible on small screens) */}
+                    {/* Mobile Header Decoration */}
                     <div className="md:hidden absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-brand-indigo to-brand-green" />
 
                     <div className="w-full max-w-md">
+                        {/* Mobile-only offer title since the left column is hidden */}
+                        <div className="md:hidden mb-8 text-center">
+                            <h2 className="text-2xl font-display font-black text-brand-dark mb-2">
+                                {displayTitle}
+                            </h2>
+                            <p className="text-gray-500 text-sm font-medium">
+                                {displayDescription}
+                            </p>
+                        </div>
+
                         <AuthForms
                             initialMode={initialMode}
                             onSuccess={closeAuth}
+                            hideHeader={true}
                         />
                     </div>
                 </div>

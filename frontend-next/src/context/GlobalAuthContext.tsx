@@ -3,10 +3,13 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 // Define the shape of the features/offer context we might pass when opening auth
+export type AuthFlowType = 'CHAT' | 'PRACTICE' | 'STUDY_PLAN' | 'LIBRARY' | 'GENERAL';
+
 export interface AuthFeatureContext {
     title?: string;
     description?: string;
     icon?: React.ReactNode;
+    flowType?: AuthFlowType;
 }
 
 interface GlobalAuthContextType {

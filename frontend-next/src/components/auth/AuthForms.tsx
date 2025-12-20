@@ -6,9 +6,10 @@ import { useUser } from '@/context/UserContext';
 interface AuthFormsProps {
     initialMode?: 'LOGIN' | 'REGISTER';
     onSuccess?: () => void;
+    hideHeader?: boolean;
 }
 
-export default function AuthForms({ initialMode = 'LOGIN', onSuccess }: AuthFormsProps) {
+export default function AuthForms({ initialMode = 'LOGIN', onSuccess, hideHeader = false }: AuthFormsProps) {
     const [isLogin, setIsLogin] = useState(initialMode === 'LOGIN');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -74,14 +75,16 @@ export default function AuthForms({ initialMode = 'LOGIN', onSuccess }: AuthForm
 
     return (
         <div className="w-full h-full flex flex-col justify-center">
-            <div className="text-center mb-8">
-                <h2 className="text-3xl font-display font-black text-brand-dark mb-2">
-                    {isLogin ? 'Welcome Back!' : 'Join hanachan'}
-                </h2>
-                <p className="text-gray-500 font-medium">
-                    {isLogin ? 'Continue your learning journey' : 'Start your Japanese adventure'}
-                </p>
-            </div>
+            {!hideHeader && (
+                <div className="text-center mb-8">
+                    <h2 className="text-3xl font-display font-black text-brand-dark mb-2">
+                        {isLogin ? 'Welcome Back!' : 'Join hanachan'}
+                    </h2>
+                    <p className="text-gray-500 font-medium">
+                        {isLogin ? 'Continue your learning journey' : 'Start your Japanese adventure'}
+                    </p>
+                </div>
+            )}
 
             {error && (
                 <div className="bg-red-50 border-2 border-red-100 text-red-600 px-4 py-3 rounded-2xl mb-6 font-bold text-sm shadow-sm animate-shake">
@@ -134,7 +137,7 @@ export default function AuthForms({ initialMode = 'LOGIN', onSuccess }: AuthForm
                 >
                     {isLogin ? (
                         <>
-                            Don't have an account? <span className="text-brand-indigo">Register Free</span>
+                            Don&apos;t have an account? <span className="text-brand-indigo">Register Free</span>
                         </>
                     ) : (
                         <>
