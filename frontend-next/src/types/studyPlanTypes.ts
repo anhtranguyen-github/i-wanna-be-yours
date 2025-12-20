@@ -131,6 +131,53 @@ export interface StudyPlanDetail {
     current_milestone_id: string | null;
     milestones: Milestone[];
     jlpt_requirements: JLPTRequirements;
+    framework_stats?: FrameworkStats;
+}
+
+// ============================================
+// Strategic Framework Types (OKR, PACT, SMART)
+// ============================================
+
+export interface OKRGoal {
+    objective: string;
+    key_results: {
+        label: string;
+        current: number;
+        target: number;
+        unit: string;
+        progress: number;
+    }[];
+}
+
+export interface PACTStat {
+    label: string;
+    value: number | string;
+    icon: string;
+    description: string;
+    commitment_level: number; // 0-100
+}
+
+export interface SMARTGoal {
+    id: string;
+    title: string;
+    specific_action: string;
+    deadline: string;
+    is_achievable: boolean;
+    relevance: string;
+    status: 'active' | 'achieved' | 'failed';
+    progress: number;
+}
+
+export interface FrameworkStats {
+    okr: OKRGoal;
+    pact: {
+        commitment_score: number;
+        habit_strength: number;
+        streak: number;
+        recent_sessions: number;
+        daily_metrics: PACTStat[];
+    };
+    smart: SMARTGoal[];
 }
 
 // ============================================
