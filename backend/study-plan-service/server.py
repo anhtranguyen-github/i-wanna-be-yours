@@ -38,6 +38,34 @@ def health_check():
 
 # ---------------- Module imports ----------------- #
 
+from modules.content_mastery import ContentMasteryModule
+content_mastery_module = ContentMasteryModule()
+content_mastery_module.register_routes(app)
+
+from modules.smart_goals import SmartGoalsModule
+smart_goals_module = SmartGoalsModule()
+smart_goals_module.register_routes(app)
+
+from modules.okr import OKRModule
+okr_module = OKRModule(content_mastery_module)
+okr_module.register_routes(app)
+
+from modules.pact import PACTModule
+pact_module = PACTModule()
+pact_module.register_routes(app)
+
+from modules.context import ContextModule
+context_module = ContextModule()
+context_module.register_routes(app)
+
+from modules.priority import PriorityMatrixModule
+priority_matrix_module = PriorityMatrixModule()
+priority_matrix_module.register_routes(app)
+
+from modules.review_cycles import ReviewCyclesModule
+review_cycles_module = ReviewCyclesModule()
+review_cycles_module.register_routes(app)
+
 from modules.study_plan import StudyPlanModule
 study_plan_module = StudyPlanModule()
 study_plan_module.register_routes(app)
@@ -49,13 +77,6 @@ learner_progress_module.register_routes(app)
 from modules.adaptive_learning import AdaptiveLearningModule
 adaptive_learning_module = AdaptiveLearningModule()
 adaptive_learning_module.register_routes(app)
-
-# TODO: Add new strategic framework modules here (Phase 0-6)
-# from modules.content_mastery import ContentMasteryModule
-# from modules.strategy_framework import StrategyFrameworkModule
-# from modules.context_tracker import ContextTrackerModule
-# from modules.priority_matrix import PriorityMatrixModule
-# from modules.review_cycles import ReviewCyclesModule
 
 # --------------- End of Module imports ---------------- #
 
