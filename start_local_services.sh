@@ -71,7 +71,7 @@ kill_existing_processes() {
     log "🧹 Cleaning up existing zombie processes..."
     
     # 1. Kill by Ports first (most reliable)
-    local ports=(3000 5100 5200 5400 8000)
+    local ports=(3000 5100 5200 5400 5500 8000)
     for port in "${ports[@]}"; do
         if lsof -t -i:$port >/dev/null; then
             log "  Killing process on port $port..."
@@ -130,7 +130,7 @@ cleanup() {
 
     # 3. Fallback: Kill by Ports
     log "Checking for leftover services on ports..."
-    pids=$(lsof -t -i:3000 -i:8000 -i:5100 -i:5200 -i:5400 2>/dev/null || true)
+    pids=$(lsof -t -i:3000 -i:8000 -i:5100 -i:5200 -i:5400 -i:5500 2>/dev/null || true)
     if [ -n "$pids" ]; then
         for pid in $pids; do
             log "  🛑 Killing leftover process on port PID: $pid"
@@ -188,7 +188,7 @@ trap cleanup EXIT INT TERM
 
 # --- Setup Directories ---
 mkdir -p "$LOG_ROOT/mongo" "$DB_ROOT"
-mkdir -p "$LOG_ROOT/express-db" "$LOG_ROOT/flask-dynamic-db" "$LOG_ROOT/dictionary-db" "$LOG_ROOT/hanachan" "$LOG_ROOT/frontend"
+mkdir -p "$LOG_ROOT/express-db" "$LOG_ROOT/flask-dynamic-db" "$LOG_ROOT/study-plan-service" "$LOG_ROOT/dictionary-db" "$LOG_ROOT/hanachan" "$LOG_ROOT/frontend"
 
 # --- Argument Parsing ---
 SHOULD_SEED=false
@@ -218,6 +218,7 @@ log "=== Verifying Ports are Free ==="
 check_and_free_port 3000 "frontend-next" &
 check_and_free_port 5100 "flask-dynamic-db" &
 check_and_free_port 5200 "dictionary-python" &
+check_and_free_port 5500 "study-plan-service" &
 check_and_free_port 8000 "express-db" &
 check_and_free_port 5400 "hanachan" &
 wait
@@ -323,6 +324,30 @@ log "✅ Started express-db (PID: $pid)"
 pid=$!
 PIDS+=($pid)
 log "✅ Started flask-dynamic-db (PID: $pid)"
+
+# --- Start STUDY-PLAN-SERVICE (port 5500) ---
+(
+    log "🚀 Starting study-plan-service (port 5500)..."
+    cd backend/study-plan-service || exit 1
+    
+    if [ -f .venv/bin/activate ]; then
+        . .venv/bin/activate
+    else
+        log "⚠️  Study Plan Service venv not found. Creating one..."
+        python3 -m venv .venv
+        . .venv/bin/activate
+        pip install -r requirements.txt > /dev/null 2>&1
+    fi
+
+    ./.venv/bin/gunicorn -w 4 -b 0.0.0.0:5500 server:app \
+    > "$LOG_ROOT/study-plan-service/study_plan_5500.log" 2>&1
+    on_error "study-plan-service" $?
+    
+    [ -n "$VIRTUAL_ENV" ] && deactivate
+) &
+pid=$!
+PIDS+=($pid)
+log "✅ Started study-plan-service (PID: $pid)"
 
 # --- Start DICTIONARY-DB (Legacy Node.js - DECOMMISSIONED) ---
 # (
