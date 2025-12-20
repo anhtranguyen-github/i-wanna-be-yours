@@ -7,7 +7,7 @@
  * - Manage difficulty settings
  */
 
-const API_BASE_URL = '/f-api';
+const API_BASE_URL = '/s-api';  // Study Plan Service (port 5500)
 
 // ============================================
 // Types
