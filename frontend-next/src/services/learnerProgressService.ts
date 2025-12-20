@@ -18,7 +18,7 @@ import {
     LearningCategory,
 } from '@/types/learnerProgressTypes';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_FLASK_API_URL || '/f-api';
+const API_BASE_URL = '/f-api';
 
 class LearnerProgressService {
 
@@ -53,7 +53,7 @@ class LearnerProgressService {
      * Get user's comprehensive progress summary
      */
     async getProgress(userId: string): Promise<ProgressSummaryResponse> {
-        const res = await fetch(`${API_BASE_URL}/f-api/v1/learner/progress/${userId}`);
+        const res = await fetch(`/f-api/v1/learner/progress/${userId}`);
         return this.handleResponse<ProgressSummaryResponse>(res);
     }
 
@@ -74,7 +74,7 @@ class LearnerProgressService {
      * Log a learning activity
      */
     async logActivity(request: LogActivityRequest): Promise<LogActivityResponse> {
-        const res = await fetch(`${API_BASE_URL}/f-api/v1/learner/activity`, {
+        const res = await fetch(`/f-api/v1/learner/activity`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(request),
@@ -150,7 +150,7 @@ class LearnerProgressService {
      * Get detailed learning statistics
      */
     async getStats(userId: string, days: number = 30): Promise<DetailedStatsResponse> {
-        const res = await fetch(`${API_BASE_URL}/f-api/v1/learner/stats/${userId}?days=${days}`);
+        const res = await fetch(`/f-api/v1/learner/stats/${userId}?days=${days}`);
         return this.handleResponse<DetailedStatsResponse>(res);
     }
 
@@ -171,7 +171,7 @@ class LearnerProgressService {
      * Get user's achievements
      */
     async getAchievements(userId: string): Promise<AchievementsResponse> {
-        const res = await fetch(`${API_BASE_URL}/f-api/v1/learner/achievements/${userId}`);
+        const res = await fetch(`/f-api/v1/learner/achievements/${userId}`);
         return this.handleResponse<AchievementsResponse>(res);
     }
 
@@ -192,7 +192,7 @@ class LearnerProgressService {
      * Start a new study session
      */
     async startSession(request: StartSessionRequest): Promise<StartSessionResponse> {
-        const res = await fetch(`${API_BASE_URL}/f-api/v1/learner/session/start`, {
+        const res = await fetch(`/f-api/v1/learner/session/start`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(request),
@@ -204,7 +204,7 @@ class LearnerProgressService {
      * End a study session
      */
     async endSession(sessionId: string): Promise<EndSessionResponse> {
-        const res = await fetch(`${API_BASE_URL}/f-api/v1/learner/session/${sessionId}/end`, {
+        const res = await fetch(`/f-api/v1/learner/session/${sessionId}/end`, {
             method: 'POST',
         });
         return this.handleResponse<EndSessionResponse>(res);

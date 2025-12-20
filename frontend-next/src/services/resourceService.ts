@@ -1,8 +1,5 @@
 
-const BASE_URL = process.env.NEXT_PUBLIC_FLASK_API_URL || 'http://localhost:5100';
-const API_PREFIX = '/f-api';
-// Ensure we don't double up if the env var includes the prefix
-const FLASK_API = BASE_URL.endsWith(API_PREFIX) ? BASE_URL : `${BASE_URL}${API_PREFIX}`;
+const FLASK_API = '/f-api';
 
 export interface Resource {
     id: string;
