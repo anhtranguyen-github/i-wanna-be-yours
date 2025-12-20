@@ -1,5 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 
 const { connectDB } = require("./config/db");
 const { wordRoutes } = require("./routes/wordRoutes");
@@ -29,6 +30,7 @@ const port = process.env.PORT || 8000; // port our backend is running on
 const originPort = 3000; // port the frontend app is running on
 const app = express();
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 let corsOptions = {
   origin: "*",

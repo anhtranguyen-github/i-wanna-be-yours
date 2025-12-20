@@ -8,12 +8,23 @@ const { verifyAccessToken } = require('../utils/auth');
  * Middleware to protect routes and attach user to request
  */
 async function authenticate(req, res, next) {
+    let token = null;
+
+    // Check Authorization header
     const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+        token = authHeader.split(' ')[1];
+    }
+
+    // Check Cookies if not in header
+    if (!token && req.cookies) {
+        token = req.cookies.accessToken;
+    }
+
+    if (!token) {
         return res.status(401).json({ error: 'Unauthorized: No token provided' });
     }
 
-    const token = authHeader.split(' ')[1];
     const payload = verifyAccessToken(token);
 
     if (!payload) {
