@@ -21,16 +21,402 @@ This plan implements the backend services to support the enhanced Study Plan Das
 
 ```
 flaskStudyPlanDB
-├── smart_goals          # SMART goal definitions
-├── okr_objectives       # OKR objectives & key results
-├── pact_commitments     # Daily PACT configurations
-├── pact_actions_log     # Action completion history
-├── context_checkins     # User context snapshots
-├── priority_queue       # RED/YELLOW/GREEN items
-├── error_analysis       # Error type tracking
-├── review_cycles        # Weekly/phase review records
+├── user_content_mastery   # ⭐ NEW: Personal progress per content item
+├── content_interactions   # ⭐ NEW: Every practice/review event
+├── quiz_attempts          # ⭐ NEW: Quiz/test results
+├── study_sessions         # ⭐ NEW: Session-level tracking
+├── smart_goals            # SMART goal definitions
+├── okr_objectives         # OKR objectives & key results
+├── pact_commitments       # Daily PACT configurations
+├── pact_actions_log       # Action completion history
+├── context_checkins       # User context snapshots
+├── priority_queue         # RED/YELLOW/GREEN items
+├── error_analysis         # Error type tracking
+├── review_cycles          # Weekly/phase review records
 └── (existing collections remain)
 ```
+
+---
+
+## Phase 0: Content Mastery Data Model (Foundation)
+
+> **CRITICAL**: This is the foundational layer that ALL strategic frameworks read from. Every vocabulary, grammar point, kanji, and quiz must track personal mastery status.
+
+### 0.1 New Collection: `user_content_mastery`
+
+This is the **per-user, per-item** tracking system - the source of truth for what users have learned.
+
+```javascript
+{
+  _id: ObjectId,
+  user_id: String,
+  
+  // Content Reference
+  content_type: String,                // "vocabulary", "grammar", "kanji", "reading", "listening"
+  content_id: String,                  // Reference to the actual content
+  content_source: String,              // "core_2k", "jlpt_n3", "user_added", etc.
+  
+  // Basic Info (denormalized for performance)
+  title: String,                       // e.g., "食べる", "〜ている", "日"
+  jlpt_level: String,                  // "N5", "N4", "N3", "N2", "N1"
+  category: String,                    // "verb", "particle", "joyo", etc.
+  
+  // ===== MASTERY STATUS =====
+  status: String,                      // "new", "learning", "reviewing", "mastered", "burned"
+  mastery_level: Number,               // 0-100 (granular)
+  mastery_stage: Number,               // 1-8 (SRS stage)
+  
+  // ===== SRS SCHEDULING =====
+  srs: {
+    ease_factor: Number,               // Default 2.5, adjusts based on performance
+    interval_days: Number,             // Current review interval
+    next_review_date: Date,
+    review_count: Number,
+    correct_streak: Number,            // Consecutive correct answers
+    lapse_count: Number                // Times dropped from mastered
+  },
+  
+  // ===== PERFORMANCE STATS =====
+  stats: {
+    total_reviews: Number,
+    correct_count: Number,
+    incorrect_count: Number,
+    accuracy_percent: Number,
+    avg_response_time_ms: Number,
+    last_response_time_ms: Number,
+    time_spent_total_seconds: Number
+  },
+  
+  // ===== SKILL BREAKDOWN (for multi-aspect content) =====
+  skills: {
+    // Vocabulary
+    reading: { known: Boolean, accuracy: Number },
+    meaning: { known: Boolean, accuracy: Number },
+    writing: { known: Boolean, accuracy: Number },
+    listening: { known: Boolean, accuracy: Number },
+    
+    // Grammar
+    recognition: { known: Boolean, accuracy: Number },
+    production: { known: Boolean, accuracy: Number },
+    context_usage: { known: Boolean, accuracy: Number }
+  },
+  
+  // ===== LEARNING HISTORY =====
+  first_seen_at: Date,
+  learned_at: Date,                    // When status became "reviewing"
+  mastered_at: Date,                   // When status became "mastered"
+  last_reviewed_at: Date,
+  
+  // ===== PRIORITY & DIAGNOSTICS =====
+  priority: String,                    // "red", "yellow", "green"
+  last_error_type: String,             // "knowledge_gap", "process_error", "careless"
+  needs_attention: Boolean,
+  
+  // ===== LINKED CONTENT =====
+  related_content_ids: [String],       // Related vocab/grammar
+  linked_to_milestone_id: ObjectId,
+  
+  created_at: Date,
+  updated_at: Date
+}
+```
+
+### 0.2 New Collection: `content_interactions`
+
+Every single practice event is logged here for analytics.
+
+```javascript
+{
+  _id: ObjectId,
+  user_id: String,
+  mastery_id: ObjectId,                // Links to user_content_mastery
+  
+  // What happened
+  interaction_type: String,            // "flashcard_review", "quiz_question", "lesson_complete", "practice_sentence"
+  session_id: ObjectId,                // Links to study_sessions
+  
+  // Content
+  content_type: String,
+  content_id: String,
+  question_type: String,               // "meaning_to_reading", "audio_to_text", "fill_blank", etc.
+  
+  // Result
+  is_correct: Boolean,
+  user_answer: String,
+  correct_answer: String,
+  score: Number,                       // 0-100 for partial credit
+  
+  // Timing
+  response_time_ms: Number,
+  timestamp: Date,
+  
+  // Context
+  context_checkin_id: ObjectId,        // Links to mood/energy at time
+  difficulty_setting: String,          // "easy", "normal", "hard"
+  hint_used: Boolean,
+  
+  // SRS Impact
+  srs_change: {
+    old_interval: Number,
+    new_interval: Number,
+    old_stage: Number,
+    new_stage: Number
+  }
+}
+```
+
+### 0.3 New Collection: `quiz_attempts`
+
+Quiz and test results with detailed breakdown.
+
+```javascript
+{
+  _id: ObjectId,
+  user_id: String,
+  
+  // Quiz Info
+  quiz_type: String,                   // "practice", "milestone_test", "jlpt_mock", "custom"
+  quiz_id: ObjectId,
+  session_id: ObjectId,
+  
+  // Results
+  score_percent: Number,
+  correct_count: Number,
+  total_questions: Number,
+  time_taken_seconds: Number,
+  
+  // Section Breakdown
+  sections: [{
+    section_type: String,              // "vocabulary", "grammar", "reading", "listening"
+    score_percent: Number,
+    correct_count: Number,
+    total_questions: Number
+  }],
+  
+  // Question Details
+  questions: [{
+    question_id: String,
+    content_id: String,
+    content_type: String,
+    is_correct: Boolean,
+    user_answer: String,
+    correct_answer: String,
+    time_spent_seconds: Number,
+    error_type: String                 // If incorrect
+  }],
+  
+  // Impact
+  items_affected: [{
+    mastery_id: ObjectId,
+    old_status: String,
+    new_status: String,
+    priority_change: String            // "promoted", "demoted", "unchanged"
+  }],
+  
+  timestamp: Date,
+  context_checkin_id: ObjectId
+}
+```
+
+### 0.4 New Collection: `study_sessions`
+
+Session-level tracking for time and focus.
+
+```javascript
+{
+  _id: ObjectId,
+  user_id: String,
+  plan_id: ObjectId,
+  
+  // Session Details
+  session_type: String,                // "flashcard", "quiz", "lesson", "reading", "listening", "mixed"
+  started_at: Date,
+  ended_at: Date,
+  duration_minutes: Number,
+  
+  // What was studied
+  focus_area: String,                  // "vocabulary", "grammar", "kanji", "mixed"
+  jlpt_level: String,
+  milestone_id: ObjectId,
+  
+  // Results
+  items_reviewed: Number,
+  items_learned: Number,
+  items_mastered: Number,
+  accuracy_percent: Number,
+  
+  // Streaks
+  contributes_to_streak: Boolean,
+  streak_day_number: Number,
+  
+  // Context
+  context_checkin_id: ObjectId,
+  ai_recommended: Boolean,             // Was this session AI-suggested?
+  
+  // Device/Environment
+  device_type: String,                 // "web", "mobile", "tablet"
+  
+  created_at: Date
+}
+```
+
+### 0.5 API Endpoints for Content Mastery
+
+```python
+# backend/flask/modules/content_mastery.py
+
+# ===== READ OPERATIONS =====
+
+@mastery_bp.route('/mastery', methods=['GET'])
+def get_user_mastery():
+    """Get all mastery records for user with filters"""
+    # Query: ?user_id=X&content_type=vocabulary&status=learning&jlpt_level=N3
+    # Returns: Paginated list of mastery records
+    pass
+
+@mastery_bp.route('/mastery/<content_type>/<content_id>', methods=['GET'])
+def get_item_mastery(content_type, content_id):
+    """Get mastery status for a specific item"""
+    # Returns: Full mastery record with history
+    pass
+
+@mastery_bp.route('/mastery/stats', methods=['GET'])
+def get_mastery_stats():
+    """Get aggregated mastery statistics"""
+    # Query: ?user_id=X&jlpt_level=N3
+    # Returns: { total: 500, mastered: 120, learning: 200, new: 180 }
+    pass
+
+@mastery_bp.route('/mastery/due', methods=['GET'])
+def get_due_items():
+    """Get items due for review"""
+    # Query: ?user_id=X&limit=50
+    # Returns: List of items where next_review_date <= now, sorted by priority
+    pass
+
+# ===== WRITE OPERATIONS =====
+
+@mastery_bp.route('/mastery/<content_type>/<content_id>/start', methods=['POST'])
+def start_learning(content_type, content_id):
+    """Mark an item as started (new → learning)"""
+    pass
+
+@mastery_bp.route('/mastery/<mastery_id>/review', methods=['POST'])
+def log_review(mastery_id):
+    """Log a review result and update SRS"""
+    # Body: { is_correct, response_time_ms, question_type, user_answer }
+    # Updates: srs intervals, stats, status if threshold met
+    pass
+
+@mastery_bp.route('/mastery/<mastery_id>/reset', methods=['POST'])
+def reset_item(mastery_id):
+    """Reset an item to 'new' status"""
+    pass
+
+# ===== BULK OPERATIONS =====
+
+@mastery_bp.route('/mastery/bulk-status', methods=['POST'])
+def get_bulk_status():
+    """Get mastery status for multiple items"""
+    # Body: { content_ids: ["id1", "id2", ...] }
+    # Returns: { "id1": { status: "mastered", ... }, "id2": { ... } }
+    pass
+
+@mastery_bp.route('/mastery/bulk-start', methods=['POST'])
+def bulk_start_learning():
+    """Start learning multiple items at once"""
+    # Body: { content_ids: ["id1", "id2", ...], content_type: "vocabulary" }
+    pass
+```
+
+### 0.6 Mastery Status Transition Logic
+
+```python
+def calculate_new_status(mastery: dict, is_correct: bool) -> str:
+    """
+    Determine new status based on review result.
+    
+    Status Flow:
+    new → learning → reviewing → mastered → burned
+    
+    Transitions:
+    - new → learning: First interaction
+    - learning → reviewing: 3+ correct in row OR 80% accuracy over 5+ reviews
+    - reviewing → mastered: SRS interval >= 21 days AND 90% accuracy
+    - mastered → burned: SRS interval >= 120 days (4 months)
+    - ANY → learning: Lapse (incorrect after mastered)
+    """
+    current_status = mastery['status']
+    srs = mastery['srs']
+    stats = mastery['stats']
+    
+    # Handle lapse
+    if not is_correct and current_status in ['mastered', 'burned']:
+        srs['lapse_count'] += 1
+        return 'learning'
+    
+    # Update streak
+    if is_correct:
+        srs['correct_streak'] += 1
+    else:
+        srs['correct_streak'] = 0
+    
+    # Determine new status
+    if current_status == 'new':
+        return 'learning'
+    
+    elif current_status == 'learning':
+        if srs['correct_streak'] >= 3 or (stats['total_reviews'] >= 5 and stats['accuracy_percent'] >= 80):
+            return 'reviewing'
+        return 'learning'
+    
+    elif current_status == 'reviewing':
+        if srs['interval_days'] >= 21 and stats['accuracy_percent'] >= 90:
+            return 'mastered'
+        return 'reviewing'
+    
+    elif current_status == 'mastered':
+        if srs['interval_days'] >= 120:
+            return 'burned'
+        return 'mastered'
+    
+    return current_status
+
+
+def calculate_new_interval(mastery: dict, is_correct: bool, quality: int) -> int:
+    """
+    Calculate new SRS interval using SM-2 algorithm variant.
+    
+    Quality: 0-5 (0-2 = fail, 3-5 = pass with varying confidence)
+    """
+    srs = mastery['srs']
+    
+    if quality < 3:  # Failed
+        srs['correct_streak'] = 0
+        return 1  # Reset to 1 day
+    
+    # Adjust ease factor
+    srs['ease_factor'] = max(1.3, srs['ease_factor'] + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02)))
+    
+    if srs['review_count'] == 0:
+        return 1
+    elif srs['review_count'] == 1:
+        return 3
+    else:
+        return round(srs['interval_days'] * srs['ease_factor'])
+```
+
+### 0.7 Integration Points
+
+The strategic frameworks read from this data:
+
+| Framework | Reads From | Purpose |
+|-----------|------------|---------|
+| SMART Goals | `user_content_mastery.stats` | Calculate "Master 500 words" progress |
+| OKR Key Results | `content_interactions` + `user_content_mastery` | Track velocity, project completion |
+| PACT Actions | `study_sessions` | Verify daily action completion |
+| Priority Matrix | `user_content_mastery.priority` | RED/YELLOW/GREEN classification |
+| Review Cycles | All collections | Generate weekly summaries |
 
 ---
 
