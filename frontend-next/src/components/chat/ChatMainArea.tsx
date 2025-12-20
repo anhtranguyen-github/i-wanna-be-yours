@@ -405,8 +405,9 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
         // Gate for guests - they can stage but not commit
         if (isGuest) {
             openAuth('REGISTER', {
-                title: "AI Conversation",
-                description: "Sign up to chat with Hanachan and get instant feedback on your Japanese!"
+                flowType: 'CHAT',
+                title: "Save Your Conversation",
+                description: "Sign up to save this chat and let Hanachan remember your learning style."
             });
             return;
         }
