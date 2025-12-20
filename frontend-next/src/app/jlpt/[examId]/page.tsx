@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useCallback, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import {
     Clock,
     Flag,
@@ -47,6 +47,10 @@ export default function ExamSessionPage() {
         return getQuestionsForExam(examId);
     }, [examId]);
 
+    const searchParams = useSearchParams();
+    const isReviewMode = searchParams.get('review') === 'true';
+    const attemptId = searchParams.get('attemptId');
+
     // Session State
     const [currentIndex, setCurrentIndex] = useState(0);
     const [answers, setAnswers] = useState<Record<string, UserAnswer>>({});
@@ -56,6 +60,24 @@ export default function ExamSessionPage() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
     const [startedAt] = useState<Date>(new Date());
+
+    // Load answers if in review mode
+    useEffect(() => {
+        if (isReviewMode) {
+            setIsSubmitted(true);
+            try {
+                const saved = sessionStorage.getItem('last_exam_attempt');
+                if (saved) {
+                    const attempt = JSON.parse(saved);
+                    if (attempt.answers) {
+                        setAnswers(attempt.answers);
+                    }
+                }
+            } catch (e) {
+                console.error('Error loading answers for review:', e);
+            }
+        }
+    }, [isReviewMode]);
 
     // Submit exam
     const handleSubmit = useCallback(async () => {
@@ -168,62 +190,50 @@ export default function ExamSessionPage() {
     };
 
     // Navigation
-    const goToQuestion = (index: number) => {
+    // Navigation
+    const goToQuestion = useCallback((index: number) => {
         if (index >= 0 && index < questions.length) {
             setCurrentIndex(index);
             if (displayMode === "SCROLL") {
                 const element = document.getElementById(`question-${index}`);
-                const container = getScrollContainer();
-
                 if (element) {
-                    const headerOffset = 100;
-                    if (container === window) {
-                        const elementPosition = element.getBoundingClientRect().top;
-                        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-                        window.scrollTo({ top: offsetPosition, behavior: "smooth" });
-                    } else {
-                        const containerElement = container as HTMLElement;
-                        const elementPosition = element.offsetTop;
-                        containerElement.scrollTo({
-                            top: elementPosition - headerOffset,
-                            behavior: "smooth"
-                        });
-                    }
+                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             }
         }
-    };
+    }, [questions.length, displayMode]);
 
-    // Sync active question on scroll (for SCROLL mode)
+    // Sync active question on scroll (for SCROLL mode) using IntersectionObserver
     useEffect(() => {
-        if (displayMode !== "SCROLL") return;
+        if (displayMode !== "SCROLL" || questions.length === 0) return;
 
-        const container = getScrollContainer();
-        const handleScroll = () => {
-            const questionElements = questions.map((_, i) => document.getElementById(`question-${i}`));
-            const scrollThreshold = 150;
-
-            let currentScroll = 0;
-            if (container === window) {
-                currentScroll = window.scrollY;
-            } else {
-                currentScroll = (container as HTMLElement).scrollTop;
-            }
-
-            for (let i = questionElements.length - 1; i >= 0; i--) {
-                const el = questionElements[i];
-                if (el && el.offsetTop <= currentScroll + scrollThreshold) {
-                    if (currentIndex !== i) {
-                        setCurrentIndex(i);
-                    }
-                    break;
-                }
-            }
+        const observerOptions = {
+            root: null, // Spy on viewport
+            rootMargin: '-15% 0px -75% 0px', // Active region is top part of screen
+            threshold: 0
         };
 
-        container.addEventListener("scroll", handleScroll);
-        return () => container.removeEventListener("scroll", handleScroll);
-    }, [displayMode, questions, currentIndex]);
+        const observerCallback = (entries: IntersectionObserverEntry[]) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.id;
+                    const index = parseInt(id.replace('question-', ''), 10);
+                    if (!isNaN(index)) {
+                        setCurrentIndex(index);
+                    }
+                }
+            });
+        };
+
+        const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+        questions.forEach((_, i) => {
+            const el = document.getElementById(`question-${i}`);
+            if (el) observer.observe(el);
+        });
+
+        return () => observer.disconnect();
+    }, [displayMode, questions]);
 
 
 
@@ -332,13 +342,13 @@ export default function ExamSessionPage() {
             <div ref={contentRef} className="flex-1 flex">
                 <aside
                     className={`
-                        fixed lg:sticky lg:top-[5.5rem] lg:h-fit inset-y-0 lg:inset-y-auto left-0 lg:left-auto z-30 w-64 lg:w-80 
+                        fixed lg:sticky lg:top-20 lg:h-[calc(100vh-5rem)] inset-y-0 lg:inset-y-auto left-0 lg:left-auto z-30 w-64 lg:w-80 
                         transform transition-transform duration-300 lg:transform-none
                         ${isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
                         pt-16 lg:pt-0 lg:pl-6
                     `}
                 >
-                    <div className="p-4 h-full lg:h-auto bg-white lg:rounded-2xl lg:border lg:border-slate-200 lg:shadow-sm flex flex-col">
+                    <div className="p-4 h-full bg-white lg:rounded-2xl lg:border lg:border-slate-200 lg:shadow-sm flex flex-col">
                         {/* Test Info */}
                         <div className="mb-4 pb-4 border-b border-slate-100">
                             <p className="text-sm text-slate-500">
@@ -658,7 +668,7 @@ function ScrollModeView({
                     <div
                         key={question.id}
                         id={`question-${idx}`}
-                        className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm"
+                        className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm scroll-mt-32"
                     >
                         {/* Question Header */}
                         <div className="flex items-center justify-between mb-4">
