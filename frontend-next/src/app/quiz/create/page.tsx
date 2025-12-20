@@ -124,8 +124,9 @@ export default function CreateQuizPage() {
         // Check auth first
         if (isGuest) {
             openAuth('REGISTER', {
-                title: 'Save Your Quiz',
-                description: 'Create a free account to save and share your custom quizzes.'
+                flowType: 'PRACTICE',
+                title: 'Save Your Custom Quiz',
+                description: 'Create a free account to save your work and share this quiz with the Hanabira community.'
             });
             return;
         }

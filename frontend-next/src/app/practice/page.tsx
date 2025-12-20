@@ -126,10 +126,14 @@ export default function PracticePage() {
                             Log in to save your quiz scores, track your daily streak, and see personalized recommendations.
                         </p>
                         <button
-                            onClick={() => openAuth('LOGIN')}
+                            onClick={() => openAuth('REGISTER', {
+                                flowType: 'PRACTICE',
+                                title: 'Track Your Mastery',
+                                description: 'Join Hanabira to save your streak, track accuracy across skills, and see your progress graphs.'
+                            })}
                             className="inline-block px-8 py-3 bg-brand-green text-white font-bold rounded-xl shadow-clay-img hover:bg-brand-green/90 transition-all"
                         >
-                            Log In
+                            Log In / Register
                         </button>
                     </div>
                 )}

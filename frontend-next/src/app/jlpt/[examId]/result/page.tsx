@@ -16,10 +16,14 @@ import {
     TrendingUp,
     Award,
     BarChart3,
+    Zap,
 } from "lucide-react";
 import { mockExamConfigs, getQuestionsForExam } from "@/data/mockPractice";
 import { SkillType, JLPTLevel, ExamAttempt } from "@/types/practice";
 import { formatTimeDisplay } from "@/hooks/useExamTimer";
+import { useUser } from "@/context/UserContext";
+import { useGlobalAuth } from "@/context/GlobalAuthContext";
+import { Sparkles as SparklesIcon } from "lucide-react";
 
 // ============================================================================
 // RESULT PAGE - Now at /jlpt/[examId]/result
@@ -28,6 +32,8 @@ import { formatTimeDisplay } from "@/hooks/useExamTimer";
 export default function ExamResultPage() {
     const params = useParams();
     const router = useRouter();
+    const { user } = useUser();
+    const { openAuth } = useGlobalAuth();
     const examId = params?.examId as string;
 
     // Load exam config and questions
@@ -352,6 +358,51 @@ export default function ExamResultPage() {
                             </li>
                         )}
                     </ul>
+                </div>
+
+                {/* ===== DEEP AI INSIGHTS (GUEST HOOK) ===== */}
+                <div className="relative overflow-hidden bg-white rounded-3xl border border-slate-200 p-8 mb-8 shadow-sm">
+                    {/* Decorative Background Icon */}
+                    <div className="absolute -top-10 -right-10 opacity-5 pointer-events-none">
+                        <SparklesIcon size={160} className="text-brand-green" />
+                    </div>
+
+                    <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
+                        <div className="w-20 h-20 bg-brand-green/10 rounded-2xl flex items-center justify-center shrink-0">
+                            <SparklesIcon size={40} className="text-brand-green" />
+                        </div>
+                        <div className="flex-1 text-center md:text-left">
+                            <h3 className="text-xl font-black text-brand-dark mb-2">Hanachan's Deep Analysis</h3>
+                            <p className="text-slate-500 text-sm leading-relaxed max-w-lg">
+                                Using advanced AI, Hanachan can analyze your mistakes to identify specific grammatical gaps and vocabulary patterns you struggle with.
+                            </p>
+                        </div>
+                        <button
+                            onClick={() => {
+                                if (!user) {
+                                    openAuth('REGISTER', {
+                                        flowType: 'PRACTICE',
+                                        title: "Unlock Deep Insights",
+                                        description: "Let Hanachan analyze your mistakes and build a personalized review plan just for you."
+                                    });
+                                } else {
+                                    // Implementation of AI analysis for logged in users
+                                    alert("AI Analysis is calculating your profile...");
+                                }
+                            }}
+                            className="bg-brand-dark text-white px-6 py-3 rounded-xl font-bold hover:bg-black transition-all shadow-lg hover:shadow-xl active:scale-95 flex items-center gap-2"
+                        >
+                            Analyze with Hanachan
+                            <Zap size={18} className="text-brand-green fill-brand-green" />
+                        </button>
+                    </div>
+
+                    {!user && (
+                        <div className="mt-6 pt-6 border-t border-slate-100 flex items-center gap-2 text-xs text-slate-400 font-medium">
+                            <CheckCircle2 size={14} className="text-brand-green" />
+                            Guest Mode: Log in to save these insights to your lifelong learning profile.
+                        </div>
+                    )}
                 </div>
 
                 {/* ===== ACTION BUTTONS ===== */}

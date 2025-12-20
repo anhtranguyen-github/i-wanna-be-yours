@@ -131,7 +131,7 @@ export function CompletionScreen({
                     {emoji} Deck Complete!
                 </h2>
                 <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
-                    You've reviewed all <span className="font-bold text-brand-green">{totalCards}</span> cards in {deckTitle}
+                    You&apos;ve reviewed all <span className="font-bold text-brand-green">{totalCards}</span> cards in {deckTitle}
                 </p>
             </div>
 
@@ -146,9 +146,9 @@ export function CompletionScreen({
                 <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                     <div
                         className={`h-full transition-all duration-1000 ease-out rounded-full ${masteryScore >= 80 ? 'bg-gradient-to-r from-green-400 to-emerald-500' :
-                                masteryScore >= 60 ? 'bg-gradient-to-r from-yellow-400 to-green-500' :
-                                    masteryScore >= 40 ? 'bg-gradient-to-r from-orange-400 to-yellow-500' :
-                                        'bg-gradient-to-r from-red-400 to-orange-500'
+                            masteryScore >= 60 ? 'bg-gradient-to-r from-yellow-400 to-green-500' :
+                                masteryScore >= 40 ? 'bg-gradient-to-r from-orange-400 to-yellow-500' :
+                                    'bg-gradient-to-r from-red-400 to-orange-500'
                             }`}
                         style={{ width: `${masteryScore}%` }}
                     />

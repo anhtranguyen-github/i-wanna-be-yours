@@ -219,7 +219,17 @@ export default function QuizPlayerPage() {
                         {/* Guest message */}
                         {!user && (
                             <div className="bg-blue-50 text-blue-700 px-4 py-3 rounded-xl mb-6 text-sm">
-                                <button onClick={() => openAuth('LOGIN')} className="font-bold underline">Log in</button> to save your progress and track your scores.
+                                <button
+                                    onClick={() => openAuth('REGISTER', {
+                                        flowType: 'PRACTICE',
+                                        title: "Save Your Score",
+                                        description: "Log in to save this result to your personal record and get detailed skill analysis."
+                                    })}
+                                    className="font-bold underline"
+                                >
+                                    Log in
+                                </button>
+                                {" "} to save your progress and track your scores.
                             </div>
                         )}
 
