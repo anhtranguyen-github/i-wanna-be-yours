@@ -1,3 +1,14 @@
+"""
+Flask Service (Port 5100)
+
+This service handles flashcards, quizzes, library, and resources.
+
+NOTE: Study plan, learner progress, and adaptive learning have been moved to:
+      backend/study-plan-service/ (port 5500)
+
+Deprecated modules moved to: modules/deprecated/
+"""
+
 import os
 import logging
 from flask import Flask, jsonify
@@ -36,7 +47,7 @@ host = "host.docker.internal" if env == "prod" else "localhost"
 @app.route("/health", methods=["GET"])
 def health_check():
     # Responds with a simple JSON message and a 200 OK status
-    return jsonify({"message": "OK"}), 200
+    return jsonify({"message": "OK", "service": "flask-core", "port": flask_port}), 200
 
 
 
@@ -44,60 +55,46 @@ def health_check():
 # ---------------- Class imports ----------------- #
 
 # -- emails -- #
-# Import and use the EmailWaitlist class
 from modules.email_waitlist import EmailWaitlist
 email_waitlist = EmailWaitlist()
 email_waitlist.register_routes(app)
 
-from modules.login_streak import LoginStreak
-login_streak = LoginStreak()
-login_streak.register_routes(app)
-
-from modules.vocabulary_mining import MecabUserVocabulary
-mecab_vocabulary = MecabUserVocabulary()
-mecab_vocabulary.register_routes(app)
-
-from modules.sentence_mining import SentenceMiningModule
-sentence_mining_module = SentenceMiningModule()
-sentence_mining_module.register_routes(app)
-
+# -- flashcards -- #
 from modules.flashcards import FlashcardModule
 flashcard_module = FlashcardModule()
 flashcard_module.register_routes(app)
 
+# -- library -- #
 from modules.library import LibraryTexts
 library_texts_module = LibraryTexts()
 library_texts_module.register_routes(app)
 
+# -- quiz -- #
 from modules.quiz import QuizModule
 quiz_module = QuizModule()
 quiz_module.register_routes(app)
 
-from modules.study_plan import StudyPlanModule
-study_plan_module = StudyPlanModule()
-study_plan_module.register_routes(app)
-
+# -- decks -- #
 from modules.decks import DeckModule
 deck_module = DeckModule()
 deck_module.register_routes(app)
 
-from modules.learner_progress import LearnerProgressModule
-learner_progress_module = LearnerProgressModule()
-learner_progress_module.register_routes(app)
-
-
-from modules.adaptive_learning import AdaptiveLearningModule
-adaptive_learning_module = AdaptiveLearningModule()
-adaptive_learning_module.register_routes(app)
-
+# -- resources -- #
 from modules.resources import ResourcesModule
 resources_module = ResourcesModule()
 resources_module.register_routes(app)
 
 # --------------- End of Class imports ---------------- #
 
+# MOVED TO study-plan-service (port 5500):
+# - study_plan.py
+# - learner_progress.py
+# - adaptive_learning.py
 
-
+# DEPRECATED (moved to modules/deprecated/):
+# - login_streak.py (duplicate of learner_progress streak)
+# - vocabulary_mining.py (unused)
+# - sentence_mining.py (unused)
 
 
 if __name__ == "__main__":
