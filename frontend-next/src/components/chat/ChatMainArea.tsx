@@ -446,8 +446,9 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
         setIsLoading(true);
 
         try {
-            // Use existing session ID if available, else fallback
-            const sessionId = currentSessionId || effectiveConversationId || `session-${Date.now()}`;
+            // Use existing session ID if available, else fallback.
+            // For new chats, generate a session ID and persist it.
+            const sessionId = currentSessionId || `session-${Date.now()}`;
 
             // Use streamChat instead of simulated response
             const { reader, artifacts, conversationId: backendConvoId } = await aiTutorService.streamChat(
@@ -457,6 +458,11 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
                 sessionId,
                 resourceIds
             );
+
+            // Persist session ID for subsequent messages in this session
+            if (!currentSessionId) {
+                setCurrentSessionId(sessionId);
+            }
 
             let assistantText = "";
             const assistantMessage: Message = {
