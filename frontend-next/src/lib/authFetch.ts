@@ -14,9 +14,19 @@
 // Custom event for session expiry
 export const AUTH_SESSION_EXPIRED_EVENT = 'auth:session-expired';
 
+// Flag to prevent event storming
+let isSessionExpiring = false;
+
 // Dispatch session expired event
 export function dispatchSessionExpired(reason?: string) {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && !isSessionExpiring) {
+        isSessionExpiring = true;
+
+        // Reset flag after a delay to allow future expiries
+        setTimeout(() => {
+            isSessionExpiring = false;
+        }, 5000);
+
         window.dispatchEvent(new CustomEvent(AUTH_SESSION_EXPIRED_EVENT, {
             detail: { reason: reason || 'Session expired' }
         }));
@@ -26,6 +36,7 @@ export function dispatchSessionExpired(reason?: string) {
 // Clear auth session (call logout endpoint to clear cookies)
 async function clearSession() {
     try {
+        // Only attempt network logout if we haven't just done it
         await fetch('/api/auth/logout', { method: 'POST' });
     } catch (e) {
         // Ignore errors during cleanup
@@ -50,15 +61,16 @@ export async function authFetch(
 
     // Handle 401 Unauthorized - session expired or invalid token
     if (response.status === 401 && !skipAuthCheck) {
-        console.warn('[AuthFetch] 401 received, clearing session and prompting login');
+        console.warn(`[AuthFetch] 401 received from ${url.toString()}, initiating session cleanup`);
 
-        // Clear the invalid session
-        await clearSession();
+        // Only perform cleanup actions if we aren't already handling an expiry
+        if (!isSessionExpiring) {
+            // Dispatch event FIRST to update UI immediately
+            dispatchSessionExpired('Your session has expired. Please log in again.');
 
-        // Dispatch event so UI can react (show login modal)
-        dispatchSessionExpired('Your session has expired. Please log in again.');
-
-        // Return the original response so caller can handle it if needed
+            // Then clear session in background
+            clearSession();
+        }
     }
 
     return response;

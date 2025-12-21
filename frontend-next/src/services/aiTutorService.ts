@@ -2,6 +2,7 @@ import { Conversation, Message, Resource } from "@/types/aiTutorTypes";
 import { Artifact } from "@/types/artifact";
 import Cookies from 'js-cookie';
 import { v4 as uuidv4 } from 'uuid';
+import { authFetch } from '@/lib/authFetch';
 
 class AITutorService {
     public readonly API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/h-api';
@@ -54,7 +55,7 @@ class AITutorService {
         const user = await this.getCurrentUser();
         if (!user) return [];
 
-        const res = await fetch(`${this.API_BASE_URL}/conversations/user/${user.id}`, {
+        const res = await authFetch(`${this.API_BASE_URL}/conversations/user/${user.id}`, {
             headers: this.getHeaders()
         });
         if (!res.ok) throw new Error('Failed to fetch conversations');
@@ -76,7 +77,7 @@ class AITutorService {
     }
 
     async getConversation(id: string): Promise<Conversation> {
-        const res = await fetch(`${this.API_BASE_URL}/conversations/${id}`, {
+        const res = await authFetch(`${this.API_BASE_URL}/conversations/${id}`, {
             headers: this.getHeaders()
         });
 
@@ -98,7 +99,7 @@ class AITutorService {
         const user = await this.getCurrentUser();
         if (!user) throw new Error("User must be logged in");
 
-        const res = await fetch(`${this.API_BASE_URL}/conversations/`, {
+        const res = await authFetch(`${this.API_BASE_URL}/conversations/`, {
             method: 'POST',
             headers: this.getHeaders(),
             body: JSON.stringify({
@@ -124,7 +125,7 @@ class AITutorService {
     }
 
     async addMessage(convoId: string, role: 'user' | 'assistant' | 'system', text: string): Promise<Message> {
-        const res = await fetch(`${this.API_BASE_URL}/conversations/${convoId}/messages`, {
+        const res = await authFetch(`${this.API_BASE_URL}/conversations/${convoId}/messages`, {
             method: 'POST',
             headers: this.getHeaders(),
             body: JSON.stringify({
@@ -142,7 +143,7 @@ class AITutorService {
     // --- Resources (Backend) ---
 
     async getResources(): Promise<Resource[]> {
-        const res = await fetch(`${this.API_BASE_URL}/resources/`, {
+        const res = await authFetch(`${this.API_BASE_URL}/resources/`, {
             headers: this.getHeaders()
         });
         if (!res.ok) return [];
@@ -158,7 +159,7 @@ class AITutorService {
     }
 
     async createResource(type: string, content: string, title: string): Promise<Resource> {
-        const res = await fetch(`${this.API_BASE_URL}/resources/`, {
+        const res = await authFetch(`${this.API_BASE_URL}/resources/`, {
             method: 'POST',
             headers: this.getHeaders(),
             body: JSON.stringify({ type, content, title })
@@ -177,7 +178,7 @@ class AITutorService {
     }
 
     async deleteResource(id: string): Promise<void> {
-        await fetch(`${this.API_BASE_URL}/resources/${id}`, {
+        await authFetch(`${this.API_BASE_URL}/resources/${id}`, {
             method: 'DELETE',
             headers: this.getHeaders()
         });
@@ -196,7 +197,7 @@ class AITutorService {
         // @ts-ignore
         delete headers['Content-Type'];
 
-        const response = await fetch(`/f-api/v1/resources/upload`, {
+        const response = await authFetch(`/f-api/v1/resources/upload`, {
             method: 'POST',
             headers: headers,
             body: formData
@@ -218,7 +219,7 @@ class AITutorService {
         if (!user) throw new Error("User not logged in");
         if (!sessionId) throw new Error("Session ID missing");
 
-        const response = await fetch(`${this.API_BASE_URL}/agent/invoke`, {
+        const response = await authFetch(`${this.API_BASE_URL}/agent/invoke`, {
             method: 'POST',
             headers: this.getHeaders(),
             body: JSON.stringify({
