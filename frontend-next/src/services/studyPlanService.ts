@@ -15,6 +15,7 @@ import {
     PlanProgressReport,
     StudyPlanSettings,
 } from '@/types/studyPlanTypes';
+import { authFetch, dispatchSessionExpired } from '@/lib/authFetch';
 
 const API_BASE_URL = '/s-api';  // Study Plan Service (port 5500)
 
@@ -26,6 +27,12 @@ class StudyPlanService {
 
     private async handleResponse<T>(response: Response): Promise<T> {
         if (!response.ok) {
+            // For 401 errors, dispatch session expired event (authFetch handles this,
+            // but just in case a regular fetch slips through)
+            if (response.status === 401) {
+                dispatchSessionExpired('Your session has expired. Please log in again.');
+                throw new Error('Session expired');
+            }
             const error = await response.json().catch(() => ({ error: 'Unknown error' }));
             throw new Error(error.error || `HTTP error ${response.status}`);
         }
@@ -95,7 +102,8 @@ class StudyPlanService {
         const params = new URLSearchParams({ user_id: userId });
         if (status) params.append('status', status);
 
-        const res = await fetch(`${API_BASE_URL}/v1/study-plan/plans?${params}`);
+        // Use authFetch for authenticated endpoints
+        const res = await authFetch(`${API_BASE_URL}/v1/study-plan/plans?${params}`);
         return this.handleResponse<{ plans: StudyPlanListItem[] }>(res);
     }
 
