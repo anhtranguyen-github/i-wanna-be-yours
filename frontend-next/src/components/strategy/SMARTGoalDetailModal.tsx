@@ -80,11 +80,11 @@ export function SMARTGoalDetailModal({ isOpen, onClose, goal }: SMARTGoalDetailM
                             </div>
                             <div>
                                 <p className="text-xs text-slate-500 uppercase tracking-wide">Baseline</p>
-                                <p className="text-lg font-semibold text-slate-600">{goal.baseline_score}%</p>
+                                <p className="text-lg font-semibold text-slate-600">{(goal.baseline_score ?? 0)}%</p>
                             </div>
                             <div>
                                 <p className="text-xs text-slate-500 uppercase tracking-wide">Target</p>
-                                <p className="text-lg font-semibold text-emerald-600">{goal.target_score}%</p>
+                                <p className="text-lg font-semibold text-emerald-600">{(goal.target_score ?? 100)}%</p>
                             </div>
                         </div>
                     </div>
@@ -129,13 +129,13 @@ export function SMARTGoalDetailModal({ isOpen, onClose, goal }: SMARTGoalDetailM
                     subtitle="Measurable outcomes for completion"
                     icon={CheckCircle2}
                     defaultOpen
-                    badge={`${goal.success_criteria.filter(c => (c.current_value / c.target_value) >= 1).length}/${goal.success_criteria.length}`}
+                    badge={`${(goal.success_criteria || []).filter(c => (c.current_value / c.target_value) >= 1).length}/${(goal.success_criteria || []).length}`}
                     badgeColor="success"
                     helpTitle={HELP_CONTENT.milestone_criteria.title}
                     helpContent={HELP_CONTENT.milestone_criteria.content}
                 >
                     <div className="space-y-4 mt-4">
-                        {goal.success_criteria.map((criterion) => {
+                        {(goal.success_criteria || []).map((criterion) => {
                             const progress = (criterion.current_value / criterion.target_value) * 100;
                             return (
                                 <div key={criterion.id} className="p-4 bg-white border border-slate-100 rounded-xl">
@@ -214,7 +214,7 @@ export function SMARTGoalDetailModal({ isOpen, onClose, goal }: SMARTGoalDetailM
                 )}
 
                 {/* AI Recommendations */}
-                {goal.ai_recommended_adjustments.length > 0 && (
+                {goal.ai_recommended_adjustments && goal.ai_recommended_adjustments.length > 0 && (
                     <ExpandableSection
                         title="AI Recommendations"
                         subtitle="Suggestions from Hanachan"

@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { ChevronDown, LucideIcon } from 'lucide-react';
+import { ChevronDown, LucideIcon, Brain } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { InfoTooltip } from './info-tooltip';
 
@@ -17,6 +17,7 @@ export interface ExpandableSectionProps {
     className?: string;
     headerClassName?: string;
     contentClassName?: string;
+    coachExplainer?: string;
     children: React.ReactNode;
 }
 
@@ -32,6 +33,7 @@ export function ExpandableSection({
     className,
     headerClassName,
     contentClassName,
+    coachExplainer,
     children,
 }: ExpandableSectionProps) {
     const [isOpen, setIsOpen] = React.useState(defaultOpen);
@@ -111,6 +113,17 @@ export function ExpandableSection({
             >
                 <div ref={contentRef} className={cn('p-4 pt-0 border-t border-slate-50', contentClassName)}>
                     {children}
+                    {coachExplainer && (
+                        <div className="mt-6 p-4 bg-brand-sky/5 rounded-2xl border border-brand-sky/10 flex gap-3 items-start group hover:bg-brand-sky/10 transition-colors">
+                            <div className="bg-white p-1.5 rounded-lg shadow-sm">
+                                <Brain size={16} className="text-brand-sky" />
+                            </div>
+                            <p className="text-xs font-bold text-slate-600 leading-relaxed italic">
+                                <span className="text-brand-sky mr-1 not-italic tracking-wider uppercase font-black">Sensei Tip:</span>
+                                {coachExplainer}
+                            </p>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

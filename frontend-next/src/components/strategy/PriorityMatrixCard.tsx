@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { AlertTriangle, TrendingUp, TrendingDown, Minus, ChevronRight, Zap, BookOpen, Volume2, Eye, Pencil } from 'lucide-react';
+import { AlertTriangle, TrendingUp, TrendingDown, Minus, ChevronRight, Zap, BookOpen, Volume2, Eye, Pencil, Brain } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { InfoTooltip } from '@/components/ui/info-tooltip';
 import { HELP_CONTENT } from '@/data/helpContent';
@@ -12,6 +12,7 @@ export interface PriorityMatrixCardProps {
     onItemClick?: (item: ContentPriority) => void;
     onViewAll?: (priority: 'red' | 'yellow' | 'green') => void;
     className?: string;
+    coachExplainer?: string;
 }
 
 const skillIcons: Record<string, React.ElementType> = {
@@ -27,6 +28,7 @@ export function PriorityMatrixCard({
     onItemClick,
     onViewAll,
     className,
+    coachExplainer,
 }: PriorityMatrixCardProps) {
     const priorityConfig = {
         red: {
@@ -231,6 +233,18 @@ export function PriorityMatrixCard({
                     );
                 })}
             </div>
+
+            {coachExplainer && (
+                <div className="p-5 bg-brand-sky/5 border-t border-slate-50 flex gap-3 items-start group hover:bg-brand-sky/10 transition-colors">
+                    <div className="bg-white p-1.5 rounded-lg shadow-sm">
+                        <Brain size={16} className="text-brand-sky" />
+                    </div>
+                    <p className="text-xs font-bold text-slate-600 leading-relaxed italic">
+                        <span className="text-brand-sky mr-1 not-italic tracking-wider uppercase font-black">Sensei Tip:</span>
+                        {coachExplainer}
+                    </p>
+                </div>
+            )}
         </div>
     );
 }
