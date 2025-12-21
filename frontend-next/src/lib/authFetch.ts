@@ -55,12 +55,12 @@ interface AuthFetchOptions extends RequestInit {
  */
 
 
+
 export async function authFetch(
     url: string | URL | Request,
     options: AuthFetchOptions = {}
 ): Promise<Response> {
     const { skipAuthCheck, headers, ...fetchOptions } = options;
-
     // 1. Get Token from localStorage (priority) or cookies (fallback)
     // Note: Cookies must be httpOnly: false for this to work
     const token = typeof window !== 'undefined'
