@@ -7,6 +7,8 @@
  * - Manage difficulty settings
  */
 
+import { authFetch } from '@/lib/authFetch';
+
 const API_BASE_URL = '/s-api';  // Study Plan Service (port 5500)
 
 // ============================================
@@ -114,7 +116,7 @@ class AdaptiveLearningService {
      * Get personalized learning recommendations
      */
     async getRecommendations(userId: string): Promise<RecommendationsResponse> {
-        const res = await fetch(`${API_BASE_URL}/v1/adaptive/recommendations/${userId}`);
+        const res = await authFetch(`${API_BASE_URL}/v1/adaptive/recommendations/${userId}`);
         return this.handleResponse<RecommendationsResponse>(res);
     }
 
@@ -135,7 +137,7 @@ class AdaptiveLearningService {
      * Analyze user's learning performance
      */
     async analyzePerformance(userId: string, days: number = 14): Promise<PerformanceAnalysis> {
-        const res = await fetch(`${API_BASE_URL}/v1/adaptive/performance/${userId}?days=${days}`);
+        const res = await authFetch(`${API_BASE_URL}/v1/adaptive/performance/${userId}?days=${days}`);
         return this.handleResponse<PerformanceAnalysis>(res);
     }
 
@@ -156,7 +158,7 @@ class AdaptiveLearningService {
      * Get user's difficulty settings
      */
     async getDifficultySettings(userId: string): Promise<DifficultySettings> {
-        const res = await fetch(`${API_BASE_URL}/v1/adaptive/difficulty/${userId}`);
+        const res = await authFetch(`${API_BASE_URL}/v1/adaptive/difficulty/${userId}`);
         return this.handleResponse<DifficultySettings>(res);
     }
 
@@ -164,7 +166,7 @@ class AdaptiveLearningService {
      * Request difficulty adjustment for a category
      */
     async adjustDifficulty(userId: string, category: string, score: number): Promise<DifficultyAdjustmentResult> {
-        const res = await fetch(`${API_BASE_URL}/v1/adaptive/difficulty/${userId}/adjust`, {
+        const res = await authFetch(`${API_BASE_URL}/v1/adaptive/difficulty/${userId}/adjust`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ category, score }),
@@ -180,7 +182,7 @@ class AdaptiveLearningService {
      * Get optimal study time recommendations
      */
     async getOptimalStudyTime(userId: string): Promise<OptimalTimeRecommendation> {
-        const res = await fetch(`${API_BASE_URL}/v1/adaptive/optimal-time/${userId}`);
+        const res = await authFetch(`${API_BASE_URL}/v1/adaptive/optimal-time/${userId}`);
         return this.handleResponse<OptimalTimeRecommendation>(res);
     }
 

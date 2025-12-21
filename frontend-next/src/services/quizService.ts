@@ -2,6 +2,8 @@
  * Quiz Service - Frontend API client for quiz functionality
  */
 
+import { authFetch } from '@/lib/authFetch';
+
 export interface QuizQuestion {
     question_id: string;
     question_type: string;
@@ -111,7 +113,7 @@ export async function getQuizzes(options?: {
     if (options?.offset) params.append('offset', String(options.offset));
 
     const url = `${API_BASE}/quizzes${params.toString() ? '?' + params.toString() : ''}`;
-    const response = await fetch(url);
+    const response = await authFetch(url);
 
     if (!response.ok) {
         throw new Error('Failed to fetch quizzes');
@@ -125,7 +127,7 @@ export async function getQuizzes(options?: {
  */
 export async function getQuiz(quizId: string, includeAnswers = false): Promise<Quiz> {
     const url = `${API_BASE}/quizzes/${quizId}${includeAnswers ? '?include_answers=true' : ''}`;
-    const response = await fetch(url);
+    const response = await authFetch(url);
 
     if (!response.ok) {
         throw new Error('Quiz not found');
@@ -143,7 +145,7 @@ export async function submitQuiz(
     userId?: string,
     startedAt?: string
 ): Promise<QuizSubmissionResult> {
-    const response = await fetch(`${API_BASE}/quizzes/${quizId}/submit`, {
+    const response = await authFetch(`${API_BASE}/quizzes/${quizId}/submit`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -174,7 +176,7 @@ export async function getAttempts(
     if (options?.limit) params.append('limit', String(options.limit));
     if (options?.offset) params.append('offset', String(options.offset));
 
-    const response = await fetch(`${API_BASE}/quiz-attempts?${params.toString()}`);
+    const response = await authFetch(`${API_BASE}/quiz-attempts?${params.toString()}`);
 
     if (!response.ok) {
         throw new Error('Failed to fetch attempts');
@@ -187,7 +189,7 @@ export async function getAttempts(
  * Fetch a specific quiz attempt details
  */
 export async function getAttempt(attemptId: string): Promise<QuizAttempt> {
-    const response = await fetch(`${API_BASE}/quiz-attempts/${attemptId}`);
+    const response = await authFetch(`${API_BASE}/quiz-attempts/${attemptId}`);
 
     if (!response.ok) {
         throw new Error('Attempt not found');
@@ -219,7 +221,7 @@ export async function createQuiz(quiz: {
         points?: number;
     }>;
 }): Promise<{ id: string; message: string }> {
-    const response = await fetch(`${API_BASE}/quizzes`, {
+    const response = await authFetch(`${API_BASE}/quizzes`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

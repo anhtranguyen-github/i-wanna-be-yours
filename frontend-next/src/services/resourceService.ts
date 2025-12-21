@@ -1,4 +1,6 @@
 
+import { authFetch } from '@/lib/authFetch';
+
 const FLASK_API = '/f-api';
 
 export interface Resource {
@@ -31,7 +33,7 @@ export const resourceService = {
             tags.forEach(t => formData.append('tags', t));
         }
 
-        const res = await fetch(`${FLASK_API}/v1/resources/upload`, {
+        const res = await authFetch(`${FLASK_API}/v1/resources/upload`, {
             method: 'POST',
             body: formData,
         });
@@ -50,19 +52,19 @@ export const resourceService = {
         if (params?.limit) query.set('limit', String(params.limit));
         if (params?.offset) query.set('offset', String(params.offset));
 
-        const res = await fetch(`${FLASK_API}/v1/resources?${query}`);
+        const res = await authFetch(`${FLASK_API}/v1/resources?${query}`);
         if (!res.ok) throw new Error('Failed to fetch resources');
         return res.json();
     },
 
     async get(id: string): Promise<Resource> {
-        const res = await fetch(`${FLASK_API}/v1/resources/${id}`);
+        const res = await authFetch(`${FLASK_API}/v1/resources/${id}`);
         if (!res.ok) throw new Error('Resource not found');
         return res.json();
     },
 
     async update(id: string, data: Partial<Resource>): Promise<void> {
-        const res = await fetch(`${FLASK_API}/v1/resources/${id}`, {
+        const res = await authFetch(`${FLASK_API}/v1/resources/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
@@ -71,14 +73,14 @@ export const resourceService = {
     },
 
     async delete(id: string): Promise<void> {
-        const res = await fetch(`${FLASK_API}/v1/resources/${id}`, { method: 'DELETE' });
+        const res = await authFetch(`${FLASK_API}/v1/resources/${id}`, { method: 'DELETE' });
         if (!res.ok) throw new Error('Delete failed');
     },
 
     async search(query: string, userId?: string): Promise<Resource[]> {
         const params = new URLSearchParams({ q: query });
         if (userId) params.set('userId', userId);
-        const res = await fetch(`${FLASK_API}/v1/resources/search?${params}`);
+        const res = await authFetch(`${FLASK_API}/v1/resources/search?${params}`);
         if (!res.ok) throw new Error('Search failed');
         const data = await res.json();
         return data.resources;

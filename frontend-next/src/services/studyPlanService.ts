@@ -58,7 +58,7 @@ class StudyPlanService {
      * Get JLPT level requirements and study info
      */
     async getJLPTInfo(): Promise<JLPTInfo> {
-        const res = await fetch(`${API_BASE_URL}/v1/study-plan/jlpt-info`);
+        const res = await authFetch(`${API_BASE_URL}/v1/study-plan/jlpt-info`);
         return this.handleResponse<JLPTInfo>(res);
     }
 
@@ -67,7 +67,7 @@ class StudyPlanService {
      */
     async listTemplates(level?: string): Promise<{ templates: PlanTemplateListItem[] }> {
         const params = level ? `?level=${level}` : '';
-        const res = await fetch(`${API_BASE_URL}/v1/study-plan/templates${params}`);
+        const res = await authFetch(`${API_BASE_URL}/v1/study-plan/templates${params}`);
         return this.handleResponse<{ templates: PlanTemplateListItem[] }>(res);
     }
 
@@ -75,7 +75,7 @@ class StudyPlanService {
      * Get detailed template information
      */
     async getTemplate(templateId: string): Promise<PlanTemplateDetail> {
-        const res = await fetch(`${API_BASE_URL}/v1/study-plan/templates/${templateId}`);
+        const res = await authFetch(`${API_BASE_URL}/v1/study-plan/templates/${templateId}`);
         return this.handleResponse<PlanTemplateDetail>(res);
     }
 

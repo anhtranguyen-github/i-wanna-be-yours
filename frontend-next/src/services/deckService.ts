@@ -1,10 +1,11 @@
 import { Deck } from "@/types/decks";
+import { authFetch } from '@/lib/authFetch';
 
 const API_BASE_URL = "/f-api/v1";
 
 export const fetchDeckById = async (id: string): Promise<Deck> => {
     try {
-        const response = await fetch(`${API_BASE_URL}/decks/${id}`);
+        const response = await authFetch(`${API_BASE_URL}/decks/${id}`);
         if (!response.ok) {
             throw new Error(`Failed to fetch deck: ${response.statusText}`);
         }
@@ -18,7 +19,7 @@ export const fetchDeckById = async (id: string): Promise<Deck> => {
 
 export const fetchAllDecks = async (): Promise<Deck[]> => {
     try {
-        const response = await fetch(`${API_BASE_URL}/decks`);
+        const response = await authFetch(`${API_BASE_URL}/decks`);
         if (!response.ok) {
             throw new Error(`Failed to fetch decks: ${response.statusText}`);
         }

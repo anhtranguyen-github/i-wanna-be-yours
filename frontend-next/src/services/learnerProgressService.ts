@@ -1,9 +1,8 @@
+/**
  * Learner Progress Service
-    * 
+ * 
  * Handles all API calls for learner progress tracking.
  */
-
-import { authFetch } from '@/lib/authFetch';
 
 import {
     ProgressSummaryResponse,
@@ -18,6 +17,7 @@ import {
     JLPTLevel,
     LearningCategory,
 } from '@/types/learnerProgressTypes';
+import { authFetch } from '@/lib/authFetch';
 
 const API_BASE_URL = '/s-api';  // Study Plan Service (port 5500)
 

@@ -1,5 +1,6 @@
 
 import { Artifact } from "@/types/artifact";
+import { authFetch } from '@/lib/authFetch';
 
 const API_BASE = '/h-api';
 // Or use the proxy
@@ -10,7 +11,7 @@ export const artifactService = {
         const query = new URLSearchParams();
         if (userId) query.set('userId', userId);
 
-        const res = await fetch(`${API_PROXY}/artifacts/conversation/${conversationId}?${query}`);
+        const res = await authFetch(`${API_PROXY}/artifacts/conversation/${conversationId}?${query}`);
         if (!res.ok) throw new Error('Failed to fetch artifacts');
 
         const data = await res.json();
@@ -31,7 +32,7 @@ export const artifactService = {
         const query = new URLSearchParams();
         if (userId) query.set('userId', userId);
 
-        const res = await fetch(`${API_PROXY}/artifacts/${artifactId}?${query}`);
+        const res = await authFetch(`${API_PROXY}/artifacts/${artifactId}?${query}`);
         if (!res.ok) throw new Error('Failed to fetch artifact');
 
         const a = await res.json();
@@ -49,7 +50,7 @@ export const artifactService = {
     },
 
     async update(artifactId: string, userId: string, updates: Partial<Artifact>): Promise<void> {
-        const res = await fetch(`${API_PROXY}/artifacts/${artifactId}`, {
+        const res = await authFetch(`${API_PROXY}/artifacts/${artifactId}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userId, ...updates })

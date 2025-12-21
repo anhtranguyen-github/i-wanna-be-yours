@@ -2,6 +2,8 @@
  * Grammar Service - Frontend API client for grammar functionality
  */
 
+import { authFetch } from '@/lib/authFetch';
+
 // Types based on backend/express/models/grammar.js
 export interface GrammarExample {
     _id?: string;
@@ -52,7 +54,7 @@ export async function getGrammars(options: {
     if (options.s_tag) params.append('s_tag', options.s_tag);
 
     const url = `${E_API_BASE}/grammars${params.toString() ? '?' + params.toString() : ''}`;
-    const response = await fetch(url);
+    const response = await authFetch(url);
 
     if (!response.ok) {
         throw new Error('Failed to fetch grammars');
@@ -71,7 +73,7 @@ export async function getGrammarTitles(p_tag: string, type: 'plain' | 'encoded' 
     params.append('type', type);
 
     const url = `${E_API_BASE}/grammar-titles?${params.toString()}`;
-    const response = await fetch(url);
+    const response = await authFetch(url);
 
     if (!response.ok) {
         throw new Error('Failed to fetch grammar titles');
@@ -84,7 +86,7 @@ export async function getGrammarTitles(p_tag: string, type: 'plain' | 'encoded' 
  * Fetch full details for a single grammar point by title
  */
 export async function getGrammarDetails(title: string): Promise<{ grammar: GrammarPoint }> {
-    const response = await fetch(`${E_API_BASE}/grammar-details`, {
+    const response = await authFetch(`${E_API_BASE}/grammar-details`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -118,7 +120,7 @@ export async function getUserGrammarProgress(params: {
 
     const url = `${F_API_BASE}/combine-flashcard-data-grammars?${queryParams.toString()}`;
     // Flask endpoint returns array directly
-    const response = await fetch(url);
+    const response = await authFetch(url);
 
     if (!response.ok) {
         throw new Error('Failed to fetch user grammar progress');
@@ -135,7 +137,7 @@ export async function addToStudyList(
     p_tag: string,
     s_tag?: string
 ): Promise<{ message: string }> {
-    const response = await fetch(`${F_API_BASE}/clone-static-collection-grammars`, {
+    const response = await authFetch(`${F_API_BASE}/clone-static-collection-grammars`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
