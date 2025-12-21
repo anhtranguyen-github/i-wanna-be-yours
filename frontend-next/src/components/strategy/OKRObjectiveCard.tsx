@@ -16,7 +16,6 @@ export interface OKRObjectiveCardProps {
 }
 
 export function OKRObjectiveCard({ okr, onClick, className }: OKRObjectiveCardProps) {
-    const [expandedKR, setExpandedKR] = React.useState<string | null>(null);
     const [selectedKR, setSelectedKR] = React.useState<KeyResultEnhanced | null>(null);
 
     const riskColors = {
@@ -37,9 +36,9 @@ export function OKRObjectiveCard({ okr, onClick, className }: OKRObjectiveCardPr
                     className
                 )}
             >
-                {/* Header */}
+                {/* Header - Opens SMART Detail Modal */}
                 <div
-                    className="p-5 cursor-pointer group"
+                    className="p-5 cursor-zoom-in group/header transition-colors hover:bg-slate-50/50"
                     onClick={onClick}
                     role="button"
                     tabIndex={0}
@@ -124,8 +123,6 @@ export function OKRObjectiveCard({ okr, onClick, className }: OKRObjectiveCardPr
                             <KeyResultRow
                                 key={kr.id}
                                 keyResult={kr}
-                                expanded={expandedKR === kr.id}
-                                onToggle={() => setExpandedKR(expandedKR === kr.id ? null : kr.id)}
                                 onViewItems={() => setSelectedKR(kr)}
                             />
                         ))}
@@ -156,7 +153,14 @@ export function OKRObjectiveCard({ okr, onClick, className }: OKRObjectiveCardPr
                 onClose={() => setSelectedKR(null)}
                 title={selectedKR?.title || ""}
                 items={selectedKR?.items || []}
-                category={selectedKR?.id.includes('vocab') ? 'vocabulary' : 'grammar'}
+                category={selectedKR?.id.includes('vocab') || selectedKR?.unit === 'words' ? 'vocabulary' : 'grammar'}
+                velocity={selectedKR?.velocity}
+                target={selectedKR?.target}
+                unit={selectedKR?.unit}
+                confidence={selectedKR?.confidence}
+                contributing_task_types={selectedKR?.contributing_task_types}
+                projected_completion={selectedKR?.projected_completion}
+                current={selectedKR?.current}
             />
         </>
     );
@@ -164,136 +168,66 @@ export function OKRObjectiveCard({ okr, onClick, className }: OKRObjectiveCardPr
 
 interface KeyResultRowProps {
     keyResult: KeyResultEnhanced;
-    expanded: boolean;
-    onToggle: () => void;
     onViewItems: () => void;
 }
 
-function KeyResultRow({ keyResult, expanded, onToggle, onViewItems }: KeyResultRowProps) {
+function KeyResultRow({ keyResult, onViewItems }: KeyResultRowProps) {
     const progress = (keyResult.current / keyResult.target) * 100;
     const isComplete = progress >= 100;
 
     return (
-        <div className="px-5 py-3">
+        <div className="px-5 py-3 group/row transition-colors hover:bg-slate-50">
             <button
                 type="button"
-                className="w-full text-left"
-                onClick={onToggle}
+                className="w-full flex items-center justify-between gap-4 cursor-zoom-in"
+                onClick={onViewItems}
             >
-                <div className="flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-3">
                         {isComplete ? (
                             <CheckCircle2 size={16} className="text-emerald-500 flex-shrink-0" />
                         ) : (
                             <div className="w-4 h-4 rounded-full border-2 border-slate-200 flex-shrink-0" />
                         )}
                         <span className={cn(
-                            'text-sm font-medium truncate',
+                            'text-sm font-medium truncate group-hover/row:text-brand-salmon transition-colors',
                             isComplete ? 'text-slate-500 line-through' : 'text-slate-900'
                         )}>
                             {keyResult.title}
                         </span>
                     </div>
 
-                    <div className="flex items-center gap-3">
-                        <TrendIndicator
-                            trend={keyResult.trend === 'improving' ? 'up' : keyResult.trend === 'declining' ? 'down' : 'stable'}
-                            size="sm"
-                            variant="minimal"
-                        />
-                        <span className="text-sm font-bold text-slate-700 min-w-[80px] text-right">
+                    {/* Mini progress bar */}
+                    <div className="mt-2 ml-7 w-full pr-8">
+                        <div className="h-1 bg-slate-100 rounded-full overflow-hidden">
+                            <div
+                                className={cn(
+                                    'h-full rounded-full transition-all duration-500',
+                                    isComplete ? 'bg-emerald-500' : keyResult.trend === 'declining' ? 'bg-red-500' : 'bg-brand-salmon'
+                                )}
+                                style={{ width: `${Math.min(progress, 100)}%` }}
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex items-center gap-4">
+                    <TrendIndicator
+                        trend={keyResult.trend === 'improving' ? 'up' : keyResult.trend === 'declining' ? 'down' : 'stable'}
+                        size="sm"
+                        variant="minimal"
+                    />
+                    <div className="flex flex-col items-end">
+                        <span className="text-sm font-black text-slate-900">
                             {keyResult.current}/{keyResult.target}
                         </span>
-                        <ChevronDown
-                            size={14}
-                            className={cn(
-                                'text-slate-400 transition-transform duration-200',
-                                expanded && 'rotate-180'
-                            )}
-                        />
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
+                            {keyResult.unit}
+                        </span>
                     </div>
-                </div>
-
-                {/* Mini progress bar */}
-                <div className="mt-2 ml-7">
-                    <div className="h-1 bg-slate-100 rounded-full overflow-hidden">
-                        <div
-                            className={cn(
-                                'h-full rounded-full transition-all duration-500',
-                                isComplete ? 'bg-emerald-500' : keyResult.trend === 'declining' ? 'bg-red-500' : 'bg-brand-salmon'
-                            )}
-                            style={{ width: `${Math.min(progress, 100)}%` }}
-                        />
-                    </div>
+                    <ChevronRight size={14} className="text-slate-300 group-hover/row:text-brand-salmon group-hover/row:translate-x-1 transition-all" />
                 </div>
             </button>
-
-            {/* Expanded Details */}
-            {expanded && (
-                <div className="mt-3 ml-7 p-3 bg-slate-50 rounded-xl space-y-4">
-                    <div className="grid grid-cols-2 gap-3 text-xs">
-                        <div>
-                            <span className="text-slate-500">Velocity</span>
-                            <div className="flex items-center gap-1">
-                                <InfoTooltip
-                                    title={HELP_CONTENT.okr_velocity.title}
-                                    content={HELP_CONTENT.okr_velocity.content}
-                                    iconSize={10}
-                                />
-                                <span className="font-semibold text-slate-900">
-                                    {keyResult.velocity} {keyResult.unit}/day
-                                </span>
-                            </div>
-                        </div>
-                        <div>
-                            <span className="text-slate-500">Confidence</span>
-                            <p className="font-semibold text-slate-900">{keyResult.confidence}%</p>
-                        </div>
-                        {keyResult.projected_completion && (
-                            <div className="col-span-2">
-                                <span className="text-slate-500">Projected Completion</span>
-                                <div className="flex items-center gap-1">
-                                    <InfoTooltip
-                                        title={HELP_CONTENT.okr_projected_completion.title}
-                                        content={HELP_CONTENT.okr_projected_completion.content}
-                                        iconSize={10}
-                                    />
-                                    <span className="font-semibold text-slate-900">
-                                        {new Date(keyResult.projected_completion).toLocaleDateString()}
-                                    </span>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="flex flex-col gap-3">
-                        <div>
-                            <span className="text-xs text-slate-500">Contributing Activities</span>
-                            <div className="flex flex-wrap gap-1 mt-1">
-                                {keyResult.contributing_task_types.map((type) => (
-                                    <span key={type} className="px-2 py-0.5 bg-white border border-slate-200 rounded text-[10px] uppercase font-bold text-slate-500">
-                                        {type}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
-
-                        {keyResult.items && keyResult.items.length > 0 && (
-                            <button
-                                onClick={onViewItems}
-                                className={cn(
-                                    "flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border-2 border-brand-salmon/20",
-                                    "bg-white text-brand-salmon text-xs font-bold transition-all",
-                                    "hover:bg-brand-salmon hover:text-white hover:border-brand-salmon shadow-sm"
-                                )}
-                            >
-                                <CheckCircle2 size={14} />
-                                View Verified Knowledge ({keyResult.items.length})
-                            </button>
-                        )}
-                    </div>
-                </div>
-            )}
         </div>
     );
 }

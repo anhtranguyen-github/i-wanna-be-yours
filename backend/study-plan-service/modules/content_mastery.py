@@ -107,6 +107,13 @@ class ContentMasteryModule:
             "perfect": 5
         }.get(difficulty_rating, 3)
 
+    def determine_performance(self, accuracy: float, streak: int) -> str:
+        """Map performance to a string for the frontend."""
+        if accuracy >= 100: return "perfect"
+        if accuracy >= 90: return "high"
+        if accuracy >= 70: return "medium"
+        return "low"
+
     def determine_status(self, interval: int, accuracy: float, streak: int) -> str:
         """Calculate status based on SRS interval and performance."""
         if interval >= 120: return "burned"
@@ -118,8 +125,9 @@ class ContentMasteryModule:
     # Statistics Helpers (for SMART/OKR)
     # ============================================
 
-    def get_mastery_count(self, user_id: str, content_type: str = None, status: str = "mastered") -> int:
-        query = {"user_id": user_id, "status": status}
+    def get_mastery_count(self, user_id: str, content_type: str = None, status: Optional[str] = "mastered") -> int:
+        query = {"user_id": user_id}
+        if status: query["status"] = status
         if content_type: query["content_type"] = content_type
         return self.mastery.count_documents(query)
 
@@ -284,6 +292,8 @@ class ContentMasteryModule:
                 "stats.correct_count": correct,
                 "stats.incorrect_count": incorrect,
                 "stats.accuracy_percent": round(accuracy, 2),
+                "last_rating": difficulty,
+                "performance": self.determine_performance(accuracy, streak),
                 "last_reviewed_at": now,
                 "updated_at": now
             }

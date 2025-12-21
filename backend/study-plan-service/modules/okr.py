@@ -11,6 +11,7 @@ from typing import Dict, List, Optional, Any
 from flask import Blueprint, request, jsonify
 from pymongo import MongoClient
 from bson import ObjectId
+import math
 
 class OKRModule:
     def __init__(self, mastery_module, mongo_uri: str = "mongodb://localhost:27017/"):
@@ -21,6 +22,10 @@ class OKRModule:
         
         # Collections
         self.objectives = self.db["okr_objectives"]
+        
+        # External DB Connections
+        self.jmdict_db = self.client["jmdictDatabase"]
+        self.grammar_db = self.client["zenRelationshipsAutomated"]
         
         self._create_indexes()
 
@@ -40,11 +45,11 @@ class OKRModule:
         
         current = 0
         if source == "vocabulary":
-            current = self.mastery.get_mastery_count(user_id, "vocabulary")
+            current = self.mastery.get_mastery_count(user_id, "vocabulary", status=None)
         elif source == "grammar":
-            current = self.mastery.get_mastery_count(user_id, "grammar")
+            current = self.mastery.get_mastery_count(user_id, "grammar", status=None)
         elif source == "kanji":
-            current = self.mastery.get_mastery_count(user_id, "kanji")
+            current = self.mastery.get_mastery_count(user_id, "kanji", status=None)
         elif source == "study_time":
             current = self.mastery.get_study_time(user_id)
         elif source == "flashcards":
@@ -161,8 +166,82 @@ class OKRModule:
                 o["_id"] = str(o["_id"])
                 if o.get("plan_id"): o["plan_id"] = str(o["plan_id"])
                 if o.get("parent_smart_goal_id"): o["parent_smart_goal_id"] = str(o["parent_smart_goal_id"])
+                needs_update = False
                 for kr in o["key_results"]:
+                    # Recalculate 'current' and 'progress_percent' for vocab/grammar/kanji sources
+                    old_current = kr.get("current")
+                    self.refresh_key_result(kr, user_id)
+                    if kr.get("current") != old_current:
+                        needs_update = True
+                        
                     kr["id"] = str(kr["id"])
+                    
+                    # Attach underlying mastered items for the popup
+                    source = kr.get("data_source")
+                    if source in ["vocabulary", "grammar", "kanji"]:
+                        items = list(self.mastery.mastery.find({
+                            "user_id": user_id,
+                            "content_type": source
+                        }).limit(50))
+                        
+                        for item in items:
+                            item["_id"] = str(item["_id"])
+                            item["id"] = item.get("_id")
+                            
+                            # Real Join logic
+                            title = item.get("content_id")
+                            level = "N3" # Fallback
+                            
+                            if source == "vocabulary":
+                                # Try to find in jmdict
+                                entry = None
+                                try:
+                                    if ObjectId.is_valid(item.get("content_id")):
+                                        entry = self.jmdict_db.entries.find_one({"_id": ObjectId(item.get("content_id"))})
+                                    if not entry:
+                                        entry = self.jmdict_db.entries.find_one({"expression": item.get("content_id")})
+                                except:
+                                    pass
+                                
+                                if entry:
+                                    title = entry.get("expression") or entry.get("reading")
+                                    # JMDict doesn't have levels easy, we can try to guess from tags but N3 is safe for now
+                            
+                            elif source == "grammar":
+                                entry = None
+                                try:
+                                    if ObjectId.is_valid(item.get("content_id")):
+                                        entry = self.grammar_db.grammars.find_one({"_id": ObjectId(item.get("content_id"))})
+                                    if not entry:
+                                        entry = self.grammar_db.grammars.find_one({"title": item.get("content_id")})
+                                except:
+                                    pass
+                                
+                                if entry:
+                                    title = entry.get("title")
+                                    tag = entry.get("p_tag", "")
+                                    if "N" in tag: level = tag.split("_")[-1]
+
+                            item["title"] = title
+                            item["level"] = level
+                            item["type"] = source
+                            # Ensure frontend compatibility
+                            if "performance" not in item:
+                                accuracy = item.get("stats", {}).get("accuracy_percent", 0)
+                                streak = item.get("stats", {}).get("streak", 0)
+                                if accuracy >= 100: item["performance"] = "perfect"
+                                elif accuracy >= 90: item["performance"] = "high"
+                                elif accuracy >= 60: item["performance"] = "medium"
+                                else: item["performance"] = "low"
+                            
+                        kr["items"] = items
+                
+                if needs_update:
+                    self.objectives.update_one({"_id": ObjectId(o["_id"])}, {"$set": {"key_results": o["key_results"]}})
+                    # Also update aggregate progress
+                    o["progress_percent"] = sum(kr["progress_percent"] for kr in o["key_results"]) / len(o["key_results"]) if o["key_results"] else 0
+                    self.objectives.update_one({"_id": ObjectId(o["_id"])}, {"$set": {"progress_percent": o["progress_percent"]}})
+
             return jsonify(okrs)
 
         @okr_bp.route("/objectives/<id>/refresh", methods=["POST"])

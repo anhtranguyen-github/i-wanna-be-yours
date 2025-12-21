@@ -57,15 +57,10 @@ import { PACTDailyCard } from '@/components/strategy/PACTDailyCard';
 import { PriorityMatrixCard } from '@/components/strategy/PriorityMatrixCard';
 import { ContextCheckInModal } from '@/components/strategy/ContextCheckInModal';
 import {
-    mockSMARTGoals,
-    mockOKRs,
-    mockPACT,
-    mockPriorityMatrix,
-    SMARTGoalEnhanced,
-    ContextSnapshot,
     OKRGoalEnhanced,
     PACTStatEnhanced,
-    PriorityMatrix
+    PriorityMatrix,
+    SMARTGoalEnhanced
 } from '@/mocks/strategyMockData';
 
 type DashboardTab = 'STRATEGY' | 'PERFORMANCE' | 'TASKS' | 'DIAGNOSTICS';
@@ -98,55 +93,11 @@ function DashboardContent() {
     const [showCheckout, setShowCheckout] = useState(false);
     const [checkoutData, setCheckoutData] = useState<any>(null);
 
-    // Mock/derived data for strategic pillars (since backend doesn't have it yet)
-    const getFrameworkStats = (planData: StudyPlanDetail): FrameworkStats => {
-        return {
-            okr: {
-                objective: `Master JLPT ${planData.target_level} Proficiency`,
-                key_results: [
-                    { label: 'Vocabulary Core', current: 1240, target: 3000, unit: 'words', progress: 41 },
-                    { label: 'Grammar Patterns', current: 65, target: 120, unit: 'points', progress: 54 },
-                    { label: 'Kanji Foundation', current: 180, target: 600, unit: 'characters', progress: 30 }
-                ]
-            },
-            pact: {
-                commitment_score: 85,
-                habit_strength: 78,
-                streak: 12,
-                recent_sessions: 24,
-                daily_metrics: [
-                    { label: 'Purpose', value: 'High', icon: '🎯', description: 'Alignment with long-term goals', commitment_level: 90 },
-                    { label: 'Action', value: 'Daily', icon: '⚡', description: 'Execution consistency', commitment_level: 85 },
-                    { label: 'Commitment', value: '45m', icon: '🤝', description: 'Average daily time pledged', commitment_level: 80 },
-                    { label: 'Track', value: 'Active', icon: '📊', description: 'Data recording fidelity', commitment_level: 95 }
-                ]
-            },
-            smart: [
-                { id: '1', title: 'N3 Verbs', specific_action: 'Master 50 transitive verbs', deadline: '2023-12-25', is_achievable: true, relevance: 'Reading Section', status: 'active', progress: 65 },
-                { id: '2', title: 'Particle Speed', specific_action: 'Complete 10 particle drills', deadline: '2023-12-23', is_achievable: true, relevance: 'Grammar Section', status: 'achieved', progress: 100 },
-                { id: '3', title: 'Listening Immersion', specific_action: '30 mins podcast daily', deadline: '2023-12-30', is_achievable: true, relevance: 'Listening Section', status: 'active', progress: 30 }
-            ]
-        };
-    };
 
     // Performance History Mock Data
-    const performanceData = [
-        { subject: 'Vocabulary', A: 120, B: 110, fullMark: 150 },
-        { subject: 'Grammar', A: 98, B: 130, fullMark: 150 },
-        { subject: 'Kanji', A: 86, B: 130, fullMark: 150 },
-        { subject: 'Listening', A: 99, B: 100, fullMark: 150 },
-        { subject: 'Reading', A: 85, B: 90, fullMark: 150 },
-    ];
+    const performanceData: any[] = [];
 
-    const retentionHistory = [
-        { date: 'Mon', power: 65 },
-        { date: 'Tue', power: 72 },
-        { date: 'Wed', power: 68 },
-        { date: 'Thu', power: 85 },
-        { date: 'Fri', power: 80 },
-        { date: 'Sat', power: 92 },
-        { date: 'Sun', power: 95 },
-    ];
+    const retentionHistory: any[] = [];
 
     useEffect(() => {
         if (!userLoading && !user) {
@@ -247,8 +198,8 @@ function DashboardContent() {
                         title: g.title || 'Untitled Goal',
                         deadline: g.time_bound_deadline || new Date().toISOString(),
                         specific: g.specific || 'No description provided',
-                        measurable: `Reach ${g.measurable_target} ${g.measurable_metric?.replace(/_/g, ' ')} from ${g.measurable_baseline}`,
-                        achievable: `High confidence based on recent performance`,
+                        measurable: `Reach ${g.measurable_target} ${g.measurable_metric?.replace(/_/g, ' ')}`,
+                        achievable: `Active Goal`,
                         relevant: `Critical for ${g.relevant_jlpt_section || 'JLPT Prep'}`,
                         timeBound: `Deadline: ${new Date(g.time_bound_deadline).toLocaleDateString()}`,
                         progress: g.progress_percent || 0,
@@ -283,8 +234,8 @@ function DashboardContent() {
                             progress: kr.progress_percent || 0,
                             trend: kr.trend || 'stable',
                             velocity: kr.velocity || 0,
-                            confidence: kr.confidence || 70,
-                            contributing_task_types: kr.contributing_task_types || ['study', 'practice'],
+                            confidence: kr.confidence || 0,
+                            contributing_task_types: kr.contributing_task_types || [],
                             items: kr.items || []
                         }))
                     })));
@@ -306,16 +257,9 @@ function DashboardContent() {
                     setMatrix({
                         ...matrixRes,
                         content_items: matrixRes.items || [],
-                        skills: matrixRes.skills || [
-                            { skill: 'vocabulary', priority: 'yellow', reason: 'Recent review focus', accuracy_trend: 5, last_assessed: new Date().toISOString() },
-                            { skill: 'grammar', priority: 'red', reason: 'Lower accuracy detected', accuracy_trend: -10, last_assessed: new Date().toISOString() }
-                        ],
+                        skills: matrixRes.skills || [],
                         today_focus: matrixRes.today_focus || 'drill_practice',
-                        today_time_allocation: matrixRes.recommended_time_allocation || matrixRes.today_time_allocation || {
-                            red_minutes: 20,
-                            yellow_minutes: 15,
-                            green_minutes: 10
-                        }
+                        today_time_allocation: matrixRes.recommended_time_allocation || matrixRes.today_time_allocation || null
                     });
                 }
             }
@@ -545,8 +489,6 @@ function DashboardContent() {
                                 unit="%"
                                 icon={Target}
                                 iconColor="text-brand-salmon"
-                                trend="up"
-                                trendValue="+5% this week"
                                 helpTitle={HELP_CONTENT.overall_progress.title}
                                 helpContent={HELP_CONTENT.overall_progress.content}
                             />
@@ -556,8 +498,6 @@ function DashboardContent() {
                                 unit="days"
                                 icon={Zap}
                                 iconColor="text-orange-500"
-                                trend="up"
-                                trendValue="Personal best!"
                                 helpTitle={HELP_CONTENT.current_streak.title}
                                 helpContent={HELP_CONTENT.current_streak.content}
                             />
@@ -567,8 +507,8 @@ function DashboardContent() {
                                 unit="words"
                                 icon={BookOpen}
                                 iconColor="text-emerald-500"
-                                trend="up"
-                                trendValue="+42 today"
+                                trend={okrs[0]?.keyResults[0]?.velocity > 0 ? 'up' : 'stable'}
+                                trendValue={okrs[0]?.keyResults[0]?.velocity > 0 ? `+${okrs[0].keyResults[0].velocity} today` : ''}
                                 helpTitle={HELP_CONTENT.vocabulary_mastered.title}
                                 helpContent={HELP_CONTENT.vocabulary_mastered.content}
                             />
@@ -593,7 +533,13 @@ function DashboardContent() {
                                     <OKRObjectiveCard
                                         key={okr.id}
                                         okr={okr}
-                                        onClick={() => {/* Could open OKR modal */ }}
+                                        onClick={() => {
+                                            const linkedGoal = smartGoals.find(g => g.id === okr.smart_goal_id);
+                                            if (linkedGoal) {
+                                                setSelectedSMARTGoal(linkedGoal);
+                                                setShowSMARTModal(true);
+                                            }
+                                        }}
                                     />
                                 ))}
                             </div>
@@ -688,11 +634,7 @@ function DashboardContent() {
                                     />
                                 </div>
                                 <div className="space-y-4">
-                                    {[
-                                        { type: 'Knowledge Gap', percent: 45, color: 'bg-red-500', desc: 'Missing fundamental understanding' },
-                                        { type: 'Process Error', percent: 35, color: 'bg-amber-500', desc: 'Know it but applied wrong' },
-                                        { type: 'Careless', percent: 20, color: 'bg-blue-500', desc: 'Attention-related mistakes' },
-                                    ].map(error => (
+                                    {(matrix?.error_analysis || []).map(error => (
                                         <div key={error.type}>
                                             <div className="flex items-center justify-between mb-1">
                                                 <div className="flex items-center gap-2">
@@ -800,7 +742,10 @@ function DashboardContent() {
                                 <div className="space-y-4 relative z-10">
                                     <div className="p-4 bg-white/10 rounded-2xl border border-white/5">
                                         <p className="text-sm font-medium leading-relaxed opacity-90">
-                                            &quot;Based on your <strong>PACT</strong> action score, you should focus on Listening during morning commutes to hit your <strong>SMART</strong> goal by Friday.&quot;
+                                            {pactState
+                                                ? `Based on your PACT activity, you are maintaining a ${pactState.streak_current} day streak. Keep pushing toward your ${plan?.target_level} targets.`
+                                                : "Strategy active. Complete your first daily PACT action to unlock tactical Hanachan insights."
+                                            }
                                         </p>
                                     </div>
                                     <button className="w-full py-3 bg-brand-salmon text-white rounded-xl font-black text-sm hover:brightness-110 active:scale-95 transition-all">
@@ -875,11 +820,11 @@ function DashboardContent() {
                                 <div className="mt-6 space-y-2">
                                     <div className="flex items-center justify-between text-sm">
                                         <span className="text-slate-500 font-bold">Strongest Subject:</span>
-                                        <span className="text-brand-green font-black">Vocabulary</span>
+                                        <span className="text-brand-green font-black">N/A</span>
                                     </div>
                                     <div className="flex items-center justify-between text-sm">
                                         <span className="text-slate-500 font-bold">Needs Focus:</span>
-                                        <span className="text-brand-salmon font-black">Reading</span>
+                                        <span className="text-brand-salmon font-black">N/A</span>
                                     </div>
                                 </div>
                             </div>
@@ -985,10 +930,10 @@ function DashboardContent() {
                                             iconSize={12}
                                         />
                                     </div>
-                                    <p className="text-slate-500 font-medium text-sm max-w-xs">You are processing <strong>3.4 new concepts per session</strong>. At this rate, you reach N2 Readiness in <strong>42 days</strong>.</p>
+                                    <p className="text-slate-500 font-medium text-sm max-w-xs">You are currently processing <strong>{okrs[0]?.keyResults[0]?.velocity || 0} new concepts per day</strong>. Maintain consistency to hit your N3 major milestones.</p>
                                 </div>
                                 <div className="text-center bg-brand-green/10 p-6 rounded-[2rem] border border-brand-green/20">
-                                    <div className="text-4xl font-black text-brand-green">100%</div>
+                                    <div className="text-4xl font-black text-brand-green">--</div>
                                     <div className="text-[10px] font-black uppercase text-brand-green tracking-widest mt-1">Velocity Score</div>
                                 </div>
                             </div>
