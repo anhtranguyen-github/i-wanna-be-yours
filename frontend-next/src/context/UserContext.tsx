@@ -1,7 +1,8 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
+import { AUTH_SESSION_EXPIRED_EVENT } from '@/lib/authFetch';
 
 interface User {
   id: number;
@@ -16,6 +17,7 @@ interface UserContextType {
   login: (user: User) => void;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
+  handleSessionExpired: () => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -62,8 +64,29 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // Handle session expiry - just clear user state, don't redirect
+  // The GlobalAuth modal will be triggered by the event listener
+  const handleSessionExpired = useCallback(() => {
+    console.log('[UserContext] Session expired, clearing user state');
+    setUser(null);
+    // Don't call logout API since session is already invalid
+    // Don't redirect - let the auth modal handle it
+  }, []);
+
+  // Listen for session expiry events from authFetch
+  useEffect(() => {
+    const handler = () => {
+      handleSessionExpired();
+    };
+
+    window.addEventListener(AUTH_SESSION_EXPIRED_EVENT, handler);
+    return () => {
+      window.removeEventListener(AUTH_SESSION_EXPIRED_EVENT, handler);
+    };
+  }, [handleSessionExpired]);
+
   return (
-    <UserContext.Provider value={{ user, loading, login, logout, refreshUser }}>
+    <UserContext.Provider value={{ user, loading, login, logout, refreshUser, handleSessionExpired }}>
       {children}
     </UserContext.Provider>
   );

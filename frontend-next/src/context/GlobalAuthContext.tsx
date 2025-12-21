@@ -1,6 +1,7 @@
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { AUTH_SESSION_EXPIRED_EVENT } from '@/lib/authFetch';
 
 // Define the shape of the features/offer context we might pass when opening auth
 export type AuthFlowType = 'CHAT' | 'PRACTICE' | 'STUDY_PLAN' | 'LIBRARY' | 'GENERAL';
@@ -45,6 +46,22 @@ export function GlobalAuthProvider({ children }: { children: ReactNode }) {
             setFeatureContext(null);
         }, 300);
     };
+
+    // Listen for session expiry events and auto-open login modal
+    useEffect(() => {
+        const handleSessionExpired = (event: CustomEvent<{ reason: string }>) => {
+            console.log('[GlobalAuth] Session expired, opening login modal');
+            openAuth('LOGIN', {
+                title: 'Session Expired',
+                description: event.detail?.reason || 'Please log in again to continue.',
+            });
+        };
+
+        window.addEventListener(AUTH_SESSION_EXPIRED_EVENT, handleSessionExpired as EventListener);
+        return () => {
+            window.removeEventListener(AUTH_SESSION_EXPIRED_EVENT, handleSessionExpired as EventListener);
+        };
+    }, []);
 
     return (
         <GlobalAuthContext.Provider value={{ isOpen, initialMode, featureContext, openAuth, closeAuth }}>
