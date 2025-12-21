@@ -25,7 +25,7 @@ export async function POST(request: Request) {
 
         // Set cookies (Server-side in Next.js)
         cookies().set('accessToken', accessToken, {
-            httpOnly: true,
+            httpOnly: false, // Allow client-side access for authFetch
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',
             maxAge: 15 * 60, // 15 minutes

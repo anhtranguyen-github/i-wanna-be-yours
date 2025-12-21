@@ -1,5 +1,7 @@
 'use client';
 
+import Cookies from 'js-cookie';
+
 /**
  * AuthenticatedFetch - A fetch wrapper that automatically handles 401 errors
  * 
@@ -51,13 +53,39 @@ interface AuthFetchOptions extends RequestInit {
 /**
  * Wrapper around fetch that handles 401 errors automatically
  */
+
+
 export async function authFetch(
     url: string | URL | Request,
     options: AuthFetchOptions = {}
 ): Promise<Response> {
-    const { skipAuthCheck, ...fetchOptions } = options;
+    const { skipAuthCheck, headers, ...fetchOptions } = options;
 
-    const response = await fetch(url, fetchOptions);
+    // 1. Get Token from localStorage (priority) or cookies (fallback)
+    // Note: Cookies must be httpOnly: false for this to work
+    const token = typeof window !== 'undefined'
+        ? (localStorage.getItem('accessToken') || Cookies.get('accessToken'))
+        : undefined;
+
+    // 2. Prepare Headers
+    const authHeaders: HeadersInit = {};
+    if (token) {
+        authHeaders['Authorization'] = `Bearer ${token}`;
+    }
+
+    // Merge headers (caller's headers take precedence if conflicting, though usually we want to enforce Auth)
+    // Note: We cast headers to any to handle HeadersInit complexity
+    const mergedHeaders = {
+        ...authHeaders,
+        ...(headers as any || {})
+    };
+
+    // 3. Fetch with injected headers
+    const response = await fetch(url, {
+        ...fetchOptions,
+        headers: mergedHeaders,
+        credentials: 'include' // Keep cookies for legacy/backend checks
+    });
 
     // Handle 401 Unauthorized - session expired or invalid token
     if (response.status === 401 && !skipAuthCheck) {
