@@ -13,6 +13,7 @@ API Prefix: /v1/study-plan/
 
 import logging
 from flask import request, jsonify
+from utils.auth import login_required
 from pymongo import MongoClient
 from bson import ObjectId
 from datetime import datetime, timedelta, timezone
@@ -1113,17 +1114,15 @@ class StudyPlanModule:
         # ---- AUTHENTICATED ENDPOINTS ----
 
         @app.route("/v1/study-plan/plans", methods=["POST"])
+        @login_required
         def create_plan():
             """Create a personalized study plan."""
             try:
+                user_id = request.user.get("userId") or request.user.get("id")
                 data = request.get_json()
 
                 if not data:
                     return jsonify({"error": "No data provided"}), 400
-
-                user_id = data.get("user_id")
-                if not user_id:
-                    return jsonify({"error": "user_id is required"}), 400
 
                 target_level = data.get("target_level")
                 if target_level not in JLPT_LEVELS:
@@ -1160,12 +1159,11 @@ class StudyPlanModule:
                 return jsonify({"error": "Failed to create plan"}), 500
 
         @app.route("/v1/study-plan/plans", methods=["GET"])
+        @login_required
         def list_plans():
             """List user's study plans."""
             try:
-                user_id = request.args.get("user_id")
-                if not user_id:
-                    return jsonify({"error": "user_id is required"}), 400
+                user_id = request.user.get("userId") or request.user.get("id")
 
                 status = request.args.get("status")
                 query = {"user_id": user_id}
@@ -1201,10 +1199,12 @@ class StudyPlanModule:
                 return jsonify({"error": "Failed to fetch plans"}), 500
 
         @app.route("/v1/study-plan/plans/<plan_id>", methods=["GET"])
+        @login_required
         def get_plan(plan_id):
             """Get detailed plan information."""
             try:
-                plan = self.plans_collection.find_one({"_id": ObjectId(plan_id)})
+                user_id = request.user.get("userId") or request.user.get("id")
+                plan = self.plans_collection.find_one({"_id": ObjectId(plan_id), "user_id": user_id})
 
                 if not plan:
                     return jsonify({"error": "Plan not found"}), 404
@@ -1260,14 +1260,16 @@ class StudyPlanModule:
                 return jsonify({"error": "Failed to fetch plan"}), 500
 
         @app.route("/v1/study-plan/plans/<plan_id>", methods=["PATCH"])
+        @login_required
         def update_plan(plan_id):
             """Update plan settings."""
             try:
+                user_id = request.user.get("userId") or request.user.get("id")
                 data = request.get_json()
                 if not data:
                     return jsonify({"error": "No data provided"}), 400
 
-                plan = self.plans_collection.find_one({"_id": ObjectId(plan_id)})
+                plan = self.plans_collection.find_one({"_id": ObjectId(plan_id), "user_id": user_id})
                 if not plan:
                     return jsonify({"error": "Plan not found"}), 404
 
@@ -1296,10 +1298,12 @@ class StudyPlanModule:
                 return jsonify({"error": "Failed to update plan"}), 500
 
         @app.route("/v1/study-plan/plans/<plan_id>", methods=["DELETE"])
+        @login_required
         def delete_plan(plan_id):
             """Abandon/delete a study plan."""
             try:
-                plan = self.plans_collection.find_one({"_id": ObjectId(plan_id)})
+                user_id = request.user.get("userId") or request.user.get("id")
+                plan = self.plans_collection.find_one({"_id": ObjectId(plan_id), "user_id": user_id})
                 if not plan:
                     return jsonify({"error": "Plan not found"}), 404
 
@@ -1399,12 +1403,11 @@ class StudyPlanModule:
         # ---- DAILY TASKS ENDPOINTS ----
 
         @app.route("/v1/study-plan/daily-tasks", methods=["GET"])
+        @login_required
         def get_daily_tasks():
             """Get tasks for today or a specific date."""
             try:
-                user_id = request.args.get("user_id")
-                if not user_id:
-                    return jsonify({"error": "user_id is required"}), 400
+                user_id = request.user.get("userId") or request.user.get("id")
 
                 date_str = request.args.get("date")
                 if date_str:
@@ -1530,9 +1533,16 @@ class StudyPlanModule:
         # ---- ADAPTIVE ADJUSTMENT ENDPOINTS ----
 
         @app.route("/v1/study-plan/plans/<plan_id>/health", methods=["GET"])
+        @login_required
         def check_plan_health(plan_id):
             """Get plan health analysis with recommendations."""
             try:
+                user_id = request.user.get("userId") or request.user.get("id")
+                # Verify ownership
+                plan = self.plans_collection.find_one({"_id": ObjectId(plan_id), "user_id": user_id})
+                if not plan:
+                    return jsonify({"error": "Plan not found"}), 404
+                    
                 result = self.check_plan_health(ObjectId(plan_id))
                 if "error" in result:
                     return jsonify(result), 404
@@ -1623,12 +1633,11 @@ class StudyPlanModule:
                 return jsonify({"error": "Failed to update from SRS"}), 500
 
         @app.route("/v1/study-plan/log-activity", methods=["POST"])
+        @login_required
         def log_activity_route():
             try:
                 data = request.json
-                user_id = data.get("user_id")
-                if not user_id:
-                     return jsonify({"error": "User ID required"}), 400
+                user_id = request.user.get("userId") or request.user.get("id")
                      
                 result = self.log_activity(user_id, data)
                 return jsonify(result), 200

@@ -3,7 +3,13 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 
-const SECRET_KEY = process.env.JWT_SECRET || 'your-secret-key';
+const SECRET_KEY = process.env.JWT_SECRET;
+
+if (!SECRET_KEY && process.env.NODE_ENV === 'production') {
+    throw new Error('JWT_SECRET must be set in production');
+}
+
+const FINAL_SECRET = SECRET_KEY || 'your-development-secret-key';
 
 async function hashPassword(password) {
     const salt = await bcrypt.genSalt(10);
@@ -15,7 +21,10 @@ async function verifyPassword(password, hash) {
 }
 
 function createAccessToken(payload) {
-    return jwt.sign(payload, SECRET_KEY, { expiresIn: '15m' });
+    return jwt.sign(payload, FINAL_SECRET, {
+        expiresIn: '15m',
+        algorithm: 'HS256'
+    });
 }
 
 function createRefreshToken() {
@@ -27,7 +36,9 @@ function createRefreshToken() {
  */
 function verifyAccessToken(token) {
     try {
-        return jwt.verify(token, SECRET_KEY);
+        return jwt.verify(token, FINAL_SECRET, {
+            algorithms: ['HS256']
+        });
     } catch (e) {
         return null;
     }

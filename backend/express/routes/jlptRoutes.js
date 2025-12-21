@@ -3,6 +3,15 @@ const router = express.Router();
 const { JLPTAttempt } = require('../models/JLPTAttempt');
 const { JLPTUserExam } = require('../models/JLPTUserExam');
 const { verifyAccessToken } = require('../utils/auth');
+const rateLimit = require('express-rate-limit');
+
+const genLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 10, // Limit each IP to 10 generations per hour
+    message: { error: 'Too many generation requests. Please try again later.' },
+    standardHeaders: true,
+    legacyHeaders: false,
+});
 
 /**
  * Middleware to protect routes and attach user to request
@@ -67,9 +76,20 @@ router.get('/attempts', authenticate, async (req, res) => {
  */
 router.post('/attempts', authenticate, async (req, res) => {
     try {
+        const { examId, level, score, totalQuestions, answers, completedAt } = req.body;
+
+        if (!examId || !level) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
         const attemptData = {
-            ...req.body,
-            userId: req.user.id || req.user.userId
+            userId: req.user.id || req.user.userId,
+            examId,
+            level,
+            score,
+            totalQuestions,
+            answers,
+            completedAt: completedAt || new Date()
         };
 
         const attempt = await JLPTAttempt.create(attemptData);
@@ -122,8 +142,18 @@ router.get('/exams', authenticate, async (req, res) => {
  */
 router.post('/exams', authenticate, async (req, res) => {
     try {
+        const { title, description, level, questions, isPublic } = req.body;
+
+        if (!title || !level) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
         const examData = {
-            ...req.body,
+            title,
+            description,
+            level,
+            questions,
+            isPublic: isPublic || false,
             userId: req.user.id || req.user.userId
         };
 
@@ -144,9 +174,17 @@ router.put('/exams/:id', authenticate, async (req, res) => {
         const { id } = req.params;
         const userId = req.user.id || req.user.userId;
 
+        const { title, description, level, questions, isPublic } = req.body;
+        const updateData = {};
+        if (title !== undefined) updateData.title = title;
+        if (description !== undefined) updateData.description = description;
+        if (level !== undefined) updateData.level = level;
+        if (questions !== undefined) updateData.questions = questions;
+        if (isPublic !== undefined) updateData.isPublic = isPublic;
+
         const exam = await JLPTUserExam.findOneAndUpdate(
             { _id: id, userId },
-            req.body,
+            { $set: updateData },
             { new: true }
         );
 
@@ -221,7 +259,7 @@ router.get('/exams/:id', async (req, res) => {
  * POST /jlpt/generate
  * Mock endpoint for AI generation
  */
-router.post('/generate', authenticate, async (req, res) => {
+router.post('/generate', authenticate, genLimiter, async (req, res) => {
     try {
         // In a real app, this would call an LLM
         // For now, we'll return mock data or a helpful message

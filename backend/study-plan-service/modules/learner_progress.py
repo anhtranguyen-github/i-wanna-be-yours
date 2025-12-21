@@ -13,6 +13,7 @@ API Prefix: /v1/learner/
 
 import logging
 from flask import request, jsonify
+from utils.auth import login_required
 from pymongo import MongoClient
 from bson import ObjectId
 from datetime import datetime, timedelta, timezone
@@ -597,9 +598,13 @@ class LearnerProgressModule:
         """Register learner progress routes with Flask app."""
 
         @app.route("/v1/learner/progress/<user_id>", methods=["GET"])
+        @login_required
         def get_learner_progress(user_id):
             """Get user's progress summary."""
             try:
+                curr_user_id = request.user.get("userId") or request.user.get("id")
+                if str(user_id) != str(curr_user_id):
+                    return jsonify({"error": "Unauthorized"}), 403
                 result = self.get_progress_summary(user_id)
                 return jsonify(result), 200
             except Exception as e:
@@ -607,11 +612,12 @@ class LearnerProgressModule:
                 return jsonify({"error": str(e)}), 500
 
         @app.route("/v1/learner/activity", methods=["POST"])
+        @login_required
         def log_learner_activity():
             """Log a learning activity."""
             try:
                 data = request.get_json()
-                user_id = data.get("user_id")
+                user_id = request.user.get("userId") or request.user.get("id")
                 activity_type = data.get("activity_type")
                 activity_data = data.get("data", {})
 
@@ -627,9 +633,13 @@ class LearnerProgressModule:
                 return jsonify({"error": str(e)}), 500
 
         @app.route("/v1/learner/stats/<user_id>", methods=["GET"])
+        @login_required
         def get_learner_stats(user_id):
             """Get detailed stats for user."""
             try:
+                curr_user_id = request.user.get("userId") or request.user.get("id")
+                if str(user_id) != str(curr_user_id):
+                    return jsonify({"error": "Unauthorized"}), 403
                 days = request.args.get("days", 30, type=int)
                 result = self.get_detailed_stats(user_id, days)
                 return jsonify(result), 200
@@ -637,9 +647,13 @@ class LearnerProgressModule:
                 self.logger.error(f"Error getting stats: {e}")
                 return jsonify({"error": str(e)}), 500
         @app.route("/v1/learner/activities/<user_id>", methods=["GET"])
+        @login_required
         def get_learner_activities(user_id):
             """Get Activity Records Vault list."""
             try:
+                curr_user_id = request.user.get("userId") or request.user.get("id")
+                if str(user_id) != str(curr_user_id):
+                    return jsonify({"error": "Unauthorized"}), 403
                 limit = request.args.get("limit", 20, type=int)
                 result = self.get_activities_list(user_id, limit)
                 return jsonify({"activities": result}), 200
@@ -648,9 +662,13 @@ class LearnerProgressModule:
                 return jsonify({"error": str(e)}), 500
 
         @app.route("/v1/learner/achievements/<user_id>", methods=["GET"])
+        @login_required
         def get_learner_achievements(user_id):
             """Get user's achievements."""
             try:
+                curr_user_id = request.user.get("userId") or request.user.get("id")
+                if str(user_id) != str(curr_user_id):
+                    return jsonify({"error": "Unauthorized"}), 403
                 result = self.get_achievements(user_id)
                 return jsonify(result), 200
             except Exception as e:
@@ -658,11 +676,12 @@ class LearnerProgressModule:
                 return jsonify({"error": str(e)}), 500
 
         @app.route("/v1/learner/session/start", methods=["POST"])
+        @login_required
         def start_learner_session():
             """Start a study session."""
             try:
                 data = request.get_json()
-                user_id = data.get("user_id")
+                user_id = request.user.get("userId") or request.user.get("id")
                 focus_area = data.get("focus_area", "general")
 
                 if not user_id:
@@ -675,9 +694,16 @@ class LearnerProgressModule:
                 return jsonify({"error": str(e)}), 500
 
         @app.route("/v1/learner/session/<session_id>/end", methods=["POST"])
+        @login_required
         def end_learner_session(session_id):
             """End a study session."""
             try:
+                user_id = request.user.get("userId") or request.user.get("id")
+                # Verify ownership of session
+                session = self.sessions_collection.find_one({"_id": ObjectId(session_id), "user_id": user_id})
+                if not session:
+                    return jsonify({"error": "Session not found or unauthorized"}), 404
+
                 result = self.end_session(session_id)
                 return jsonify(result), 200
             except Exception as e:

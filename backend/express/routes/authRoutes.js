@@ -4,9 +4,32 @@ const router = express.Router();
 const { User } = require('../models/User');
 const { Session } = require('../models/Session');
 const { hashPassword, verifyPassword, createAccessToken, createRefreshToken } = require('../utils/auth');
+const rateLimit = require('express-rate-limit');
+
+// --- Rate Limiters ---
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 20, // Limit each IP to 20 requests per windowMs
+    message: { error: 'Too many authentication attempts, please try again later.' },
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
+// --- Sanitization ---
+const sanitizeInput = (req, res, next) => {
+    if (req.body) {
+        if (typeof req.body.email !== 'undefined' && typeof req.body.email !== 'string') {
+            req.body.email = String(req.body.email);
+        }
+        if (typeof req.body.refreshToken !== 'undefined' && typeof req.body.refreshToken !== 'string') {
+            req.body.refreshToken = String(req.body.refreshToken);
+        }
+    }
+    next();
+};
 
 // POST /auth/register
-router.post('/register', async (req, res) => {
+router.post('/register', authLimiter, sanitizeInput, async (req, res) => {
     try {
         const { email, password } = req.body;
 
@@ -36,7 +59,7 @@ router.post('/register', async (req, res) => {
 });
 
 // POST /auth/login
-router.post('/login', async (req, res) => {
+router.post('/login', authLimiter, sanitizeInput, async (req, res) => {
     try {
         const { email, password } = req.body;
         if (!email || !password) {
@@ -84,7 +107,7 @@ router.post('/login', async (req, res) => {
 });
 
 // POST /auth/logout
-router.post('/logout', async (req, res) => {
+router.post('/logout', sanitizeInput, async (req, res) => {
     try {
         const { refreshToken } = req.body;
         if (refreshToken) {

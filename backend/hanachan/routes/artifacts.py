@@ -4,12 +4,15 @@ All artifacts use flexible schema (metadata and data can contain any fields).
 """
 from flask import Blueprint, request, jsonify
 from services.artifact_service import ArtifactService
+from utils.auth import login_required
 
 bp = Blueprint('artifacts', __name__, url_prefix='/artifacts')
 
 
 @bp.route('/', methods=['POST'])
+@login_required
 def create_artifact():
+    user_id = request.user.get("userId") or request.user.get("id")
     """
     Create a new artifact.
     
@@ -29,15 +32,15 @@ def create_artifact():
     if not data:
         return jsonify({"error": "Request body required"}), 400
     
-    required = ["userId", "type", "title", "data"]
+    required = ["type", "title", "data"]
     for field in required:
         if field not in data:
             return jsonify({"error": f"Missing required field: {field}"}), 400
     
     artifact = ArtifactService.create_artifact(
-        user_id=data["userId"],
+        user_id=user_id,
         artifact_type=data["type"],
-        title=data["title"],
+        title=str(data["title"]),
         data=data["data"],
         metadata=data.get("metadata", {}),
         conversation_id=data.get("conversationId"),
@@ -49,16 +52,14 @@ def create_artifact():
 
 
 @bp.route('/<artifact_id>', methods=['GET'])
+@login_required
 def get_artifact(artifact_id):
+    user_id = request.user.get("userId") or request.user.get("id")
     """
     Get artifact by ID.
     Requires userId for authorization - only the artifact owner can access it.
     """
-    user_id = request.args.get("userId")
-    
-    # SECURITY: Require userId to prevent unauthorized access
-    if not user_id:
-        return jsonify({"error": "userId required for authorization"}), 400
+    # Ownership check is done within the service using user_id from token
     
     artifact = ArtifactService.get_artifact(artifact_id, user_id)
     
@@ -69,7 +70,9 @@ def get_artifact(artifact_id):
 
 
 @bp.route('/', methods=['GET'])
+@login_required
 def list_artifacts():
+    user_id = request.user.get("userId") or request.user.get("id")
     """
     List user's artifacts.
     
@@ -80,9 +83,7 @@ def list_artifacts():
     - limit: Optional (default 50)
     - skip: Optional pagination offset
     """
-    user_id = request.args.get("userId")
-    if not user_id:
-        return jsonify({"error": "userId required"}), 400
+    # user_id comes from token
     
     artifact_type = request.args.get("type")
     saved_only = request.args.get("savedToLibrary", "").lower() == "true"
@@ -106,7 +107,9 @@ def list_artifacts():
 
 
 @bp.route('/<artifact_id>/save', methods=['PATCH'])
+@login_required
 def save_to_library(artifact_id):
+    user_id = request.user.get("userId") or request.user.get("id")
     """
     Mark artifact as saved to user's library.
     
@@ -116,10 +119,7 @@ def save_to_library(artifact_id):
     }
     """
     data = request.json or {}
-    user_id = data.get("userId")
-    
-    if not user_id:
-        return jsonify({"error": "userId required"}), 400
+    # user_id from token
     
     success = ArtifactService.save_to_library(artifact_id, user_id)
     
@@ -130,7 +130,9 @@ def save_to_library(artifact_id):
 
 
 @bp.route('/<artifact_id>', methods=['PATCH'])
+@login_required
 def update_artifact(artifact_id):
+    user_id = request.user.get("userId") or request.user.get("id")
     """
     Update artifact fields.
     
@@ -138,10 +140,8 @@ def update_artifact(artifact_id):
     Must include userId for ownership check.
     """
     data = request.json or {}
-    user_id = data.pop("userId", None)
-    
-    if not user_id:
-        return jsonify({"error": "userId required"}), 400
+    # user_id from token, remove from body if present to avoid confusion
+    data.pop("userId", None)
     
     if not data:
         return jsonify({"error": "No fields to update"}), 400
@@ -155,7 +155,9 @@ def update_artifact(artifact_id):
 
 
 @bp.route('/<artifact_id>/cards', methods=['POST'])
+@login_required
 def add_cards_to_deck(artifact_id):
+    user_id = request.user.get("userId") or request.user.get("id")
     """
     Add cards to an existing flashcard deck.
     
@@ -169,11 +171,7 @@ def add_cards_to_deck(artifact_id):
     }
     """
     data = request.json or {}
-    user_id = data.get("userId")
-    cards = data.get("cards", [])
-    
-    if not user_id:
-        return jsonify({"error": "userId required"}), 400
+    # user_id from token
     
     if not cards:
         return jsonify({"error": "cards array required"}), 400
@@ -187,12 +185,11 @@ def add_cards_to_deck(artifact_id):
 
 
 @bp.route('/<artifact_id>', methods=['DELETE'])
+@login_required
 def delete_artifact(artifact_id):
+    user_id = request.user.get("userId") or request.user.get("id")
     """Delete an artifact."""
-    user_id = request.args.get("userId")
-    
-    if not user_id:
-        return jsonify({"error": "userId required"}), 400
+    # user_id from token
     
     success = ArtifactService.delete_artifact(artifact_id, user_id)
     
@@ -203,16 +200,14 @@ def delete_artifact(artifact_id):
 
 
 @bp.route('/conversation/<conversation_id>', methods=['GET'])
+@login_required
 def get_conversation_artifacts(conversation_id):
+    user_id = request.user.get("userId") or request.user.get("id")
     """
     Get all artifacts from a conversation.
     Requires userId for authorization - only the conversation owner can access artifacts.
     """
-    user_id = request.args.get("userId")
-    
-    # SECURITY: Require userId to prevent unauthorized access to conversation artifacts
-    if not user_id:
-        return jsonify({"error": "userId required for authorization"}), 400
+    # user_id from token
     
     artifacts = ArtifactService.get_conversation_artifacts(conversation_id, user_id)
     

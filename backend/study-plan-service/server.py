@@ -16,6 +16,9 @@ import os
 import logging
 from flask import Flask, jsonify
 from flask_cors import CORS
+from flask_talisman import Talisman
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 logging.basicConfig(
     level=logging.INFO,
@@ -24,8 +27,27 @@ logging.basicConfig(
 
 app = Flask(__name__)
 
-# CORS: Open completely for development
-CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+# --- Security Configuration ---
+# Talisman for security headers
+csp = {
+    'default-src': '\'self\'',
+    'img-src': '*',
+    'style-src': ['\'self\'', '\'unsafe-inline\''],
+    'script-src': '\'self\''
+}
+Talisman(app, content_security_policy=csp, force_https=False)  # Set force_https=True in production
+
+# Limiter for rate limiting
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["2000 per day", "100 per hour"],
+    storage_uri="memory://",
+)
+
+# CORS configuration
+allowed_origins = os.environ.get("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
+CORS(app, resources={r"/*": {"origins": allowed_origins}}, supports_credentials=True)
 
 # Service configuration
 SERVICE_PORT = int(os.getenv("STUDY_PLAN_SERVICE_PORT", 5500))

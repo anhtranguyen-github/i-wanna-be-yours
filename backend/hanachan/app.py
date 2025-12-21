@@ -1,10 +1,35 @@
 from flask import Flask
 from flask_cors import CORS
+from flask_talisman import Talisman
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from database.database import init_app, db
+import os
 
 def create_app(test_config=None):
     app = Flask(__name__)
-    CORS(app)
+    
+    # --- Security Configuration ---
+    # Talisman for security headers
+    csp = {
+        'default-src': '\'self\'',
+        'img-src': '*',
+        'style-src': ['\'self\'', '\'unsafe-inline\''],
+        'script-src': '\'self\''
+    }
+    Talisman(app, content_security_policy=csp, force_https=False)  # Set force_https=True in production
+
+    # Limiter for rate limiting
+    limiter = Limiter(
+        get_remote_address,
+        app=app,
+        default_limits=["2000 per day", "100 per hour"],
+        storage_uri="memory://",
+    )
+
+    # CORS configuration
+    allowed_origins = os.environ.get("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
+    CORS(app, resources={r"/*": {"origins": allowed_origins}})
     
     if test_config:
         app.config.from_mapping(test_config)

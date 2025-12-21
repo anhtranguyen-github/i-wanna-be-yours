@@ -20,7 +20,9 @@ const fs = require("fs");
 const bodyParser = require("body-parser");
 const { OpenAI } = require("openai");
 const path = require("path");
-const crypto = require("crypto"); // For creating cache keys
+const crypto = require("crypto");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 
 const mongoose = require("mongoose");
 
@@ -36,9 +38,38 @@ const KuromojiAnalyzer = require("kuroshiro-analyzer-kuromoji");
 const kuroshiro = new Kuroshiro();
 
 const app = express();
-app.use(cors()); // Use cors middleware to enable CORS
-app.use(express.json()); // for parsing application/json
-app.use(bodyParser.json()); // not sure if this will create conflict w express.json
+
+// --- Security Middleware ---
+app.use(helmet());
+const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['http://localhost:3000'];
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Rate Limiters
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 500,
+  message: { error: 'Too many requests, please try again later.' }
+});
+const aiLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 50,
+  message: { error: 'AI limit reached for this hour, please try again later.' }
+});
+
+app.use(globalLimiter);
+
+app.use(express.json({ limit: '1mb' }));
+app.use(bodyParser.json());
 
 // Set the port and start the server
 const PORT = process.env.PORT || 5200;
@@ -207,7 +238,7 @@ app.post("/d-api/v1/parse", (req, res) => {
   mecab.parse(text, (err, result) => {
     if (err) {
       console.error("MeCab Error:", err);
-      res.status(500).send("Error parsing Japanese text: " + err.message);
+      res.status(500).json({ error: "Internal server error" });
       return;
     }
     const words = result.map((entry) => entry[7]); // Assuming basic form is what you need
@@ -222,7 +253,7 @@ app.post("/d-api/v1/parse-json", (req, res) => {
   mecab.parse(text, (err, result) => {
     if (err) {
       console.error("MeCab Error:", err);
-      res.status(500).send("Error parsing Japanese text: " + err.message);
+      res.status(500).json({ error: "Internal server error" });
       return;
     }
     res.json(result);
@@ -235,7 +266,7 @@ app.post("/d-api/v1/parse-simple", (req, res) => {
   mecab.parse(text, (err, result) => {
     if (err) {
       console.error("MeCab Error:", err);
-      res.status(500).send("Error parsing Japanese text: " + err.message);
+      res.status(500).json({ error: "Internal server error" });
       return;
     }
     const simplifiedResult = result.map((entry) => ({
@@ -318,7 +349,7 @@ app.post("/d-api/v1/parse-split", (req, res) => {
 //         res.status(500).json({ error: "Translation failed" });
 //     }
 // });
-app.post("/d-api/v1/deepl-translate", async (req, res) => {
+app.post("/d-api/v1/deepl-translate", aiLimiter, async (req, res) => {
   const { japaneseText } = req.body;
   console.log("incoming payload:", japaneseText);
   const MAX_LENGTH = 10000;
@@ -459,7 +490,7 @@ app.post("/d-api/v1/convert/all", async (req, res) => {
   } catch (error) {
     res
       .status(500)
-      .json({ error: "Error processing your request", details: error.message });
+      .json({ error: "Internal server error" });
   }
 });
 
@@ -1122,7 +1153,7 @@ const handleOpenAIRequest = async (userPrompt, promptType, model) => {
 // "completion_tokens":201,
 // "total_tokens":271},
 // "system_fingerprint":null}
-app.post("/d-api/v1/grammar", async (req, res) => {
+app.post("/d-api/v1/grammar", aiLimiter, async (req, res) => {
   try {
     const { userPrompt } = req.body;
     const response = await handleOpenAIRequest(userPrompt, "grammar", GPT_MODEL_BASIC);
