@@ -315,7 +315,7 @@ log "✅ Started express-db (PID: $pid)"
         log "⚠️  Flask venv not found. Running without activation."
     fi
 
-    ./.venv/bin/gunicorn -w 4 -b 0.0.0.0:5100 server:app \
+    ./.venv/bin/gunicorn -w 1 -b 0.0.0.0:5100 --timeout 120 server:app \
     > "$LOG_ROOT/flask-dynamic-db/flask_5100.log" 2>&1
     on_error "flask-dynamic-db" $?
     
@@ -335,10 +335,13 @@ log "✅ Started flask-dynamic-db (PID: $pid)"
         python3 -m venv .venv
     fi
     . .venv/bin/activate
-    log "📦 Ensuring requirements for study-plan-service..."
-    python3 -m pip install -r requirements.txt > /dev/null 2>&1
+    # Only install if gunicorn is not available (skip slow pip install)
+    if [ ! -f .venv/bin/gunicorn ]; then
+        log "📦 Installing requirements for study-plan-service..."
+        python3 -m pip install -r requirements.txt > /dev/null 2>&1
+    fi
 
-    ./.venv/bin/gunicorn -w 4 -b 0.0.0.0:5500 server:app \
+    ./.venv/bin/gunicorn -w 1 -b 0.0.0.0:5500 --timeout 120 server:app \
     > "$LOG_ROOT/study-plan-service/study_plan_5500.log" 2>&1
     on_error "study-plan-service" $?
     
