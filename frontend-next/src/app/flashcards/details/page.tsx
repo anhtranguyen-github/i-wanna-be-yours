@@ -290,7 +290,7 @@ export default function FlashcardDeckPage() {
 
     const logStudyActivity = async (count: number) => {
         try {
-            await axios.post(`/f-api/v1/study-plan/log-activity`, {
+            await axios.post(`/s-api/v1/study-plan/log-activity`, {
                 user_id: userId,
                 type: "flashcard_review",
                 quantity: count,
