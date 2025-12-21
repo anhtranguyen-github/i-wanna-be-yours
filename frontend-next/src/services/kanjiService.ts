@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const EXPRESS_API_URL = process.env.EXPRESS_API_URL || 'http://localhost:8000/e-api/v1';
+const EXPRESS_API_URL = '/e-api/v1';
 
 export interface Kanji {
     _id: string;

@@ -271,7 +271,7 @@ export function MasteredItemsModal({
                         <div className="flex justify-center gap-3">
                             {safeItems.length > 0 && (
                                 <button
-                                    onClick={() => { setSearchQuery(''); setLevelFilter('all'); setStatusFilter('all'); }}
+                                    onClick={() => { setSearchQuery(''); setLevelFilter('all'); }}
                                     className="px-6 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-bold transition-colors"
                                 >
                                     Clear Filters

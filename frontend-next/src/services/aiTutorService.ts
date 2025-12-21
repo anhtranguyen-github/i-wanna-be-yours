@@ -196,8 +196,7 @@ class AITutorService {
         // @ts-ignore
         delete headers['Content-Type'];
 
-        const FLASK_API_URL = process.env.NEXT_PUBLIC_FLASK_API_URL || 'http://localhost:5100';
-        const response = await fetch(`${FLASK_API_URL}/v1/resources/upload`, {
+        const response = await fetch(`/f-api/v1/resources/upload`, {
             method: 'POST',
             headers: headers,
             body: formData

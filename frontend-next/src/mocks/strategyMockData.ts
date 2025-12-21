@@ -138,6 +138,14 @@ export interface PriorityMatrix {
         yellow_minutes: number;
         green_minutes: number;
     };
+    error_analysis?: ErrorAnalysis[];
+}
+
+export interface ErrorAnalysis {
+    type: string;
+    desc: string;
+    percent: number;
+    color: string;
 }
 
 export interface SkillPriority {

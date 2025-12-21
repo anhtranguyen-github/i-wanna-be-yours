@@ -17,9 +17,8 @@ export default function ResourcesListPage() {
     const [showUploader, setShowUploader] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
-    const FLASK_API_URL = process.env.NEXT_PUBLIC_FLASK_API_URL || 'http://localhost:5100';
     const { data: response, mutate } = useSWR(
-        user ? `${FLASK_API_URL}/f-api/v1/resources?userId=${user.id}` : null,
+        user ? `/f-api/v1/resources?userId=${user.id}` : null,
         fetcher
     );
 
