@@ -330,14 +330,13 @@ log "✅ Started flask-dynamic-db (PID: $pid)"
     log "🚀 Starting study-plan-service (port 5500)..."
     cd backend/study-plan-service || exit 1
     
-    if [ -f .venv/bin/activate ]; then
-        . .venv/bin/activate
-    else
+    if [ ! -f .venv/bin/activate ]; then
         log "⚠️  Study Plan Service venv not found. Creating one..."
         python3 -m venv .venv
-        . .venv/bin/activate
-        pip install -r requirements.txt > /dev/null 2>&1
     fi
+    . .venv/bin/activate
+    log "📦 Ensuring requirements for study-plan-service..."
+    python3 -m pip install -r requirements.txt > /dev/null 2>&1
 
     ./.venv/bin/gunicorn -w 4 -b 0.0.0.0:5500 server:app \
     > "$LOG_ROOT/study-plan-service/study_plan_5500.log" 2>&1

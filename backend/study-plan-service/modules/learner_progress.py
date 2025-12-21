@@ -465,6 +465,41 @@ class LearnerProgressModule:
             "total_activities": len(activities)
         }
 
+    def get_activities_list(self, user_id: str, limit: int = 20) -> List[Dict]:
+        """Get flattened list of activities for the Activity Records Vault."""
+        activities = list(self.activities_collection.find(
+            {"user_id": user_id}
+        ).sort("timestamp", -1).limit(limit))
+
+        result = []
+        for a in activities:
+            # Map activity_type to a more readable title
+            atype = a.get("activity_type", "unknown")
+            data = a.get("data", {})
+            
+            title = atype.replace("_", " ").title()
+            if atype == "flashcard_review":
+                title = f"{data.get('count', 0)} Flashcards Reviewed"
+            elif atype == "quiz_completed":
+                title = f"Quiz: {data.get('category', 'General')}"
+            
+            # Derived fields for UI
+            intensity = "High" if data.get("duration_minutes", 0) > 30 else "Med" if data.get("duration_minutes", 0) > 10 else "Low"
+            output = data.get("category", "General").title()
+            score = f"{data.get('score')}%" if data.get("score") is not None else "N/A"
+            
+            result.append({
+                "id": str(a["_id"]),
+                "type": title,
+                "intensity": intensity,
+                "output": output,
+                "score": score,
+                "date": a["timestamp"].isoformat(),
+                "activity_type": atype
+            })
+            
+        return result
+
     # ============================================
     # Study Sessions
     # ============================================
@@ -600,6 +635,16 @@ class LearnerProgressModule:
                 return jsonify(result), 200
             except Exception as e:
                 self.logger.error(f"Error getting stats: {e}")
+                return jsonify({"error": str(e)}), 500
+        @app.route("/v1/learner/activities/<user_id>", methods=["GET"])
+        def get_learner_activities(user_id):
+            """Get Activity Records Vault list."""
+            try:
+                limit = request.args.get("limit", 20, type=int)
+                result = self.get_activities_list(user_id, limit)
+                return jsonify({"activities": result}), 200
+            except Exception as e:
+                self.logger.error(f"Error getting activities list: {e}")
                 return jsonify({"error": str(e)}), 500
 
         @app.route("/v1/learner/achievements/<user_id>", methods=["GET"])
