@@ -2,7 +2,13 @@
 import requests
 import io
 import logging
-from PyPDF2 import PdfReader
+
+try:
+    from PyPDF2 import PdfReader
+except ImportError:
+    PdfReader = None
+    logging.warning("PyPDF2 not installed. PDF extraction will fail.")
+
 # from docx import Document # python-docx
 
 RESOURCES_API = "http://localhost:5100"
@@ -64,6 +70,9 @@ class ResourceProcessor:
             return ""
     
     def _extract_pdf(self, file_bytes: bytes) -> str:
+        if PdfReader is None:
+            return "Error: PyPDF2 library not installed, cannot extract text from PDF."
+            
         reader = PdfReader(io.BytesIO(file_bytes))
         text = ""
         for page in reader.pages:

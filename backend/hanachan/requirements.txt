@@ -11,3 +11,4 @@ pyjwt
 pyyaml
 python-dotenv
 requests
+PyPDF2
