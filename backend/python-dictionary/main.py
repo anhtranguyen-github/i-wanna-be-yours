@@ -25,7 +25,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.post("/d-api/v1/parse-split")
+@app.post("/v1/parse-split")
 async def parse_split(payload: Dict[str, str]):
     text = payload.get("text")
     mode = payload.get("mode", "B") # Sudachi mode B is usually best for parsing
@@ -50,7 +50,7 @@ async def parse_split(payload: Dict[str, str]):
         
     return results
 
-@app.get("/d-api/v1/kanji/{character}")
+@app.get("/v1/kanji/{character}")
 async def get_kanji(character: str):
     # Implementation similar to search_service logic but for single kanji
     res = await search_service.search(character)
@@ -58,7 +58,7 @@ async def get_kanji(character: str):
         raise HTTPException(status_code=404, detail="Kanji not found")
     return res["kanji"][0]
 
-@app.get("/d-api/v1/simple-vocabulary/{expression}")
+@app.get("/v1/simple-vocabulary/{expression}")
 async def get_vocab(expression: str):
     # Lookup in entries
     cursor = db.db.entries.find({
@@ -77,14 +77,14 @@ async def get_vocab(expression: str):
         raise HTTPException(status_code=404, detail="Word not found")
     return results[0]
 
-@app.post("/d-api/v1/search")
+@app.post("/v1/search")
 async def unified_search(payload: Dict[str, str]):
     text = payload.get("text")
     if not text:
         raise HTTPException(status_code=400, detail="No text provided")
     return await search_service.search(text)
 
-@app.post("/d-api/v1/sentences")
+@app.post("/v1/sentences")
 async def get_sentences(payload: Dict[str, str]):
     query = payload.get("query")
     if not query:

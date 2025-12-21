@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 
 const { connectDB } = require("./config/db");
 const { wordRoutes } = require("./routes/wordRoutes");
@@ -16,12 +17,28 @@ const { Reading } = require("./models/reading");
 
 const { Grammar } = require("./models/grammar"); // japanese
 
-const path = require("path");
-const cors = require("cors");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 
 // --- Map p_tag values to respective models (Japanese only) ---
 const modelMapping = {
   JLPT_: Grammar,
+};
+
+// --- Sanitization Middleware ---
+const sanitizeString = (val) => {
+  if (typeof val === 'string') return val;
+  if (Array.isArray(val)) return val[0]; // Take first if array
+  return undefined; // Ignore objects/others
+};
+
+const sanitizeInput = (req, res, next) => {
+  if (req.query) {
+    for (let key in req.query) {
+      req.query[key] = sanitizeString(req.query[key]);
+    }
+  }
+  next();
 };
 
 // -----------  General prep and vars  ------------------ //
@@ -29,15 +46,27 @@ const router = express.Router();
 const port = process.env.PORT || 8000; // port our backend is running on
 const originPort = 3000; // port the frontend app is running on
 const app = express();
+
+// --- Security Middleware ---
+app.use(helmet());
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(express.json());
+app.use(sanitizeInput);
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 1000, // limit each IP to 100 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use("/e-api/", limiter);
 
 let corsOptions = {
-  origin: "*",
+  origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : "http://localhost:3000",
   credentials: true,
 };
 
-app.use(express.json());
 app.use(cors(corsOptions));
 
 // connect to DB before we expose our API Express endpoints
@@ -90,9 +119,7 @@ const getAllWords = async (req, res) => {
     });
   } catch (err) {
     console.log(err);
-    res.status(500).json({
-      error: err,
-    });
+    res.status(500).json({ error: "Internal server error" });
   } finally {
     // any cleanup actions
   }
@@ -127,9 +154,7 @@ const getAllTanosWords = async (req, res) => {
     });
   } catch (err) {
     console.log(err);
-    res.status(500).json({
-      error: err,
-    });
+    res.status(500).json({ error: "Internal server error" });
   } finally {
     // any cleanup actions
   }
@@ -172,8 +197,8 @@ const getAllGrammars = async (req, res) => {
 
     res.status(200).json({ grammars });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err });
+    console.error("Error in getAllGrammars:", err.message);
+    res.status(500).json({ error: "An internal server error occurred." });
   } finally {
     // Any cleanup actions
   }

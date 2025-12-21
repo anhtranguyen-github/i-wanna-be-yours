@@ -2,6 +2,7 @@ import logging
 from flask import request, jsonify
 from pymongo import MongoClient
 from bson.objectid import ObjectId
+from modules.auth import login_required
 
 
 class LibraryTexts:
@@ -23,7 +24,11 @@ class LibraryTexts:
 
         #curl -X GET http://localhost:5100/v1/japanese-texts/testUserId
         @app.route("/v1/japanese-texts/<userId>", methods=["GET"])
+        @login_required
         def get_texts(userId):
+            curr_user_id = request.user.get("userId") or request.user.get("id")
+            if userId != curr_user_id:
+                return jsonify({"error": "Unauthorized"}), 403
             try:
                 # Filter documents by the given userId
                 query_filter = {"userId": userId}
@@ -65,7 +70,9 @@ class LibraryTexts:
         #  "lang": "Japanese"
         # }'
         @app.route("/v1/japanese-texts", methods=["POST"])
+        @login_required
         def create_text():
+            user_id = request.user.get("userId") or request.user.get("id")
             data = request.json
             required_fields = [
                 "topic",
@@ -73,7 +80,6 @@ class LibraryTexts:
                 "actualText",
                 "p_tag",
                 "s_tag",
-                "userId",
                 "lang",
             ]
 
@@ -82,13 +88,13 @@ class LibraryTexts:
                 return jsonify({"message": "All fields are required"}), 400
 
             new_text = {
-                "topic": data["topic"],
-                "sourceLink": data["sourceLink"],
-                "actualText": data["actualText"],
-                "p_tag": data["p_tag"],
-                "s_tag": data["s_tag"],
-                "userId": data["userId"],
-                "lang": data["lang"],
+                "topic": str(data["topic"]),
+                "sourceLink": str(data["sourceLink"]),
+                "actualText": str(data["actualText"]),
+                "p_tag": str(data["p_tag"]),
+                "s_tag": str(data["s_tag"]),
+                "userId": user_id,
+                "lang": str(data["lang"]),
             }
 
             try:
@@ -106,9 +112,11 @@ class LibraryTexts:
 
         # curl -X DELETE http://localhost:5100/v1/japanese-texts/<id>
         @app.route("/v1/japanese-texts/<id>", methods=["DELETE"])
+        @login_required
         def delete_text(id):
+            user_id = request.user.get("userId") or request.user.get("id")
             try:
-                result = self.texts_collection.delete_one({"_id": ObjectId(id)})
+                result = self.texts_collection.delete_one({"_id": ObjectId(id), "userId": user_id})
                 if result.deleted_count == 0:
                     return jsonify({"message": "Text not found"}), 404
                 return jsonify({"message": "Text deleted successfully"}), 200
@@ -125,10 +133,10 @@ class LibraryTexts:
         # GET /v1/custom-videos
         # Can filter by userId, p_tag, s_tag, lang
         @app.route("/v1/custom-videos", methods=["GET"])
+        @login_required
         def get_videos():
-            logging.info("Received GET request for /v1/custom-videos")
+            userId = request.user.get("userId") or request.user.get("id")
             try:
-                userId = request.args.get('userId')
                 p_tag = request.args.get('p_tag')
                 s_tag = request.args.get('s_tag')
                 lang = request.args.get('lang')
@@ -159,23 +167,25 @@ class LibraryTexts:
         # POST /v1/custom-videos
         # Requires url, customTitle, customDescription, userId, p_tag, s_tag, lang
         @app.route("/v1/custom-videos", methods=["POST"])
+        @login_required
         def create_video():
+            user_id = request.user.get("userId") or request.user.get("id")
             logging.info("Received POST request for /v1/custom-videos")
             data = request.json
-            required_fields = ["url", "customTitle", "customDescription", "userId", "p_tag", "s_tag", "lang"]
+            required_fields = ["url", "customTitle", "customDescription", "p_tag", "s_tag", "lang"]
 
             if not all(field in data for field in required_fields):
                 logging.error("Missing required fields in POST request")
                 return jsonify({"message": "All fields are required"}), 400
 
             new_video = {
-                "url": data["url"],
-                "customTitle": data["customTitle"],
-                "customDescription": data["customDescription"],
-                "userId": data["userId"],
-                "p_tag": data["p_tag"],
-                "s_tag": data["s_tag"],
-                "lang": data["lang"],
+                "url": str(data["url"]),
+                "customTitle": str(data["customTitle"]),
+                "customDescription": str(data["customDescription"]),
+                "userId": user_id,
+                "p_tag": str(data["p_tag"]),
+                "s_tag": str(data["s_tag"]),
+                "lang": str(data["lang"]),
             }
 
             try:
@@ -191,10 +201,12 @@ class LibraryTexts:
 
         # DELETE /v1/custom-videos/:id
         @app.route("/v1/custom-videos/<id>", methods=["DELETE"])
+        @login_required
         def delete_video(id):
+            user_id = request.user.get("userId") or request.user.get("id")
             logging.info(f"Received DELETE request for /v1/custom-videos/{id}")
             try:
-                result = self.videos_collection.delete_one({"_id": ObjectId(id)})
+                result = self.videos_collection.delete_one({"_id": ObjectId(id), "userId": user_id})
                 if result.deleted_count == 0:
                     logging.info("Video not found")
                     return jsonify({"message": "Video not found"}), 404

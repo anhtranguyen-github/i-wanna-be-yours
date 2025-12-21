@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_DICTIONARY_API_URL || 'http://localhost:5200';
+const API_BASE_URL = '/d-api/v1';
 
 export interface DictionaryEntry {
     id: string;
@@ -32,7 +32,7 @@ export interface ParseResult {
 export const dictionaryService = {
     async search(text: string): Promise<ParseResult> {
         try {
-            const response = await axios.post(`${API_BASE_URL}/d-api/v1/search`, { text });
+            const response = await axios.post(`${API_BASE_URL}/search`, { text });
             const data = response.data;
 
             // Transform Python backend response to UI expected format
@@ -69,7 +69,7 @@ export const dictionaryService = {
 
     async getVocabDetails(expression: string): Promise<DictionaryEntry | null> {
         try {
-            const response = await axios.get(`${API_BASE_URL}/d-api/v1/simple-vocabulary/${encodeURIComponent(expression)}`);
+            const response = await axios.get(`${API_BASE_URL}/simple-vocabulary/${encodeURIComponent(expression)}`);
             const entry = response.data;
             return {
                 id: entry.original,
@@ -85,7 +85,7 @@ export const dictionaryService = {
 
     async getKanjiDetails(character: string): Promise<DictionaryEntry | null> {
         try {
-            const response = await axios.get(`${API_BASE_URL}/d-api/v1/kanji/${encodeURIComponent(character)}`);
+            const response = await axios.get(`${API_BASE_URL}/kanji/${encodeURIComponent(character)}`);
             const k = response.data;
             return {
                 id: k.literal,
@@ -108,7 +108,7 @@ export const dictionaryService = {
 
     async getExamples(query: string): Promise<ExampleSentence[]> {
         try {
-            const response = await axios.post(`${API_BASE_URL}/d-api/v1/sentences`, { query });
+            const response = await axios.post(`${API_BASE_URL}/sentences`, { query });
             const data = response.data;
             return (data || []).map((s: any) => ({
                 ja: s.original,
