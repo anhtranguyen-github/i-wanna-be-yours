@@ -1,8 +1,9 @@
-/**
  * Learner Progress Service
- * 
+    * 
  * Handles all API calls for learner progress tracking.
  */
+
+import { authFetch } from '@/lib/authFetch';
 
 import {
     ProgressSummaryResponse,
@@ -53,7 +54,7 @@ class LearnerProgressService {
      * Get user's comprehensive progress summary
      */
     async getProgress(userId: string): Promise<ProgressSummaryResponse> {
-        const res = await fetch(`${API_BASE_URL}/v1/learner/progress/${userId}`);
+        const res = await authFetch(`${API_BASE_URL}/v1/learner/progress/${userId}`);
         return this.handleResponse<ProgressSummaryResponse>(res);
     }
 
@@ -74,7 +75,7 @@ class LearnerProgressService {
      * Log a learning activity
      */
     async logActivity(request: LogActivityRequest): Promise<LogActivityResponse> {
-        const res = await fetch(`${API_BASE_URL}/v1/learner/activity`, {
+        const res = await authFetch(`${API_BASE_URL}/v1/learner/activity`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(request),
@@ -150,7 +151,7 @@ class LearnerProgressService {
      * Get detailed learning statistics
      */
     async getStats(userId: string, days: number = 30): Promise<DetailedStatsResponse> {
-        const res = await fetch(`${API_BASE_URL}/v1/learner/stats/${userId}?days=${days}`);
+        const res = await authFetch(`${API_BASE_URL}/v1/learner/stats/${userId}?days=${days}`);
         return this.handleResponse<DetailedStatsResponse>(res);
     }
 
@@ -167,7 +168,7 @@ class LearnerProgressService {
      * Get list of activities for the Activity Records Vault
      */
     async getActivities(userId: string, limit: number = 20): Promise<{ activities: any[] }> {
-        const res = await fetch(`${API_BASE_URL}/v1/learner/activities/${userId}?limit=${limit}`);
+        const res = await authFetch(`${API_BASE_URL}/v1/learner/activities/${userId}?limit=${limit}`);
         return this.handleResponse<{ activities: any[] }>(res);
     }
 
@@ -188,7 +189,7 @@ class LearnerProgressService {
      * Get user's achievements
      */
     async getAchievements(userId: string): Promise<AchievementsResponse> {
-        const res = await fetch(`${API_BASE_URL}/v1/learner/achievements/${userId}`);
+        const res = await authFetch(`${API_BASE_URL}/v1/learner/achievements/${userId}`);
         return this.handleResponse<AchievementsResponse>(res);
     }
 
@@ -209,7 +210,7 @@ class LearnerProgressService {
      * Start a new study session
      */
     async startSession(request: StartSessionRequest): Promise<StartSessionResponse> {
-        const res = await fetch(`${API_BASE_URL}/v1/learner/session/start`, {
+        const res = await authFetch(`${API_BASE_URL}/v1/learner/session/start`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(request),
@@ -221,7 +222,7 @@ class LearnerProgressService {
      * End a study session
      */
     async endSession(sessionId: string): Promise<EndSessionResponse> {
-        const res = await fetch(`${API_BASE_URL}/v1/learner/session/${sessionId}/end`, {
+        const res = await authFetch(`${API_BASE_URL}/v1/learner/session/${sessionId}/end`, {
             method: 'POST',
         });
         return this.handleResponse<EndSessionResponse>(res);

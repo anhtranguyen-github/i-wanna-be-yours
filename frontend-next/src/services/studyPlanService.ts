@@ -87,7 +87,7 @@ class StudyPlanService {
      * Create a new personalized study plan
      */
     async createPlan(request: CreatePlanRequest): Promise<{ id: string; message: string; target_level: string; total_days: number }> {
-        const res = await fetch(`${API_BASE_URL}/v1/study-plan/plans`, {
+        const res = await authFetch(`${API_BASE_URL}/v1/study-plan/plans`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(request),
@@ -120,7 +120,7 @@ class StudyPlanService {
      * Get detailed plan information
      */
     async getPlan(planId: string): Promise<StudyPlanDetail> {
-        const res = await fetch(`${API_BASE_URL}/v1/study-plan/plans/${planId}`);
+        const res = await authFetch(`${API_BASE_URL}/v1/study-plan/plans/${planId}`);
         return this.handleResponse<StudyPlanDetail>(res);
     }
 
@@ -128,7 +128,7 @@ class StudyPlanService {
      * Update plan settings
      */
     async updatePlan(planId: string, updates: Partial<StudyPlanSettings & { status: string }>): Promise<{ message: string }> {
-        const res = await fetch(`${API_BASE_URL}/v1/study-plan/plans/${planId}`, {
+        const res = await authFetch(`${API_BASE_URL}/v1/study-plan/plans/${planId}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updates),
@@ -140,7 +140,7 @@ class StudyPlanService {
      * Abandon/delete a study plan
      */
     async deletePlan(planId: string): Promise<{ message: string }> {
-        const res = await fetch(`${API_BASE_URL}/v1/study-plan/plans/${planId}`, {
+        const res = await authFetch(`${API_BASE_URL}/v1/study-plan/plans/${planId}`, {
             method: 'DELETE',
         });
         return this.handleResponse(res);
@@ -154,7 +154,7 @@ class StudyPlanService {
      * Get milestone details
      */
     async getMilestone(milestoneId: string): Promise<any> {
-        const res = await fetch(`${API_BASE_URL}/v1/study-plan/milestones/${milestoneId}`);
+        const res = await authFetch(`${API_BASE_URL}/v1/study-plan/milestones/${milestoneId}`);
         return this.handleResponse(res);
     }
 
@@ -162,7 +162,7 @@ class StudyPlanService {
      * Mark milestone as complete
      */
     async completeMilestone(milestoneId: string): Promise<{ message: string }> {
-        const res = await fetch(`${API_BASE_URL}/v1/study-plan/milestones/${milestoneId}/complete`, {
+        const res = await authFetch(`${API_BASE_URL}/v1/study-plan/milestones/${milestoneId}/complete`, {
             method: 'PATCH',
         });
         return this.handleResponse(res);
@@ -179,7 +179,7 @@ class StudyPlanService {
         const params = new URLSearchParams({ user_id: userId });
         if (date) params.append('date', date);
 
-        const res = await fetch(`${API_BASE_URL}/v1/study-plan/daily-tasks?${params}`);
+        const res = await authFetch(`${API_BASE_URL}/v1/study-plan/daily-tasks?${params}`);
         return this.handleResponse<DailyTasksResponse>(res);
     }
 
@@ -196,7 +196,7 @@ class StudyPlanService {
      * Mark a task as complete
      */
     async completeTask(taskId: string, score?: number): Promise<{ message: string }> {
-        const res = await fetch(`${API_BASE_URL}/v1/study-plan/daily-tasks/${taskId}/complete`, {
+        const res = await authFetch(`${API_BASE_URL}/v1/study-plan/daily-tasks/${taskId}/complete`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ score }),
@@ -212,7 +212,7 @@ class StudyPlanService {
      * Get detailed progress report
      */
     async getProgress(planId: string): Promise<PlanProgressReport> {
-        const res = await fetch(`${API_BASE_URL}/v1/study-plan/progress/${planId}`);
+        const res = await authFetch(`${API_BASE_URL}/v1/study-plan/progress/${planId}`);
         return this.handleResponse<PlanProgressReport>(res);
     }
 
@@ -278,7 +278,7 @@ class StudyPlanService {
             message: string;
         }>;
     }> {
-        const res = await fetch(`${API_BASE_URL}/v1/study-plan/plans/${planId}/health`);
+        const res = await authFetch(`${API_BASE_URL}/v1/study-plan/plans/${planId}/health`);
         return this.handleResponse(res);
     }
 
@@ -300,7 +300,7 @@ class StudyPlanService {
             body.exam_date = newExamDate.toISOString();
         }
 
-        const res = await fetch(`${API_BASE_URL}/v1/study-plan/plans/${planId}/recalculate`, {
+        const res = await authFetch(`${API_BASE_URL}/v1/study-plan/plans/${planId}/recalculate`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body),
@@ -323,7 +323,7 @@ class StudyPlanService {
         criteria_updated: string[];
         completed: boolean;
     }> {
-        const res = await fetch(`${API_BASE_URL}/v1/study-plan/plans/${planId}/quiz-update`, {
+        const res = await authFetch(`${API_BASE_URL}/v1/study-plan/plans/${planId}/quiz-update`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(quizResult),
@@ -343,7 +343,7 @@ class StudyPlanService {
         new_progress?: number;
         message?: string;
     }> {
-        const res = await fetch(`${API_BASE_URL}/v1/study-plan/srs-update`, {
+        const res = await authFetch(`${API_BASE_URL}/v1/study-plan/srs-update`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ user_id: userId, ...srsStats }),
