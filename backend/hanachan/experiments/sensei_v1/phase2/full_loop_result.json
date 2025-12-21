@@ -1,0 +1,82 @@
+{
+  "user_id": "student_01",
+  "dashboard_snapshot": {
+    "priority": {
+      "red": [
+        {
+          "content_id": "vocab_n3_101",
+          "name": "Kaizen",
+          "error_rate": 0.45,
+          "trend": "worsening"
+        },
+        {
+          "content_id": "grammar_n3_55",
+          "name": "~te mo ii",
+          "error_rate": 0.5,
+          "trend": "stable"
+        }
+      ],
+      "yellow": [
+        {
+          "content_id": "vocab_n3_202",
+          "name": "Sensei",
+          "error_rate": 0.2,
+          "trend": "improving"
+        }
+      ],
+      "green": [
+        {
+          "content_id": "vocab_n3_303",
+          "name": "Gakkou",
+          "error_rate": 0.05,
+          "trend": "stable"
+        }
+      ]
+    },
+    "mood": {
+      "user_id": "student_01",
+      "energy_level": 3,
+      "mood": "undecided",
+      "last_checkin": "2023-10-27T09:00:00Z",
+      "note": "Feeling a bit overwhelmed with the new grammar points."
+    },
+    "okr": {
+      "objectives": [
+        {
+          "id": "okr_01",
+          "title": "Pass JLPT N3 with High Score",
+          "current_progress": 0.47,
+          "key_results": [
+            {
+              "label": "Master 3000 Vocabulary Words",
+              "current": 1240,
+              "target": 3000
+            },
+            {
+              "label": "Master 120 Grammar Patterns",
+              "current": 65,
+              "target": 120
+            }
+          ],
+          "deadline": "2023-12-01"
+        }
+      ]
+    }
+  },
+  "analyst_result": {
+    "action": "flag_critical_gap",
+    "content_id": "vocab_n3_101",
+    "reasoning": "The item 'Kaizen' has an error rate of 45% (>40%) and a worsening trend, meeting the critical threshold for immediate intervention."
+  },
+  "coach_result": {
+    "action": "set_session_intensity",
+    "intensity": "low",
+    "message_for_user": "I'm sorry to hear you're feeling overwhelmed. Let's take a gentle approach to keep your energy levels up. Let me know if you'd like to adjust the pace or if there's anything else I can do to support you."
+  },
+  "planner_result": {
+    "action": "suggest_milestone_adjustment",
+    "is_urgent": false,
+    "proposal": "Prioritize mastering 'Kaizen' with a focused 3-day study plan (e.g., 2 hours/day) to address the 45% error rate and worsening trend. Allocate 2 days to review core vocabulary concepts and 1 day to practice drills. Adjust the OKR milestone to balance vocabulary mastery with other goals, ensuring 100% completion for the critical gap before advancing."
+  },
+  "final_plan": "\n    ### SENSEI'S SESSION PLAN ###\n    \n    Status: ON TRACK\n    Focus: vocab_n3_101\n    Intensity: LOW\n    \n    Message: I'm sorry to hear you're feeling overwhelmed. Let's take a gentle approach to keep your energy levels up. Let me know if you'd like to adjust the pace or if there's anything else I can do to support you.\n    \n    Strategic Proposal: Prioritize mastering 'Kaizen' with a focused 3-day study plan (e.g., 2 hours/day) to address the 45% error rate and worsening trend. Allocate 2 days to review core vocabulary concepts and 1 day to practice drills. Adjust the OKR milestone to balance vocabulary mastery with other goals, ensuring 100% completion for the critical gap before advancing.\n    "
+}
