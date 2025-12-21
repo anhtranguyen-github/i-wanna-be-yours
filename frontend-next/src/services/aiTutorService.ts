@@ -81,7 +81,10 @@ class AITutorService {
             headers: this.getHeaders()
         });
 
-        if (!res.ok) throw new Error('Failed to fetch history');
+        if (!res.ok) {
+            const errData = await res.json().catch(() => ({}));
+            throw new Error(errData.error || `Failed to fetch history (${res.status})`);
+        }
         const data = await res.json();
 
         const messages: Message[] = (data.history || []).map((m: any) => this.mapMessage(m));

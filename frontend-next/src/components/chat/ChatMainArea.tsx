@@ -257,15 +257,18 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
                         artifacts: m.artifacts
                     }));
                     setMessages(mappedMessages);
-                } catch (err) {
+                } catch (err: any) {
                     console.error("Failed to fetch history:", err);
+                    // DEBUG: Alert the error message
+                    alert(`Failed to load chat: ${err.message}`);
+
                     // If history fetch fails (likely 403/404), redirect to new chat to avoid stuck state
                     setMessages([]);
-                    setIsRedirecting(true);
+                    // setIsRedirecting(true);
                     // Force hard redirect to break any client-side routing loops
-                    if (typeof window !== 'undefined') {
-                        window.location.href = '/chat';
-                    }
+                    // if (typeof window !== 'undefined') {
+                    //    window.location.href = '/chat';
+                    // }
                 } finally {
                     setIsHistoryLoading(false);
                 }
