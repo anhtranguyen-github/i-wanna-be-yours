@@ -10,17 +10,19 @@ import {
     TrendingUp, BookOpen, Sparkles, Award, Lock,
     BarChart3, Activity, Zap, History, PieChart,
     ChevronDown, ChevronUp, Share2, Filter, Search,
-    AlertTriangle, Brain
+    AlertTriangle, Brain, ArrowRight
 } from 'lucide-react';
 import {
     StudyPlanDetail,
     DailyTask,
     JLPT_LEVEL_INFO,
+    JLPTLevel,
     Milestone,
     FrameworkStats,
     SMARTGoal,
     PACTStat
 } from '@/types/studyPlanTypes';
+import { PlanCheckoutModal } from '@/components/strategy/PlanCheckoutModal';
 import studyPlanService from '@/services/studyPlanService';
 import learnerProgressService from '@/services/learnerProgressService';
 import { strategyService } from '@/services/strategyService';
@@ -92,6 +94,9 @@ function DashboardContent() {
     const [selectedSMARTGoal, setSelectedSMARTGoal] = useState<SMARTGoalEnhanced | null>(null);
     const [showSMARTModal, setShowSMARTModal] = useState(false);
     const [showContextModal, setShowContextModal] = useState(false);
+    const [creating, setCreating] = useState(false);
+    const [showCheckout, setShowCheckout] = useState(false);
+    const [checkoutData, setCheckoutData] = useState<any>(null);
 
     // Mock/derived data for strategic pillars (since backend doesn't have it yet)
     const getFrameworkStats = (planData: StudyPlanDetail): FrameworkStats => {
@@ -153,7 +158,52 @@ function DashboardContent() {
             return;
         }
         if (user) loadData();
+
+        // Check for pending guest setup
+        if (!userLoading && user) {
+            const pendingSetup = localStorage.getItem('pending_study_plan_setup');
+            if (pendingSetup) {
+                try {
+                    const data = JSON.parse(pendingSetup);
+                    setCheckoutData(data);
+                    setShowCheckout(true);
+                    // We don't clear yet - only after successful creation
+                } catch (e) {
+                    console.error('Failed to parse pending setup', e);
+                    localStorage.removeItem('pending_study_plan_setup');
+                }
+            }
+        }
     }, [user, userLoading]);
+
+    const handleConfirmCheckout = async () => {
+        if (!checkoutData) return;
+
+        try {
+            setCreating(true);
+            const result = await studyPlanService.createMyPlan(
+                checkoutData.targetLevel,
+                new Date(checkoutData.examDate),
+                {
+                    daily_study_minutes: checkoutData.dailyMinutes,
+                    study_days_per_week: checkoutData.studyDays,
+                    preferred_focus: checkoutData.focusAreas,
+                }
+            );
+
+            localStorage.removeItem('pending_study_plan_setup');
+            setShowCheckout(false);
+            setShowNewPlanBanner(true);
+
+            // Reload dashboard with the new plan
+            router.push(`/study-plan/dashboard?plan=${result.id}&new=true`);
+            loadData();
+        } catch (err: any) {
+            setError(err.message || 'Failed to create plan');
+        } finally {
+            setCreating(false);
+        }
+    };
 
     const loadData = async () => {
         if (!user) return;
@@ -204,7 +254,10 @@ function DashboardContent() {
                         progress: g.progress_percent || 0,
                         status: g.status || 'active',
                         linked_jlpt_level: planData.target_level || 'N3',
-                        ai_confidence_score: 85,
+                        ai_confidence_score: g.ai_confidence_score || 85,
+                        baseline_score: g.measurable_baseline || 0,
+                        target_score: g.measurable_target || 100,
+                        ai_recommended_adjustments: g.ai_recommended_adjustments || [],
                         success_criteria: (g.success_criteria || []).map((sc: any) => ({
                             id: sc.id || String(Math.random()),
                             label: sc.description || 'Success Metric',
@@ -231,7 +284,8 @@ function DashboardContent() {
                             trend: kr.trend || 'stable',
                             velocity: kr.velocity || 0,
                             confidence: kr.confidence || 70,
-                            contributing_task_types: kr.contributing_task_types || ['study', 'practice']
+                            contributing_task_types: kr.contributing_task_types || ['study', 'practice'],
+                            items: kr.items || []
                         }))
                     })));
                 }
@@ -404,9 +458,74 @@ function DashboardContent() {
             </div>
 
             <main className="max-w-7xl mx-auto px-6 py-8">
-                {/* STRATEGY TAB - Enhanced with new components */}
+                {/* STRATEGY TAB - Enhanced with Contextual Narrative Hero */}
                 {activeTab === 'STRATEGY' && (
                     <div className="space-y-8 animate-fadeIn">
+                        {/* Narrative Hero Area */}
+                        <div className="relative overflow-hidden bg-brand-dark rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl">
+                            <div className="absolute top-0 right-0 w-96 h-96 bg-brand-salmon/20 rounded-full blur-[100px] -mr-48 -mt-48" />
+                            <div className="absolute bottom-0 left-0 w-64 h-64 bg-brand-sky/10 rounded-full blur-[80px] -ml-32 -mb-32" />
+
+                            <div className="relative z-10 grid lg:grid-cols-12 gap-12 items-center">
+                                <div className="lg:col-span-8 space-y-6">
+                                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full text-brand-salmon font-black text-xs uppercase tracking-widest">
+                                        <Sparkles size={14} className="animate-pulse" />
+                                        Sensei's Directive
+                                    </div>
+
+                                    <h2 className="text-4xl md:text-5xl font-black leading-tight tracking-tight">
+                                        {Math.round(plan.overall_progress_percent) < 10 ? (
+                                            <>The Journey <span className="text-brand-salmon">Begins Today.</span></>
+                                        ) : Math.round(plan.overall_progress_percent) > 80 ? (
+                                            <>Certification is <span className="text-brand-green">In Sight.</span></>
+                                        ) : (
+                                            <>Your Momentum is <span className="text-brand-sky">Building.</span></>
+                                        )}
+                                    </h2>
+
+                                    <p className="text-xl text-slate-300 font-medium leading-relaxed max-w-2xl">
+                                        {Math.round(plan.overall_progress_percent) < 10
+                                            ? "Welcome to your command center. Your first objective is to establish a rhythm. Study for 30 minutes today to lock in your initial PACT consistency."
+                                            : `You are ${Math.round(plan.overall_progress_percent)}% through your N${plan.target_level} mission. Focus on your Red-Zone priorities in the Diagnostics tab to maximize your score growth.`
+                                        }
+                                    </p>
+
+                                    <div className="flex flex-wrap gap-4 pt-4">
+                                        <button
+                                            onClick={() => setActiveTab('TASKS')}
+                                            className="px-8 py-4 bg-brand-salmon hover:bg-brand-salmon/90 text-white rounded-2xl font-black transition-all flex items-center gap-3 shadow-xl shadow-brand-salmon/20 group"
+                                        >
+                                            Resume Study
+                                            <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                                        </button>
+                                        <button
+                                            onClick={() => setActiveTab('DIAGNOSTICS')}
+                                            className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white border border-white/10 rounded-2xl font-black transition-all"
+                                        >
+                                            View Diagnostics
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="lg:col-span-4 hidden lg:block">
+                                    <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-6 shadow-2xl transform rotate-3">
+                                        <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Strategic Tip</p>
+                                        <p className="text-lg font-bold leading-relaxed mb-4">
+                                            "OKRs track the mountain peak; PACT actions are the steps you take to get there."
+                                        </p>
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-full bg-brand-salmon flex items-center justify-center font-black">H</div>
+                                            <div>
+                                                <p className="text-sm font-black">Hanachan Sensei</p>
+                                                <p className="text-xs text-slate-500">Language Architect</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Rest of Strategy Tab */}
                         {/* Quick Stats Row */}
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             <StatCard
@@ -464,6 +583,10 @@ function DashboardContent() {
                             badge={okrs.length}
                             helpTitle={HELP_CONTENT.okr_framework.title}
                             helpContent={HELP_CONTENT.okr_framework.content}
+                            coachExplainer={Math.round(plan.overall_progress_percent) < 10
+                                ? "Use OKRs to define your high-level destination. Don't worry about daily tasks yet—focus on what 'Success' looks like in 3 months."
+                                : "Your OKRs are moving! If a Key Result is lagging, consider breaking it down into a specific SMART goal below."
+                            }
                         >
                             <div className="grid md:grid-cols-2 gap-4 mt-4">
                                 {okrs.map(okr => (
@@ -523,6 +646,7 @@ function DashboardContent() {
                                 matrix={matrix}
                                 onItemClick={(item) => console.log('Clicked item:', item)}
                                 onViewAll={(priority) => console.log('View all:', priority)}
+                                coachExplainer="The Priority Matrix represents your current knowledge landscape. Items in Red are bottlenecking your progress—tackle them first to see the largest gains in your retention score."
                             />
                         )}
 
@@ -879,13 +1003,28 @@ function DashboardContent() {
                 onClose={() => setShowSMARTModal(false)}
                 goal={selectedSMARTGoal}
             />
-
             <ContextCheckInModal
                 isOpen={showContextModal}
                 onClose={() => setShowContextModal(false)}
                 onSubmit={handleContextSubmit}
-                initialContext={pactState.last_context}
+                initialContext={pactState?.last_context}
             />
+
+            {checkoutData && (
+                <PlanCheckoutModal
+                    isOpen={showCheckout}
+                    onClose={() => setShowCheckout(false)}
+                    onConfirm={handleConfirmCheckout}
+                    planSummary={{
+                        targetLevel: checkoutData.targetLevel,
+                        examDate: new Date(checkoutData.examDate),
+                        dailyMinutes: checkoutData.dailyMinutes,
+                        studyDays: checkoutData.studyDays,
+                        focusAreas: checkoutData.focusAreas
+                    }}
+                    loading={creating}
+                />
+            )}
         </div>
     );
 }
