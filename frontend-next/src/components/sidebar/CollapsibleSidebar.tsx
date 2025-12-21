@@ -81,7 +81,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
     );
 
     // Deduplicate chats based on _id to prevent UI duplicates
-    const uniqueChats = chats
+    const uniqueChats = (chats && Array.isArray(chats))
         ? Array.from(new Map(chats.map((c: any) => [c._id, c])).values()) as any[]
         : [];
 

@@ -196,6 +196,7 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
     const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
     const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
     const [isDragging, setIsDragging] = useState(false);
+    const [isRedirecting, setIsRedirecting] = useState(false);
     // Local conversation ID for tracking after shallow URL update
     const [localConversationId, setLocalConversationId] = useState<string | null>(conversationId || null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -239,12 +240,14 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
     // Fetch history if conversationId is provided
     useEffect(() => {
         // Only fetch if we have a conversationId prop (not localConversationId from shallow update)
-        if (conversationId && user) {
+        if (conversationId && user && !isRedirecting) {
             // Normal fetch from backend
             const fetchHistory = async () => {
                 setIsHistoryLoading(true);
                 try {
                     const convo = await aiTutorService.getConversation(conversationId);
+                    if (isRedirecting) return;
+
                     setCurrentSessionId(convo.sessionId || null);
                     const mappedMessages: Message[] = convo.messages.map(m => ({
                         id: m.id,
@@ -258,14 +261,18 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
                     console.error("Failed to fetch history:", err);
                     // If history fetch fails (likely 403/404), redirect to new chat to avoid stuck state
                     setMessages([]);
-                    router.push('/chat');
+                    setIsRedirecting(true);
+                    // Force hard redirect to break any client-side routing loops
+                    if (typeof window !== 'undefined') {
+                        window.location.href = '/chat';
+                    }
                 } finally {
                     setIsHistoryLoading(false);
                 }
             };
             fetchHistory();
         }
-    }, [conversationId, user]);
+    }, [conversationId, user, isRedirecting]);
 
     useEffect(() => {
         console.log('[ChatMainArea] useEffect triggered, stagedResourceToProcess:', stagedResourceToProcess);
