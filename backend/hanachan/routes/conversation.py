@@ -35,7 +35,7 @@ def add_message(conversation_id):
     try:
         # Verify ownership
         conv = service.get_conversation_details(conversation_id)
-        if not conv or str(conv.get("user_id")) != str(user_id):
+        if not conv or str(conv.get("userId")) != str(user_id):
             return jsonify({"error": "Conversation not found or unauthorized"}), 404
 
         message = service.add_message(conversation_id, role, content, attachment_ids)
@@ -50,8 +50,8 @@ def get_conversation(conversation_id):
     service = ConversationService()
     conversation = service.get_conversation_details(conversation_id)
     if conversation:
-        if str(conversation.get("user_id")) != str(user_id):
-             return jsonify({"error": f"Unauthorized. Token User: {user_id} (Type: {type(user_id)}), Conv User: {conversation.get('user_id')} (Type: {type(conversation.get('user_id'))})"}), 403
+        if str(conversation.get("userId")) != str(user_id):
+             return jsonify({"error": "Unauthorized"}), 403
         return jsonify(conversation)
     return jsonify({"error": "Conversation not found"}), 404
 
