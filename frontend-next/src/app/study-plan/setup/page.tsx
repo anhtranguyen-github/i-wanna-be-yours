@@ -39,10 +39,13 @@ const getNextExamDates = (): Date[] => {
     return dates.slice(0, 4);
 };
 
+import { useStudyPlanStatus } from '@/hooks/useStudyPlanStatus';
+import { PlanCheckoutModal } from '@/components/strategy/PlanCheckoutModal';
+
 function SetupWizardContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { user, loading: userLoading } = useUser();
+    const { user, hasPlan, loading: statusLoading } = useStudyPlanStatus();
     const { openAuth } = useGlobalAuth();
 
     const [step, setStep] = useState(1);
@@ -57,11 +60,39 @@ function SetupWizardContent() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [creating, setCreating] = useState(false);
+    const [showCheckout, setShowCheckout] = useState(false);
 
     const nextExamDates = getNextExamDates();
 
-    // Check auth removed - allowing guests to browse wizard
+    // Redirect active users with a plan
+    useEffect(() => {
+        if (!statusLoading && user && hasPlan) {
+            router.push('/study-plan/dashboard');
+        }
+    }, [user, hasPlan, statusLoading, router]);
 
+    // Handle post-login checkout detection
+    useEffect(() => {
+        if (!statusLoading && user && !hasPlan) {
+            const pendingSetup = localStorage.getItem('pending_study_plan_setup');
+            if (pendingSetup) {
+                try {
+                    const data = JSON.parse(pendingSetup);
+                    setTargetLevel(data.targetLevel);
+                    setExamDate(new Date(data.examDate));
+                    setDailyMinutes(data.dailyMinutes);
+                    setStudyDays(data.studyDays);
+                    setFocusAreas(data.focusAreas);
+                    setShowCheckout(true);
+                    // Clear the flag so it doesn't pop up again unless they try again
+                    localStorage.removeItem('pending_study_plan_setup');
+                } catch (e) {
+                    console.error('Failed to parse pending setup', e);
+                    localStorage.removeItem('pending_study_plan_setup');
+                }
+            }
+        }
+    }, [user, hasPlan, statusLoading]);
     // Load template if provided
     useEffect(() => {
         const templateId = searchParams.get('template');
@@ -103,6 +134,16 @@ function SetupWizardContent() {
         }
 
         if (!user) {
+            // Save setup to local storage for recovery after login
+            const setupData = {
+                targetLevel,
+                examDate: examDate.toISOString(),
+                dailyMinutes,
+                studyDays,
+                focusAreas
+            };
+            localStorage.setItem('pending_study_plan_setup', JSON.stringify(setupData));
+
             // Trigger contextual auth for Study Plan
             openAuth('REGISTER', {
                 flowType: 'STUDY_PLAN',
@@ -130,6 +171,7 @@ function SetupWizardContent() {
         } catch (err: any) {
             setError(err.message || 'Failed to create plan');
             setCreating(false);
+            setShowCheckout(false);
         }
     };
 
@@ -150,7 +192,7 @@ function SetupWizardContent() {
         if (step > 1) setStep(step - 1);
     };
 
-    if (userLoading) {
+    if (statusLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-slate-50">
                 <Loader2 className="w-8 h-8 animate-spin text-brand-salmon" />
@@ -528,6 +570,23 @@ function SetupWizardContent() {
                         )}
                     </div>
                 </div>
+
+                {/* Post-Login Confirmation Modal */}
+                {targetLevel && examDate && (
+                    <PlanCheckoutModal
+                        isOpen={showCheckout}
+                        onClose={() => setShowCheckout(false)}
+                        onConfirm={handleCreatePlan}
+                        planSummary={{
+                            targetLevel,
+                            examDate,
+                            dailyMinutes,
+                            studyDays,
+                            focusAreas
+                        }}
+                        loading={creating}
+                    />
+                )}
             </div>
         </div>
     );
