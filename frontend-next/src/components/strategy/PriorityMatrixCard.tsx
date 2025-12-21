@@ -59,10 +59,11 @@ export function PriorityMatrixCard({
     };
 
     const groupedItems = React.useMemo(() => {
+        const items = matrix.content_items || [];
         return {
-            red: matrix.content_items.filter(i => i.priority === 'red'),
-            yellow: matrix.content_items.filter(i => i.priority === 'yellow'),
-            green: matrix.content_items.filter(i => i.priority === 'green'),
+            red: items.filter(i => i.priority === 'red'),
+            yellow: items.filter(i => i.priority === 'yellow'),
+            green: items.filter(i => i.priority === 'green'),
         };
     }, [matrix.content_items]);
 
@@ -94,7 +95,7 @@ export function PriorityMatrixCard({
                                 matrix.today_focus === 'drill_practice' ? 'bg-amber-100 text-amber-700' :
                                     'bg-emerald-100 text-emerald-700'
                         )}>
-                            {matrix.today_focus.replace('_', ' ').toUpperCase()}
+                            {(matrix.today_focus || 'drill_practice').replace('_', ' ').toUpperCase()}
                         </span>
                     </div>
                 </div>
@@ -107,21 +108,21 @@ export function PriorityMatrixCard({
                     <div className="h-3 rounded-full overflow-hidden flex">
                         <div
                             className="bg-red-500 flex items-center justify-center"
-                            style={{ width: `${(matrix.today_time_allocation.red_minutes / (matrix.today_time_allocation.red_minutes + matrix.today_time_allocation.yellow_minutes + matrix.today_time_allocation.green_minutes)) * 100}%` }}
+                            style={{ width: `${((matrix.today_time_allocation?.red_minutes || 0) / ((matrix.today_time_allocation?.red_minutes || 0) + (matrix.today_time_allocation?.yellow_minutes || 0) + (matrix.today_time_allocation?.green_minutes || 0) || 1)) * 100}%` }}
                         >
-                            <span className="text-[9px] text-white font-bold">{matrix.today_time_allocation.red_minutes}m</span>
+                            <span className="text-[9px] text-white font-bold">{matrix.today_time_allocation?.red_minutes || 0}m</span>
                         </div>
                         <div
                             className="bg-amber-500 flex items-center justify-center"
-                            style={{ width: `${(matrix.today_time_allocation.yellow_minutes / (matrix.today_time_allocation.red_minutes + matrix.today_time_allocation.yellow_minutes + matrix.today_time_allocation.green_minutes)) * 100}%` }}
+                            style={{ width: `${((matrix.today_time_allocation?.yellow_minutes || 0) / ((matrix.today_time_allocation?.red_minutes || 0) + (matrix.today_time_allocation?.yellow_minutes || 0) + (matrix.today_time_allocation?.green_minutes || 0) || 1)) * 100}%` }}
                         >
-                            <span className="text-[9px] text-white font-bold">{matrix.today_time_allocation.yellow_minutes}m</span>
+                            <span className="text-[9px] text-white font-bold">{matrix.today_time_allocation?.yellow_minutes || 0}m</span>
                         </div>
                         <div
                             className="bg-emerald-500 flex items-center justify-center"
-                            style={{ width: `${(matrix.today_time_allocation.green_minutes / (matrix.today_time_allocation.red_minutes + matrix.today_time_allocation.yellow_minutes + matrix.today_time_allocation.green_minutes)) * 100}%` }}
+                            style={{ width: `${((matrix.today_time_allocation?.green_minutes || 0) / ((matrix.today_time_allocation?.red_minutes || 0) + (matrix.today_time_allocation?.yellow_minutes || 0) + (matrix.today_time_allocation?.green_minutes || 0) || 1)) * 100}%` }}
                         >
-                            <span className="text-[9px] text-white font-bold">{matrix.today_time_allocation.green_minutes}m</span>
+                            <span className="text-[9px] text-white font-bold">{matrix.today_time_allocation?.green_minutes || 0}m</span>
                         </div>
                     </div>
                 </div>
@@ -133,9 +134,9 @@ export function PriorityMatrixCard({
                     Skill Priorities
                 </p>
                 <div className="flex flex-wrap gap-2">
-                    {matrix.skills.map((skill) => {
+                    {(matrix.skills || []).map((skill) => {
                         const Icon = skillIcons[skill.skill] || BookOpen;
-                        const config = priorityConfig[skill.priority];
+                        const config = priorityConfig[skill.priority] || priorityConfig.yellow;
                         return (
                             <div
                                 key={skill.skill}

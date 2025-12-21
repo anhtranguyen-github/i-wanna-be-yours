@@ -29,7 +29,7 @@ export const strategyService = {
         user_id: string;
         content_type: string;
         content_id: string;
-        is_correct: bool;
+        is_correct: boolean;
         difficulty: string;
         interaction_type?: string;
     }) => {
@@ -94,12 +94,17 @@ export const strategyService = {
         });
         return res.json();
     },
-    completePactAction: async (actionId: string, data: any) => {
+    completePactAction: async (actionId: string, userId: string, data: any) => {
         const res = await fetch(`${API_BASE_URL}/pact/actions/${actionId}/complete`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
+            body: JSON.stringify({ ...data, user_id: userId })
         });
+        return res.json();
+    },
+
+    getPactDailyStatus: async (userId: string) => {
+        const res = await fetch(`${API_BASE_URL}/pact/daily-status?user_id=${userId}`);
         return res.json();
     },
 

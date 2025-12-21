@@ -22,6 +22,8 @@ import {
     PACTStat
 } from '@/types/studyPlanTypes';
 import studyPlanService from '@/services/studyPlanService';
+import learnerProgressService from '@/services/learnerProgressService';
+import { strategyService } from '@/services/strategyService';
 import { useGlobalAuth } from '@/context/GlobalAuthContext';
 import {
     ResponsiveContainer,
@@ -58,7 +60,10 @@ import {
     mockPACT,
     mockPriorityMatrix,
     SMARTGoalEnhanced,
-    ContextSnapshot
+    ContextSnapshot,
+    OKRGoalEnhanced,
+    PACTStatEnhanced,
+    PriorityMatrix
 } from '@/mocks/strategyMockData';
 
 type DashboardTab = 'STRATEGY' | 'PERFORMANCE' | 'TASKS' | 'DIAGNOSTICS';
@@ -71,18 +76,22 @@ function DashboardContent() {
 
     const [plan, setPlan] = useState<StudyPlanDetail | null>(null);
     const [tasks, setTasks] = useState<DailyTask[]>([]);
+    const [activities, setActivities] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [activeTab, setActiveTab] = useState<DashboardTab>('STRATEGY');
     const [showNewPlanBanner, setShowNewPlanBanner] = useState(false);
 
+    // Strategic data states
+    const [smartGoals, setSmartGoals] = useState<SMARTGoalEnhanced[]>([]);
+    const [okrs, setOkrs] = useState<OKRGoalEnhanced[]>([]);
+    const [pactState, setPactState] = useState<PACTStatEnhanced | null>(null);
+    const [matrix, setMatrix] = useState<PriorityMatrix | null>(null);
+
     // Modal states
     const [selectedSMARTGoal, setSelectedSMARTGoal] = useState<SMARTGoalEnhanced | null>(null);
     const [showSMARTModal, setShowSMARTModal] = useState(false);
     const [showContextModal, setShowContextModal] = useState(false);
-
-    // PACT state (for toggling actions)
-    const [pactState, setPactState] = useState(mockPACT);
 
     // Mock/derived data for strategic pillars (since backend doesn't have it yet)
     const getFrameworkStats = (planData: StudyPlanDetail): FrameworkStats => {
@@ -147,19 +156,117 @@ function DashboardContent() {
     }, [user, userLoading]);
 
     const loadData = async () => {
+        if (!user) return;
         try {
             setLoading(true);
             const planId = searchParams.get('plan');
             let planData = planId ? await studyPlanService.getPlan(planId) : await studyPlanService.getActivePlan();
 
             if (planData) {
-                // Decorate with framework stats for the UI
-                planData.framework_stats = getFrameworkStats(planData);
                 setPlan(planData);
-                const { tasks: dailyTasks } = await studyPlanService.getMyDailyTasks();
-                setTasks(dailyTasks);
+
+                // Fetch all tactical pillars in parallel
+                // Note: user.id is a number in UserContext, but APIs expect string ID
+                const uid = String(user.id);
+
+                const [
+                    tasksResponse,
+                    activitiesResponse,
+                    smartGoalsRes,
+                    okrsRes,
+                    pactRes,
+                    pactStatusRes,
+                    matrixRes
+                ] = await Promise.all([
+                    studyPlanService.getMyDailyTasks(),
+                    learnerProgressService.getMyActivities(10),
+                    strategyService.getSmartGoals(uid),
+                    strategyService.getOKRs(uid),
+                    strategyService.getPactCommitment(uid),
+                    strategyService.getPactDailyStatus(uid),
+                    strategyService.getPriorityMatrix(uid)
+                ]);
+
+                setTasks(tasksResponse.tasks || []);
+                setActivities(activitiesResponse.activities || []);
+
+                if (smartGoalsRes) {
+                    setSmartGoals(smartGoalsRes.map((g: any) => ({
+                        ...g,
+                        id: g._id || g.id,
+                        title: g.title || 'Untitled Goal',
+                        deadline: g.time_bound_deadline || new Date().toISOString(),
+                        specific: g.specific || 'No description provided',
+                        measurable: `Reach ${g.measurable_target} ${g.measurable_metric?.replace(/_/g, ' ')} from ${g.measurable_baseline}`,
+                        achievable: `High confidence based on recent performance`,
+                        relevant: `Critical for ${g.relevant_jlpt_section || 'JLPT Prep'}`,
+                        timeBound: `Deadline: ${new Date(g.time_bound_deadline).toLocaleDateString()}`,
+                        progress: g.progress_percent || 0,
+                        status: g.status || 'active',
+                        linked_jlpt_level: planData.target_level || 'N3',
+                        ai_confidence_score: 85,
+                        success_criteria: (g.success_criteria || []).map((sc: any) => ({
+                            id: sc.id || String(Math.random()),
+                            label: sc.description || 'Success Metric',
+                            current_value: sc.current_value || 0,
+                            target_value: sc.target_value || 100,
+                            unit: sc.metric_type || '',
+                            weight: 1
+                        }))
+                    })));
+                }
+
+                if (okrsRes) {
+                    setOkrs(okrsRes.map((o: any) => ({
+                        ...o,
+                        id: o._id || o.id,
+                        progress: o.progress_percent || 0,
+                        blockers: o.blockers || [],
+                        on_track: o.on_track ?? true,
+                        risk_level: o.risk_level || 'low',
+                        keyResults: (o.key_results || []).map((kr: any) => ({
+                            ...kr,
+                            id: kr.id || String(Math.random()),
+                            progress: kr.progress_percent || 0,
+                            trend: kr.trend || 'stable',
+                            velocity: kr.velocity || 0,
+                            confidence: kr.confidence || 70,
+                            contributing_task_types: kr.contributing_task_types || ['study', 'practice']
+                        }))
+                    })));
+                }
+
+                if (pactRes) {
+                    setPactState({
+                        ...pactRes,
+                        actions: (pactRes.actions || []).map((a: any) => ({
+                            ...a,
+                            completed_today: (pactStatusRes || []).some((s: any) => s.id === a.id && s.completed)
+                        })),
+                        streak_current: pactRes.streak_current || 0,
+                        last_context: pactRes.last_context || null
+                    });
+                }
+
+                if (matrixRes) {
+                    setMatrix({
+                        ...matrixRes,
+                        content_items: matrixRes.items || [],
+                        skills: matrixRes.skills || [
+                            { skill: 'vocabulary', priority: 'yellow', reason: 'Recent review focus', accuracy_trend: 5, last_assessed: new Date().toISOString() },
+                            { skill: 'grammar', priority: 'red', reason: 'Lower accuracy detected', accuracy_trend: -10, last_assessed: new Date().toISOString() }
+                        ],
+                        today_focus: matrixRes.today_focus || 'drill_practice',
+                        today_time_allocation: matrixRes.recommended_time_allocation || matrixRes.today_time_allocation || {
+                            red_minutes: 20,
+                            yellow_minutes: 15,
+                            green_minutes: 10
+                        }
+                    });
+                }
             }
         } catch (err: any) {
+            console.error('Error loading dashboard data:', err);
             setError(err.message || 'Failed to load study plan');
         } finally {
             setLoading(false);
@@ -178,20 +285,40 @@ function DashboardContent() {
         setShowSMARTModal(true);
     };
 
-    const handlePACTActionToggle = (actionId: string) => {
-        setPactState(prev => ({
-            ...prev,
-            actions: prev.actions.map(a =>
-                a.id === actionId ? { ...a, completed_today: !a.completed_today } : a
-            )
-        }));
+    const handlePACTActionToggle = async (actionId: string) => {
+        if (!user) return;
+        try {
+            // Optimistic update
+            setPactState(prev => prev ? ({
+                ...prev,
+                actions: (prev.actions || []).map(a =>
+                    a.id === actionId ? { ...a, completed_today: !a.completed_today } : a
+                )
+            }) : null);
+
+            await strategyService.completePactAction(actionId, String(user.id), {
+                energy_level: 7, // Default or from context
+                mood: 'focused'
+            });
+        } catch (err) {
+            console.error('Failed to toggle PACT action:', err);
+            // Revert on error could be added here
+        }
     };
 
-    const handleContextSubmit = (context: ContextSnapshot) => {
-        setPactState(prev => ({
-            ...prev,
-            last_context: context
-        }));
+    const handleContextSubmit = async (context: any) => {
+        if (!user) return;
+        try {
+            await strategyService.submitCheckin({
+                ...context,
+                user_id: String(user.id)
+            });
+            setShowContextModal(false);
+            // Refresh PACT state to show latest context if needed
+            loadData();
+        } catch (err) {
+            console.error('Failed to submit context:', err);
+        }
     };
 
     if (userLoading || loading) {
@@ -211,7 +338,6 @@ function DashboardContent() {
     if (!plan) return <NoPlanView user={user} openAuth={openAuth} />;
 
     const levelInfo = JLPT_LEVEL_INFO[plan.target_level];
-    const stats = plan.framework_stats!;
 
     return (
         <div className="min-h-screen bg-[#F8FAFC] pb-12">
@@ -307,7 +433,7 @@ function DashboardContent() {
                             />
                             <StatCard
                                 label="Study Streak"
-                                value={pactState.streak_current}
+                                value={pactState?.streak_current || 0}
                                 unit="days"
                                 icon={Zap}
                                 iconColor="text-orange-500"
@@ -318,7 +444,7 @@ function DashboardContent() {
                             />
                             <StatCard
                                 label="Vocab Mastered"
-                                value={stats.okr.key_results[0].current}
+                                value={okrs[0]?.keyResults[0]?.current || 0}
                                 unit="words"
                                 icon={BookOpen}
                                 iconColor="text-emerald-500"
@@ -335,12 +461,12 @@ function DashboardContent() {
                             subtitle="Long-term objectives and measurable key results"
                             icon={Target}
                             defaultOpen
-                            badge={mockOKRs.length}
+                            badge={okrs.length}
                             helpTitle={HELP_CONTENT.okr_framework.title}
                             helpContent={HELP_CONTENT.okr_framework.content}
                         >
                             <div className="grid md:grid-cols-2 gap-4 mt-4">
-                                {mockOKRs.map(okr => (
+                                {okrs.map(okr => (
                                     <OKRObjectiveCard
                                         key={okr.id}
                                         okr={okr}
@@ -353,12 +479,14 @@ function DashboardContent() {
                         {/* PACT & SMART Side by Side */}
                         <div className="grid lg:grid-cols-2 gap-8">
                             {/* PACT Daily Card */}
-                            <PACTDailyCard
-                                pact={pactState}
-                                onActionToggle={handlePACTActionToggle}
-                                onContextCheckIn={() => setShowContextModal(true)}
-                                onClick={() => {/* Could open PACT modal */ }}
-                            />
+                            {pactState && (
+                                <PACTDailyCard
+                                    pact={pactState}
+                                    onActionToggle={handlePACTActionToggle}
+                                    onContextCheckIn={() => setShowContextModal(true)}
+                                    onClick={() => {/* Could open PACT modal */ }}
+                                />
+                            )}
 
                             {/* SMART Goals */}
                             <div className="space-y-4">
@@ -371,7 +499,7 @@ function DashboardContent() {
                                         iconSize={14}
                                     />
                                 </div>
-                                {mockSMARTGoals.map(goal => (
+                                {smartGoals.map(goal => (
                                     <SMARTGoalCard
                                         key={goal.id}
                                         goal={goal}
@@ -390,12 +518,13 @@ function DashboardContent() {
                 {/* DIAGNOSTICS TAB - New! */}
                 {activeTab === 'DIAGNOSTICS' && (
                     <div className="space-y-8 animate-fadeIn">
-                        {/* Priority Matrix */}
-                        <PriorityMatrixCard
-                            matrix={mockPriorityMatrix}
-                            onItemClick={(item) => console.log('Clicked item:', item)}
-                            onViewAll={(priority) => console.log('View all:', priority)}
-                        />
+                        {matrix && (
+                            <PriorityMatrixCard
+                                matrix={matrix}
+                                onItemClick={(item) => console.log('Clicked item:', item)}
+                                onViewAll={(priority) => console.log('View all:', priority)}
+                            />
+                        )}
 
                         {/* Skill Breakdown */}
                         <div className="grid md:grid-cols-2 gap-8">
@@ -410,8 +539,8 @@ function DashboardContent() {
                                     />
                                 </div>
                                 <div className="space-y-3">
-                                    {mockPriorityMatrix.content_items
-                                        .filter(i => i.priority === 'red')
+                                    {matrix?.content_items
+                                        ?.filter(i => i.priority === 'red')
                                         .map(item => (
                                             <div key={item.content_id} className="p-4 bg-red-50 border border-red-200 rounded-xl">
                                                 <div className="flex items-center justify-between mb-2">
@@ -663,29 +792,30 @@ function DashboardContent() {
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-slate-50">
-                                            {[
-                                                { type: 'JLPT N2 Mock', intensity: 'High', output: 'Reading', score: '82%', date: '2023-12-19' },
-                                                { type: 'Grammar Particles', intensity: 'Med', output: 'Grammar', score: '95%', date: '2023-12-18' },
-                                                { type: 'Core 2K Deck', intensity: 'Low', output: 'Vocab', score: '100%', date: '2023-12-18' },
-                                                { type: 'Podcast Study', intensity: 'High', output: 'Listening', score: 'N/A', date: '2023-12-17' },
-                                                { type: 'Sentence Parser', intensity: 'Low', output: 'Reading', score: 'N/A', date: '2023-12-16' },
-                                                { type: 'Quiz: Verbs', intensity: 'Med', output: 'Grammar', score: '78%', date: '2023-12-15' },
-                                            ].map((row, i) => (
-                                                <tr key={i} className="group hover:bg-slate-50 transition-colors">
-                                                    <td className="py-4">
-                                                        <div className="flex items-center gap-3">
-                                                            <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-brand-dark text-xs font-black">#</div>
-                                                            <span className="font-bold text-brand-dark">{row.type}</span>
-                                                        </div>
+                                            {activities.length > 0 ? (
+                                                activities.map((row, i) => (
+                                                    <tr key={row.id || i} className="group hover:bg-slate-50 transition-colors">
+                                                        <td className="py-4">
+                                                            <div className="flex items-center gap-3">
+                                                                <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-brand-dark text-xs font-black">#</div>
+                                                                <span className="font-bold text-brand-dark">{row.type}</span>
+                                                            </div>
+                                                        </td>
+                                                        <td className="py-4">
+                                                            <span className={`px-2 py-0.5 rounded text-[10px] font-black ${row.intensity === 'High' ? 'bg-red-100 text-red-600' : row.intensity === 'Med' ? 'bg-amber-100 text-amber-600' : 'bg-green-100 text-green-600'}`}>{row.intensity}</span>
+                                                        </td>
+                                                        <td className="py-4 text-sm font-medium text-slate-500">{row.output}</td>
+                                                        <td className="py-4 text-sm font-black text-brand-dark">{row.score}</td>
+                                                        <td className="py-4 text-xs font-bold text-slate-400 text-right">{new Date(row.date).toLocaleDateString()}</td>
+                                                    </tr>
+                                                ))
+                                            ) : (
+                                                <tr>
+                                                    <td colSpan={5} className="py-8 text-center text-slate-400 italic font-medium">
+                                                        No tactical records found in the vault yet.
                                                     </td>
-                                                    <td className="py-4">
-                                                        <span className={`px-2 py-0.5 rounded text-[10px] font-black ${row.intensity === 'High' ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>{row.intensity}</span>
-                                                    </td>
-                                                    <td className="py-4 text-sm font-medium text-slate-500">{row.output}</td>
-                                                    <td className="py-4 text-sm font-black text-brand-dark">{row.score}</td>
-                                                    <td className="py-4 text-xs font-bold text-slate-400 text-right">{new Date(row.date).toLocaleDateString()}</td>
                                                 </tr>
-                                            ))}
+                                            )}
                                         </tbody>
                                     </table>
                                 </div>
