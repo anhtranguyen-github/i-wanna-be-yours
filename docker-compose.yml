@@ -10,7 +10,8 @@ services:
     ports:
       - '127.0.0.1:3000:3000'
     environment:
-      REACT_APP_HOST_IP: 'express-db'
+      - ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8888
+      - JWT_SECRET=your-development-secret-key
       EXPRESS_API_URL: 'http://express-db:8000'
       FLASK_API_URL: 'http://flask-dynamic-db:5100'
       DICTIONARY_API_URL: 'http://dictionary-db:5200'
@@ -40,7 +41,8 @@ services:
     ports:
       - '127.0.0.1:8000:8000'
     environment:
-      REACT_APP_HOST_IP: 'express-db'
+      - ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8888
+      - JWT_SECRET=your-development-secret-key
     restart: unless-stopped
     networks:
       - hanachan-network
@@ -51,6 +53,9 @@ services:
     image: coil/hanachan.org:flask-dynamic-db
     ports:
       - '127.0.0.1:5100:5100'
+    environment:
+      - ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8888
+      - JWT_SECRET=your-development-secret-key
     volumes:
       - ./user_db:/data/db
     restart: unless-stopped
@@ -63,8 +68,51 @@ services:
     image: coil/hanachan.org:dictionary-db
     ports:
       - '127.0.0.1:5200:5200'
+    environment:
+      - ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8888
     volumes:
       - './config_dummy.json:/app/config.json'
+    restart: unless-stopped
+    networks:
+      - hanachan-network
+
+  hanachan:
+    build:
+      context: ./backend/hanachan
+    image: coil/hanachan.org:hanachan
+    ports:
+      - '127.0.0.1:5400:5400'
+    environment:
+      - ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8888
+      - JWT_SECRET=your-development-secret-key
+      - DATABASE_URL=postgresql://hanachan:hanachan@hanachan-db:5432/hanachan_db
+    depends_on:
+      - hanachan-db
+    restart: unless-stopped
+    networks:
+      - hanachan-network
+
+  hanachan-db:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=hanachan
+      - POSTGRES_PASSWORD=hanachan
+      - POSTGRES_DB=hanachan_db
+    volumes:
+      - hanachan_postgres_data:/var/lib/postgresql/data
+    networks:
+      - hanachan-network
+
+  study-plan-service:
+    build:
+      context: ./backend/study-plan-service
+    image: coil/hanachan.org:study-plan-service
+    ports:
+      - '127.0.0.1:5500:5500'
+    environment:
+      - ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8888
+      - JWT_SECRET=your-development-secret-key
+      - MONGO_URI_FLASK=mongodb://flask-dynamic-db:27017/flaskFlashcardDB
     restart: unless-stopped
     networks:
       - hanachan-network
@@ -82,6 +130,7 @@ services:
 volumes:
   user_db:
   mysql_data:
+  hanachan_postgres_data:
 
 
 networks:
