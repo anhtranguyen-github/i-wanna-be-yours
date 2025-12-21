@@ -1,4 +1,5 @@
 from flask import request, jsonify
+import re
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 
@@ -24,11 +25,15 @@ class EmailWaitlist:
             data = request.get_json()
             email = data.get('email')
 
-            if not email:
+            if not email or not isinstance(email, str):
                 return jsonify({'error': 'Email is required'}), 400
 
+            # Simple email regex
+            if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+                return jsonify({'error': 'Invalid email format'}), 400
+
             # Save the email to the database
-            email_data = {'email': email}
+            email_data = {'email': str(email)[:255]}
             result = self.emails_collection.insert_one(email_data)
 
             return jsonify({'message': 'Email submitted successfully', 'id': str(result.inserted_id)}), 200

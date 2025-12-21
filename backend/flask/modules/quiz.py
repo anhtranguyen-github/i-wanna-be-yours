@@ -11,6 +11,7 @@ from flask import request, jsonify
 from pymongo import MongoClient
 from datetime import datetime, timedelta
 from bson.objectid import ObjectId
+from modules.auth import login_required
 
 # ----------------------------------------------------- #
 # Question Types and Scoring Rules
@@ -410,14 +411,16 @@ class QuizModule:
         # POST /v1/quizzes/<quiz_id>/submit - Submit quiz attempt
         # ----------------------------------------------------------------
         @app.route("/v1/quizzes/<quiz_id>/submit", methods=["POST"])
+        @login_required
         def submit_quiz(quiz_id):
+            user_id = request.user.get("userId") or request.user.get("id")
             try:
                 data = request.get_json()
                 
                 if not data:
                     return jsonify({"error": "No data provided"}), 400
                 
-                user_id = data.get("user_id")  # Optional for guests
+                # Use authenticated user_id
                 answers = data.get("answers", {})  # Dict: question_id -> answer
                 started_at = data.get("started_at")
                 
@@ -498,10 +501,10 @@ class QuizModule:
         # GET /v1/quiz-attempts - User's attempt history
         # ----------------------------------------------------------------
         @app.route("/v1/quiz-attempts", methods=["GET"])
+        @login_required
         def list_attempts():
+            user_id = request.user.get("userId") or request.user.get("id")
             try:
-                user_id = request.args.get("user_id")
-                
                 if not user_id:
                     return jsonify({"error": "user_id is required"}), 400
                 
@@ -547,12 +550,17 @@ class QuizModule:
         # GET /v1/quiz-attempts/<attempt_id> - Specific attempt details
         # ----------------------------------------------------------------
         @app.route("/v1/quiz-attempts/<attempt_id>", methods=["GET"])
+        @login_required
         def get_attempt(attempt_id):
+            user_id = request.user.get("userId") or request.user.get("id")
             try:
-                attempt = attempts_collection.find_one({"_id": ObjectId(attempt_id)})
+                attempt = attempts_collection.find_one({
+                    "_id": ObjectId(attempt_id),
+                    "user_id": user_id
+                })
                 
                 if not attempt:
-                    return jsonify({"error": "Attempt not found"}), 404
+                    return jsonify({"error": "Attempt not found or unauthorized"}), 404
                 
                 # Get quiz details
                 quiz = quizzes_collection.find_one({"_id": attempt.get("quiz_id")})
@@ -579,16 +587,16 @@ class QuizModule:
         # POST /v1/quizzes - Create custom quiz (authenticated)
         # ----------------------------------------------------------------
         @app.route("/v1/quizzes", methods=["POST"])
+        @login_required
         def create_quiz():
+            user_id = request.user.get("userId") or request.user.get("id")
             try:
                 data = request.get_json()
                 
                 if not data:
                     return jsonify({"error": "No data provided"}), 400
                 
-                author_id = data.get("author_id")
-                if not author_id:
-                    return jsonify({"error": "author_id is required"}), 400
+                author_id = user_id
                 
                 title = data.get("title", "Untitled Quiz")
                 description = data.get("description", "")

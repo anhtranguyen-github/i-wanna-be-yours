@@ -11,9 +11,12 @@ Deprecated modules moved to: modules/deprecated/
 
 import os
 import logging
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_pymongo import PyMongo
+from flask_talisman import Talisman
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 logging.basicConfig(
     level=logging.INFO,
@@ -22,12 +25,25 @@ logging.basicConfig(
 
 app = Flask(__name__)
 
-# CORS: Open completely for development
-CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+# Security Headers
+Talisman(app, force_https=False) # force_https=True in prod with proper certs
+
+# Rate Limiting
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["2000 per day", "100 per hour"],
+    storage_uri="memory://",
+)
+
+# CORS: Tighten origins
+allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
+CORS(app, resources={r"/*": {"origins": allowed_origins}}, supports_credentials=True)
 
 # Database configuration
-app.config["MONGO_URI_FLASKFLASHCARDDATABASE"] = "mongodb://localhost:27017/flaskFlashcardDB"
-mongo_flaskFlashcardDB = PyMongo(app, uri="mongodb://localhost:27017/flaskFlashcardDB")
+mongo_uri = os.getenv("MONGO_URI_FLASK", "mongodb://localhost:27017/flaskFlashcardDB")
+app.config["MONGO_URI_FLASKFLASHCARDDATABASE"] = mongo_uri
+mongo_flaskFlashcardDB = PyMongo(app, uri=mongo_uri)
 
 # ---------------------------------- Global vars ----------------------------------------------
 
@@ -98,4 +114,5 @@ resources_module.register_routes(app)
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=flask_port)
+    debug_mode = os.getenv("FLASK_DEBUG", "False").lower() in ("true", "1", "t")
+    app.run(debug=debug_mode, host="0.0.0.0", port=flask_port)

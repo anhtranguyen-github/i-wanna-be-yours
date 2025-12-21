@@ -8,6 +8,7 @@ from flask import request, jsonify, send_file
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 from werkzeug.utils import secure_filename
+from modules.auth import login_required
 
 class ResourcesModule:
     """
@@ -114,13 +115,14 @@ class ResourcesModule:
     def register_routes(self, app):
         
         @app.route("/v1/resources/upload", methods=["POST"])
+        @login_required
         def upload_resource():
+            user_id = request.user.get("userId") or request.user.get("id")
             try:
                 if 'file' not in request.files:
                     return jsonify({"error": "No file provided"}), 400
                 
                 file = request.files['file']
-                user_id = request.form.get('userId')
                 tags = request.form.getlist('tags') or [] # Handles x-www-form-urlencoded if multiple tags
                 # If passing JSON via form field, might need parsing. 
                 # Assuming simple form fields for tags: tags=a&tags=b
@@ -167,8 +169,9 @@ class ResourcesModule:
         
         
         @app.route("/v1/resources", methods=["GET"])
+        @login_required
         def list_resources():
-            user_id = request.args.get('userId')
+            user_id = request.user.get("userId") or request.user.get("id")
             resource_type = request.args.get('type')
             limit = int(request.args.get('limit', 50))
             offset = int(request.args.get('offset', 0))
@@ -205,10 +208,13 @@ class ResourcesModule:
         
         
         @app.route("/v1/resources/<id>", methods=["GET"])
+        @login_required
         def get_resource(id):
+            user_id = request.user.get("userId") or request.user.get("id")
             try:
                 resource = self.resources_collection.find_one({
                     "_id": ObjectId(id),
+                    "userId": user_id,
                     "deletedAt": None
                 })
                 if not resource:
@@ -232,10 +238,13 @@ class ResourcesModule:
         
         
         @app.route("/v1/resources/<id>/download", methods=["GET"])
+        @login_required
         def download_resource(id):
+            user_id = request.user.get("userId") or request.user.get("id")
             try:
                 resource = self.resources_collection.find_one({
                     "_id": ObjectId(id),
+                    "userId": user_id,
                     "deletedAt": None
                 })
                 if not resource:
@@ -255,20 +264,22 @@ class ResourcesModule:
         
         
         @app.route("/v1/resources/<id>", methods=["PUT"])
+        @login_required
         def update_resource(id):
+            user_id = request.user.get("userId") or request.user.get("id")
             try:
                 data = request.json or {}
                 
                 update_fields = {"updatedAt": datetime.now(timezone.utc)}
                 if "title" in data:
-                    update_fields["title"] = data["title"]
+                    update_fields["title"] = str(data["title"])
                 if "description" in data:
-                    update_fields["description"] = data["description"]
+                    update_fields["description"] = str(data["description"])
                 if "tags" in data:
-                    update_fields["tags"] = data["tags"]
+                    update_fields["tags"] = [str(t) for t in data["tags"]]
                 
                 result = self.resources_collection.update_one(
-                    {"_id": ObjectId(id), "deletedAt": None},
+                    {"_id": ObjectId(id), "userId": user_id, "deletedAt": None},
                     {"$set": update_fields}
                 )
                 
@@ -281,10 +292,13 @@ class ResourcesModule:
         
         
         @app.route("/v1/resources/<id>", methods=["DELETE"])
+        @login_required
         def delete_resource(id):
+            user_id = request.user.get("userId") or request.user.get("id")
             try:
                 resource = self.resources_collection.find_one({
                     "_id": ObjectId(id),
+                    "userId": user_id,
                     "deletedAt": None
                 })
                 if not resource:
@@ -302,9 +316,10 @@ class ResourcesModule:
         
         
         @app.route("/v1/resources/search", methods=["GET"])
+        @login_required
         def search_resources():
+            user_id = request.user.get("userId") or request.user.get("id")
             query_text = request.args.get('q', '')
-            user_id = request.args.get('userId')
             
             if not query_text:
                 return jsonify({"resources": []}), 200

@@ -7,6 +7,8 @@ from pymongo import MongoClient
 from datetime import datetime, timedelta
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
+from modules.auth import login_required, JWT_SECRET
+import jwt
 
 
 # ----------------------------------------------------- #
@@ -112,6 +114,7 @@ class FlashcardModule:
         # POST endpoint to retrieve and clone a collection from sourceDB to flashcardDB
         # we clone only given kanji and specific tags, and then we add SRS specific info - difficulty and so on
         @app.route("/v1/clone-static-collection-kanji", methods=["POST"])
+        @login_required
         def clone_static_collection_kanji():
             """clones static collection from static db calling static api endpoint
             static prod endpoint runs typically on port 8000
@@ -156,7 +159,7 @@ class FlashcardModule:
 
             try:
                 data = request.json
-                user_id = data["userId"]
+                user_id = request.user.get("userId") or request.user.get("id")
                 collection_name = data[
                     "collection"
                 ]  # The name of the source collection, e.g., -d '{"collection": "kanji"}'
@@ -241,6 +244,7 @@ class FlashcardModule:
         # POST endpoint to retrieve and clone a collection from sourceDB to flashcardDB
         # we clone only given kanji and specific tags, and then we add SRS specific info - difficulty and so on
         @app.route("/v1/clone-static-collection-words", methods=["POST"])
+        @login_required
         def clone_static_collection_words():
             """clones static collection from static db calling static api endpoint
             static prod endpoint runs typically on port 8000
@@ -294,7 +298,7 @@ class FlashcardModule:
 
             try:
                 data = request.json
-                user_id = data["userId"]
+                user_id = request.user.get("userId") or request.user.get("id")
                 collection_name = data[
                     "collection"
                 ]  # The name of the flashcard collection, e.g., -d '{"collection": "words"}'
@@ -383,6 +387,7 @@ class FlashcardModule:
         # curl -X POST http://localhost:5100/v1/combine-flashcard-data -H "Content-Type: application/json" -d '{"userId": "testUser", "collectionName": "kanji", "p_tag": "JLPT_N3", "s_tag": "part_1"}'
         # curl -X GET -H "Content-Type: application/json" "http://localhost:5100/v1/combine-flashcard-data?userId=testUser&collectionName=kanji&p_tag=JLPT_N3&s_tag=part_1"
         @app.route("/v1/combine-flashcard-data-kanji", methods=["GET", "POST"])
+        @login_required
         def combine_flashcard_data_kanji():
             try:
                 # Determine the request method and extract parameters accordingly
@@ -394,7 +399,7 @@ class FlashcardModule:
                     data = request.args.to_dict()  # Convert ImmutableMultiDict to dict
 
                 # Validate required parameters
-                user_id = data.get("userId")
+                user_id = request.user.get("userId") or request.user.get("id")
                 collection_name = data.get("collectionName")
                 p_tag = data.get("p_tag")
                 s_tag = data.get("s_tag")
@@ -465,6 +470,7 @@ class FlashcardModule:
         # curl -X POST http://localhost:5100/v1/combine-flashcard-data-words -H "Content-Type: application/json" -d '{"userId": "testUser", "collectionName": "words", "p_tag": "essential_600_verbs", "s_tag": "verbs-1"}'
         # curl -X GET -H "Content-Type: application/json" "http://localhost:5100/v1/combine-flashcard-data-words?userId=testUser&collectionName=words&p_tag=essential_600_verbs&s_tag=verbs-1"
         @app.route("/v1/combine-flashcard-data-words", methods=["GET", "POST"])
+        @login_required
         def combine_flashcard_data_words():
             try:
                 # Determine the request method and extract parameters accordingly
@@ -476,7 +482,7 @@ class FlashcardModule:
                     data = request.args.to_dict()  # Convert ImmutableMultiDict to dict
 
                 # Validate required parameters
-                user_id = data.get("userId")
+                user_id = request.user.get("userId") or request.user.get("id")
                 collection_name = data.get("collectionName")
                 p_tag = data.get("p_tag")
                 s_tag = data.get("s_tag")
@@ -570,6 +576,7 @@ class FlashcardModule:
         #       -d '{"userId": "testUser", "collection": "grammars", "p_tag": "JLPT_N3"}'  # only p_tag
 
         @app.route("/v1/clone-static-collection-grammars", methods=["POST"])
+        @login_required
         def clone_static_collection_grammars():
             """
             Clones static grammar collection from the static DB into the user's flashcard DB.
@@ -583,10 +590,12 @@ class FlashcardModule:
 
             try:
                 data = request.json
-                user_id = data["userId"]
-                collection_name = data["collection"]  # e.g. "grammars"
-                p_tag = data.get("p_tag", None)
-                s_tag = data.get("s_tag", None)
+                user_id = request.user.get("userId") or request.user.get("id")
+                collection_name = str(data.get("collection", ""))
+                p_tag = str(data.get("p_tag", ""))
+                s_tag = data.get("s_tag")
+                if s_tag:
+                    s_tag = str(s_tag)
 
                 # Use the same name for the flashcard collection, for simplicity
                 flashcard_collection = mongo_flaskFlashcardDB.db[collection_name]
@@ -671,7 +680,7 @@ class FlashcardModule:
         #         else:  # GET
         #             data = request.args.to_dict()
 
-        #         user_id = data.get("userId")
+        #         user_id = request.user.get("userId") or request.user.get("id")
         #         collection_name = data.get("collectionName")
         #         p_tag = data.get("p_tag")
         #         s_tag = data.get("s_tag")
@@ -735,6 +744,7 @@ class FlashcardModule:
 
 
         @app.route("/v1/combine-flashcard-data-grammars", methods=["GET", "POST"])
+        @login_required
         def combine_flashcard_data_grammars():
             """
             Merges the user's dynamic flashcard info (e.g., difficulty, userId, etc.)
@@ -750,7 +760,7 @@ class FlashcardModule:
                 else:  # GET
                     data = request.args.to_dict()
 
-                user_id = data.get("userId")
+                user_id = request.user.get("userId") or request.user.get("id")
                 collection_name = data.get("collectionName")
                 p_tag = data.get("p_tag")
                 s_tag = data.get("s_tag")
@@ -887,7 +897,7 @@ class FlashcardModule:
         #         data = request.args.to_dict()  # Convert ImmutableMultiDict to dict
 
         #         # Validate required parameters
-        #         # user_id = data.get("userId")
+        #         # user_id = request.user.get("userId") or request.user.get("id")
         #         collection_name = data.get("collectionName")
         #         p_tag = data.get("p_tag")
         #         s_tag = data.get("s_tag")
@@ -922,7 +932,10 @@ class FlashcardModule:
 
 
         @app.route("/v1/flashcard/<userId>", methods=["GET"])
+        @login_required
         def get_flashcard_states(userId):
+            if userId != request.user.get("userId") and userId != request.user.get("id"):
+                return jsonify({"error": "Unauthorized: Cannot access other user data"}), 403
             try:
                 data = request.args.to_dict()  # Convert ImmutableMultiDict to dict
 
@@ -984,7 +997,7 @@ class FlashcardModule:
         #     print("received flashcard update POST payload:")
         #     print(data)
 
-        #     user_id = data.get("userId")
+        #     user_id = request.user.get("userId") or request.user.get("id")
         #     collection_name = data.get("collectionName")
 
         #     p_tag = data.get("p_tag")
@@ -1109,12 +1122,13 @@ class FlashcardModule:
         # example
         #{"userId":"testUserId","difficulty":"hard","collectionName":"grammars","title":"～から～にかけて (〜kara 〜ni kakete)","p_tag":"JLPT_N3","s_tag":"10"}
         @app.route("/v1/flashcard", methods=["POST"])
+        @login_required
         def store_flashcard_state():
             data = request.json
             print("received flashcard update POST payload:")
             print(data)
 
-            user_id = data.get("userId")
+            user_id = request.user.get("userId") or request.user.get("id")
             collection_name = data.get("collectionName")
 
             p_tag = data.get("p_tag")
@@ -1283,6 +1297,7 @@ class FlashcardModule:
         # -----------------------------------------------------------------------------------------
 
         @app.route("/v1/cards/personal", methods=["POST"])
+        @login_required
         def create_personal_card():
             """
             Creates a new Personal Card and initializes its progress.
@@ -1290,15 +1305,15 @@ class FlashcardModule:
             """
             logging.info("received POST at /v1/cards/personal")
             data = request.json
-            user_id = data.get("userId")
+            user_id = request.user.get("userId") or request.user.get("id")
             front = data.get("front")
             back = data.get("back")
-            card_type = data.get("type", "vocabulary") # vocabulary, sentence, kanji
-            deck_name = data.get("deck_name", "Inbox") # Default to Inbox
+            card_type = str(data.get("type", "vocabulary"))
+            deck_name = str(data.get("deck_name", "Inbox"))
             tags = data.get("tags", [])
             
             if not user_id or not front or not back:
-                return jsonify({"error": "Missing required fields: userId, front, back"}), 400
+                return jsonify({"error": "Missing required fields: front, back"}), 400
 
             try:
                 # 1. Create Personal Card
@@ -1351,14 +1366,15 @@ class FlashcardModule:
         # -----------------------------------------------------------------------------------------
 
         @app.route("/v1/study/due", methods=["GET"])
+        @login_required
         def get_due_flashcards():
             """
             Fetches all flashcards due for review for a given user.
             Hydrates content from PersonalCard collection text or Static Express API.
             """
-            user_id = request.args.get("userId")
+            user_id = request.user.get("userId") or request.user.get("id")
             if not user_id:
-                return jsonify({"error": "userId required"}), 400
+                return jsonify({"error": "Authentication required"}), 401
             
             try:
                 # 1. Find due items
@@ -1475,6 +1491,7 @@ class FlashcardModule:
                 return jsonify({"error": str(e)}), 500
 
         @app.route("/v1/cards/personal/<card_id>", methods=["PUT"])
+        @login_required
         def update_personal_card(card_id):
             """
             Updates Personal Card content and its associated progress metadata (Deck/Tags).
@@ -1506,6 +1523,7 @@ class FlashcardModule:
                 return jsonify({"error": str(e)}), 500
 
         @app.route("/v1/cards/personal/<card_id>", methods=["DELETE"])
+        @login_required
         def delete_personal_card(card_id):
             """
             Hard delete of Personal Card and its progress.
@@ -1524,6 +1542,7 @@ class FlashcardModule:
                 return jsonify({"error": str(e)}), 500
 
         @app.route("/v1/study/answer", methods=["POST"])
+        @login_required
         def answer_flashcard():
             """
             Updates the SRS state of a flashcard based on user quality rating (0-5).
@@ -1533,7 +1552,7 @@ class FlashcardModule:
             # cardId should be the _id of the UserFlashcardProgress content
             card_id = data.get("cardId") 
             quality = data.get("quality") # 0-5
-            user_id = data.get("userId")
+            user_id = request.user.get("userId") or request.user.get("id")
             
             if not card_id or quality is None:
                 return jsonify({"error": "Missing cardId or quality"}), 400

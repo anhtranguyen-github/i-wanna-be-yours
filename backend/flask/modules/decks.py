@@ -2,6 +2,7 @@ import logging
 import os
 from flask import request, jsonify
 from .deck_models import Deck, DeckCard
+from modules.auth import login_required
 from bson import ObjectId
 from pymongo import MongoClient
 
@@ -259,14 +260,13 @@ class DeckModule:
                 return jsonify(deck_response.model_dump(by_alias=True)), 200
             except Exception as e:
                 self.logger.error(f"Error fetching deck {deck_id}: {e}")
-                import traceback
-                self.logger.error(traceback.format_exc())
-                return jsonify({"error": str(e)}), 500
+                return jsonify({"error": "Failed to fetch deck"}), 500
 
         # --------------------------------------------------------------------------
         # ENDPOINT: POST /api/v1/cards/batch
         # --------------------------------------------------------------------------
         @app.route("/v1/cards/batch", methods=["POST"])
+        @login_required
         def get_cards_batch():
             try:
                 data = request.json
@@ -287,4 +287,4 @@ class DeckModule:
                 return jsonify([c.model_dump(by_alias=True) for c in cards]), 200
             except Exception as e:
                 self.logger.error(f"Error in batch fetch: {e}")
-                return jsonify({"error": str(e)}), 500
+                return jsonify({"error": "Batch fetch failed"}), 500

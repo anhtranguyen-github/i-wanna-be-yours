@@ -4,6 +4,8 @@ import os
 import shutil
 import tempfile
 import json
+import jwt
+from datetime import datetime, timedelta
 from unittest.mock import MagicMock, patch
 from werkzeug.datastructures import FileStorage
 from io import BytesIO
@@ -42,6 +44,17 @@ class TestResourcesModule(unittest.TestCase):
         self.app = Flask(__name__)
         self.module.register_routes(self.app)
         self.client = self.app.test_client()
+        
+        # Setup common JWT payload
+        self.user_id = "user123"
+        self.auth_payload = {
+            "userId": self.user_id,
+            "email": "test@example.com",
+            "role": "student",
+            "exp": datetime.utcnow() + timedelta(hours=1)
+        }
+        self.token = jwt.encode(self.auth_payload, "your-development-secret-key", algorithm="HS256")
+        self.headers = {"Authorization": f"Bearer {self.token}"}
 
     def tearDown(self):
         # Remove temp dir
@@ -58,9 +71,9 @@ class TestResourcesModule(unittest.TestCase):
             'tags': ['tag1', 'tag2']
         }
         
-        response = self.client.post('/f-api/v1/resources/upload', 
+        response = self.client.post('/v1/resources/upload', 
                                     data=data, 
-                                    content_type='multipart/form-data')
+                                    content_type='multipart/form-data', headers=self.headers)
         
         self.assertEqual(response.status_code, 201)
         json_data = response.get_json()
@@ -80,9 +93,9 @@ class TestResourcesModule(unittest.TestCase):
             'userId': 'user123'
         }
         
-        response = self.client.post('/f-api/v1/resources/upload', 
+        response = self.client.post('/v1/resources/upload', 
                                     data=data, 
-                                    content_type='multipart/form-data')
+                                    content_type='multipart/form-data', headers=self.headers)
         
         self.assertEqual(response.status_code, 400)
         self.assertIn('File type not allowed', response.get_json()['error'])
@@ -108,7 +121,7 @@ class TestResourcesModule(unittest.TestCase):
         self.module.resources_collection.find.return_value = cursor_mock
         self.module.resources_collection.count_documents.return_value = 1
         
-        response = self.client.get('/f-api/v1/resources?userId=user123')
+        response = self.client.get('/v1/resources', headers=self.headers)
         
         self.assertEqual(response.status_code, 200)
         data = response.get_json()
@@ -127,14 +140,14 @@ class TestResourcesModule(unittest.TestCase):
             "updatedAt": datetime(2024, 1, 1)
         }
         
-        response = self.client.get('/f-api/v1/resources/507f1f77bcf86cd799439011')
+        response = self.client.get('/v1/resources/507f1f77bcf86cd799439011', headers=self.headers)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.get_json()['title'], 'test.pdf')
 
     def test_delete_resource(self):
         self.module.resources_collection.find_one.return_value = {"_id": "507f1f77bcf86cd799439011"}
         
-        response = self.client.delete('/f-api/v1/resources/507f1f77bcf86cd799439011')
+        response = self.client.delete('/v1/resources/507f1f77bcf86cd799439011', headers=self.headers)
         self.assertEqual(response.status_code, 200)
         
         # Verify update_one called
