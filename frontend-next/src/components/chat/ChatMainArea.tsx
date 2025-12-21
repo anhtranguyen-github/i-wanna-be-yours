@@ -25,6 +25,7 @@ import {
     X,
     Loader2
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { ResourcePreviewModal } from '@/components/resources/ResourcePreviewModal';
 import { aiTutorService } from '@/services/aiTutorService';
 import { Artifact, ArtifactType } from '@/types/artifact';
@@ -186,6 +187,7 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
     const { user } = useUser();
     const isGuest = !user;
     const { openAuth } = useGlobalAuth();
+    const router = useRouter();
 
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputValue, setInputValue] = useState('');
@@ -254,6 +256,9 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
                     setMessages(mappedMessages);
                 } catch (err) {
                     console.error("Failed to fetch history:", err);
+                    // If history fetch fails (likely 403/404), redirect to new chat to avoid stuck state
+                    setMessages([]);
+                    router.push('/chat');
                 } finally {
                     setIsHistoryLoading(false);
                 }

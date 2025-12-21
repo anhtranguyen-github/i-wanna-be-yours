@@ -80,10 +80,15 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
         () => aiTutorService.getConversations()
     );
 
+    // Deduplicate chats based on _id to prevent UI duplicates
+    const uniqueChats = chats
+        ? Array.from(new Map(chats.map((c: any) => [c._id, c])).values()) as any[]
+        : [];
+
     // Filter chats based on search
     const filteredChats = isGuest
         ? []
-        : (chats || []).filter(chat => chat.title.toLowerCase().includes(chatSearch.toLowerCase()));
+        : uniqueChats.filter(chat => chat.title.toLowerCase().includes(chatSearch.toLowerCase()));
 
     // Fetch resources using SWR
     const { data: serverResponse, error } = useSWR(
