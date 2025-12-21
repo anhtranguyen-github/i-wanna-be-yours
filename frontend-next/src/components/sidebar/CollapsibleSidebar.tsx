@@ -57,7 +57,7 @@ interface CollapsibleSidebarProps {
 
 export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) {
     const { isExpanded, toggle, state } = useSidebar();
-    const { user } = useUser();
+    const { user, logout } = useUser();
     const { openAuth } = useGlobalAuth();
     const { stageResource, openResourcePreview } = useChatLayout();
     const router = useRouter();
@@ -318,12 +318,13 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
 
                 {/* Utility Icons (Bottom Row) */}
                 <div className={`flex ${isExpanded ? 'flex-row justify-between px-4 pb-3 pt-1' : 'flex-col gap-2 pb-3 items-center'} items-center border-t border-slate-200/50 mt-1`}>
-                    <button
+                    <Link
+                        href="/settings"
                         className="p-2 rounded-lg hover:bg-white hover:shadow-sm text-slate-500 hover:text-slate-700 transition-all"
                         title="Settings"
                     >
                         <Settings size={isExpanded ? 18 : 20} className="mx-auto" />
-                    </button>
+                    </Link>
                     <Link
                         href="/dashboard"
                         className="p-2 rounded-lg hover:bg-white hover:shadow-sm text-slate-500 hover:text-slate-700 transition-all"
@@ -331,12 +332,23 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     >
                         <User size={isExpanded ? 18 : 20} className="mx-auto" />
                     </Link>
-                    <button
-                        className="p-2 rounded-lg hover:bg-red-50 hover:text-red-500 text-slate-400 transition-all"
-                        title="Logout"
-                    >
-                        <LogOut size={isExpanded ? 18 : 20} className="mx-auto" />
-                    </button>
+                    {user ? (
+                        <button
+                            onClick={() => logout()}
+                            className="p-2 rounded-lg hover:bg-red-50 hover:text-red-500 text-slate-400 transition-all"
+                            title="Logout"
+                        >
+                            <LogOut size={isExpanded ? 18 : 20} className="mx-auto" />
+                        </button>
+                    ) : (
+                        <button
+                            onClick={() => openAuth('LOGIN')}
+                            className="p-2 rounded-lg hover:bg-brand-green/10 hover:text-brand-green text-slate-400 transition-all"
+                            title="Login"
+                        >
+                            <LogOut size={isExpanded ? 18 : 20} className="mx-auto rotate-180" />
+                        </button>
+                    )}
                 </div>
             </div>
         </div>
@@ -372,12 +384,13 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
             {/* Standard Footer */}
             <div className="flex-shrink-0 border-t border-slate-100 p-3 bg-slate-50">
                 <div className={`flex ${isExpanded ? 'flex-row justify-between' : 'flex-col gap-3'} items-center`}>
-                    <button
+                    <Link
+                        href="/settings"
                         className="p-2.5 rounded-lg hover:bg-white hover:shadow-sm text-slate-500 hover:text-slate-700 transition-all"
                         title="Settings"
                     >
                         <Settings size={20} className="mx-auto" />
-                    </button>
+                    </Link>
                     <Link
                         href="/dashboard"
                         className="p-2.5 rounded-lg hover:bg-white hover:shadow-sm text-slate-500 hover:text-slate-700 transition-all"
@@ -385,12 +398,23 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     >
                         <User size={20} className="mx-auto" />
                     </Link>
-                    <button
-                        className="p-2.5 rounded-lg hover:bg-red-50 hover:text-red-500 text-slate-400 transition-all"
-                        title="Logout"
-                    >
-                        <LogOut size={20} className="mx-auto" />
-                    </button>
+                    {user ? (
+                        <button
+                            onClick={() => logout()}
+                            className="p-2.5 rounded-lg hover:bg-red-50 hover:text-red-500 text-slate-400 transition-all"
+                            title="Logout"
+                        >
+                            <LogOut size={20} className="mx-auto" />
+                        </button>
+                    ) : (
+                        <button
+                            onClick={() => openAuth('LOGIN')}
+                            className="p-2.5 rounded-lg hover:bg-brand-green/10 hover:text-brand-green text-slate-400 transition-all"
+                            title="Login"
+                        >
+                            <LogOut size={20} className="mx-auto rotate-180" />
+                        </button>
+                    )}
                 </div>
             </div>
         </div>
