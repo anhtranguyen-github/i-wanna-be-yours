@@ -59,6 +59,16 @@ export interface OKRGoalEnhanced {
     last_weekly_review?: string;
 }
 
+export interface MasteredItem {
+    id: string;
+    title: string;
+    type: 'vocabulary' | 'grammar' | 'kanji';
+    level: 'N5' | 'N4' | 'N3' | 'N2' | 'N1';
+    status: 'learning' | 'reviewing' | 'mastered' | 'burned';
+    performance: 'low' | 'medium' | 'high' | 'perfect';
+    last_rating: 'hard' | 'medium' | 'easy' | 'perfect';
+}
+
 export interface KeyResultEnhanced {
     id: string;
     title: string;
@@ -70,6 +80,7 @@ export interface KeyResultEnhanced {
     projected_completion?: string;
     contributing_task_types: string[];
     confidence: number;
+    items?: MasteredItem[];
 }
 
 export interface PACTStatEnhanced {
@@ -259,6 +270,13 @@ export const mockOKRs: OKRGoalEnhanced[] = [
                 projected_completion: '2024-04-01',
                 contributing_task_types: ['flashcard', 'quiz'],
                 confidence: 85,
+                items: [
+                    { id: 'v-101', title: '改善 (Kaizen)', type: 'vocabulary', level: 'N3', status: 'mastered', performance: 'high', last_rating: 'easy' },
+                    { id: 'v-102', title: '先生 (Sensei)', type: 'vocabulary', level: 'N5', status: 'reviewing', performance: 'medium', last_rating: 'medium' },
+                    { id: 'v-103', title: '学校 (Gakkou)', type: 'vocabulary', level: 'N5', status: 'learning', performance: 'low', last_rating: 'hard' },
+                    { id: 'v-104', title: '経済 (Keizai)', type: 'vocabulary', level: 'N3', status: 'mastered', performance: 'perfect', last_rating: 'perfect' },
+                    { id: 'v-105', title: '分析 (Bunseki)', type: 'vocabulary', level: 'N3', status: 'reviewing', performance: 'medium', last_rating: 'medium' },
+                ]
             },
             {
                 id: 'kr-2',
@@ -311,6 +329,12 @@ export const mockOKRs: OKRGoalEnhanced[] = [
                 projected_completion: '2024-04-10',
                 contributing_task_types: ['lesson', 'quiz'],
                 confidence: 80,
+                items: [
+                    { id: 'g-55', title: '~てもいい', type: 'grammar', level: 'N5', status: 'mastered', performance: 'high', last_rating: 'easy' },
+                    { id: 'g-56', title: '~なくてはいけない', type: 'grammar', level: 'N5', status: 'reviewing', performance: 'medium', last_rating: 'medium' },
+                    { id: 'g-57', title: '~たり~たり', type: 'grammar', level: 'N5', status: 'learning', performance: 'low', last_rating: 'hard' },
+                    { id: 'g-58', title: '~ほど', type: 'grammar', level: 'N3', status: 'learning', performance: 'medium', last_rating: 'medium' },
+                ]
             },
             {
                 id: 'kr-5',
