@@ -235,12 +235,12 @@ export function PriorityMatrixCard({
             </div>
 
             {coachExplainer && (
-                <div className="p-5 bg-brand-sky/5 border-t border-slate-50 flex gap-3 items-start group hover:bg-brand-sky/10 transition-colors">
+                <div className="p-5 bg-primary/5 border-t border-slate-50 flex gap-3 items-start group hover:bg-primary/10 transition-colors">
                     <div className="bg-white p-1.5 rounded-lg shadow-sm">
-                        <Brain size={16} className="text-brand-sky" />
+                        <Brain size={16} className="text-primary" />
                     </div>
                     <p className="text-xs font-bold text-slate-600 leading-relaxed italic">
-                        <span className="text-brand-sky mr-1 not-italic tracking-wider uppercase font-black">Sensei Tip:</span>
+                        <span className="text-primary mr-1 not-italic tracking-wider uppercase font-black">Sensei Tip:</span>
                         {coachExplainer}
                     </p>
                 </div>

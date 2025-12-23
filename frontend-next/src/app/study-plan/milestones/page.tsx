@@ -198,7 +198,7 @@ function MilestonesContent() {
                                     key={milestone.id}
                                     href={`/study-plan/milestones/${milestone.id}`}
                                     className={`
-                                        clay-card p-6 block transition-all group hover:-translate-y-1
+                                        clay-card p-6 block transition-all group 
                                         ${isCurrent ? 'ring-2 ring-brand-salmon' : ''}
                                     `}
                                 >

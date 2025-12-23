@@ -66,7 +66,7 @@ export function SMARTGoalCard({ goal, onClick, className }: SMARTGoalCardProps) 
                                 iconSize={12}
                             />
                         </div>
-                        <h3 className="font-bold text-lg text-slate-900 truncate group-hover:text-brand-salmon transition-colors">
+                        <h3 className="font-bold text-lg text-slate-900 truncate group-hover:text-primary transition-colors">
                             {goal.title}
                         </h3>
                     </div>
@@ -149,7 +149,7 @@ export function SMARTGoalCard({ goal, onClick, className }: SMARTGoalCardProps) 
                 </div>
                 <ChevronRight
                     size={16}
-                    className="text-slate-300 group-hover:text-brand-salmon group-hover:translate-x-1 transition-all"
+                    className="text-slate-300 group-hover:text-primary group-hover:translate-x-1 transition-all"
                 />
             </div>
         </div>
@@ -180,7 +180,7 @@ function CriterionRow({ criterion }: { criterion: SuccessCriterion }) {
                     <div
                         className={cn(
                             'h-full rounded-full transition-all duration-500',
-                            isComplete ? 'bg-emerald-500' : 'bg-brand-salmon'
+                            isComplete ? 'bg-emerald-500' : 'bg-primary'
                         )}
                         style={{ width: `${Math.min(progress, 100)}%` }}
                     />

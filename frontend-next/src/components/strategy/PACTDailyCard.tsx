@@ -57,9 +57,9 @@ export function PACTDailyCard({
             )}
         >
             {/* Header with Purpose */}
-            <div className="p-5 bg-gradient-to-br from-brand-salmon/10 to-brand-peach/10">
+            <div className="p-5 bg-gradient-to-br from-primary/10 to-emerald-50">
                 <div className="flex items-center gap-2 mb-2">
-                    <Target size={18} className="text-brand-salmon" />
+                    <Target size={18} className="text-primary" />
                     <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
                         Daily Purpose
                     </span>
@@ -75,7 +75,7 @@ export function PACTDailyCard({
                 <div className="flex items-center gap-2 mt-2">
                     <div className="flex-1 h-1.5 bg-white/50 rounded-full overflow-hidden">
                         <div
-                            className="h-full bg-brand-salmon rounded-full transition-all duration-500"
+                            className="h-full bg-primary rounded-full transition-all duration-500"
                             style={{ width: `${pact.purpose_alignment_score}%` }}
                         />
                     </div>
@@ -130,7 +130,7 @@ export function PACTDailyCard({
                     size={56}
                     strokeWidth={5}
                     labelSize="sm"
-                    color={todayProgress === 100 ? '#10b981' : '#f4a89a'}
+                    color={todayProgress === 100 ? '#10b981' : '#10B981'}
                 >
                     <span className="text-xs font-bold text-slate-900">
                         {completedToday}/{totalActions}
@@ -201,7 +201,7 @@ export function PACTDailyCard({
                 <button
                     type="button"
                     onClick={onClick}
-                    className="w-full px-5 py-3 bg-slate-50 text-sm font-semibold text-brand-salmon hover:bg-slate-100 transition-colors"
+                    className="w-full px-5 py-3 bg-slate-50 text-sm font-semibold text-primary hover:bg-slate-100 transition-colors"
                 >
                     View Full PACT Details →
                 </button>
@@ -236,7 +236,7 @@ function ActionItem({ action, onToggle }: ActionItemProps) {
                 'flex items-center gap-3 p-3 rounded-xl border transition-all duration-200',
                 action.completed_today
                     ? 'bg-emerald-50 border-emerald-200'
-                    : 'bg-white border-slate-100 hover:border-brand-salmon/30'
+                    : 'bg-white border-slate-100 hover:border-primary/30'
             )}
         >
             <button
@@ -247,7 +247,7 @@ function ActionItem({ action, onToggle }: ActionItemProps) {
                 {action.completed_today ? (
                     <CheckCircle2 size={22} className="text-emerald-500" />
                 ) : (
-                    <Circle size={22} className="text-slate-300 hover:text-brand-salmon transition-colors" />
+                    <Circle size={22} className="text-slate-300 hover:text-primary transition-colors" />
                 )}
             </button>
 

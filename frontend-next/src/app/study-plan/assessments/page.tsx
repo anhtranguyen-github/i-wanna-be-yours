@@ -249,7 +249,7 @@ function AssessmentsContent() {
                                 key={assessment.id}
                                 className={`
                                     clay-card p-6 transition-all
-                                    ${isLocked ? 'opacity-60' : 'hover:-translate-y-1'}
+                                    ${isLocked ? 'opacity-60' : ''}
                                     ${isCompleted ? 'bg-brand-green/5 border-2 border-brand-green/20' : ''}
                                 `}
                             >

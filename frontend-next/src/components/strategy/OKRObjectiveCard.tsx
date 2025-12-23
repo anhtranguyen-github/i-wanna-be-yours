@@ -67,7 +67,7 @@ export function OKRObjectiveCard({ okr, onClick, className }: OKRObjectiveCardPr
                                     iconSize={12}
                                 />
                             </div>
-                            <h3 className="font-bold text-lg text-slate-900 group-hover:text-brand-salmon transition-colors">
+                            <h3 className="font-bold text-lg text-slate-900 group-hover:text-primary transition-colors">
                                 {okr.objective}
                             </h3>
                             {okr.description && (
@@ -82,7 +82,7 @@ export function OKRObjectiveCard({ okr, onClick, className }: OKRObjectiveCardPr
                             </div>
                             <ChevronRight
                                 size={16}
-                                className="text-slate-300 group-hover:text-brand-salmon group-hover:translate-x-1 transition-all"
+                                className="text-slate-300 group-hover:text-primary group-hover:translate-x-1 transition-all"
                             />
                         </div>
                     </div>
@@ -190,7 +190,7 @@ function KeyResultRow({ keyResult, onViewItems }: KeyResultRowProps) {
                             <div className="w-4 h-4 rounded-full border-2 border-slate-200 flex-shrink-0" />
                         )}
                         <span className={cn(
-                            'text-sm font-medium truncate group-hover/row:text-brand-salmon transition-colors',
+                            'text-sm font-medium truncate group-hover/row:text-primary transition-colors',
                             isComplete ? 'text-slate-500 line-through' : 'text-slate-900'
                         )}>
                             {keyResult.title}
@@ -203,7 +203,7 @@ function KeyResultRow({ keyResult, onViewItems }: KeyResultRowProps) {
                             <div
                                 className={cn(
                                     'h-full rounded-full transition-all duration-500',
-                                    isComplete ? 'bg-emerald-500' : keyResult.trend === 'declining' ? 'bg-red-500' : 'bg-brand-salmon'
+                                    isComplete ? 'bg-emerald-500' : keyResult.trend === 'declining' ? 'bg-red-500' : 'bg-primary'
                                 )}
                                 style={{ width: `${Math.min(progress, 100)}%` }}
                             />
@@ -225,7 +225,7 @@ function KeyResultRow({ keyResult, onViewItems }: KeyResultRowProps) {
                             {keyResult.unit}
                         </span>
                     </div>
-                    <ChevronRight size={14} className="text-slate-300 group-hover/row:text-brand-salmon group-hover/row:translate-x-1 transition-all" />
+                    <ChevronRight size={14} className="text-slate-300 group-hover/row:text-primary group-hover/row:translate-x-1 transition-all" />
                 </div>
             </button>
         </div>
