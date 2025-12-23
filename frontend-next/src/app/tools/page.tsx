@@ -17,71 +17,82 @@ const routes = [
         title: "Text Parser",
         description: "Analyze and tokenize Japanese text.",
         href: "/tools/text-parser",
-        icon: <Type className="w-8 h-8 text-brand-green" />,
-        color: "bg-brand-green"
+        icon: <Type className="w-8 h-8 text-primary" />,
+        color: "bg-primary"
     },
     {
         title: "Grammar Graph",
         description: "Visualize grammar relationships.",
         href: "/tools/grammar-graph",
-        icon: <Network className="w-8 h-8 text-brand-blue" />,
-        color: "bg-brand-blue"
+        icon: <Network className="w-8 h-8 text-primary" />,
+        color: "bg-primary"
     },
     {
         title: "Translate",
         description: "Translation utilities.",
         href: "/tools/translate",
-        icon: <Languages className="w-8 h-8 text-brand-peach" />,
-        color: "bg-brand-peach"
+        icon: <Languages className="w-8 h-8 text-primary" />,
+        color: "bg-primary"
     },
     {
         title: "Word Relations",
         description: "Explore connections between words.",
         href: "/tools/word-relations",
-        icon: <ArrowRightLeft className="w-8 h-8 text-purple-500" />,
-        color: "bg-purple-100"
+        icon: <ArrowRightLeft className="w-8 h-8 text-primary" />,
+        color: "bg-primary"
     },
     {
         title: "Auto Task",
         description: "Automated learning tasks.",
         href: "/tools/auto-task",
-        icon: <Wrench className="w-8 h-8 text-gray-500" />,
-        color: "bg-gray-100"
+        icon: <Wrench className="w-8 h-8 text-primary" />,
+        color: "bg-primary"
     },
     {
         title: "Quick Kanji",
         description: "Rapid Kanji lookup and reference.",
         href: "/tools/quick-kanji",
-        icon: <BrainCircuit className="w-8 h-8 text-red-500" />,
-        color: "bg-red-100"
+        icon: <BrainCircuit className="w-8 h-8 text-primary" />,
+        color: "bg-primary"
     },
     {
         title: "Quick Vocab",
         description: "Fast vocabulary reference.",
         href: "/tools/quick-vocab",
-        icon: <FileText className="w-8 h-8 text-orange-500" />,
-        color: "bg-orange-100"
+        icon: <FileText className="w-8 h-8 text-primary" />,
+        color: "bg-primary"
     },
 ];
 
 export default function ToolsPage() {
     return (
-        <div className="container mx-auto py-12 px-4 max-w-7xl">
-            <h1 className="text-4xl font-display font-extrabold text-brand-dark mb-12 text-center">
-                Tools <span className="text-brand-green">Kit</span>
-            </h1>
+        <div className="container mx-auto py-16 px-6 max-w-7xl">
+            <div className="text-center mb-16">
+                <h1 className="text-5xl font-black text-slate-900 mb-4 font-display tracking-tight">
+                    Tools <span className="text-primary italic">Kit</span>
+                </h1>
+                <p className="text-slate-500 font-medium max-w-2xl mx-auto text-lg leading-relaxed">
+                    A suite of high-performance utilities designed to accelerate your Japanese language acquisition.
+                </p>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {routes.map((route) => (
                     <Link key={route.href} href={route.href} className="group">
-                        <div className="clay-card h-full hover:-translate-y-2 transition-transform cursor-pointer flex flex-col items-center text-center p-8 bg-white relative overflow-hidden">
-                            <div className={`mb-6 p-5 rounded-2xl ${route.color} bg-opacity-20 group-hover:bg-opacity-30 transition-all`}>
+                        <div className="clay-card h-full hover:-translate-y-2 transition-transform cursor-pointer flex flex-col items-center text-center p-10 bg-white border border-slate-100 shadow-xl shadow-primary/5 relative overflow-hidden group-hover:border-primary/30">
+                            <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors" />
+
+                            <div className={`mb-8 p-6 rounded-[2rem] bg-primary/5 group-hover:bg-primary/10 transition-all group-hover:scale-110 duration-500 bg-opacity-20 relative z-10`}>
                                 {route.icon}
                             </div>
-                            <h2 className="text-2xl font-display font-bold text-brand-dark mb-3">{route.title}</h2>
-                            <p className="text-gray-500 font-medium leading-relaxed">{route.description}</p>
 
-                            {/* Decorative blur */}
-                            <div className={`absolute -bottom-10 -right-10 w-24 h-24 ${route.color} rounded-full blur-3xl opacity-20`} />
+                            <h2 className="text-xl font-black text-slate-900 mb-3 font-display uppercase tracking-[0.15em] relative z-10">{route.title}</h2>
+                            <p className="text-slate-500 font-medium leading-relaxed text-sm relative z-10">{route.description}</p>
+
+                            <div className="mt-8 flex items-center gap-2 text-primary font-black uppercase tracking-widest text-[10px] opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
+                                Launch Tool
+                                <ArrowRightLeft size={12} className="rotate-45" />
+                            </div>
                         </div>
                     </Link>
                 ))}

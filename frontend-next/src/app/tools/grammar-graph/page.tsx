@@ -61,18 +61,18 @@ const HomePage = () => {
       }
 
       // Pre-populate the user ID
-    // Pre-populate the user ID, e.g., from local storage or generate a new one
-    const savedUserId = localStorage.getItem("userId");
-    if (savedUserId) {
-      setUserId(savedUserId);
-    } else {
-      const newUserId = `user-${Math.random().toString(36).substring(2, 15)}`;
-      setUserId(newUserId);
-      localStorage.setItem("userId", newUserId);
+      // Pre-populate the user ID, e.g., from local storage or generate a new one
+      const savedUserId = localStorage.getItem("userId");
+      if (savedUserId) {
+        setUserId(savedUserId);
+      } else {
+        const newUserId = `user-${Math.random().toString(36).substring(2, 15)}`;
+        setUserId(newUserId);
+        localStorage.setItem("userId", newUserId);
+      }
+
+
     }
-
-
-    }  
   }, []);
 
 
@@ -125,151 +125,145 @@ const HomePage = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="p-8 bg-white min-h-screen">
-      <h1 className="text-3xl font-bold text-center mb-6">
-        Japanese/Korean/English Parse Tree Visualization
-      </h1>
-      <p className="text-center text-xs text-gray-700 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
-        The functionality of this tool is inspired by{" "}
-        <a
-          href="https://mirinae.io"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-600 dark:text-blue-400 underline"
-        >
-          mirinae.io
-        </a>
-        , which provides advanced sentence analysis and language learning
-        insights.
-      </p>
-      <p className="text-center text-xs text-gray-700 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
-        Our tool visualizes a parse tree of each sentence to show the
-        grammatical structure, helping learners better understand sentence
-        composition.
-      </p>
+    <div className="bg-[#F8FAFC] min-h-screen py-16 px-6">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-16">
+          <h1 className="text-4xl font-black text-slate-900 font-display tracking-tight uppercase tracking-[0.2em] mb-4">
+            Grammar <span className="text-primary italic">Graph</span>
+          </h1>
+          <p className="text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed">
+            Neural Parsing Engine for Multilingual Syntactic Structural Analysis
+          </p>
+        </div>
 
-      {/* Disclaimer Section */}
-      <div className="max-w-md mx-auto my-6">
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="w-full flex justify-between items-center px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg font-semibold hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none"
-        >
-          <span>Disclaimer</span>
-          {isOpen ? (
-            <ChevronUpIcon className="w-5 h-5" />
-          ) : (
-            <ChevronDownIcon className="w-5 h-5" />
-          )}
-        </button>
+        {/* Disclaimer Section */}
+        <div className="max-w-2xl mx-auto mb-12">
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="w-full flex justify-between items-center px-8 py-4 bg-white border border-slate-100 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 hover:text-slate-600 hover:border-primary/20 transition-all shadow-sm"
+          >
+            <span>Intelligence Methodology & Safety</span>
+            {isOpen ? (
+              <ChevronUpIcon className="w-4 h-4" />
+            ) : (
+              <ChevronDownIcon className="w-4 h-4" />
+            )}
+          </button>
 
-        {isOpen && (
-          <div className="mt-2 p-4 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-lg shadow transition-all duration-300 ease-in-out">
-            <p className="text-gray-700 dark:text-gray-300 mb-4 text-center">
-              We are using the <strong>GPT4o</strong> model for parse tree creation.
-            </p>
-            <p className="text-red-600 dark:text-red-400 mb-8 text-center">
-              <strong>DISCLAIMER:</strong> This tool uses LLM AI for sentence
-              analysis and may make mistakes.
-            </p>
-          </div>
-        )}
-      </div>
-
-      <div className="flex flex-col md:flex-row justify-center space-x-4 max-w-8xl mx-auto mt-8">
-        {/* Form for Custom Sentence Submission */}
-        <div className="flex-1 max-w-3xl bg-white p-6 rounded-lg shadow-md mb-8">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label
-                className="block text-lg font-semibold mb-2"
-                htmlFor="sentence"
-              >
-                Sentence:
-              </label>
-              <input
-                type="text"
-                id="sentence"
-                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-                value={sentence}
-                onChange={(e) => setSentence(e.target.value)}
-                maxLength={100}
-                required
-              />
+          {isOpen && (
+            <div className="mt-4 p-8 border border-primary/10 bg-primary/5 rounded-[2rem] text-center space-y-4 animate-in fade-in slide-in-from-top-4 duration-300">
+              <p className="text-slate-600 text-sm font-medium">
+                Utilizing <span className="text-primary font-black uppercase tracking-wider">GPT-4o Omnimodel</span> for real-time syntactic deconstruction.
+              </p>
+              <p className="text-slate-400 text-[11px] italic">
+                Synthetic Intelligence may exhibit structural hallucinations. Verify complex linguistic patterns with native intuition.
+              </p>
             </div>
+          )}
+        </div>
 
-            <div>
-              <label className="block text-lg font-semibold mb-2">
-                Language:
-              </label>
-              <div className="flex space-x-4">
-                {["Japanese", "Korean", "English"].map((lang) => (
-                  <div key={lang} className="flex items-center space-x-2">
-                    <input
-                      type="radio"
-                      id={lang.toLowerCase()}
-                      name="language"
-                      value={lang}
-                      checked={language === lang}
-                      onChange={(e) => setLanguage(e.target.value)}
-                    />
-                    <label htmlFor={lang.toLowerCase()}>{lang}</label>
-                  </div>
-                ))}
+        <div className="flex flex-col lg:flex-row gap-8 mb-12">
+          {/* Form for Custom Sentence Submission */}
+          <div className="flex-1 bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-primary/5">
+            <form onSubmit={handleSubmit} className="space-y-8">
+              <div className="space-y-4">
+                <label
+                  className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-2"
+                  htmlFor="sentence"
+                >
+                  Syntactic Input
+                </label>
+                <div className="relative group">
+                  <div className="absolute -inset-0.5 bg-gradient-to-br from-primary/20 to-emerald-100 rounded-2xl blur opacity-25 group-focus-within:opacity-50 transition duration-500"></div>
+                  <input
+                    type="text"
+                    id="sentence"
+                    className="relative w-full p-6 rounded-2xl bg-white border border-slate-100 text-lg font-jp focus:outline-none focus:border-primary/30 transition-all shadow-inner text-slate-800"
+                    placeholder="Enter sentence for deep analysis..."
+                    value={sentence}
+                    onChange={(e) => setSentence(e.target.value)}
+                    maxLength={100}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-2">
+                  Target Lexicon
+                </label>
+                <div className="flex flex-wrap gap-3">
+                  {["Japanese", "Korean", "English"].map((lang) => (
+                    <button
+                      key={lang}
+                      type="button"
+                      onClick={() => setLanguage(lang)}
+                      className={`px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-[0.15em] transition-all ${language === lang ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+                    >
+                      {lang}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-primary text-white py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-primary/20 disabled:opacity-50"
+                disabled={loading}
+              >
+                {loading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Analyzing...
+                  </span>
+                ) : "Deconstruct Structure"}
+              </button>
+            </form>
+          </div>
+
+          {/* Grammar Explanation Component */}
+          <div className="flex-1 lg:max-w-md bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-primary/5 overflow-hidden">
+            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-8 pb-4 border-b border-slate-50">Linguistic Blueprint</h3>
+            <div className="custom-scrollbar">
+              <GrammarExplanationSimple sentence={sentence} url={gptGrammarUrl} />
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content Container */}
+        <div className="w-full space-y-8">
+          {/* Metadata Display */}
+          {!loading && metadata && (
+            <div className="flex justify-end">
+              <div className="bg-slate-900 text-white p-6 rounded-3xl shadow-2xl space-y-2 border border-slate-800">
+                <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 mb-4">Telemetry Details</h2>
+                <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-[11px]">
+                  <span className="text-slate-500">Processing Model:</span>
+                  <span className="font-bold">{metadata.model}</span>
+                  <span className="text-slate-500">Compute Tokens:</span>
+                  <span className="font-bold">{metadata.tokensUsed}</span>
+                  <span className="text-slate-500">Temporal Stamp:</span>
+                  <span className="font-bold truncate max-w-[100px]">{metadata.callTimestamp}</span>
+                </div>
               </div>
             </div>
+          )}
 
-            <button
-              type="submit"
-              className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              disabled={loading}
-            >
-              {loading ? "Loading..." : "Submit"}
-            </button>
-          </form>
-        </div>
-
-        {/* Grammar Explanation Component */}
-        <div className="flex-1 max-w-2xl">
-          <GrammarExplanationSimple sentence={sentence} url={gptGrammarUrl} />
-        </div>
-      </div>
-
-      {/* Main Content Container */}
-      <div className="w-full">
-        {/* Loading Indicator */}
-        {loading && (
-          <p className="text-center text-lg">Processing your request...</p>
-        )}
-
-
-
-        {/* Metadata Display */}
-        {!loading && metadata && (
-          <div className="flex justify-center w-full p-3">
-            <div className="w-64 p-4 bg-white shadow rounded-tr-lg">
-              <h2 className="text-lg font-semibold mb-2">Response Metadata</h2>
-              <p>
-                <strong>Model:</strong> {metadata.model}
-              </p>
-              <p>
-                <strong>Tokens Used:</strong> {metadata.tokensUsed}
-              </p>
-              <p>
-                <strong>Call Timestamp:</strong> {metadata.callTimestamp}
-              </p>
-            </div>
+          {/* Parse Tree Display */}
+          <div className="relative">
+            {loading && (
+              <div className="absolute inset-0 bg-white/60 backdrop-blur-sm z-20 flex flex-col items-center justify-center rounded-[3rem]">
+                <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-6" />
+                <p className="font-black text-[10px] uppercase tracking-[0.2em] text-slate-500">Mapping Syntactic Vectors</p>
+              </div>
+            )}
+            {!loading && (
+              <div className="bg-white p-12 rounded-[3rem] border border-slate-100 shadow-2xl shadow-primary/5 min-h-[600px] flex justify-center items-center overflow-x-auto">
+                <ParseTree data={data} />
+              </div>
+            )}
           </div>
-        )}
-
-        {/* Parse Tree Display */}
-        {!loading && (
-          <div className="flex justify-center w-full">
-            <ParseTree data={data} />
-          </div>
-        )}
-
-
-
+        </div>
       </div>
     </div>
   );

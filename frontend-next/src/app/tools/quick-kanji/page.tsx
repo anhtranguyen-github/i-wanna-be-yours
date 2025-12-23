@@ -40,46 +40,34 @@ export default function Home() {
       audioElement.play();
     };
 
-    // return (
-    //   <div className="w-24 h-16" onClick={playAudio}>
-    //     <div className="relative w-full h-full">
-    //       <div className="bg-slate-100 absolute inset-0 transition duration-75 ease-in-out transform hover:opacity-0 rounded-lg shadow-md flex items-center justify-center p-2 border border-gray-200">
-    //         <h5 className="text-2xl text-gray-900">{kanji}</h5>
-    //       </div>
-    //       <div className="bg-slate-300 absolute inset-0 transition duration-75 ease-in-out transform opacity-0 hover:opacity-100 rounded-lg shadow-md flex items-center justify-center p-2 border border-gray-200">
-    //         <h5 className="text-xl text-gray-700">{reading}</h5>
-    //       </div>
-    //     </div>
-    //   </div>
-    // );
-
-
     return (
-      <div className="w-24 h-16" onClick={playAudio}>
-        <div className="relative w-full h-full">
+      <div className="w-28 h-20 group perspective-1000" onClick={playAudio}>
+        <div className="relative w-full h-full transition-all duration-500 preserve-3d cursor-pointer group-hover:rotate-y-180">
           {/* Front of the Card */}
-          <div className="bg-slate-100 absolute inset-0 transition duration-75 ease-in-out transform hover:opacity-0 rounded-lg shadow-md flex items-center justify-center p-2 border border-gray-200">
-            <h5 className="text-2xl text-gray-900">{kanji}</h5>
+          <div className="absolute inset-0 backface-hidden bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center p-2 group-hover:shadow-md transition-shadow">
+            <h5 className="text-3xl font-black text-slate-900 font-jp">{kanji}</h5>
           </div>
 
           {/* Back of the Card */}
-          <div className="bg-slate-300 absolute inset-0 transition duration-75 ease-in-out transform opacity-0 hover:opacity-100 rounded-lg shadow-md flex items-center justify-center p-2 border border-gray-200">
-            <h5 className="text-xl text-gray-700">{reading}</h5>
+          <div className="absolute inset-0 backface-hidden rotate-y-180 bg-primary/5 rounded-2xl shadow-sm border border-primary/20 flex flex-col items-center justify-center p-2">
+            <h5 className="text-sm font-black text-primary uppercase tracking-widest">{reading}</h5>
 
             {/* Icon Link at the Bottom Left */}
             <Link
               href={`https://www.japandict.com/kanji/?s=${encodeURIComponent(kanji)}`}
               passHref
-              className="absolute bottom-1 left-1 p-1 rounded-full bg-gray-100 hover:bg-gray-200 transition"
+              className="absolute bottom-1.5 left-1.5 p-1 rounded-lg bg-white border border-primary/10 text-primary hover:bg-primary/10 transition-colors"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="12"
                 height="12"
                 viewBox="0 -960 960 960"
-                className="w-4 h-4 text-gray-700"
+                className="w-3.5 h-3.5"
+                fill="currentColor"
               >
                 <path d="M240-400q-33 0-56.5-23.5T160-480t23.5-56.5T240-560t56.5 23.5T320-480t-23.5 56.5T240-400m240 0q-33 0-56.5-23.5T400-480t23.5-56.5T480-560t56.5 23.5T560-480t-23.5 56.5T480-400m240 0q-33 0-56.5-23.5T640-480t23.5-56.5T720-560t56.5 23.5T800-480t-23.5 56.5T720-400" />
               </svg>
@@ -88,27 +76,6 @@ export default function Home() {
         </div>
       </div>
     );
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   };
 
   // Define the type for a single item of Kanji data
@@ -164,12 +131,17 @@ export default function Home() {
       fetchData();
     }, [p_tag]); // Only re-run the effect if p_tag changes
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return (
+      <div className="flex flex-col items-center py-20 animate-pulse">
+        <div className="w-12 h-12 bg-primary/20 rounded-2xl mb-4" />
+        <div className="text-slate-400 font-black uppercase tracking-widest text-xs">Parsing Kanji...</div>
+      </div>
+    );
     if (error) return <div>Error: {error}</div>;
 
     return (
-      <div>
-        <div className="flex flex-wrap justify-center gap-4">
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="flex flex-wrap justify-center gap-6">
           {kanjiData.map((item, index) => (
             <HiraganaCard
               key={index}
@@ -187,14 +159,14 @@ export default function Home() {
     const [activeTab, setActiveTab] = useState("jlpt n3");
 
     return (
-      <div className="flex flex-col items-center justify-center p-4">
-        <div className="flex border-b overflow-auto">
+      <div className="flex flex-col items-center justify-center">
+        <div className="flex bg-slate-100 p-1.5 rounded-2xl gap-2 mb-12">
           {["JLPT N5", "JLPT N4", "JLPT N3"].map((tab, index) => (
             <button
               key={index}
-              className={`px-4 py-2 text-lg font-medium ${activeTab === tab.toLowerCase()
-                ? "text-blue-500 border-b-2 border-blue-500"
-                : "text-gray-600"
+              className={`px-8 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${activeTab === tab.toLowerCase()
+                ? "bg-white text-slate-900 shadow-md ring-1 ring-slate-200"
+                : "text-slate-500 hover:text-slate-900 hover:bg-white/50"
                 }`}
               onClick={() => setActiveTab(tab.toLowerCase())}
             >
@@ -203,7 +175,7 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="mt-4">
+        <div className="w-full">
           {activeTab === "jlpt n5" && <KanjiTable p_tag="JLPT_N5" />}
           {activeTab === "jlpt n4" && <KanjiTable p_tag="JLPT_N4" />}
           {activeTab === "jlpt n3" && <KanjiTable p_tag="JLPT_N3" />}
@@ -213,19 +185,15 @@ export default function Home() {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="max-w-4xl mx-auto p-5">
-        <h1 className="text-xl font-bold text-gray-800 mb-4 mt-4">Quick Kanji</h1>
-        <p className="text-gray-700 text-sm">
-          We are picking a subset of kanji for each JLPT level that has one
-          dominant reading. While these kanji generally have multiple readings,
-          chosen readings should be sufficient for given JLPT level. This
-          section is meant to treat specific kanji more like an alphabet, so we
-          can anchor our reading around them. Once we master these kanji sets,
-          reading Japanese texts should become significantly easier. Keep in
-          mind that this is NOT full kanji list for JLPT N5-N1 and even chosen
-          readings are just partial.
-        </p>
+    <div className="container mx-auto py-16 px-6 max-w-5xl">
+      <div className="text-center mb-16 space-y-4">
+        <h1 className="text-4xl font-black text-slate-900 font-display tracking-tight uppercase tracking-[0.2em] mb-4">Quick <span className="text-primary italic">Kanji</span></h1>
+        <div className="max-w-3xl mx-auto bg-primary/5 p-8 rounded-[2rem] border border-primary/10 relative overflow-hidden group">
+          <div className="absolute -top-10 -right-10 w-24 h-24 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-colors" />
+          <p className="text-slate-600 font-medium text-sm leading-relaxed relative z-10 italic">
+            &quot;We are picking a subset of kanji for each JLPT level that has one dominant reading. Use these as anchors to master reading Japanese texts with alphabetical simplicity.&quot;
+          </p>
+        </div>
       </div>
 
       <TabComponent />

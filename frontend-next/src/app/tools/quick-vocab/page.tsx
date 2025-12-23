@@ -4,6 +4,7 @@ import Link from "next/link";
 import React from "react";
 import { useState, useEffect, useMemo } from "react";
 
+import { Flame, Eye, EyeOff } from "lucide-react";
 import PageTimer from "@/components/PageTimer";
 
 export default function Home() {
@@ -36,73 +37,41 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="max-w-4xl mx-auto p-5">
-        <h1 className="text-xl font-bold text-gray-800 mb-4 mt-4">
-          Quick JLPT N5-N1 Vocabulary Overview
-        </h1>
-        <p className="text-gray-700 text-sm">
-          Intended as quick vocabulary refresh.
-        </p>
-        <br />
-        <p className="text-gray-700 text-sm">
-          Here is full vocabulary list for JLPT N5-N1. The cards are intended
-          for quick vocabulary review. These are not SRS flashcards (SRS
-          functionality implemented in different part of the platform). The idea
-          is that we scroll through the cards and make sure that we are familiar
-          with the word. If not, we can quickly check reading and English
-          translation. So this section should ideally be visited once you are
-          already familiar with the majority of vocabulary for a given JLPT
-          level. For example, we can just quickly scroll through 100 N3 words
-          per day to make sure we remember them.
-        </p>
-        <p className="text-gray-700 text-sm">
-          Source:&nbsp;
-          <a
-            href="https://www.tanos.co.uk/jlpt/"
-            className="text-blue-500 hover:text-blue-700 visited:text-purple-600"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Tanos.co.uk
-          </a>
-        </p>
+    <div className="container mx-auto py-16 px-6 max-w-5xl">
+      <div className="text-center mb-16 space-y-4">
+        <h1 className="text-4xl font-black text-slate-900 font-display tracking-tight uppercase tracking-[0.2em] mb-4">Quick <span className="text-primary italic">Vocab</span></h1>
+        <div className="max-w-3xl mx-auto bg-primary/5 p-8 rounded-[2rem] border border-primary/10 relative overflow-hidden group">
+          <div className="absolute -top-10 -right-10 w-24 h-24 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-colors" />
+          <p className="text-slate-600 font-medium text-sm leading-relaxed relative z-10 italic">
+            &quot;Rapid vocabulary refresh for JLPT N5-N1. Scroll through the cards to anchor your memory. Click to reveal meaning and hear pronunciation.&quot;
+          </p>
+        </div>
       </div>
 
-      {/* Display Global Total Clicks */}
-      <div className="max-w-4xl mx-auto p-5">
-        <p className="text-lg font-bold text-gray-800">
-          Total Score: {globalTotalClicks}
-        </p>
+      <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-12 bg-white p-6 rounded-[2rem] border border-slate-100 shadow-xl shadow-primary/5">
+        <div className="flex items-center gap-4">
+          <div className="p-4 bg-primary/10 rounded-2xl text-primary">
+            <Flame className="w-8 h-8 fill-primary" />
+          </div>
+          <div>
+            <p className="text-3xl font-black text-slate-900 tracking-tight">{globalTotalClicks}</p>
+            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Score</p>
+          </div>
+        </div>
         <PageTimer />
       </div>
 
-      {/* Render your TabComponent or other components here */}
       <TabComponent />
     </div>
   );
 }
-
-// ---------------------------- //
-
-// ------------------------------------------------
-
-//import React, { useState, useEffect } from 'react';
-//import Link from 'next/link';
-
-// interface HiraganaCardProps {
-//   kanji: string;
-//   reading: string;
-//   en: string;
-//   k_audio: string;
-// }
 
 interface HiraganaCardProps {
   kanji: string;
   reading: string;
   en: string;
   k_audio: string;
-  showReadings: boolean; // Add this line
+  showReadings: boolean;
 }
 
 const HiraganaCard: React.FC<HiraganaCardProps> = ({
@@ -114,7 +83,6 @@ const HiraganaCard: React.FC<HiraganaCardProps> = ({
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
-  // Initialize flipCount from localStorage or set to 0
   const [flipCount, setFlipCount] = useState<number>(() => {
     if (typeof window !== "undefined") {
       const storedFlipCount = localStorage.getItem(`flipCount_${kanji}`);
@@ -123,7 +91,6 @@ const HiraganaCard: React.FC<HiraganaCardProps> = ({
     return 0;
   });
 
-  // Other state variables remain the same as before
   const [streak, setStreak] = useState<number>(() => {
     if (typeof window !== "undefined") {
       const storedStreak = localStorage.getItem(`streak_${kanji}`);
@@ -151,39 +118,28 @@ const HiraganaCard: React.FC<HiraganaCardProps> = ({
   const [recentAchievement, setRecentAchievement] = useState("");
   const [showAchievement, setShowAchievement] = useState(false);
 
-  // Save per-card state variables to localStorage whenever they change
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem(`flipCount_${kanji}`, flipCount.toString());
       localStorage.setItem(`streak_${kanji}`, streak.toString());
       localStorage.setItem(`lastFlipDate_${kanji}`, lastFlipDate || "");
-      localStorage.setItem(
-        `achievements_${kanji}`,
-        JSON.stringify(achievements)
-      );
+      localStorage.setItem(`achievements_${kanji}`, JSON.stringify(achievements));
     }
   }, [flipCount, streak, lastFlipDate, achievements, kanji]);
 
-  // Function to play audio
   const playAudio = () => {
     const audioElement = new Audio(k_audio);
     audioElement.play();
   };
 
-  // Function to handle card click
   const handleCardClick = () => {
     setIsFlipped(!isFlipped);
     const newFlipCount = flipCount + 1;
-    setFlipCount(newFlipCount); // Increment the flip count each time the card is clicked
+    setFlipCount(newFlipCount);
     playAudio();
-
-    // Update global total clicks
     updateGlobalTotalClicks();
-
-    // Check for achievements
     checkAchievements(newFlipCount);
 
-    // Update streak
     const today = new Date().toDateString();
     if (lastFlipDate !== today) {
       setStreak(streak + 1);
@@ -191,442 +147,175 @@ const HiraganaCard: React.FC<HiraganaCardProps> = ({
     }
   };
 
-  // Function to update global total clicks
   const updateGlobalTotalClicks = () => {
     if (typeof window !== "undefined") {
       const storedGlobalClicks = localStorage.getItem("globalTotalClicks");
-      const newGlobalClicks = storedGlobalClicks
-        ? parseInt(storedGlobalClicks) + 1
-        : 1;
+      const newGlobalClicks = storedGlobalClicks ? parseInt(storedGlobalClicks) + 1 : 1;
       localStorage.setItem("globalTotalClicks", newGlobalClicks.toString());
-
-      // Dispatch custom event to notify Home component
       window.dispatchEvent(new Event("globalClicksUpdated"));
     }
   };
 
-  // Function to check and unlock achievements
   const checkAchievements = (flipCount: number) => {
     const newAchievements = [...achievements];
-
     if (flipCount >= 100 && !achievements.includes("First 100 Flips!")) {
       newAchievements.push("First 100 Flips!");
       setAchievements(newAchievements);
       triggerAchievement("First 100 Flips!");
     }
-
-    if (flipCount >= 500 && !achievements.includes("Halfway to 1000 Flips!")) {
-      newAchievements.push("Halfway to 1000 Flips!");
-      setAchievements(newAchievements);
-      triggerAchievement("Halfway to 1000 Flips!");
-    }
-
-    if (flipCount >= 1000 && !achievements.includes("1000 Flips!")) {
-      newAchievements.push("1000 Flips!");
-      setAchievements(newAchievements);
-      triggerAchievement("1000 Flips!");
-    }
   };
 
-  // Function to trigger an achievement notification
   const triggerAchievement = (achievement: string) => {
     setRecentAchievement(achievement);
     setShowAchievement(true);
-    setTimeout(() => {
-      setShowAchievement(false);
-    }, 3000);
+    setTimeout(() => setShowAchievement(false), 3000);
   };
 
-  // // Function to determine card shade based on flip count
-  // const getCardShade = () => {
-  //   if (flipCount < 5) return 'bg-slate-100'; // Light slate
-  //   if (flipCount < 10) return 'bg-gray-100'; // Light gray
-  //   if (flipCount < 15) return 'bg-zinc-100'; // Light zinc
-  //   if (flipCount < 20) return 'bg-neutral-100'; // Light neutral
-  //   if (flipCount < 25) return 'bg-stone-100'; // Light stone
-  //   if (flipCount < 30) return 'bg-red-100'; // Light red
-  //   if (flipCount < 35) return 'bg-orange-100'; // Light orange
-  //   if (flipCount < 40) return 'bg-yellow-100'; // Light yellow
-  //   if (flipCount < 45) return 'bg-green-100'; // Light green
-  //   if (flipCount < 50) return 'bg-teal-100'; // Light teal
-  //   if (flipCount < 55) return 'bg-cyan-100'; // Light cyan
-  //   if (flipCount < 60) return 'bg-blue-100'; // Light blue
-  //   if (flipCount < 65) return 'bg-indigo-100'; // Light indigo
-  //   if (flipCount < 70) return 'bg-violet-100'; // Light violet
-  //   if (flipCount < 75) return 'bg-purple-100'; // Light purple
-  //   if (flipCount < 80) return 'bg-pink-100'; // Light pink
-  //   return 'bg-rose-100'; // Light rose for 80+ flips
-  // };
-
-  // Enhanced function to determine card shade based on flip count
-  const getCardShade = () => {
-    if (flipCount < 10) return "bg-slate-100"; // Light slate
-    if (flipCount < 20) return "bg-gray-100"; // Light gray
-    if (flipCount < 30) return "bg-zinc-100"; // Light zinc
-    if (flipCount < 40) return "bg-neutral-100"; // Light neutral
-    if (flipCount < 50) return "bg-stone-100"; // Light stone
-    if (flipCount < 60) return "bg-red-100"; // Light red
-    if (flipCount < 70) return "bg-orange-100"; // Light orange
-    if (flipCount < 80) return "bg-amber-100"; // Light amber
-    if (flipCount < 90) return "bg-yellow-100"; // Light yellow
-    if (flipCount < 100) return "bg-lime-100"; // Light lime
-    if (flipCount < 110) return "bg-green-100"; // Light green
-    if (flipCount < 120) return "bg-emerald-100"; // Light emerald
-    if (flipCount < 130) return "bg-teal-100"; // Light teal
-    if (flipCount < 140) return "bg-cyan-100"; // Light cyan
-    if (flipCount < 150) return "bg-sky-100"; // Light sky
-    if (flipCount < 160) return "bg-blue-100"; // Light blue
-    if (flipCount < 170) return "bg-indigo-100"; // Light indigo
-    if (flipCount < 180) return "bg-violet-100"; // Light violet
-    if (flipCount < 190) return "bg-purple-100"; // Light purple
-    if (flipCount < 200) return "bg-fuchsia-100"; // Light fuchsia
-    if (flipCount < 210) return "bg-pink-100"; // Light pink
-    if (flipCount < 220) return "bg-rose-100"; // Light rose
-    if (flipCount < 230) return "bg-red-200"; // Slightly darker red
-    if (flipCount < 240) return "bg-orange-200"; // Slightly darker orange
-    if (flipCount < 250) return "bg-amber-200"; // Slightly darker amber
-    if (flipCount < 260) return "bg-yellow-200"; // Slightly darker yellow
-    if (flipCount < 270) return "bg-lime-200"; // Slightly darker lime
-    if (flipCount < 280) return "bg-green-200"; // Slightly darker green
-    if (flipCount < 290) return "bg-emerald-200"; // Slightly darker emerald
-    if (flipCount < 300) return "bg-teal-200"; // Slightly darker teal
-    if (flipCount < 310) return "bg-cyan-200"; // Slightly darker cyan
-    if (flipCount < 320) return "bg-sky-200"; // Slightly darker sky
-    if (flipCount < 330) return "bg-blue-200"; // Slightly darker blue
-    if (flipCount < 340) return "bg-indigo-200"; // Slightly darker indigo
-    if (flipCount < 350) return "bg-violet-200"; // Slightly darker violet
-    if (flipCount < 360) return "bg-purple-200"; // Slightly darker purple
-    if (flipCount < 370) return "bg-fuchsia-200"; // Slightly darker fuchsia
-    if (flipCount < 380) return "bg-pink-200"; // Slightly darker pink
-    if (flipCount < 390) return "bg-rose-200"; // Slightly darker rose
-    if (flipCount < 400) return "bg-red-300"; // Even darker red
-    // Continue adding more shades if desired
-    return "bg-red-400"; // Default color for 400+ flips
-  };
-
-  // const getCardShade = () => {
-  //   const colors = [
-  //     'bg-slate-100', 'bg-gray-100', 'bg-zinc-100', 'bg-neutral-100', 'bg-stone-100',
-  //     'bg-red-100', 'bg-orange-100', 'bg-amber-100', 'bg-yellow-100', 'bg-lime-100',
-  //     'bg-green-100', 'bg-emerald-100', 'bg-teal-100', 'bg-cyan-100', 'bg-sky-100',
-  //     'bg-blue-100', 'bg-indigo-100', 'bg-violet-100', 'bg-purple-100', 'bg-fuchsia-100',
-  //     'bg-pink-100', 'bg-rose-100', 'bg-red-200', 'bg-orange-200', 'bg-amber-200',
-  //     'bg-yellow-200', 'bg-lime-200', 'bg-green-200', 'bg-emerald-200', 'bg-teal-200',
-  //     'bg-cyan-200', 'bg-sky-200', 'bg-blue-200', 'bg-indigo-200', 'bg-violet-200',
-  //     'bg-purple-200', 'bg-fuchsia-200', 'bg-pink-200', 'bg-rose-200', 'bg-red-300',
-  //     // Add more colors if needed
-  //   ];
-  //   const index = Math.min(Math.floor(flipCount / 5), colors.length - 1);
-  //   return colors[index];
-  // };
+  const masteryLevel = Math.min(Math.floor(flipCount / 10), 10);
 
   return (
-    <div className="w-48 h-48 relative mt-4" onClick={handleCardClick}>
-      {/* Display flip count and streak */}
-      <div className="flex absolute top-0 left-0 p-2">
-        <p className="text-xs text-gray-600">Flips: {flipCount}</p>
-        <p className="text-xs text-gray-600 ml-5">Streak: {streak} day(s)</p>
-      </div>
+    <div className="w-48 h-56 group perspective-1000" onClick={handleCardClick}>
+      <div className={`relative w-full h-full transition-all duration-500 preserve-3d cursor-pointer ${isFlipped ? 'rotate-y-180' : ''}`}>
 
-      {showAchievement && (
-        <div className="absolute top-0 right-0 bg-yellow-300 p-2 rounded z-20">
-          <p className="text-sm font-bold">Achievement Unlocked!</p>
-          <p className="text-sm">{recentAchievement}</p>
-        </div>
-      )}
+        {/* Front */}
+        <div className={`absolute inset-0 backface-hidden bg-white border border-slate-100 rounded-[2rem] shadow-sm group-hover:shadow-md transition-all flex flex-col items-center justify-center p-6 bg-gradient-to-b from-white to-slate-50/50`}>
+          <div className="absolute top-4 left-0 right-0 px-6 flex justify-between items-center opacity-40">
+            <span className="text-[8px] font-black uppercase tracking-widest">{flipCount} F</span>
+            <span className="text-[8px] font-black uppercase tracking-widest">{streak} D</span>
+          </div>
 
-      <div className="relative w-full h-full mt-8">
-        {/* Front of the Card */}
-        {/* <div
-          className={`${getCardShade()} transition duration-75 ease-in-out transform hover:bg-slate-200 ${
-            isFlipped ? 'opacity-0 z-0' : 'opacity-100 z-10'
-          } rounded-lg shadow-md p-4 border border-gray-200 absolute inset-0 flex flex-col items-center justify-center`}
-        >
-          <h5 className="text-sm text-gray-600">[{reading}]</h5>
-          <h5 className="text-4xl text-gray-900">{kanji}</h5>
-        </div> */}
-
-        {/* Front of the Card */}
-        <div
-          className={`${getCardShade()} transition duration-75 ease-in-out transform hover:bg-slate-200 ${isFlipped ? "opacity-0 z-0" : "opacity-100 z-10"
-            } rounded-lg shadow-md p-4 border border-gray-200 absolute inset-0 flex flex-col items-center justify-center`}
-        >
-          {showReadings && ( // Add this condition
-            <h5 className="text-sm text-gray-600">[{reading}]</h5>
+          {showReadings && (
+            <h5 className="text-[10px] font-black text-primary/60 uppercase tracking-widest mb-1">
+              [{reading}]
+            </h5>
           )}
-          <h5 className="text-4xl text-gray-900">{kanji}</h5>
-        </div>
-
-        {/* Back of the Card */}
-        <div
-          className={`${getCardShade()} transition duration-75 ease-in-out transform hover:bg-slate-200 ${isFlipped ? "opacity-100 z-10" : "opacity-0 z-0"
-            } rounded-lg shadow-md p-4 border border-gray-200 absolute inset-0 flex flex-col items-center justify-center`}
-        >
-          <h5 className="text-sm text-gray-600">[{reading}]</h5>
-          <h5 className="text-2xl text-gray-900">{kanji}</h5>
-          <h5 className="text-md text-gray-700 text-center whitespace-pre-wrap overflow-auto max-h-full p-2">
-            {en}
+          <h5 className="text-3xl font-black text-slate-900 font-jp text-center leading-tight">
+            {kanji}
           </h5>
 
-          {/* Icon Link at the Bottom Left */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-0.5">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className={`w-1.5 h-1.5 rounded-full ${i < (masteryLevel / 2) ? 'bg-primary' : 'bg-slate-200'}`} />
+            ))}
+          </div>
+        </div>
+
+        {/* Back */}
+        <div className="absolute inset-0 backface-hidden rotate-y-180 bg-primary/5 border border-primary/20 rounded-[2rem] shadow-sm flex flex-col items-center justify-center p-6 text-center">
+          <h5 className="text-[10px] font-black text-primary/60 uppercase tracking-widest mb-1">
+            [{reading}]
+          </h5>
+          <h5 className="text-xl font-black text-slate-900 font-jp mb-2">{kanji}</h5>
+          <p className="text-xs font-medium text-slate-600 leading-relaxed overflow-hidden line-clamp-4">
+            {en}
+          </p>
+
           <Link
             href={`https://www.japandict.com/?s=${encodeURIComponent(kanji)}`}
             passHref
             target="_blank"
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
-            className="absolute bottom-2 left-2 p-1 rounded-full bg-gray-100 hover:bg-gray-200 transition"
+            className="absolute bottom-4 right-4 p-2 rounded-xl bg-white border border-primary/10 text-primary hover:bg-primary/10 transition-colors shadow-sm"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 -960 960 960"
-              className="w-5 h-5 text-gray-700"
-            >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960" fill="currentColor">
               <path d="M240-400q-33 0-56.5-23.5T160-480t23.5-56.5T240-560t56.5 23.5T320-480t-23.5 56.5T240-400m240 0q-33 0-56.5-23.5T400-480t23.5-56.5T480-560t56.5 23.5T560-480t-23.5 56.5T480-400m240 0q-33 0-56.5-23.5T640-480t23.5-56.5T720-560t56.5 23.5T800-480t-23.5 56.5T720-400" />
             </svg>
           </Link>
         </div>
       </div>
+
+      {showAchievement && (
+        <div className="fixed bottom-8 right-8 bg-slate-900 text-white p-4 rounded-2xl z-50 animate-in slide-in-from-right-8 fade-in shadow-2xl animate-out fade-out slide-out-to-right-8 duration-300">
+          <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-1">Achievement Unlocked!</p>
+          <p className="font-bold text-sm tracking-tight">{recentAchievement}</p>
+        </div>
+      )}
     </div>
   );
 };
-
-//export default HiraganaCard;
-
-// ---------------------------- //
-
-// const TabComponent = () => {
-//   const [activeJLPTTab, setActiveJLPTTab] = useState("JLPT_N3");
-//   const [activeVocabTab, setActiveVocabTab] = useState(100);
-//   const [showReadings, setShowReadings] = useState(true);
-
-//   // Mapping JLPT levels to their respective vocab sets
-//   const vocabSetsByLevel: Record<string, number[]> = {
-//     JLPT_N5: [100, 200, 300, 400, 500, 600, 700],
-//     JLPT_N4: [100, 200, 300, 400, 500, 600, 700],
-//     JLPT_N3: [
-//       100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400,
-//       1500, 1600, 1700, 1800, 1900,
-//     ],
-//     JLPT_N2: [
-//       100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400,
-//       1500, 1600, 1700, 1800, 1900,
-//     ],
-//     JLPT_N1: [
-//       100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400,
-//       1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200, 2300, 2400, 2500, 2600,
-//       2700, 2800, 2900, 3000, 3100, 3200, 3300, 3400, 3500,
-//     ],
-//   };
-
-//   // Get the vocab sets for the currently selected JLPT level
-//   const vocabSets = vocabSetsByLevel[activeJLPTTab] || [];
-
-//   const jlptLevels = ["JLPT_N5", "JLPT_N4", "JLPT_N3", "JLPT_N2", "JLPT_N1"];
-
-//   // Effect to update activeVocabTab only when activeJLPTTab changes
-//   useEffect(() => {
-//     // Set the activeVocabTab to the first value of the new JLPT level's vocab set
-//     setActiveVocabTab(vocabSets[0] || 100);
-//   }, [activeJLPTTab]);
-
-//   return (
-//     <div className="flex flex-col items-center justify-center p-4">
-//       <div className="flex border-b overflow-auto">
-//         {jlptLevels.map((level, index) => (
-//           <button
-//             key={index}
-//             className={`px-4 py-2 text-lg font-medium ${
-//               activeJLPTTab === level
-//                 ? "text-blue-500 border-b-2 border-blue-500"
-//                 : "text-gray-600"
-//             }`}
-//             onClick={() => setActiveJLPTTab(level)}
-//           >
-//             {level}
-//           </button>
-//         ))}
-//       </div>
-
-//       <div className="grid grid-cols-4 sm:grid-cols-10 gap-1 overflow-auto border-b mt-2">
-//         {vocabSets.map((set) => (
-//           <button
-//             key={set}
-//             className={`px-2 py-1 text-sm font-medium ${
-//               activeVocabTab === set
-//                 ? "text-blue-500 border-b-2 border-blue-500"
-//                 : "text-gray-600"
-//             }`}
-//             onClick={() => setActiveVocabTab(set)}
-//           >
-//             {set}
-//           </button>
-//         ))}
-//       </div>
-
-//       <button
-//         className="mt-2 text-sm text-gray-600 hover:underline"
-//         onClick={() => setShowReadings(!showReadings)}
-//       >
-//         {showReadings ? "Hide Readings" : "Show Readings"}
-//       </button>
-
-//       <div className="mt-4">
-//         {/* Render the KanjiTable based on active JLPT and Vocab Tab */}
-//         {/* <KanjiTable p_tag={activeJLPTTab} s_tag={`${activeVocabTab}`} /> */}
-//         <KanjiTable
-//           p_tag={activeJLPTTab}
-//           s_tag={`${activeVocabTab}`}
-//           showReadings={showReadings}
-//         />
-//       </div>
-//     </div>
-//   );
-// };
 
 const TabComponent = () => {
   const [activeJLPTTab, setActiveJLPTTab] = useState<string | null>(null);
   const [activeVocabTab, setActiveVocabTab] = useState<number | null>(null);
   const [showReadings, setShowReadings] = useState(true);
-  const [isMounted, setIsMounted] = useState(false); // Track component mount status
+  const [isMounted, setIsMounted] = useState(false);
 
-  // This effect will run only once after the component mounts
   useEffect(() => {
-    setIsMounted(true); // Set mounted flag to true after component mounts
-
+    setIsMounted(true);
     if (typeof window !== "undefined") {
       const storedJLPTTab = localStorage.getItem("activeJLPTTab");
       const storedVocabTab = localStorage.getItem("activeVocabTab");
-
-      // If there's no saved JLPT tab, fall back to "JLPT_N3"
-      if (storedJLPTTab) {
-        setActiveJLPTTab(storedJLPTTab);
-      } else {
-        setActiveJLPTTab("JLPT_N3");
-      }
-
-      // If there's no saved vocab tab, fall back to 100
-      if (storedVocabTab) {
-        setActiveVocabTab(parseInt(storedVocabTab, 10));
-      } else {
-        setActiveVocabTab(100);
-      }
+      setActiveJLPTTab(storedJLPTTab || "JLPT_N3");
+      setActiveVocabTab(storedVocabTab ? parseInt(storedVocabTab, 10) : 100);
     }
-  }, []); // Empty dependency array, this effect runs once when the component mounts
+  }, []);
 
-  // Memoize vocabSetsByLevel to prevent recalculations on each render
-  const vocabSetsByLevel = useMemo(
-    () => ({
-      JLPT_N5: [100, 200, 300, 400, 500, 600, 700],
-      JLPT_N4: [100, 200, 300, 400, 500, 600, 700],
-      JLPT_N3: [
-        100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300,
-        1400, 1500, 1600, 1700, 1800, 1900,
-      ],
-      JLPT_N2: [
-        100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300,
-        1400, 1500, 1600, 1700, 1800, 1900,
-      ],
-      JLPT_N1: [
-        100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300,
-        1400, 1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200, 2300, 2400, 2500,
-        2600, 2700, 2800, 2900, 3000, 3100, 3200, 3300, 3400, 3500,
-      ],
-    }),
-    []
-  ); // Empty dependency array to memoize the vocabSetsByLevel
+  const vocabSetsByLevel: Record<string, number[]> = useMemo(() => ({
+    JLPT_N5: [100, 200, 300, 400, 500, 600, 700],
+    JLPT_N4: [100, 200, 300, 400, 500, 600, 700],
+    JLPT_N3: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900],
+    JLPT_N2: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900],
+    JLPT_N1: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200, 2300, 2400, 2500, 2600, 2700, 2800, 2900, 3000, 3100, 3200, 3300, 3400, 3500],
+  }), []);
 
   const jlptLevels = ["JLPT_N5", "JLPT_N4", "JLPT_N3", "JLPT_N2", "JLPT_N1"];
-
-  const vocabSets = useMemo(() => {
-    return vocabSetsByLevel[activeJLPTTab || "JLPT_N3"] || [];
-  }, [activeJLPTTab, vocabSetsByLevel]);
-
-
+  const vocabSets = useMemo(() => vocabSetsByLevel[activeJLPTTab || "JLPT_N3"] || [], [activeJLPTTab, vocabSetsByLevel]);
 
   useEffect(() => {
     if (activeJLPTTab && vocabSets.length > 0 && activeVocabTab !== null) {
-      // If activeVocabTab doesn't exist in the current vocabSets, set it to 100
-      if (!vocabSets.includes(activeVocabTab)) {
-        setActiveVocabTab(100);
-      }
+      if (!vocabSets.includes(activeVocabTab)) setActiveVocabTab(100);
     }
   }, [activeJLPTTab, vocabSets, activeVocabTab]);
 
-
-
-  // This effect saves active JLPT tab and vocab tab to localStorage
-  useEffect(() => {
-    if (typeof window !== "undefined" && activeJLPTTab) {
-      localStorage.setItem("activeJLPTTab", activeJLPTTab);
-    }
-  }, [activeJLPTTab]);
-
-  useEffect(() => {
-    if (typeof window !== "undefined" && activeVocabTab !== null) {
-      localStorage.setItem("activeVocabTab", activeVocabTab.toString());
-    }
-  }, [activeVocabTab]);
-
-  // Render nothing on the server until mounted (to avoid hydration issues)
   if (!isMounted) return null;
 
   return (
-    <div className="flex flex-col items-center justify-center p-4">
-      <div className="flex border-b overflow-auto">
-        {jlptLevels.map((level, index) => (
+    <div className="flex flex-col items-center justify-center">
+      <div className="flex bg-slate-100 p-1.5 rounded-2xl gap-2 mb-8 overflow-auto max-w-full">
+        {jlptLevels.map((level) => (
           <button
-            key={index}
-            className={`px-4 py-2 text-lg font-medium ${activeJLPTTab === level
-              ? "text-blue-500 border-b-2 border-blue-500"
-              : "text-gray-600"
-              }`}
+            key={level}
+            className={`px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all whitespace-nowrap ${activeJLPTTab === level ? "bg-white text-slate-900 shadow-md ring-1 ring-slate-200" : "text-slate-500 hover:text-slate-900"}`}
             onClick={() => setActiveJLPTTab(level)}
           >
-            {level}
+            {level.replace('_', ' ')}
           </button>
         ))}
       </div>
 
-      <div className="grid grid-cols-4 sm:grid-cols-10 gap-1 overflow-auto border-b mt-2">
+      <div className="flex flex-wrap justify-center gap-1.5 mb-12 max-w-4xl">
         {vocabSets.map((set) => (
           <button
             key={set}
-            className={`px-2 py-1 text-sm font-medium ${activeVocabTab === set
-              ? "text-blue-500 border-b-2 border-blue-500"
-              : "text-gray-600"
-              }`}
-            onClick={() => {
-              setActiveVocabTab(set);
-              localStorage.setItem("activeVocabTab", set.toString());
-            }}
+            className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${activeVocabTab === set ? "bg-primary text-white shadow-lg shadow-primary/20" : "bg-slate-50 text-slate-400 hover:text-slate-900 hover:bg-slate-100"}`}
+            onClick={() => setActiveVocabTab(set)}
           >
             {set}
           </button>
         ))}
       </div>
 
-      <button
-        className="mt-2 text-sm text-gray-600 hover:underline"
-        onClick={() => setShowReadings(!showReadings)}
-      >
-        {showReadings ? "Hide Readings" : "Show Readings"}
-      </button>
+      <div className="w-full flex justify-end mb-8">
+        <button
+          className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-primary hover:border-primary transition-all shadow-sm"
+          onClick={() => setShowReadings(!showReadings)}
+        >
+          {showReadings ? <EyeOff size={14} /> : <Eye size={14} />}
+          {showReadings ? "Hide Hints" : "Show Hints"}
+        </button>
+      </div>
 
-      <div className="mt-4">
+      <div className="w-full">
         <KanjiTable
-          p_tag={activeJLPTTab}
-          s_tag={`${activeVocabTab}`}
+          p_tag={activeJLPTTab || "JLPT_N3"}
+          s_tag={`${activeVocabTab || 100}`}
           showReadings={showReadings}
         />
       </div>
     </div>
   );
 };
-
-// ---------------------------- //
 
 interface KanjiItem {
   vocabulary_original: string;
@@ -635,102 +324,45 @@ interface KanjiItem {
   vocabulary_audio: string;
 }
 
-// interface KanjiTableProps {
-//   p_tag: string; // Explicitly stating p_tag is of any type
-//   s_tag: string;
-// }
-
-// Update the KanjiTableProps interface
 interface KanjiTableProps {
   p_tag: string;
   s_tag: string;
-  showReadings: boolean; // Add this line
+  showReadings: boolean;
 }
 
-const KanjiTable: React.FC<KanjiTableProps> = ({
-  p_tag,
-  s_tag,
-  showReadings,
-}) => {
+const KanjiTable: React.FC<KanjiTableProps> = ({ p_tag, s_tag, showReadings }) => {
   const [kanjiData, setKanjiData] = useState<KanjiItem[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  // Initialize with specific values for p_tag and s_tag
-  const [activeJLPTTab, setActiveJLPTTab] = useState("jlpt_n3"); // Example initial value
-  const [activeVocabTab, setActiveVocabTab] = useState(100); // Example initial value
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!p_tag) return; // If no p_tag is provided, don't attempt to fetch data
-      if (!s_tag) return;
-
+      if (!p_tag || !s_tag) return;
       setLoading(true);
       try {
-        console.log(
-          "##################################  ENV VARS  #######################################"
-        );
-        console.log(process.env.REACT_APP_HOST_IP);
-
-        const host = "localhost";
-        const port = 8000;
-
-        let apiUrl;
-        if (process.env.REACT_APP_HOST_IP) {
-          apiUrl = `http://${process.env.REACT_APP_HOST_IP}:8000/e-api/v1/tanos_words?p_tag=${p_tag}&s_tag=${s_tag}`;
-        } else {
-          apiUrl = `/e-api/v1/tanos_words?p_tag=${p_tag}&s_tag=${s_tag}`;
-        }
-
-        //apiUrl = `localhost:8000/e-api/v1/tanos_words?p_tag=${p_tag}&s_tag=${s_tag}`;
-
-        // response is object and list is under words key
-        // {"words":[{"_id":"65be8e71233807ecceb66aa3",
-        //"vocabulary_original":"お土産",
-        //"vocabulary_simplified":"おみやげ",
-        // "vocabulary_english":"souvenir",
-        //"vocabulary_audio":"/audio/vocab/v_お土産.mp3",
-        // "word_type":"nan",
-        //"p_tag":"JLPT_N4",
-        //"s_tag":"200","__v":
-
+        const apiUrl = `/e-api/v1/tanos_words?p_tag=${p_tag}&s_tag=${s_tag}`;
         const response = await fetch(`${apiUrl}`);
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status}`); // Throw error for bad response
-        }
-        //const data: KanjiItem[] = await response.json();
-        //console.log(data); // Add this line to check the data format
-        //setKanjiData(data.words); // Assuming the API returns the array of kanji data
-
-        const { words } = await response.json(); // Directly destructure 'words' from the response
-        console.log(words);
-        setKanjiData(words); // Assumes words is directly an array of KanjiItem
+        if (!response.ok) throw new Error(`Error: ${response.status}`);
+        const { words } = await response.json();
+        setKanjiData(words);
       } catch (error) {
-        console.error("Error fetching kanji data:", error);
+        console.error("Error fetching vocab data:", error);
       } finally {
         setLoading(false);
       }
     };
-
     fetchData();
-  }, [p_tag, s_tag]); // Only re-run the effect if p_tag changes
+  }, [p_tag, s_tag]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) return (
+    <div className="flex flex-col items-center py-40 animate-pulse">
+      <div className="w-16 h-16 bg-primary/20 rounded-[2.5rem] mb-6" />
+      <div className="text-slate-400 font-black uppercase tracking-widest text-xs">Assembling Lexicon...</div>
+    </div>
+  );
 
   return (
-    <div>
-      <div className="flex flex-wrap justify-center gap-4">
-        {/* {hiragana.map((item, index) => ( */}
-        {/* {kanjiData.map((item, index) => (
-          <HiraganaCard
-            key={index}
-            kanji={item.vocabulary_original}
-            reading={item.vocabulary_simplified}
-            en={item.vocabulary_english}
-            k_audio={item.vocabulary_audio}
-          />
-        ))} */}
-
+    <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
+      <div className="flex flex-wrap justify-center gap-8">
         {kanjiData.map((item, index) => (
           <HiraganaCard
             key={index}
@@ -738,7 +370,7 @@ const KanjiTable: React.FC<KanjiTableProps> = ({
             reading={item.vocabulary_simplified}
             en={item.vocabulary_english}
             k_audio={item.vocabulary_audio}
-            showReadings={showReadings} // Add this line
+            showReadings={showReadings}
           />
         ))}
       </div>
