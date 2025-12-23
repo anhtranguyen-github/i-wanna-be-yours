@@ -26,7 +26,7 @@ export function StatCard({
     value,
     unit,
     icon: Icon,
-    iconColor = 'text-brand-salmon',
+    iconColor = 'text-primary',
     trend,
     trendValue,
     helpTitle,
@@ -65,7 +65,7 @@ export function StatCard({
                 'relative rounded-2xl bg-white border border-slate-100',
                 'shadow-sm hover:shadow-md transition-all duration-300',
                 sizeClasses[size],
-                isClickable && 'cursor-pointer hover:border-brand-salmon/30 group',
+                isClickable && 'cursor-pointer hover:border-primary/30 group',
                 className
             )}
             onClick={onClick}
@@ -90,7 +90,7 @@ export function StatCard({
                     {isClickable && (
                         <ChevronRight
                             size={16}
-                            className="text-slate-300 group-hover:text-brand-salmon group-hover:translate-x-0.5 transition-all"
+                            className="text-slate-300 group-hover:text-primary group-hover:translate-x-0.5 transition-all"
                         />
                     )}
                 </div>
