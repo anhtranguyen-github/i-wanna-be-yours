@@ -112,7 +112,7 @@ class StudyPlanService {
      */
     async getMyPlans(status?: string): Promise<{ plans: StudyPlanListItem[] }> {
         const user = await this.getCurrentUser();
-        if (!user) throw new Error('Not authenticated');
+        if (!user) return { plans: [] };  // Graceful return for unauthenticated users
         return this.listPlans(user.id, status);
     }
 
@@ -188,7 +188,7 @@ class StudyPlanService {
      */
     async getMyDailyTasks(date?: string): Promise<DailyTasksResponse> {
         const user = await this.getCurrentUser();
-        if (!user) throw new Error('Not authenticated');
+        if (!user) return { tasks: [], completed_count: 0, total_count: 0 };  // Graceful return
         return this.getDailyTasks(user.id, date);
     }
 
