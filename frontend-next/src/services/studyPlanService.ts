@@ -188,7 +188,7 @@ class StudyPlanService {
      */
     async getMyDailyTasks(date?: string): Promise<DailyTasksResponse> {
         const user = await this.getCurrentUser();
-        if (!user) return { tasks: [], completed_count: 0, total_count: 0 };  // Graceful return
+        if (!user) return { tasks: [], date: date || new Date().toISOString().split('T')[0], plan_id: '' };  // Graceful return
         return this.getDailyTasks(user.id, date);
     }
 

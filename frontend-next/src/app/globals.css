@@ -151,3 +151,98 @@
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-out forwards;
 }
+
+/* Chat UI Animations */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes messageAppear {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slideInRight {
+  animation: slideInRight 0.3s ease-out forwards;
+}
+
+.animate-slideInLeft {
+  animation: slideInLeft 0.3s ease-out forwards;
+}
+
+.animate-messageAppear {
+  animation: messageAppear 0.25s ease-out forwards;
+}
+
+/* Chat sidebar transitions */
+.chat-sidebar-transition {
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.2s ease-out;
+}
+
+/* Smooth content fade for sidebar state changes */
+.sidebar-content-fade {
+  transition: opacity 0.2s ease-out;
+}
+
+/* Artifact card hover effect */
+.artifact-card {
+  transition: transform 0.2s ease-out,
+    box-shadow 0.2s ease-out,
+    border-color 0.2s ease-out;
+}
+
+.artifact-card:hover {
+  transform: translateY(-2px);
+}
+
+/* Message bubble animations */
+.message-bubble {
+  animation: messageAppear 0.25s ease-out forwards;
+}
+
+/* Loading dots animation improvement */
+@keyframes bounceDot {
+
+  0%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+
+  40% {
+    transform: translateY(-6px);
+  }
+}
+
+.loading-dot {
+  animation: bounceDot 1.4s ease-in-out infinite;
+}

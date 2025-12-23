@@ -5,6 +5,7 @@ import { useChatLayout } from './ChatLayoutContext';
 import { useUser } from '@/context/UserContext';
 import { useGlobalAuth } from '@/context/GlobalAuthContext';
 import { useSWRConfig } from 'swr';
+import { swrKeys } from '@/lib/swr-keys';
 import {
     Send,
     Sparkles,
@@ -414,12 +415,13 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
         // Prevent sending if uploads are in progress
         if (attachedFiles.some(f => f.uploading)) return;
 
-        // Gate for guests - they can stage but not commit
-        if (isGuest) {
+        // Gate for guests trying to start NEW conversations
+        // Skip if they're viewing an existing conversation (shouldn't happen, but safety check)
+        if (isGuest && !effectiveConversationId) {
             openAuth('REGISTER', {
                 flowType: 'CHAT',
-                title: "Save Your Conversation",
-                description: "Sign up to save this chat and let Hanachan remember your learning style."
+                title: "Start Learning with Hanachan",
+                description: "Create a free account to chat with Hanachan and save your progress."
             });
             return;
         }
@@ -490,14 +492,14 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
 
             // After response is complete, refresh resources sidebar
             if (user) {
-                mutate(['/f-api/v1/resources', user.id]);
+                mutate(swrKeys.resources(user.id.toString()));
                 // Also refresh chat history list
-                mutate(['/h-api/conversations', user.id]);
+                mutate(swrKeys.conversations(user.id.toString()));
 
-                // NEW: Refresh artifacts list for the right sidebar
+                // Refresh artifacts list for the right sidebar using canonical key
                 const convoIdToMutate = backendConvoId || effectiveConversationId;
                 if (convoIdToMutate) {
-                    mutate(['artifacts', convoIdToMutate.toString()]);
+                    mutate(swrKeys.artifacts(convoIdToMutate.toString(), user.id.toString()));
                 }
             }
 
@@ -516,7 +518,7 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
 
                 // Refresh left sidebar conversation history
                 if (user) {
-                    mutate(['/h-api/conversations', user.id]);
+                    mutate(swrKeys.conversations(user.id.toString()));
                 }
             }
 

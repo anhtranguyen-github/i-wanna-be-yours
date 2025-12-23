@@ -1,7 +1,6 @@
 import { Conversation, Message, Resource } from "@/types/aiTutorTypes";
 import { Artifact } from "@/types/artifact";
 import Cookies from 'js-cookie';
-import { v4 as uuidv4 } from 'uuid';
 import { authFetch } from '@/lib/authFetch';
 
 class AITutorService {
@@ -29,10 +28,25 @@ class AITutorService {
     }
 
     private mapArtifact(r: any): Artifact {
+        // Try multiple possible ID fields from different backend responses
+        // Priority: id > artifactId > _id > responseId > timestamp fallback
+        const id = r.id?.toString()
+            || r.artifactId?.toString()
+            || r._id?.toString()
+            || r.responseId?.toString();
+
+        // If no ID found, generate a deterministic one based on content
+        // This allows mock agents to work while logging a warning
+        const finalId = id || `artifact-${r.type}-${Date.now()}`;
+
+        if (!id) {
+            console.warn('[aiTutorService] Artifact missing standard ID, using fallback:', finalId, r);
+        }
+
         return {
-            id: r.id?.toString() || r.artifactId || uuidv4(),
+            id: finalId,
             type: r.type,
-            title: r.content?.title || r.title || r.type,
+            title: r.content?.title || r.title || r.type || 'Untitled',
             data: r.content?.flashcards || r.content?.quiz || r.content?.vocabulary || r.content || r.data,
             metadata: { ...r.metadata },
             createdAt: r.created_at || new Date().toISOString()
@@ -40,8 +54,10 @@ class AITutorService {
     }
 
     private mapMessage(m: any): Message {
+        // Use server ID or create deterministic ID based on content
+        const id = m.id?.toString() || m._id?.toString() || `msg-${m.created_at || Date.now()}`;
         return {
-            id: m.id?.toString() || uuidv4(),
+            id,
             role: m.role as any,
             content: m.content,
             timestamp: m.created_at ? new Date(m.created_at).getTime() : Date.now(),

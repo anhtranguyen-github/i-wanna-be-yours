@@ -2,11 +2,9 @@
 "use client";
 
 import React from 'react';
-import useSWR from 'swr';
 import { useChatLayout } from './ChatLayoutContext';
-import { Artifact, ArtifactType } from '@/types/artifact';
-import { artifactService } from '@/services/artifactService';
-import { useUser } from '@/context/UserContext';
+import { Artifact } from '@/types/artifact';
+import { useArtifacts } from '@/hooks/useArtifacts';
 import { NoteRenderer } from '../artifacts/NoteRenderer';
 import { FlashcardRenderer } from '../artifacts/FlashcardRenderer';
 import { QuizRenderer } from '../artifacts/QuizRenderer';
@@ -24,18 +22,15 @@ import {
     BookOpen,
     BrainCircuit,
     Layers,
-    Lock
+    Lock,
+    Loader2
 } from 'lucide-react';
 
 export function ChatRightSidebar() {
     const { rightSidebar, setRightSidebar, activeArtifact, openArtifact, setActiveArtifact, effectiveConversationId } = useChatLayout();
-    const { user } = useUser();
 
-    // Only fetch artifacts if user is authenticated and we have a conversation - security guard
-    const { data: artifacts, error } = useSWR<Artifact[]>(
-        effectiveConversationId && user ? ['artifacts', effectiveConversationId, user.id] : null,
-        () => artifactService.listByConversation(effectiveConversationId!, user?.id?.toString())
-    );
+    // Use the new useArtifacts hook for consistent SWR-based artifact management
+    const { artifacts, isLoading, error } = useArtifacts(effectiveConversationId);
 
     // COLLAPSED STATE
     if (rightSidebar === 'collapsed') {
@@ -73,7 +68,23 @@ export function ChatRightSidebar() {
                 {/* Artifact List */}
                 <div className="flex-1 overflow-y-auto p-3">
                     <div className="space-y-3">
-                        {(!artifacts || artifacts.length === 0) && (
+                        {/* Loading State */}
+                        {isLoading && (
+                            <div className="space-y-3">
+                                {[1, 2, 3].map((i) => (
+                                    <div key={i} className="w-full flex items-center gap-4 p-4 rounded-2xl bg-card border border-border animate-pulse">
+                                        <div className="w-12 h-12 rounded-xl bg-muted" />
+                                        <div className="flex-1 space-y-2">
+                                            <div className="h-4 bg-muted rounded w-3/4" />
+                                            <div className="h-2 bg-muted rounded w-1/2" />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Empty State */}
+                        {!isLoading && (!artifacts || artifacts.length === 0) && (
                             <div className="text-center py-12 px-4">
                                 <FileText size={40} className="mx-auto text-muted-foreground/30 mb-3" />
                                 <p className="text-sm font-bold text-muted-foreground">
@@ -82,7 +93,8 @@ export function ChatRightSidebar() {
                             </div>
                         )}
 
-                        {artifacts?.map(artifact => (
+                        {/* Artifact Cards */}
+                        {!isLoading && artifacts?.map(artifact => (
                             <button
                                 key={artifact.id}
                                 onClick={() => openArtifact(artifact)}
