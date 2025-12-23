@@ -6,7 +6,7 @@ Analyzes error rates and learning patterns to prioritize study focus.
 """
 
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, List, Optional, Any
 from flask import Blueprint, request, jsonify
 from pymongo import MongoClient
@@ -40,7 +40,7 @@ class PriorityMatrixModule:
     # ============================================
 
     def calculate_item_priority(self, user_id: str, content_id: str) -> Dict[str, Any]:
-        now = datetime.now()
+        now = datetime.now(timezone.utc)
         since = now - timedelta(days=7)
         
         # Get recent interactions
@@ -143,7 +143,7 @@ class PriorityMatrixModule:
             
             error_entry = {
                 "user_id": user_id,
-                "timestamp": datetime.now(),
+                "timestamp": datetime.now(timezone.utc),
                 "content_id": data.get("content_id"),
                 "content_type": data.get("content_type"),
                 "question_type": data.get("question_type"),
@@ -191,7 +191,7 @@ class PriorityMatrixModule:
             "user_id": user_id,
             "items": matrix_items,
             "recommended_time_allocation": allocation,
-            "last_calculated": datetime.now()
+            "last_calculated": datetime.now(timezone.utc)
         }
         
         self.queue.update_one(

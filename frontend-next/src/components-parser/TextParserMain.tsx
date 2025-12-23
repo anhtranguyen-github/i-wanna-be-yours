@@ -189,7 +189,7 @@ export default function TextParserMain({ initialMode = 'text' }: TextParserMainP
             <div className="max-w-7xl mx-auto mb-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
                     <h1 className="text-4xl font-black text-slate-900 font-display tracking-tight uppercase tracking-[0.1em]">
-                        Text <span className="text-primary italic">Parser</span>
+                        Text <span className="text-primary">Parser</span>
                     </h1>
                     <p className="text-slate-500 mt-2 font-medium">Advanced Reading Intelligence & Linguistic Analysis</p>
                 </div>

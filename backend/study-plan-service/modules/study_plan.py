@@ -1428,8 +1428,8 @@ class StudyPlanModule:
                     return jsonify({"tasks": [], "message": "No active study plan"}), 200
 
                 # Check if tasks already generated for this date
-                start_of_day = datetime.combine(target_date, datetime.min.time())
-                end_of_day = datetime.combine(target_date, datetime.max.time())
+                start_of_day = datetime.combine(target_date, datetime.min.time()).replace(tzinfo=timezone.utc)
+                end_of_day = datetime.combine(target_date, datetime.max.time()).replace(tzinfo=timezone.utc)
 
                 existing_tasks = list(self.tasks_collection.find({
                     "user_id": user_id,
@@ -1463,8 +1463,10 @@ class StudyPlanModule:
                 }), 200
 
             except Exception as e:
+                import traceback
                 self.logger.error(f"Error fetching daily tasks: {e}")
-                return jsonify({"error": "Failed to fetch tasks"}), 500
+                self.logger.error(traceback.format_exc())
+                return jsonify({"error": str(e), "type": type(e).__name__}), 500
 
         @app.route("/v1/study-plan/daily-tasks/<task_id>/complete", methods=["PATCH"])
         def complete_task(task_id):

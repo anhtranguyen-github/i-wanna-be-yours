@@ -39,10 +39,10 @@ export default function Home() {
   return (
     <div className="container mx-auto py-16 px-6 max-w-5xl">
       <div className="text-center mb-16 space-y-4">
-        <h1 className="text-4xl font-black text-slate-900 font-display tracking-tight uppercase tracking-[0.2em] mb-4">Quick <span className="text-primary italic">Vocab</span></h1>
+        <h1 className="text-4xl font-black text-slate-900 font-display tracking-tight uppercase tracking-[0.2em] mb-4">Quick <span className="text-primary">Vocab</span></h1>
         <div className="max-w-3xl mx-auto bg-primary/5 p-8 rounded-[2rem] border border-primary/10 relative overflow-hidden group">
           <div className="absolute -top-10 -right-10 w-24 h-24 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-colors" />
-          <p className="text-slate-600 font-medium text-sm leading-relaxed relative z-10 italic">
+          <p className="text-slate-600 font-medium text-sm leading-relaxed relative z-10">
             &quot;Rapid vocabulary refresh for JLPT N5-N1. Scroll through the cards to anchor your memory. Click to reveal meaning and hear pronunciation.&quot;
           </p>
         </div>

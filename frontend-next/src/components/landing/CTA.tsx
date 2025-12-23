@@ -17,7 +17,7 @@ export const CTA = () => {
 
                     <h2 className="text-4xl md:text-6xl font-black leading-tight tracking-tight">
                         Initiate Your <br />
-                        <span className="text-primary italic">Strategic Journey.</span>
+                        <span className="text-primary">Strategic Journey.</span>
                     </h2>
 
                     <p className="text-slate-400 font-medium text-lg leading-relaxed">

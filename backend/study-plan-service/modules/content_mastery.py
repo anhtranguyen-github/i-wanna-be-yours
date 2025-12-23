@@ -6,7 +6,7 @@ Tracks mastery status, SRS scheduling, and performance analytics.
 """
 
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, List, Optional, Any
 from flask import Blueprint, request, jsonify
 from pymongo import MongoClient, UpdateOne
@@ -56,7 +56,7 @@ def calculate_next_srs(
     return {
         "interval_days": new_interval,
         "ease_factor": round(new_ease, 2),
-        "next_review_date": datetime.now() + timedelta(days=new_interval),
+        "next_review_date": datetime.now(timezone.utc) + timedelta(days=new_interval),
         "new_stage": new_stage
     }
 
@@ -184,7 +184,7 @@ class ContentMasteryModule:
             user_id = request.args.get("user_id")
             if not user_id: return jsonify({"error": "user_id required"}), 400
             
-            now = datetime.now()
+            now = datetime.now(timezone.utc)
             query = {
                 "user_id": user_id,
                 "srs.next_review_date": {"$lte": now},
@@ -200,7 +200,7 @@ class ContentMasteryModule:
             user_id = data.get("user_id")
             if not user_id: return jsonify({"error": "user_id required"}), 400
             
-            now = datetime.now()
+            now = datetime.now(timezone.utc)
             record = {
                 "user_id": user_id,
                 "content_type": content_type,
@@ -266,7 +266,7 @@ class ContentMasteryModule:
                 doc.get("mastery_stage", 1)
             )
             
-            now = datetime.now()
+            now = datetime.now(timezone.utc)
             
             # Update Stats
             total = doc["stats"]["total_reviews"] + 1

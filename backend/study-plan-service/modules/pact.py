@@ -6,7 +6,7 @@ Tracks daily habits, completion rates, and streak management.
 """
 
 import logging
-from datetime import datetime, date, timedelta
+from datetime import datetime, date, timedelta, timezone
 from typing import Dict, List, Optional, Any
 from flask import Blueprint, request, jsonify
 from pymongo import MongoClient
@@ -42,15 +42,15 @@ class PACTModule:
         commitment = self.commitments.find_one({"user_id": user_id})
         if not commitment: return
         
-        now = datetime.now()
+        now = datetime.now(timezone.utc)
         today = now.date()
         yesterday = today - timedelta(days=1)
         
         # Check completion for yesterday
         yesterday_logs = list(self.actions_log.find({
             "user_id": user_id,
-            "date": {"$gte": datetime.combine(yesterday, datetime.min.time()),
-                     "$lte": datetime.combine(yesterday, datetime.max.time())}
+            "date": {"$gte": datetime.combine(yesterday, datetime.min.time()).replace(tzinfo=timezone.utc),
+                     "$lte": datetime.combine(yesterday, datetime.max.time()).replace(tzinfo=timezone.utc)}
         }))
         
         active_actions = [a for a in commitment.get("actions", []) if a.get("is_active")]
@@ -197,7 +197,7 @@ class PACTModule:
             commitment = self.commitments.find_one({"user_id": user_id})
             if not commitment: return jsonify({"error": "No commitment"}), 404
             
-            today = datetime.combine(date.today(), datetime.min.time())
+            today = datetime.combine(date.today(), datetime.min.time()).replace(tzinfo=timezone.utc)
             logs = {str(l["action_id"]): l for l in self.actions_log.find({"user_id": user_id, "date": today})}
             
             status = []

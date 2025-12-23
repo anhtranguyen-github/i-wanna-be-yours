@@ -129,7 +129,7 @@ const HomePage = () => {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h1 className="text-4xl font-black text-slate-900 font-display tracking-tight uppercase tracking-[0.2em] mb-4">
-            Grammar <span className="text-primary italic">Graph</span>
+            Grammar <span className="text-primary">Graph</span>
           </h1>
           <p className="text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed">
             Neural Parsing Engine for Multilingual Syntactic Structural Analysis

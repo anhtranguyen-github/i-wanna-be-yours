@@ -17,7 +17,7 @@ const TranslatePage = () => {
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-black text-slate-900 font-display tracking-tight uppercase tracking-[0.2em] mb-4">
-            Text <span className="text-primary italic">Translate</span>
+            Text <span className="text-primary">Translate</span>
           </h1>
           <p className="text-slate-500 font-medium">Linguistic Bridge for Japanese & Korean</p>
         </div>

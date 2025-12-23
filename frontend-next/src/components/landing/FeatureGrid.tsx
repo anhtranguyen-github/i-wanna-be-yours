@@ -8,7 +8,7 @@ export const FeatureGrid = () => {
                 <div className="text-center mb-20 space-y-4">
                     <h2 className="text-sm font-black text-primary uppercase tracking-[0.3em]">The Ecosystem</h2>
                     <p className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight font-display">
-                        Linguistic <span className="text-primary italic">Command</span> Control.
+                        Linguistic <span className="text-primary">Command</span> Control.
                     </p>
                     <p className="text-slate-500 font-medium max-w-2xl mx-auto">
                         A unified platform replacing fragmented tools with a single, high-fidelity intelligence system.

@@ -22,7 +22,7 @@ export const Hero = () => {
 
                         <h1 className="text-6xl md:text-8xl font-black text-slate-900 tracking-tight leading-[0.95] font-display">
                             STRATEGIC <br />
-                            <span className="text-primary italic">INTELLIGENCE.</span>
+                            <span className="text-primary">INTELLIGENCE.</span>
                         </h1>
 
                         <p className="text-xl text-slate-500 font-medium leading-relaxed max-w-xl">

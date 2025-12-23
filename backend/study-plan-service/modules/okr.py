@@ -6,7 +6,7 @@ Tracks high-level objectives and automatically updates Key Results from activity
 """
 
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, List, Optional, Any
 from flask import Blueprint, request, jsonify
 from pymongo import MongoClient
@@ -56,7 +56,7 @@ class OKRModule:
             current = self.mastery.get_review_count(user_id)
         
         # Update history
-        now = datetime.now()
+        now = datetime.now(timezone.utc)
         history = kr.get("history", [])
         history.append({"date": now, "value": current})
         # Keep last 10 entries for velocity
@@ -89,7 +89,7 @@ class OKRModule:
         deadline = okr.get("deadline")
         if not deadline: return "low"
         
-        now = datetime.now()
+        now = datetime.now(timezone.utc)
         created = okr.get("created_at") or now
         total_days = (deadline - created).days or 1
         days_passed = (now - created).days
@@ -115,7 +115,7 @@ class OKRModule:
             user_id = data.get("user_id")
             if not user_id: return jsonify({"error": "user_id required"}), 400
             
-            now = datetime.now()
+            now = datetime.now(timezone.utc)
             deadline = data.get("deadline")
             if deadline:
                 deadline = datetime.fromisoformat(deadline.replace("Z", "+00:00"))
@@ -257,7 +257,7 @@ class OKRModule:
             okr["progress_percent"] = sum(kr["progress_percent"] for kr in okr["key_results"]) / len(okr["key_results"])
             okr["risk_level"] = self.assess_risk(okr)
             okr["on_track"] = okr["risk_level"] != "high"
-            okr["updated_at"] = datetime.now()
+            okr["updated_at"] = datetime.now(timezone.utc)
             
             self.objectives.update_one({"_id": ObjectId(id)}, {"$set": okr})
             return jsonify({"message": "Refreshed", "progress": okr["progress_percent"]})

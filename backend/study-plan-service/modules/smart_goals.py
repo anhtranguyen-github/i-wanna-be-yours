@@ -6,7 +6,7 @@ Integrates with Content Mastery to calculate real-time progress.
 """
 
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Optional, Any
 from flask import Blueprint, request, jsonify
 from pymongo import MongoClient
@@ -124,7 +124,7 @@ class SmartGoalsModule:
             user_id = data.get("user_id")
             if not user_id: return jsonify({"error": "user_id required"}), 400
             
-            now = datetime.now()
+            now = datetime.now(timezone.utc)
             deadline = data.get("time_bound_deadline")
             if deadline:
                 deadline = datetime.fromisoformat(deadline.replace("Z", "+00:00"))

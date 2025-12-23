@@ -186,7 +186,7 @@ export default function JLPTPracticePage() {
                             </div>
                             <div>
                                 <h1 className="text-5xl font-black tracking-tighter text-foreground font-display leading-[0.9]">
-                                    JLPT <span className="text-primary italic">Practice</span>
+                                    JLPT <span className="text-primary">Practice</span>
                                 </h1>
                                 <p className="text-xs font-black text-muted-foreground uppercase tracking-[0.3em] font-display mt-2 opacity-60">
                                     Cognitive Synthesis & Mastery
