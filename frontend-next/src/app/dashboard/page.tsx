@@ -276,7 +276,7 @@ export default function LearningDashboardPage() {
                         <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
                                 <span className="px-3 py-1 bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-widest rounded-full">AI Insight</span>
-                                <h3 className="text-xl font-black text-foreground tracking-tight font-display">Hanabira Assistant</h3>
+                                <h3 className="text-xl font-black text-foreground tracking-tight font-display">Hanachan Assistant</h3>
                             </div>
                             <p className="text-muted-foreground font-bold leading-relaxed italic max-w-2xl">
                                 &quot;You&apos;re making amazing progress with N3 vocabulary! Based on our demo patterns, your retention is 15% higher in the morning. I recommend focusing on Kanji tomorrow to maintain your 5-day streak!&quot;

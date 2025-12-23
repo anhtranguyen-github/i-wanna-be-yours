@@ -69,7 +69,7 @@ export default function ResourcesListPage() {
         },
         {
             title: "Visual OCR Vault",
-            description: "Store images of street signs or manga and let hanabira decipher them with advanced Japanese OCR.",
+            description: "Store images of street signs or manga and let hanachan decipher them with advanced Japanese OCR.",
             icon: <Image size={32} className="text-kanji" />,
             color: "bg-kanji/5",
             borderColor: "border-kanji/20"
@@ -144,7 +144,7 @@ export default function ResourcesListPage() {
                                     <span className="text-primary">Perfect Lessons</span>
                                 </h2>
                                 <p className="text-background/60 text-lg mb-12 leading-relaxed font-bold max-w-2xl mx-auto">
-                                    Don&apos;t just store files—interact with them. Join hanabira to
+                                    Don&apos;t just store files—interact with them. Join hanachan to
                                     automatically generate personalized study plans from your own materials.
                                 </p>
                                 <button

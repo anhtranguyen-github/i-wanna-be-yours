@@ -11,7 +11,7 @@ export const Navbar = () => {
                     <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary group-hover:rotate-12 transition-transform">
                         <Sparkles size={20} className="fill-primary" />
                     </div>
-                    <span className="text-2xl font-black font-display text-slate-900 tracking-tight uppercase tracking-widest text-lg">Hanabira</span>
+                    <span className="text-2xl font-black font-display text-slate-900 tracking-tight uppercase tracking-widest text-lg">Hanachan</span>
                 </div>
 
                 {/* Desktop Navigation */}

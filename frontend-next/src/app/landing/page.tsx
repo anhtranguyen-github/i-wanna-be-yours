@@ -3,9 +3,9 @@ import { ChevronRightIcon } from "@heroicons/react/20/solid";
 import Image from "next/image";
 import Link from "next/link";
 
-import hanachan_text_parser_tokenization from "@public/img/screenshots/hanabira_text_parser_tokenization.png";
-import hanachan_youtube_parser from "@public/img/screenshots/hanabira_youtube_parser.png";
-import hanachan_grammar_graph from "@public/img/screenshots/hanabira_grammar_graph.png";
+import hanachan_text_parser_tokenization from "@public/img/screenshots/hanachan_text_parser_tokenization.png";
+import hanachan_youtube_parser from "@public/img/screenshots/hanachan_youtube_parser.png";
+import hanachan_grammar_graph from "@public/img/screenshots/hanachan_grammar_graph.png";
 
 import EmailForm from "@/components/EmailForm";
 import { FeatureIconGrid, defaultFeatures } from "@/components/shared/FeatureIconGrid";

@@ -194,7 +194,7 @@ export default function SettingsPage() {
 
                 {/* Version Info */}
                 <div className="text-center text-sm text-slate-400 mt-12">
-                    <p>hanabira.org v1.0.0</p>
+                    <p>hanachan.org v1.0.0</p>
                     <p className="mt-1">Made with 🌸 for Japanese learners</p>
                 </div>
             </div>

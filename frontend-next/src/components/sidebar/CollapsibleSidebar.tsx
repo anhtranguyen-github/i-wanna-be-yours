@@ -482,7 +482,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     <>
                         <Link href="/" className="flex items-center gap-3 animate-in fade-in slide-in-from-left-4 duration-500">
                             <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center text-xl  border border-secondary/20">🌸</div>
-                            <span className="font-display font-black text-2xl text-foreground tracking-tight">hanabira</span>
+                            <span className="font-display font-black text-2xl text-foreground tracking-tight">hanachan</span>
                         </Link>
                         <button
                             onClick={toggle}

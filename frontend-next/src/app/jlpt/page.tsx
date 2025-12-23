@@ -17,8 +17,8 @@ type PageView = 'browse' | 'personal';
 
 // Local storage keys
 const STORAGE_KEYS = {
-    attempts: 'hanabira_jlpt_attempts',
-    userExams: 'hanabira_jlpt_user_exams',
+    attempts: 'hanachan_jlpt_attempts',
+    userExams: 'hanachan_jlpt_user_exams',
 };
 
 export default function JLPTPracticePage() {

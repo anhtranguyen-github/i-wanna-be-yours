@@ -15,7 +15,7 @@ async def lifespan(app: FastAPI):
     # Shutdown
     await db.close()
 
-app = FastAPI(title="Hanabira Python Dictionary Service", lifespan=lifespan)
+app = FastAPI(title="Hanachan Python Dictionary Service", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,

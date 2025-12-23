@@ -26,7 +26,7 @@ export const Hero = () => {
                         </h1>
 
                         <p className="text-xl text-slate-500 font-medium leading-relaxed max-w-xl">
-                            The ultimate OS for linguistic acquisition. From AI-powered semantic analysis to structured strategic planning, Hanabira is your command center for Japanese mastery.
+                            The ultimate OS for linguistic acquisition. From AI-powered semantic analysis to structured strategic planning, Hanachan is your command center for Japanese mastery.
                         </p>
 
                         <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
@@ -69,8 +69,8 @@ export const Hero = () => {
                         <div className="relative rounded-[3rem] overflow-hidden shadow-2xl shadow-primary/10 border border-white p-2 bg-white/50 backdrop-blur-sm">
                             <div className="aspect-square bg-white rounded-[2.5rem] overflow-hidden relative group">
                                 <Image
-                                    src="/hanabira_hero_illustration.png"
-                                    alt="Hanabira Strategic Intelligence"
+                                    src="/hanachan_hero_illustration.png"
+                                    alt="Hanachan Strategic Intelligence"
                                     fill
                                     className="object-cover group-hover:scale-110 transition-transform duration-[2000ms]"
                                 />

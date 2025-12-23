@@ -23,7 +23,7 @@ interface UseExamTimerReturn {
     addTime: (seconds: number) => void;
 }
 
-const STORAGE_PREFIX = 'hanabira_exam_timer_';
+const STORAGE_PREFIX = 'hanachan_exam_timer_';
 
 /**
  * Custom hook for managing exam countdown timer with persistence

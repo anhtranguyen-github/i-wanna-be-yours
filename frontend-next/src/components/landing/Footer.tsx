@@ -11,7 +11,7 @@ export const Footer = () => {
                         <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
                             <Sparkles size={20} className="fill-primary" />
                         </div>
-                        <span className="text-2xl font-black font-display tracking-tight uppercase tracking-widest text-lg">Hanabira</span>
+                        <span className="text-2xl font-black font-display tracking-tight uppercase tracking-widest text-lg">Hanachan</span>
                     </div>
                     <p className="text-slate-400 font-medium max-w-sm leading-relaxed">
                         A high-fidelity linguistic intelligence system designed for the serious student of Japanese mastery.
@@ -45,7 +45,7 @@ export const Footer = () => {
             </div>
 
             <div className="max-w-7xl mx-auto mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-black uppercase tracking-widest text-slate-500">
-                <p>© 2025 Hanabira Intelligence. All operations secured.</p>
+                <p>© 2025 Hanachan Intelligence. All operations secured.</p>
                 <div className="flex gap-8">
                     <Link href="#" className="hover:text-primary transition-colors">Privacy Protocol</Link>
                     <Link href="#" className="hover:text-primary transition-colors">Service Terms</Link>

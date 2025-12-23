@@ -121,7 +121,7 @@ export default function PracticePage() {
                             Create an account to save your practice history, track streaks, and unlock achievements.
                         </p>
                         <button
-                            onClick={() => openAuth('REGISTER', { flowType: 'PRACTICE', title: 'Join Hanabira', description: 'Sign up to save your progress.' })}
+                            onClick={() => openAuth('REGISTER', { flowType: 'PRACTICE', title: 'Join Hanachan', description: 'Sign up to save your progress.' })}
                             className="px-8 py-3 bg-foreground text-background font-bold rounded-xl hover:bg-foreground/90 transition-colors"
                         >
                             Sign Up

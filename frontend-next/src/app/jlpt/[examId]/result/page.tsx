@@ -402,7 +402,7 @@ export default function ExamResultPage() {
                     {!user && (
                         <div className="mt-10 pt-8 border-t border-border/50 flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 font-display">
                             <CheckCircle2 size={16} className="text-primary" />
-                            Guest Session: Secure your lifelong Hanabira profile to store diagnostic data.
+                            Guest Session: Secure your lifelong Hanachan profile to store diagnostic data.
                         </div>
                     )}
                 </div>

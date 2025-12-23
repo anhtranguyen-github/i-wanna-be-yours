@@ -162,8 +162,8 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
         setRightSidebarState('minimized');
         // Clear sessionStorage when explicitly resetting
         if (typeof window !== 'undefined') {
-            sessionStorage.removeItem('hanabira:rightSidebar');
-            sessionStorage.removeItem('hanabira:activeArtifact');
+            sessionStorage.removeItem('hanachan:rightSidebar');
+            sessionStorage.removeItem('hanachan:activeArtifact');
         }
     }, []);
 
@@ -171,12 +171,12 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
     useEffect(() => {
         if (typeof window === 'undefined') return;
 
-        const savedSidebar = sessionStorage.getItem('hanabira:rightSidebar');
-        const savedArtifact = sessionStorage.getItem('hanabira:activeArtifact');
+        const savedSidebar = sessionStorage.getItem('hanachan:rightSidebar');
+        const savedArtifact = sessionStorage.getItem('hanachan:activeArtifact');
 
         if (savedSidebar) {
             setRightSidebarState(savedSidebar as RightSidebarState);
-            sessionStorage.removeItem('hanabira:rightSidebar');
+            sessionStorage.removeItem('hanachan:rightSidebar');
         }
 
         if (savedArtifact) {
@@ -185,7 +185,7 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
             } catch (e) {
                 console.error('Failed to parse saved artifact:', e);
             }
-            sessionStorage.removeItem('hanabira:activeArtifact');
+            sessionStorage.removeItem('hanachan:activeArtifact');
         }
     }, []); // Only on mount
 
@@ -244,8 +244,8 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
         }
         // Persist to sessionStorage for navigation bridge
         if (typeof window !== 'undefined') {
-            sessionStorage.setItem('hanabira:rightSidebar', 'expanded');
-            sessionStorage.setItem('hanabira:activeArtifact', JSON.stringify(artifact));
+            sessionStorage.setItem('hanachan:rightSidebar', 'expanded');
+            sessionStorage.setItem('hanachan:activeArtifact', JSON.stringify(artifact));
         }
     }, [setRightSidebar, setLeftSidebar]);
 

@@ -9,8 +9,8 @@ const API_BASE = '/e-api/v1';
 // === Local Storage Helpers ===
 
 const STORAGE_KEYS = {
-    attempts: 'hanabira_jlpt_attempts',
-    userExams: 'hanabira_jlpt_user_exams',
+    attempts: 'hanachan_jlpt_attempts',
+    userExams: 'hanachan_jlpt_user_exams',
 };
 
 /**

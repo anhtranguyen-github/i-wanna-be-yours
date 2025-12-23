@@ -126,7 +126,7 @@ export default function CreateQuizPage() {
             openAuth('REGISTER', {
                 flowType: 'PRACTICE',
                 title: 'Save Your Custom Quiz',
-                description: 'Create a free account to save your work and share this quiz with the Hanabira community.'
+                description: 'Create a free account to save your work and share this quiz with the Hanachan community.'
             });
             return;
         }
