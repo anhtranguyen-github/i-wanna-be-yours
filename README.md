@@ -1,14 +1,15 @@
-# hanachan.org - Japanese Learning Platform
+# hanabira.org - Japanese Learning Platform
 
-A comprehensive Japanese language learning platform with AI-powered tutoring, adaptive learning, flashcards, quizzes, and personalized study plans.
+A comprehensive Japanese language learning platform with AI-powered tutoring, adaptive learning, premium unified UI, and personalized study plans.
 
 ## 🌸 Features
 
 ### 📚 Core Learning
 - **Knowledge Base**: JLPT N1-N5 grammar, vocabulary, and kanji
 - **Flashcards**: SRS-based spaced repetition system
-- **Quizzes**: Adaptive difficulty quizzes for all levels
+- **Quizzes**: Adaptive difficulty quizzes for all levels (Premium Unified UI)
 - **Reading Practice**: Japanese text with furigana and translations
+- **JLPT Exams**: Full-length exam simulations with sticky navigation and scroll mode
 
 ### 🤖 AI Tutor (Hanachan)
 - Natural conversation practice
@@ -16,12 +17,12 @@ A comprehensive Japanese language learning platform with AI-powered tutoring, ad
 - Study recommendations based on progress
 - Artifact generation (flashcards, summaries, quizzes)
 
-### 📊 Comprehensive Planning
-- **Study Plans**: JLPT exam-focused personalized study plans
+### 📊 Comprehensive Planning & Strategy
+- **Study Plans**: JLPT exam-focused personalized study plans (Strategy Center)
 - **Learner Tracking**: Track vocabulary, kanji, grammar mastery
 - **Adaptive Learning**: Recommendations based on performance
 - **Achievements**: Badges and streak tracking for motivation
-- **Learning Dashboard**: Unified view of all progress metrics
+- **Dashboard**: Unified view of all progress metrics and personal stats
 
 ### 🎯 Daily Learning
 - Daily task generation
@@ -35,19 +36,19 @@ A comprehensive Japanese language learning platform with AI-powered tutoring, ad
 ┌─────────────────────────────────────────────────────────────────────┐
 │                    Frontend (Next.js :3000)                          │
 └───────────────┬─────────────┬─────────────┬─────────────┬───────────┘
-                │             │             │             │
-                ▼             ▼             ▼             ▼
-         ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐
-         │ Express  │  │  Flask   │  │Dictionary│  │ Hanachan │
-         │  :8000   │  │  :5100   │  │  :5200   │  │  :5400   │
-         └──────────┘  └──────────┘  └──────────┘  └──────────┘
-              │             │             │             │
-              └─────────────┴─────────────┴─────────────┘
-                                  │
-                                  ▼
-                      ┌──────────────────────┐
-                      │  MongoDB :27017       │
-                      └──────────────────────┘
+                │             │             │             │           │
+                ▼             ▼             ▼             ▼           ▼
+         ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐
+         │ Express  │  │  Flask   │  │Dictionary│  │ Hanachan │  │Study-Plan│
+         │  :8000   │  │  :5100   │  │  :5200   │  │  :5400   │  │  :5500   │
+         └──────────┘  └──────────┘  └──────────┘  └──────────┘  └──────────┘
+               │             │             │             │             │
+               └─────────────┴─────────────┴─────┬───────┴─────────────┘
+                                                 │
+                                                 ▼
+                                     ┌──────────────────────┐
+                                     │  MongoDB :27017       │
+                                     └──────────────────────┘
 ```
 
 ### Services
@@ -56,9 +57,10 @@ A comprehensive Japanese language learning platform with AI-powered tutoring, ad
 |---------|------|---------|
 | **frontend-next** | 3000 | Next.js web application |
 | **express** | 8000 | Static curriculum content (grammar, vocab, kanji) |
-| **flask** | 5100 | User data (flashcards, progress, study plans) |
-| **dictionary** | 5200 | Japanese text processing (MeCab, dictionaries) |
+| **flask** | 5100 | User data (flashcards, progress, learner tracking) |
+| **python-dictionary** | 5200 | Japanese text processing (MeCab, sudachipy) |
 | **hanachan** | 5400 | AI chat agent (LangChain, Ollama) |
+| **study-plan-service** | 5500 | Strategy, OKRs, PACT, and SMART goal management |
 
 ## 🚀 Quick Start
 
@@ -78,160 +80,79 @@ A comprehensive Japanese language learning platform with AI-powered tutoring, ad
 ./start_local_services.sh stop
 ```
 
-### Individual Services
-
-```bash
-# Frontend (Next.js)
-cd frontend-next
-npm run dev
-
-# Flask API
-cd backend/flask
-source .venv/bin/activate
-gunicorn -w 4 -b 0.0.0.0:5100 server:app
-
-# Express API
-cd backend/express
-PORT=8000 node my_server.js
-
-# Dictionary API
-cd backend/dictionary
-PORT=5200 node main_server.js
-
-# Hanachan AI
-cd backend/hanachan
-source .venv/bin/activate
-python3 app.py
-```
-
 ## 📁 Project Structure
 
 ```
-hanachan.org/
+hanabira.org/
 ├── frontend-next/          # Next.js frontend
 │   ├── src/
 │   │   ├── app/           # Next.js App Router pages
 │   │   ├── components/    # Reusable React components
 │   │   ├── services/      # API service clients
 │   │   ├── types/         # TypeScript definitions
-│   │   └── context/       # React contexts
-│   └── content/           # Static content (grammar, etc.)
+│   │   └── config/        # Navigation and system config
 │
 ├── backend/
 │   ├── express/           # Static content API
 │   ├── flask/             # User data & learning API
-│   │   └── modules/
-│   │       ├── flashcards.py
-│   │       ├── quiz.py
-│   │       ├── study_plan.py
-│   │       ├── learner_progress.py  # NEW: Progress tracking
-│   │       └── adaptive_learning.py # NEW: Recommendations
-│   ├── dictionary/        # Text processing API
+│   ├── study-plan-service/# Strategy and goals API
+│   ├── python-dictionary/ # Text processing API
 │   └── hanachan/          # AI chat agent
-│       └── services/
-│           └── study_plan_context.py # Chat-planning integration
 │
-├── plans/                 # Implementation plans
-├── logs/                  # Service logs
-└── start_local_services.sh # Service orchestration script
+├── start_local_services.sh # Service orchestration script
+└── docker-compose.yml      # Container orchestration
 ```
-
-## 🔗 API Endpoints
-
-### Learner Progress (`/f-api/v1/learner/`)
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/progress/{user_id}` | GET | Get progress summary |
-| `/activity` | POST | Log learning activity |
-| `/stats/{user_id}` | GET | Get detailed statistics |
-| `/achievements/{user_id}` | GET | Get user achievements |
-| `/session/start` | POST | Start study session |
-| `/session/{id}/end` | POST | End study session |
-
-### Adaptive Learning (`/f-api/v1/adaptive/`)
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/recommendations/{user_id}` | GET | Get personalized recommendations |
-| `/performance/{user_id}` | GET | Analyze learning performance |
-| `/difficulty/{user_id}` | GET | Get difficulty settings |
-| `/difficulty/{user_id}/adjust` | POST | Adjust difficulty |
-| `/optimal-time/{user_id}` | GET | Get optimal study times |
-
-### Study Plans (`/f-api/v1/study-plan/`)
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/plans` | GET/POST | List/create study plans |
-| `/plans/{id}` | GET/PATCH/DELETE | Manage specific plan |
-| `/daily-tasks` | GET | Get today's tasks |
-| `/jlpt-info` | GET | Get JLPT requirements |
 
 ## 🎨 Frontend Routes
 
 | Route | Description |
 |-------|-------------|
 | `/` | Landing page |
-| `/learning-dashboard` | **NEW**: Unified learning dashboard |
-| `/flashcards` | Flashcard decks and study |
-| `/quiz` | Quiz system |
-| `/study-plan` | Study plan management |
-| `/chat` | AI tutor (Hanachan) |
-| `/knowledge-base` | Grammar, vocabulary, kanji |
-| `/user-dashboard` | User profile and settings |
+| `/chat` | AI Tutor (Hanachan) |
+| `/tools` | Linguistic Laboratory (Vocab/Kanji maps, Text Parser) |
+| `/game` | Hanachan's Arcade (Learning games) |
+| `/library` | Learning Library (Podcasts, Reading, Mnemonics) |
+| `/dictionary` | Integrated Japanese Dictionary |
+| `/study-plan` | Strategy Center (OKRs, PACT, SMART Goals) |
+| `/practice` | Practice Hub (Daily tasks, streaks) |
+| `/jlpt` | Exam Center (JLPT Simulators) |
+| `/quiz` | Practice Center (Custom Quizzes) |
+| `/dashboard` | User Profile & Command Center |
+| `/settings` | Account and UI Settings |
 
-## 🆕 Recent Features
+## 🆕 Recent Updates
 
-### Comprehensive Planning System (v2.0)
+### UI Unification (Premium Matcha)
+- Unified Card Architecture for Quizzes and JLPT Exams.
+- Consistent typography (Black weights, non-italicized headers).
+- Premium "Matcha" aesthetic with glassmorphism and claymorphism elements.
 
-1. **Learner Progress Tracking**
-   - Vocabulary, kanji, grammar mastery counts
-   - Study streaks with longest streak record
-   - Weekly goals (flashcards, quizzes, study time)
-   - Activity logging for all learning actions
+### Advanced Planning System
+- **Strategy Center**: Implementation of OKRs, PACT commitments, and SMART goals.
+- **Progress Tracking**: Holistic view of vocabulary, kanji, and grammar mastery.
+- **Activity Logging**: Semantic activity logs for performance analysis.
 
-2. **Adaptive Learning Engine**
-   - Performance analysis by category
-   - Personalized recommendations
-   - Automatic difficulty adjustment
-   - Optimal study time suggestions
-
-3. **Achievement System**
-   - 13+ achievements (streaks, milestones, perfect scores)
-   - Visual badges in dashboard and chat
-
-4. **Unified Dashboard**
-   - Progress rings and stat cards
-   - Weekly goal progress bars
-   - Achievement display
-   - Recent activity feed
-   - Quick action buttons
-
-5. **Chat Integration**
-   - Progress artifacts in chat
-   - Recommendation artifacts
-   - Intent detection for study queries
-   - Context-aware AI responses
+### Performance & Text Processing
+- Migrated dictionary service to Python for better Japanese NLP support.
+- Implemented robust text parsing with furigana and context-aware translations.
 
 ## 🔧 Configuration
 
 ### Environment Variables
 
 ```bash
-# Flask
-FLASK_PORT=5100
+# Frontend (next.config.js handles proxying)
+EXPRESS_API_URL=http://localhost:8000
 FLASK_API_URL=http://localhost:5100
-
-# Frontend
-NEXT_PUBLIC_FLASK_API_URL=http://localhost:5100
-NEXT_PUBLIC_HANACHAN_API_URL=http://localhost:5400
+STUDY_PLAN_API_URL=http://localhost:5500
+DICTIONARY_API_URL=http://localhost:5200
+HANACHAN_API_URL=http://localhost:5400
 ```
 
 ## 📝 License
 
-MIT License - see LICENSE file for details.
+MIT License - see [LICENSE](./LICENSE) file for details.
 
 ---
 
-**hanachan.org** - 🌸 Your path to Japanese fluency
+**hanabira.org** - 🌸 Your premium path to Japanese fluency

@@ -12,13 +12,14 @@ services:
     environment:
       - ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8888
       - JWT_SECRET=your-development-secret-key
-      EXPRESS_API_URL: 'http://express-db:8000'
-      FLASK_API_URL: 'http://flask-dynamic-db:5100'
-      DICTIONARY_API_URL: 'http://dictionary-db:5200'
-      HANACHAN_API_URL: 'http://hanachan:5400'
-      MYSQL_HOST: 'mysql-db'
-      MYSQL_PORT: '3306'
-      GA_MEASUREMENT_ID: '' # Google Analytics measurement ID 
+      - EXPRESS_API_URL=http://express-db:8000
+      - FLASK_API_URL=http://flask-dynamic-db:5100
+      - STUDY_PLAN_API_URL=http://study-plan-service:5500
+      - DICTIONARY_API_URL=http://dictionary-db:5200
+      - HANACHAN_API_URL=http://hanachan:5400
+      - MYSQL_HOST=mysql-db
+      - MYSQL_PORT=3306
+      - GA_MEASUREMENT_ID=
     restart: unless-stopped
     networks:
       - hanachan-network
@@ -64,14 +65,12 @@ services:
 
   dictionary-db:
     build:
-      context: ./backend/dictionary
-    image: coil/hanachan.org:dictionary-db
+      context: ./backend/python-dictionary
+    image: coil/hanachan.org:python-dictionary
     ports:
       - '127.0.0.1:5200:5200'
     environment:
       - ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8888
-    volumes:
-      - './config_dummy.json:/app/config.json'
     restart: unless-stopped
     networks:
       - hanachan-network
