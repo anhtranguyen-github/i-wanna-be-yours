@@ -49,12 +49,23 @@ export function useArtifacts(
     options: UseArtifactsOptions = {}
 ): UseArtifactsReturn {
     const { user } = useUser();
-    const { mutate: globalMutate } = useSWRConfig();
     const { paused = false } = options;
+
+    // CRITICAL FIX: Return empty immediately if no conversationId
+    // This prevents stale artifacts from showing when navigating to new chat
+    if (!conversationId) {
+        return {
+            artifacts: [],
+            isLoading: false,
+            error: undefined,
+            revalidate: async () => { },
+            findById: () => undefined,
+        };
+    }
 
     // Build SWR key - null if not ready to fetch
     const swrKey = useMemo(() => {
-        if (!conversationId || !user || paused) {
+        if (!user || paused) {
             return null;
         }
         return swrKeys.artifacts(conversationId, user.id.toString());
@@ -64,7 +75,7 @@ export function useArtifacts(
     const { data, error, isLoading, mutate } = useSWR<Artifact[]>(
         swrKey,
         () => {
-            if (!conversationId || !user) {
+            if (!user) {
                 return Promise.resolve([]);
             }
             return artifactService.listByConversation(conversationId, user.id.toString());

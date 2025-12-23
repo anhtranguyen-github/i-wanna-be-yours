@@ -9,13 +9,13 @@ import { SWRConfiguration } from 'swr';
 /**
  * Configuration for artifact data
  * - Less frequent revalidation since artifacts don't change often
- * - Keep previous data for smoother UX
+ * - DISABLED keepPreviousData to prevent stale artifacts on navigation
  */
 export const ARTIFACTS_SWR_CONFIG: SWRConfiguration = {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
     dedupingInterval: 5000,
-    keepPreviousData: true,
+    keepPreviousData: false,  // CRITICAL: Prevents stale artifacts when switching chats
     errorRetryCount: 2,
 };
 

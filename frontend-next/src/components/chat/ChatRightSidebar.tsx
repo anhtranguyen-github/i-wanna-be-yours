@@ -32,6 +32,9 @@ export function ChatRightSidebar() {
     // Use the new useArtifacts hook for consistent SWR-based artifact management
     const { artifacts, isLoading, error } = useArtifacts(effectiveConversationId);
 
+    // SAFETY CHECK: Ensure no stale artifacts show when no conversation is selected
+    const displayArtifacts = effectiveConversationId ? artifacts : [];
+
     // COLLAPSED STATE
     if (rightSidebar === 'collapsed') {
         return (
@@ -84,7 +87,7 @@ export function ChatRightSidebar() {
                         )}
 
                         {/* Empty State */}
-                        {!isLoading && (!artifacts || artifacts.length === 0) && (
+                        {!isLoading && displayArtifacts.length === 0 && (
                             <div className="text-center py-12 px-4">
                                 <FileText size={40} className="mx-auto text-muted-foreground/30 mb-3" />
                                 <p className="text-sm font-bold text-muted-foreground">
@@ -94,7 +97,7 @@ export function ChatRightSidebar() {
                         )}
 
                         {/* Artifact Cards */}
-                        {!isLoading && artifacts?.map(artifact => (
+                        {!isLoading && displayArtifacts.map(artifact => (
                             <button
                                 key={artifact.id}
                                 onClick={() => openArtifact(artifact)}
