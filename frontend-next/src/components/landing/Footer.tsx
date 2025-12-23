@@ -1,33 +1,66 @@
 import Link from 'next/link';
 import React from 'react';
+import { Github, Twitter, Linkedin, Sparkles } from 'lucide-react';
 
 export const Footer = () => {
     return (
-        <footer className="bg-white border-t border-gray-100 py-12 md:py-16">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-
-                    {/* Brand */}
-                    <div className="flex flex-col items-center md:items-start gap-4">
-                        <span className="text-2xl font-bold font-fredoka text-gray-900">hanachan</span>
-                        <p className="text-gray-500 text-sm">
-                            Open Source Japanese Learning Platform
-                        </p>
+        <footer className="bg-slate-900 py-20 px-6 text-white border-t border-white/5">
+            <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-12">
+                <div className="col-span-2 space-y-6">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
+                            <Sparkles size={20} className="fill-primary" />
+                        </div>
+                        <span className="text-2xl font-black font-display tracking-tight uppercase tracking-widest text-lg">Hanabira</span>
                     </div>
-
-                    {/* Links */}
-                    <div className="flex gap-8 text-sm text-gray-600">
-                        <Link href="/privacy-policy" className="hover:text-gray-900 transition-colors">Privacy Policy</Link>
-                        <Link href="/terms-of-service" className="hover:text-gray-900 transition-colors">Terms of Service</Link>
-                        <a href="https://github.com/anhtranguyen/i-wanna-be-yours" target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 transition-colors">GitHub</a>
+                    <p className="text-slate-400 font-medium max-w-sm leading-relaxed">
+                        A high-fidelity linguistic intelligence system designed for the serious student of Japanese mastery.
+                    </p>
+                    <div className="flex gap-4">
+                        <SocialLink href="#" icon={<Github size={20} />} />
+                        <SocialLink href="#" icon={<Twitter size={20} />} />
+                        <SocialLink href="#" icon={<Linkedin size={20} />} />
                     </div>
+                </div>
 
-                    {/* Copyright */}
-                    <div className="text-gray-400 text-sm">
-                        &copy; {new Date().getFullYear()} Hanabira.org
+                <div>
+                    <h3 className="text-xs font-black uppercase tracking-[0.2em] text-primary mb-6">Laboratory</h3>
+                    <div className="flex flex-col gap-4">
+                        <FooterLink href="/tools/text-parser">Text Parser</FooterLink>
+                        <FooterLink href="/tools/grammar-graph">Grammar Graph</FooterLink>
+                        <FooterLink href="/tools/translate">AI Translate</FooterLink>
+                        <FooterLink href="/library">Resource Library</FooterLink>
                     </div>
+                </div>
+
+                <div>
+                    <h3 className="text-xs font-black uppercase tracking-[0.2em] text-primary mb-6">Company</h3>
+                    <div className="flex flex-col gap-4">
+                        <FooterLink href="#">About Intelligence</FooterLink>
+                        <FooterLink href="#">Strategy Guide</FooterLink>
+                        <FooterLink href="#">Documentation</FooterLink>
+                        <FooterLink href="#">Community</FooterLink>
+                    </div>
+                </div>
+            </div>
+
+            <div className="max-w-7xl mx-auto mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-black uppercase tracking-widest text-slate-500">
+                <p>© 2025 Hanabira Intelligence. All operations secured.</p>
+                <div className="flex gap-8">
+                    <Link href="#" className="hover:text-primary transition-colors">Privacy Protocol</Link>
+                    <Link href="#" className="hover:text-primary transition-colors">Service Terms</Link>
                 </div>
             </div>
         </footer>
     );
 };
+
+const FooterLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
+    <Link href={href} className="text-sm font-medium text-slate-400 hover:text-white transition-colors">{children}</Link>
+);
+
+const SocialLink = ({ href, icon }: { href: string; icon: React.ReactNode }) => (
+    <Link href={href} className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-slate-400 hover:bg-primary hover:text-white transition-all">
+        {icon}
+    </Link>
+);

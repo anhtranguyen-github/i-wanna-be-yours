@@ -2,107 +2,87 @@
 @tailwind components;
 @tailwind utilities;
 
-@import '../theme/variables.css';
+/* Note: variables.css has been consolidated into this file */
 
-/* Import Fredoka (Headings) and Nunito (Body) */
 @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Nunito:wght@300;400;500;600;700;800&display=swap');
 
 @layer base {
   :root {
-    /* Pastel Sky Theme Variables */
-    --background: 0 0% 100%;
-    /* #FFFFFF */
-    --foreground: 210 29% 24%;
-    /* #2C3E50 Navy */
+    /* Sakura Zen (Modern/Clean) Theme */
+    --background: 40 30% 98%;
+    /* #FFFDF8 Rice Paper */
+    --foreground: 210 30% 20%;
+    /* #1E293B Ink Navy */
 
     --card: 0 0% 100%;
-    --card-foreground: 210 29% 24%;
+    /* #FFFFFF Pure White */
+    --card-foreground: 210 30% 20%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 210 29% 24%;
+    --popover-foreground: 210 30% 20%;
 
-    --primary: 138 61% 53%;
-    /* #38D468 Green */
+    --primary: 142 71% 45%;
+    /* #22C55E Matcha Green */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 348 90% 88%;
-    /* #FDC5D0 Pink */
-    --secondary-foreground: 210 29% 24%;
+    --secondary: 350 85% 90%;
+    /* #FEE2E2 Sakura Pink */
+    --secondary-foreground: 210 30% 20%;
 
-    --muted: 186 52% 93%;
-    /* #E3F5F7 Surface */
+    --muted: 210 20% 96%;
+    /* #F1F5F9 Cloud Gray */
     --muted-foreground: 215 16% 47%;
 
-    --accent: 138 61% 53%;
-    /* #38D468 Green */
-    --accent-foreground: 0 0% 100%;
+    --accent: 45 90% 60%;
+    /* #F59F0B Yuzu Orange */
+    --accent-foreground: 210 30% 20%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 138 61% 53%;
-    /* Green ring */
+    --border: 210 20% 90%;
+    /* Subtle border */
+    --input: 210 20% 90%;
+    --ring: 142 71% 45%;
+    /* Matcha Green ring */
 
-    --radius: 1rem;
+    --radius: 1.5rem;
+    /* 24px - Consistent with 'clay' rounding */
 
     /* Chart Colors */
-    --chart-1: 138 61% 53%;
-    --chart-2: 348 90% 88%;
-    --chart-3: 140 52% 55%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --chart-1: 142 71% 45%;
+    /* Matcha */
+    --chart-2: 350 85% 90%;
+    /* Sakura */
+    --chart-3: 45 90% 60%;
+    /* Yuzu */
+    --chart-4: 200 80% 60%;
+    /* Sky */
+    --chart-5: 280 60% 60%;
+    /* Wisteria */
 
-    /* Sidebar - Light */
+    /* Sidebar - Clean Zen */
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 210 29% 24%;
-    --sidebar-primary: 138 61% 53%;
+    --sidebar-foreground: 210 30% 20%;
+    --sidebar-primary: 142 71% 45%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 348 90% 88%;
-    --sidebar-accent-foreground: 210 29% 24%;
-    --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 138 61% 53%;
+    --sidebar-accent: 350 85% 90%;
+    --sidebar-accent-foreground: 142 71% 45%;
+    /* Matcha text on Sakura bg */
+    --sidebar-border: 210 20% 94%;
+    --sidebar-ring: 142 71% 45%;
+
+    /* Knowledge Base Specifics (Consolidated) */
+    --kanji: 27 87% 60%;
+    --grammar: 221 83% 53%;
+    --vocab: 142 71% 45%;
+    --reading: 330 80% 60%;
   }
 
+  /* No dark mode per user request "Modern, Plain, Clean" often favors light/warm foundations */
   .dark {
-    /* Enforcing Light/Pastel Theme per user request "No Black or Dark" */
-    --background: 0 0% 100%;
-    --foreground: 215 25% 27%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 215 25% 27%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 27%;
-
-    --primary: 6 93% 71%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 203 69% 73%;
-    --secondary-foreground: 0 0% 100%;
-
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
-
-    --accent: 140 52% 55%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 6 93% 71%;
-
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 215 25% 27%;
-    --sidebar-primary: 6 93% 71%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 203 69% 73%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 6 93% 71%;
+    --background: 40 30% 98%;
+    --foreground: 210 30% 20%;
   }
 }
 
@@ -114,6 +94,8 @@
   body {
     @apply bg-background text-foreground;
     font-family: "Nunito", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1,
@@ -122,75 +104,23 @@
   h4,
   h5,
   h6 {
-    font-family: "Fredoka", sans-serif;
+    @apply font-display tracking-tight;
+    font-weight: 700;
   }
 }
 
 @layer utilities {
-  .clay-card {
-    /* White card on Light background */
-    @apply bg-white rounded-clay transition-all duration-300;
-    /* Soft Clay Shadow for Light Mode */
-    box-shadow: 8px 8px 24px rgba(170, 180, 200, 0.45), -8px -8px 24px rgba(255, 255, 255, 1.0);
-    color: var(--foreground);
-    /* Deep Slate text */
-  }
 
-  .clay-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 12px 12px 32px rgba(170, 180, 200, 0.5), -12px -12px 32px rgba(255, 255, 255, 1.0);
-  }
-
-  /* Restored clay-button */
-  .clay-button {
-    @apply rounded-2xl font-bold transition-all duration-200 active:translate-y-[2px] active:shadow-inner;
-    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4), -4px -4px 10px rgba(255, 255, 255, 0.1);
-  }
-
-  .btnPrimary {
-    @apply rounded-2xl font-bold transition-all duration-200 active:translate-y-[2px] active:shadow-inner px-6 py-3 bg-brand-salmon text-white hover:scale-105 hover:bg-brand-salmon/90 text-center inline-flex items-center justify-center;
-    box-shadow: 4px 4px 12px rgba(250, 128, 114, 0.4), -4px -4px 12px rgba(255, 255, 255, 0.8);
-  }
-
-  .btnSecondary {
-    @apply rounded-2xl font-bold transition-all duration-200 active:translate-y-[2px] active:shadow-inner px-6 py-3 bg-brand-sky text-brand-dark hover:scale-105 hover:bg-white text-center inline-flex items-center justify-center;
-    box-shadow: 4px 4px 12px rgba(135, 206, 235, 0.4), -4px -4px 12px rgba(255, 255, 255, 0.8);
-  }
-
-  /* Utility for text gradients if needed */
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-salmon to-brand-sky;
-  }
-
-  .clay-inset {
-    @apply rounded-clay bg-gray-50;
-    box-shadow: inset 6px 6px 12px rgba(170, 180, 200, 0.25), inset -6px -6px 12px rgba(255, 255, 255, 1.0);
-  }
-
-  .text-shadow-sm {
-    text-shadow: 1px 1px 0px rgba(30, 41, 59, 0.1);
-  }
-
-  .text-shadow-clay {
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  /* Flat Modern utilities - minimal, clean */
+  .flat-card {
+    @apply bg-card rounded-2xl border border-border;
   }
 }
 
-@layer components {
-  .dashboardOption {
-    @apply flex items-center p-4 cursor-pointer text-brand-dark font-bold transition-all rounded-clay w-full border-2 border-transparent bg-white shadow-clay;
-  }
-
-  .dashboardOption:hover {
-    @apply bg-brand-blue/10 border-brand-indigo translate-y-[-2px] shadow-clay-md;
-  }
-}
-
-/* Scrollbar styling */
+/* Scrollbar styling - Modern & Subtle */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-  display: block;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -198,59 +128,26 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 4px;
+  @apply bg-muted-foreground/20 rounded-full;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  @apply bg-muted-foreground/40;
 }
 
-/* Animations */
+/* Base Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-5px);
   }
 
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes pulse-soft {
-
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.7;
   }
 }
 
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-out forwards;
-}
-
-.animate-slideUp {
-  animation: slideUp 0.4s ease-out forwards;
-}
-
-.animate-pulse-soft {
-  animation: pulse-soft 2s ease-in-out infinite;
 }

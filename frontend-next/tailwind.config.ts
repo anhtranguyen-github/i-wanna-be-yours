@@ -21,12 +21,6 @@ const config: Config = {
 			boxShadow: {
 				'hard': '4px 4px 0px 0px #1e293b',
 				'hard-sm': '2px 2px 0px 0px #1e293b',
-				'clay': '8px 8px 16px rgba(165, 177, 198, 0.4), -8px -8px 16px rgba(255, 255, 255, 0.8)',
-				'clay-sm': '5px 5px 10px rgba(165, 177, 198, 0.4), -5px -5px 10px rgba(255, 255, 255, 0.8)',
-				'clay-md': '10px 10px 20px rgba(165, 177, 198, 0.4), -10px -10px 20px rgba(255, 255, 255, 0.8)',
-				'clay-lg': '15px 15px 30px rgba(165, 177, 198, 0.4), -15px -15px 30px rgba(255, 255, 255, 0.8)',
-				'clay-inner': 'inset 6px 6px 12px rgba(165, 177, 198, 0.6), inset -6px -6px 12px rgba(255, 255, 255, 0.9)',
-				'clay-inner-sm': 'inset 3px 3px 6px rgba(165, 177, 198, 0.6), inset -3px -3px 6px rgba(255, 255, 255, 0.9)',
 			},
 			minWidth: {
 				'250': '250px',
