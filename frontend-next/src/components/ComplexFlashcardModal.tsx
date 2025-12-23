@@ -398,127 +398,106 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                 leaveTo="opacity-0 translate-y-4 scale-95"
               >
                 <Dialog.Panel
-                  className="bg-blue-100 relative transform w-11/12 h-5/6 overflow-hidden rounded-lg bg-white p-8 text-left shadow-xl transition-all text-gray-900 dark:bg-gray-800 dark:text-white z-20"
+                  className="relative transform w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl h-[85vh] max-h-[700px] overflow-hidden rounded-[2.5rem] bg-white p-4 sm:p-8 text-left shadow-2xl transition-all z-20 border border-slate-100"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <div className="bg-gray-100 dark:bg-gray-900 flex flex-col items-center py-6 space-y-6 z-20">
-                    <div className="dark:bg-gray-800 bg-white rounded-lg shadow-md p-8 w-full max-w-2xl flex z-20">
+                  <div className="bg-white flex flex-col items-center h-full relative z-20">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
+
+                    <div className="bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-slate-100 p-10 w-full flex-1 flex flex-col md:flex-row gap-10 items-center relative z-20">
                       <div className="flex-1 flex justify-center items-center">
-                        <span className="text-9xl font-bold dark:text-gray-200 text-gray-600 font-noto-sans-jp">
+                        <span className="text-8xl sm:text-9xl font-black text-slate-900 font-jp tracking-tighter italic">
                           {currentQuestion.kanji}
                         </span>
                       </div>
 
-                      {/* Card Content Section (1/2 of the width) */}
-                      <div className="flex-1 text-center space-y-6">
-                        <div className="space-y-4">
-                          <div className="text-4xl font-bold flex items-center justify-center space-x-2">
-                            <span className="dark:text-white text-gray-800">
+                      {/* Card Content Section */}
+                      <div className="flex-1 text-center md:text-left space-y-8">
+                        <div className="space-y-2">
+                          <div className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em] font-display italic">Spectral Signature</div>
+                          <div className="text-4xl font-black flex items-center justify-center md:justify-start gap-4">
+                            <span className="text-slate-900 italic tracking-tight">
                               {currentQuestion.kanji}
-                            </span>{" "}
-                            {/* Small Kanji */}
+                            </span>
                             <button
                               onClick={playKanjiAudio}
-                              className="focus:outline-none dark:text-gray-300 text-gray-500 hover:dark:text-gray-200 hover:text-gray-600"
+                              className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 text-slate-400 hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all shadow-sm"
                             >
-                              <FontAwesomeIcon icon={faPlayCircle} size="xs" />
+                              <FontAwesomeIcon icon={faPlayCircle} className="w-5 h-5" />
                             </button>
                           </div>
-                          <div className="text-xl dark:text-gray-300 text-gray-600">
+                          <div className="text-xl font-bold text-slate-500 italic">
                             {currentQuestion.reading}
                           </div>
                         </div>
 
-                        <div className="border-t border-b border-gray-300 py-6 space-y-4">
-                          <div className="text-base font-semibold dark:text-gray-200 text-gray-700">
-                            Example:
-                          </div>
-                          <div className="text-xl flex items-center justify-center space-x-2">
-                            <span className="text-2xl dark:text-white text-gray-800">
-                              {currentQuestion.exampleWord}
-                            </span>
-                            <button
-                              onClick={handlePlayAudio}
-                              className="focus:outline-none dark:text-gray-300 text-gray-500 hover:dark:text-gray-200 hover:text-gray-600"
-                            >
-                              <FontAwesomeIcon icon={faPlayCircle} size="lg" />
-                            </button>
-                          </div>
-                          <audio
-                            ref={audioRef}
-                            src={currentQuestion.audio}
-                            preload="auto"
-                          ></audio>
-                          <div className="text-base dark:text-gray-200 text-gray-700">
-                            {currentQuestion.exampleReading}
-                          </div>
-                          <div className="text-lg italic dark:text-gray-400 text-gray-600">
-                            {currentQuestion.translation}
+                        <div className="space-y-6 pt-6 border-t border-slate-50">
+                          <div className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em] font-display">Compound Pattern</div>
+                          <div className="bg-slate-50 rounded-[2rem] p-6 border border-slate-100 shadow-sm space-y-4">
+                            <div className="flex items-center justify-between">
+                              <div className="text-2xl font-black text-slate-900 italic tracking-tight font-jp">
+                                {currentQuestion.exampleWord}
+                              </div>
+                              <button
+                                onClick={handlePlayAudio}
+                                className="w-10 h-10 rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-primary flex items-center justify-center transition-all shadow-sm"
+                              >
+                                <FontAwesomeIcon icon={faPlayCircle} className="w-4 h-4" />
+                              </button>
+                            </div>
+                            <audio
+                              ref={audioRef}
+                              src={currentQuestion.audio}
+                              preload="auto"
+                            ></audio>
+                            <div className="text-sm font-bold text-slate-500 italic">
+                              {currentQuestion.exampleReading}
+                            </div>
+                            <div className="text-base font-medium text-slate-600 italic">
+                              {currentQuestion.translation}
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    <div className="flex justify-between items-center mt-12 px-2 sm:px-4">
-                      {/* Reduced horizontal padding for the main container on smaller screens */}
-                      <div className="flex flex-col items-center space-y-1 mr-4 sm:mr-8">
-                        {/* Reduced right margin for smaller screens */}
-                        <span className="text-xs font-medium text-gray-700 mb-1">
-                          Previous
-                        </span>
-                        <button
-                          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-2 sm:py-3 sm:px-6 rounded-md shadow-lg transition duration-200 ease-in-out"
-                          onClick={handlePreviousQuestion}
-                        >
-                          <FontAwesomeIcon icon={faArrowLeft} size="lg" />
-                        </button>
+                    <div className="flex justify-between items-center w-full mt-10 px-6 relative z-20">
+                      <button
+                        className="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 text-slate-400 hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all shadow-sm"
+                        onClick={handlePreviousQuestion}
+                      >
+                        <FontAwesomeIcon icon={faArrowLeft} className="w-5 h-5" />
+                      </button>
+
+                      <div className="flex bg-slate-50 rounded-2xl p-1.5 border border-slate-100">
+                        {["easy", "medium", "hard"].map((level, idx) => (
+                          <button
+                            key={idx}
+                            className={`py-2 px-6 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all
+                              ${difficulty === level
+                                ? "bg-primary text-white shadow-md scale-105"
+                                : "text-slate-400 hover:text-slate-600"
+                              }`}
+                            onClick={() => handleDifficultySelection(level)}
+                          >
+                            {level}
+                          </button>
+                        ))}
                       </div>
 
-                      <div className="flex flex-col items-center">
-                        <span className="text-xs font-semibold text-gray-700 mb-1">
-                          Select Difficulty
-                        </span>
-                        <div className="flex space-x-2 sm:space-x-3">
-                          {/* Reduced space between buttons on smaller screens */}
-                          {["easy", "medium", "hard"].map((level, idx) => (
-                            <button
-                              key={idx}
-                              className={`py-1 px-2 sm:py-3 sm:px-6 rounded-md font-semibold text-xs sm:text-sm transition duration-200 ease-in-out shadow-md
-          ${difficulty === level
-                                  ? level === "easy"
-                                    ? "bg-green-500 hover:bg-green-600 text-white"
-                                    : level === "medium"
-                                      ? "bg-yellow-500 hover:bg-yellow-600 text-white"
-                                      : "bg-red-500 hover:bg-red-600 text-white"
-                                  : "bg-gray-300 hover:bg-gray-400 text-gray-800"
-                                }`}
-                              onClick={() => handleDifficultySelection(level)}
-                            >
-                              {level.charAt(0).toUpperCase() + level.slice(1)}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="flex flex-col items-center space-y-1 ml-4 sm:ml-8">
-                        {/* Reduced left margin for smaller screens */}
-                        <span className="text-xs font-medium text-gray-700 mb-1">
-                          Next
-                        </span>
-                        <button
-                          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-2 sm:py-3 sm:px-6 rounded-md shadow-lg transition duration-200 ease-in-out"
-                          onClick={handleNextQuestion}
-                        >
-                          <FontAwesomeIcon icon={faArrowRight} size="lg" />
-                        </button>
-                      </div>
+                      <button
+                        className="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 text-slate-400 hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all shadow-sm"
+                        onClick={handleNextQuestion}
+                      >
+                        <FontAwesomeIcon icon={faArrowRight} className="w-5 h-5" />
+                      </button>
                     </div>
 
                     <button
                       onClick={() => setIsOpen(false)}
-                      className="w-full max-w-xs justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus-visible:ring focus-visible:ring-indigo-600"
+                      className="mt-8 text-[10px] font-black text-slate-300 uppercase tracking-[0.4em] hover:text-primary transition-all font-display italic"
                     >
-                      Close Flashcard
+                      Termination Signal
                     </button>
                   </div>
                 </Dialog.Panel>

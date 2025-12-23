@@ -188,8 +188,15 @@ class LearnerProgressModule:
             stats["study_minutes"] += activity.get("duration_minutes", 0)
             
             # Track unique days
-            if activity.get("timestamp"):
-                stats["days_active"].add(activity["timestamp"].date())
+            ts = activity.get("timestamp")
+            if ts:
+                if isinstance(ts, datetime):
+                    stats["days_active"].add(ts.date())
+                elif isinstance(ts, str):
+                    try:
+                        stats["days_active"].add(datetime.fromisoformat(ts.replace("Z", "+00:00")).date())
+                    except:
+                        pass
 
         stats["avg_quiz_score"] = round(sum(quiz_scores) / len(quiz_scores), 1) if quiz_scores else 0
         stats["days_active"] = len(stats["days_active"])
@@ -220,7 +227,7 @@ class LearnerProgressModule:
             "user_id": user_id,
             "activity_type": activity_type,
             "timestamp": datetime.now(timezone.utc),
-            **data
+            "data": data  # Store data nested for consistency with existing records
         }
 
         self.activities_collection.insert_one(activity)
@@ -474,9 +481,15 @@ class LearnerProgressModule:
 
         result = []
         for a in activities:
-            # Map activity_type to a more readable title
+            # Handle both flat (if any) and nested data structures
             atype = a.get("activity_type", "unknown")
+            
+            # If doc is flat, 'a' itself contains the metrics. If nested, they are in 'data'.
+            # Existing records seem to use nested 'data'.
             data = a.get("data", {})
+            if not data and atype == "flashcard_review" and "count" in a:
+                # Fallback for flat structure
+                data = a
             
             title = atype.replace("_", " ").title()
             if atype == "flashcard_review":
@@ -485,9 +498,18 @@ class LearnerProgressModule:
                 title = f"Quiz: {data.get('category', 'General')}"
             
             # Derived fields for UI
-            intensity = "High" if data.get("duration_minutes", 0) > 30 else "Med" if data.get("duration_minutes", 0) > 10 else "Low"
-            output = data.get("category", "General").title()
-            score = f"{data.get('score')}%" if data.get("score") is not None else "N/A"
+            duration = data.get("duration_minutes", a.get("duration_minutes", 0))
+            intensity = "High" if duration > 30 else "Med" if duration > 10 else "Low"
+            
+            category = data.get("category", a.get("category", "General"))
+            output = str(category).title()
+            
+            score_val = data.get("score", a.get("score"))
+            score = f"{score_val}%" if score_val is not None else "N/A"
+            
+            # Robust isoformat
+            ts = a.get("timestamp")
+            date_str = ts.isoformat() if hasattr(ts, "isoformat") else str(ts)
             
             result.append({
                 "id": str(a["_id"]),
@@ -495,7 +517,7 @@ class LearnerProgressModule:
                 "intensity": intensity,
                 "output": output,
                 "score": score,
-                "date": a["timestamp"].isoformat(),
+                "date": date_str,
                 "activity_type": atype
             })
             

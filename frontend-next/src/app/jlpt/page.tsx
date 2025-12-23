@@ -167,85 +167,83 @@ export default function JLPTPracticePage() {
     const totalPersonalItems = attempts.length + userExams.length;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50/30">
-            {/* Header */}
-            <div className="bg-white/80 backdrop-blur-md border-b border-slate-100 sticky top-0 z-40">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-                    <div className="flex items-center justify-between">
-                        {/* Back & Title */}
-                        <div className="flex items-center gap-4">
-                            <Link
-                                href="/practice"
-                                className="flex items-center gap-2 text-slate-500 hover:text-brand-green transition-colors"
-                            >
-                                <ArrowLeft size={20} />
-                                <span className="text-sm font-medium hidden sm:inline">Back</span>
-                            </Link>
+        <div className="min-h-screen bg-background p-6 md:p-12 selection:bg-primary/20">
+            <div className="max-w-7xl mx-auto space-y-16 animate-in fade-in duration-700">
+                {/* Header */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-10">
+                    {/* Back & Title */}
+                    <div className="flex items-center gap-8">
+                        <Link
+                            href="/practice"
+                            className="p-4 bg-card hover:bg-muted text-muted-foreground hover:text-primary transition-all rounded-2xl  border border-border/50 active:scale-95 group"
+                        >
+                            <ArrowLeft size={24} className="group-hover:-translate-x-1 transition-transform" />
+                        </Link>
 
-                            <div className="flex items-center gap-3">
-                                <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-200">
-                                    <GraduationCap size={26} />
-                                </div>
-                                <div>
-                                    <h1 className="text-2xl font-black tracking-tight text-brand-dark">
-                                        JLPT Practice
-                                    </h1>
-                                    <p className="text-xs text-slate-500">
-                                        Quizzes, exams & full simulations
-                                    </p>
-                                </div>
+                        <div className="flex items-center gap-6">
+                            <div className="w-20 h-20 bg-primary/10 text-primary rounded-[2rem] flex items-center justify-center  border border-primary/20 rotate-3 hover:rotate-0 transition-transform duration-500">
+                                <GraduationCap size={40} />
                             </div>
-                        </div>
-
-                        {/* Right Actions */}
-                        <div className="flex items-center gap-3">
-                            {/* Stats Badge */}
-                            <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-amber-50 border border-amber-200 rounded-xl">
-                                <Sparkles size={18} className="text-amber-500" />
-                                <span className="text-sm font-semibold text-amber-700">
-                                    {mockExamConfigs.length} Tests Available
-                                </span>
+                            <div>
+                                <h1 className="text-5xl font-black tracking-tighter text-foreground font-display leading-[0.9]">
+                                    JLPT <span className="text-primary italic">Practice</span>
+                                </h1>
+                                <p className="text-xs font-black text-muted-foreground uppercase tracking-[0.3em] font-display mt-2 opacity-60">
+                                    Cognitive Synthesis & Mastery
+                                </p>
                             </div>
-
-                            {/* Create New Exam Button */}
-                            <button
-                                onClick={() => setShowCreateModal(true)}
-                                className="flex items-center gap-2 px-4 py-2 bg-brand-green text-white font-bold rounded-xl hover:bg-brand-green/90 transition-colors shadow-lg shadow-emerald-200"
-                            >
-                                <Plus size={18} />
-                                <span className="hidden sm:inline">Create Exam</span>
-                            </button>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            {/* Content Area */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {/* View Switcher */}
-                <div className="mb-6 flex items-center gap-4">
-                    <div className="flex p-1 bg-slate-100 rounded-xl">
+                    {/* Right Actions */}
+                    <div className="flex items-center gap-6">
+                        {/* Stats Badge */}
+                        <div className="hidden lg:flex items-center gap-4 px-8 py-4 bg-card border border-border/50 rounded-2xl ">
+                            <div className="relative">
+                                <Sparkles size={20} className="text-primary animate-pulse" />
+                                <div className="absolute inset-0 blur-sm bg-primary/20 animate-pulse" />
+                            </div>
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground font-display">
+                                {mockExamConfigs.length} Protocols Active
+                            </span>
+                        </div>
+
+                        {/* Create New Exam Button */}
+                        <button
+                            onClick={() => setShowCreateModal(true)}
+                            className="flex items-center gap-4 px-8 py-5 bg-foreground text-background rounded-2xl hover:opacity-95 active:scale-95 transition-all  font-display uppercase tracking-[0.2em] text-[10px] font-black group"
+                        >
+                            <Plus size={20} className="group-hover:rotate-90 transition-transform duration-500" />
+                            Synthesize Exam
+                        </button>
+                    </div>
+                </div>
+
+
+                {/* View Switcher/Content Area */}
+                <div className="space-y-12">
+                    <div className="flex p-2 bg-muted/30 rounded-[2rem] border border-border/50 w-full max-w-md mx-auto sm:mx-0 ">
                         <button
                             onClick={() => setPageView('browse')}
-                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${pageView === 'browse'
-                                ? 'bg-white shadow text-brand-green'
-                                : 'text-slate-500 hover:text-slate-700'
+                            className={`flex-1 flex items-center justify-center gap-3 px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all font-display ${pageView === 'browse'
+                                ? 'bg-card text-primary  border border-border/50'
+                                : 'text-muted-foreground hover:text-foreground'
                                 }`}
                         >
-                            <GraduationCap size={16} className="inline mr-2" />
-                            Browse Exams
+                            <GraduationCap size={20} />
+                            Nexus Hub
                         </button>
                         <button
                             onClick={() => setPageView('personal')}
-                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${pageView === 'personal'
-                                ? 'bg-white shadow text-brand-green'
-                                : 'text-slate-500 hover:text-slate-700'
+                            className={`flex-1 flex items-center justify-center gap-3 px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all font-display ${pageView === 'personal'
+                                ? 'bg-card text-primary  border border-border/50'
+                                : 'text-muted-foreground hover:text-foreground'
                                 }`}
                         >
-                            <User size={16} />
-                            My Collection
+                            <User size={20} />
+                            Personal Archive
                             {totalPersonalItems > 0 && (
-                                <span className="px-1.5 py-0.5 bg-brand-green text-white text-xs rounded-full font-bold">
+                                <span className="flex items-center justify-center min-w-[20px] h-5 px-1 bg-primary text-primary-foreground text-[9px] rounded-full font-black animate-in zoom-in-50 ">
                                     {totalPersonalItems}
                                 </span>
                             )}
@@ -253,15 +251,13 @@ export default function JLPTPracticePage() {
                     </div>
                 </div>
 
-                {pageView === 'browse' ? (
-                    <>
-                        {/* Mode Selector */}
-                        <div className="mb-6">
-                            <ModeSelector selectedMode={filters.mode} onModeChange={handleModeChange} />
-                        </div>
 
-                        {/* Filter Bar */}
-                        <div className="mb-8">
+                {pageView === 'browse' ? (
+                    <div className="space-y-16 animate-in fade-in slide-in-from-bottom-8 duration-700">
+                        {/* Mode & Filter Sections */}
+                        <div className="space-y-12">
+                            <ModeSelector selectedMode={filters.mode} onModeChange={handleModeChange} />
+
                             <FilterBar
                                 selectedLevel={filters.level}
                                 selectedSkill={filters.skill}
@@ -271,44 +267,49 @@ export default function JLPTPracticePage() {
                             />
                         </div>
 
-                        {/* Results Count */}
-                        <div className="mb-6 flex items-center justify-between">
-                            <p className="text-sm text-slate-500">
-                                Showing <span className="font-bold text-brand-dark">{allExams.length}</span> results
+                        {/* Grid Header */}
+                        <div className="flex items-center justify-between border-b border-border/50 pb-6">
+                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 font-display">
+                                Showing <span className="text-foreground tracking-tight">{allExams.length}</span> nodes available
                             </p>
                         </div>
 
                         {/* Exam Cards Grid */}
                         {allExams.length > 0 ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                                 {allExams.map((exam) => (
                                     <PracticeCard key={exam.id} config={exam} onStart={handleStartExam} />
                                 ))}
                             </div>
                         ) : (
-                            <div className="text-center py-20">
-                                <div className="w-20 h-20 mx-auto mb-6 bg-slate-100 rounded-full flex items-center justify-center">
-                                    <GraduationCap size={40} className="text-slate-300" />
+                            <div className="text-center py-32 bg-muted/20 rounded-[3rem] border-2 border-dashed border-border/50">
+                                <div className="w-24 h-24 mx-auto mb-8 bg-card rounded-[2rem] flex items-center justify-center  text-muted-foreground/30 ring-8 ring-muted/50">
+                                    <GraduationCap size={48} />
                                 </div>
-                                <h3 className="text-xl font-bold text-slate-600 mb-2">No Tests Found</h3>
-                                <p className="text-sm text-slate-400 max-w-md mx-auto">
-                                    Try adjusting your filters to find more practice tests.
+                                <h3 className="text-2xl font-black text-foreground mb-3 font-display tracking-tight">Zero Matches Found</h3>
+                                <p className="text-sm font-bold text-muted-foreground max-w-xs mx-auto leading-relaxed">
+                                    Adjust your search parameters to find the perfect challenge.
                                 </p>
                             </div>
                         )}
-                    </>
+                    </div>
+
                 ) : (
                     /* Personal Collections View */
-                    <PersonalCollections
-                        attempts={attempts}
-                        userExams={userExams}
-                        onRetakeExam={handleRetakeExam}
-                        onReviewAttempt={handleReviewAttempt}
-                        onStartExam={handleStartExam}
-                        onEditExam={handleEditExam}
-                        onDeleteExam={handleDeleteExam}
-                        isLoading={collectionsLoading}
-                    />
+                    <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 pb-20">
+                        <div className="max-w-4xl">
+                            <PersonalCollections
+                                attempts={attempts}
+                                userExams={userExams}
+                                onRetakeExam={handleRetakeExam}
+                                onReviewAttempt={handleReviewAttempt}
+                                onStartExam={handleStartExam}
+                                onEditExam={handleEditExam}
+                                onDeleteExam={handleDeleteExam}
+                                isLoading={collectionsLoading}
+                            />
+                        </div>
+                    </div>
                 )}
             </div>
 

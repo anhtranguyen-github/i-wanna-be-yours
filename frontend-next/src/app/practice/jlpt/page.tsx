@@ -2,35 +2,34 @@
 
 import React, { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { GraduationCap, ArrowLeft, Sparkles } from "lucide-react";
-import { ModeSelector, FilterBar, PracticeCard } from "@/components/practice";
-import { mockExamConfigs, filterExams } from "@/data/mockPractice";
-import { PracticeMode, JLPTLevel, SkillType, FilterState } from "@/types/practice";
+import { Target, BookOpen } from "lucide-react";
+import ModeSelector from "@/components/practice/ModeSelector";
+import FilterBar from "@/components/practice/FilterBar";
+import PracticeCard from "@/components/practice/PracticeCard";
+import { mockExamConfigs } from "@/data/mockPractice";
+import { PracticeMode, JLPTLevel, SkillType } from "@/types/practice";
 
 export default function JLPTPracticePage() {
     const router = useRouter();
-
-    // Filter State
-    const [filters, setFilters] = useState<FilterState>({
-        mode: "ALL",
-        level: "ALL",
-        skill: "ALL",
+    const [filters, setFilters] = useState({
+        mode: "FULL_EXAM" as PracticeMode,
+        level: "ALL" as JLPTLevel | "ALL",
+        skill: "ALL" as SkillType | "ALL",
     });
 
-    // Filtered exams
     const filteredExams = useMemo(() => {
-        return filterExams(filters.mode, filters.level, filters.skill);
+        return mockExamConfigs.filter((exam) => {
+            if (filters.level !== "ALL" && exam.level !== filters.level) return false;
+            if (filters.mode === "FULL_EXAM" && exam.mode !== "FULL_EXAM") return false;
+            if (filters.mode !== "FULL_EXAM" && filters.skill !== "ALL") {
+                if (!exam.skills.includes(filters.skill)) return false;
+            }
+            return true;
+        });
     }, [filters]);
 
-    // Handlers
     const handleModeChange = (mode: PracticeMode) => {
-        setFilters((prev) => ({
-            ...prev,
-            mode,
-            // Reset skill filter when switching to Full Exam
-            skill: mode === "FULL_EXAM" ? "ALL" : prev.skill,
-        }));
+        setFilters((prev) => ({ ...prev, mode, skill: mode === "FULL_EXAM" ? "ALL" : prev.skill }));
     };
 
     const handleLevelChange = (level: JLPTLevel | "ALL") => {
@@ -42,61 +41,30 @@ export default function JLPTPracticePage() {
     };
 
     const handleStartExam = (examId: string) => {
-        // Navigate to the session page (we'll create this next)
         router.push(`/practice/jlpt/session/${examId}`);
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50/30">
+        <div className="min-h-screen bg-background pb-24">
             {/* Header */}
-            <div className="bg-white/80 backdrop-blur-md border-b border-slate-100 sticky top-0 z-40">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-                    <div className="flex items-center justify-between">
-                        {/* Back & Title */}
-                        <div className="flex items-center gap-4">
-                            <Link
-                                href="/practice"
-                                className="flex items-center gap-2 text-slate-500 hover:text-brand-green transition-colors"
-                            >
-                                <ArrowLeft size={20} />
-                                <span className="text-sm font-medium hidden sm:inline">Back</span>
-                            </Link>
-
-                            <div className="flex items-center gap-3">
-                                <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-200">
-                                    <GraduationCap size={26} />
-                                </div>
-                                <div>
-                                    <h1 className="text-2xl font-black tracking-tight text-brand-dark">
-                                        JLPT Practice
-                                    </h1>
-                                    <p className="text-xs text-slate-500">
-                                        Quizzes, exams & full simulations
-                                    </p>
-                                </div>
-                            </div>
+            <header className="bg-card border-b border-border px-6 py-6 sticky top-0 z-50">
+                <div className="max-w-7xl mx-auto">
+                    <div className="flex items-center gap-4 mb-6">
+                        <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                            <Target size={24} className="text-primary" />
                         </div>
-
-                        {/* Stats Badge (Placeholder) */}
-                        <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-amber-50 border border-amber-200 rounded-xl">
-                            <Sparkles size={18} className="text-amber-500" />
-                            <span className="text-sm font-semibold text-amber-700">
-                                {mockExamConfigs.length} Tests Available
-                            </span>
+                        <div>
+                            <h1 className="text-2xl font-bold text-foreground font-display">JLPT Practice</h1>
+                            <p className="text-sm text-muted-foreground">Prepare for your Japanese proficiency test</p>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            {/* Content Area */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {/* Mode Selector */}
-                <div className="mb-6">
-                    <ModeSelector selectedMode={filters.mode} onModeChange={handleModeChange} />
-                </div>
+                    {/* Mode Selector */}
+                    <div className="mb-6">
+                        <ModeSelector selectedMode={filters.mode} onModeChange={handleModeChange} />
+                    </div>
 
-                {/* Filter Bar */}
-                <div className="mb-8">
+                    {/* Filters */}
                     <FilterBar
                         selectedLevel={filters.level}
                         selectedSkill={filters.skill}
@@ -105,33 +73,26 @@ export default function JLPTPracticePage() {
                         onSkillChange={handleSkillChange}
                     />
                 </div>
+            </header>
 
-                {/* Results Count */}
-                <div className="mb-6 flex items-center justify-between">
-                    <p className="text-sm text-slate-500">
-                        Showing <span className="font-bold text-brand-dark">{filteredExams.length}</span> results
-                    </p>
-                </div>
-
-                {/* Exam Cards Grid */}
-                {filteredExams.length > 0 ? (
+            {/* Content */}
+            <main className="max-w-7xl mx-auto px-6 py-8">
+                {filteredExams.length === 0 ? (
+                    <div className="text-center py-20">
+                        <div className="w-16 h-16 bg-muted rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <BookOpen size={32} className="text-muted-foreground" />
+                        </div>
+                        <h3 className="text-lg font-bold text-foreground mb-2">No exams found</h3>
+                        <p className="text-muted-foreground">Try adjusting your filters</p>
+                    </div>
+                ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {filteredExams.map((exam) => (
                             <PracticeCard key={exam.id} config={exam} onStart={handleStartExam} />
                         ))}
                     </div>
-                ) : (
-                    <div className="text-center py-20">
-                        <div className="w-20 h-20 mx-auto mb-6 bg-slate-100 rounded-full flex items-center justify-center">
-                            <GraduationCap size={40} className="text-slate-300" />
-                        </div>
-                        <h3 className="text-xl font-bold text-slate-600 mb-2">No Tests Found</h3>
-                        <p className="text-sm text-slate-400 max-w-md mx-auto">
-                            Try adjusting your filters to find more practice tests.
-                        </p>
-                    </div>
                 )}
-            </div>
+            </main>
         </div>
     );
 }

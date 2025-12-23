@@ -253,7 +253,7 @@ const GrammarFlashcardModal: FC<GrammarFlashcardModalProps> = ({
             >
               {/* Fixed-size modal with responsive breakpoints */}
               <Dialog.Panel
-                className="relative transform w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl h-[85vh] max-h-[700px] overflow-hidden rounded-2xl bg-gray-50 dark:bg-gray-900 p-4 sm:p-6 text-left shadow-xl transition-all"
+                className="relative transform w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl h-[85vh] max-h-[700px] overflow-hidden rounded-[2.5rem] bg-white p-4 sm:p-8 text-left shadow-2xl transition-all border border-slate-100"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="h-full flex flex-col">
@@ -280,17 +280,16 @@ const GrammarFlashcardModal: FC<GrammarFlashcardModalProps> = ({
                     >
                       {/* ===== FRONT SIDE - Fixed size ===== */}
                       <div
-                        className="absolute inset-0 w-full h-full bg-white dark:bg-gray-800 rounded-xl shadow-md flex flex-col items-center justify-center p-4 sm:p-6 md:p-8"
+                        className="absolute inset-0 w-full h-full bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-slate-100 flex flex-col items-center justify-center p-6 sm:p-12 overflow-hidden"
                         style={{ backfaceVisibility: 'hidden' }}
                       >
-                        <div className="text-center max-w-full">
-                          <div className="text-xs sm:text-sm text-gray-400 uppercase tracking-wider mb-4 sm:mb-6">
-                            Tap to reveal explanation
-                          </div>
-                          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-3 sm:mb-4 px-2">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
+                        <div className="text-center relative z-10">
+                          <div className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em] mb-12 font-display italic">Spectral Signature</div>
+                          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 mb-8 tracking-tighter italic">
                             {currentGrammar.title}
                           </h2>
-                          <p className="text-sm sm:text-base md:text-lg italic text-gray-600 dark:text-gray-400 line-clamp-3 px-4">
+                          <p className="text-sm sm:text-base md:text-lg font-bold text-slate-500 italic max-w-md mx-auto leading-relaxed">
                             {currentGrammar.short_explanation}
                           </p>
                         </div>
@@ -298,45 +297,45 @@ const GrammarFlashcardModal: FC<GrammarFlashcardModalProps> = ({
 
                       {/* ===== BACK SIDE - Fixed size with scroll ===== */}
                       <div
-                        className="absolute inset-0 w-full h-full bg-white dark:bg-gray-800 rounded-xl shadow-md flex flex-col overflow-hidden"
+                        className="absolute inset-0 w-full h-full bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-slate-100 flex flex-col overflow-hidden"
                         style={{
                           backfaceVisibility: 'hidden',
                           transform: 'rotateY(180deg)',
                         }}
                       >
+                        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none" />
+
                         {/* Header - Fixed */}
-                        <div className="flex-shrink-0 p-4 sm:p-6 border-b border-gray-100 dark:border-gray-700 text-center">
-                          <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 dark:text-white truncate">
+                        <div className="flex-shrink-0 p-8 sm:p-10 border-b border-slate-50 bg-slate-50/30 relative z-10">
+                          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight italic">
                             {currentGrammar.title}
                           </h2>
-                          <p className="mt-1 text-xs sm:text-sm italic text-gray-600 dark:text-gray-400 truncate">
+                          <p className="mt-2 text-sm font-bold text-slate-500 italic">
                             {currentGrammar.short_explanation}
                           </p>
                         </div>
 
                         {/* Content - Scrollable */}
-                        <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 space-y-3">
-                          <div className="w-full rounded-lg bg-gray-50 dark:bg-gray-700 p-3">
-                            <h3 className="text-xs sm:text-sm font-semibold text-gray-800 dark:text-gray-200">
-                              Formation
+                        <div className="flex-1 min-h-0 overflow-y-auto p-8 sm:p-10 space-y-8 custom-scrollbar relative z-10">
+                          <div className="w-full rounded-[2rem] bg-slate-50 p-6 border border-slate-100 shadow-sm">
+                            <h3 className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-3">
+                              Formation Matrix
                             </h3>
-                            <p className="mt-1 text-xs sm:text-sm text-gray-700 dark:text-gray-300">
+                            <p className="text-sm sm:text-base text-slate-900 font-bold font-jp">
                               {currentGrammar.formation}
                             </p>
                           </div>
 
-                          <div className="w-full rounded-lg bg-gray-50 dark:bg-gray-700 p-3">
-                            <h3 className="text-xs sm:text-sm font-semibold text-gray-800 dark:text-gray-200">
-                              Details
+                          <div className="w-full rounded-[2rem] bg-slate-50 p-6 border border-slate-100 shadow-sm">
+                            <h3 className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-3">
+                              Detailed Logic
                             </h3>
-                            <p className="mt-1 text-xs sm:text-sm text-gray-700 dark:text-gray-300">
+                            <p className="text-sm sm:text-base text-slate-600 font-medium leading-relaxed">
                               {currentGrammar.long_explanation}
                             </p>
                           </div>
 
-                          <div className="w-full rounded-lg bg-gray-50 dark:bg-gray-700 p-3">
-                            <ExampleSection examples={currentGrammar.examples} />
-                          </div>
+                          <ExampleSection examples={currentGrammar.examples} />
                         </div>
                       </div>
                     </div>
@@ -431,32 +430,38 @@ const ExampleSection: FC<ExampleSectionProps> = ({ examples }) => {
   };
 
   return (
-    <div className="flex flex-col space-y-4">
-      <h4 className="mb-2 text-lg font-semibold text-gray-800">
-        Example Sentence(s)
-      </h4>
+    <div className="flex flex-col space-y-6">
+      <h3 className="text-[10px] font-black text-slate-300 uppercase tracking-widest">
+        Operational Contexts
+      </h3>
       {examples.map((ex, i) => (
         <div
           key={i}
-          className="rounded-md border border-gray-200 bg-blue-50 p-4 shadow-sm"
+          className="rounded-[2rem] border border-slate-100 bg-slate-50/50 p-6 shadow-sm hover:shadow-md hover:bg-white transition-all group/ex"
         >
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-4">
             {/* JP Sentence */}
-            <div className="text-md font-semibold text-gray-800">{ex.jp}</div>
+            <div className="text-xl font-bold text-slate-900 font-jp leading-relaxed group-hover/ex:text-primary transition-colors">{ex.jp}</div>
 
             {/* Audio + expand button */}
-            <div className="flex items-center space-x-3">
-              <button onClick={() => playExampleAudio(ex.grammar_audio)}>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => playExampleAudio(ex.grammar_audio)}
+                className="w-10 h-10 rounded-xl bg-white border border-slate-100 text-slate-300 hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all shadow-sm"
+              >
                 <FontAwesomeIcon
                   icon={faPlayCircle}
-                  className="h-5 w-5 text-gray-600 hover:text-gray-800"
+                  className="h-5 w-5"
                 />
               </button>
-              <button onClick={() => toggleOpenState(i)}>
+              <button
+                onClick={() => toggleOpenState(i)}
+                className="w-10 h-10 rounded-xl bg-white border border-slate-100 text-slate-300 hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all shadow-sm"
+              >
                 {openStates[i] ? (
-                  <ChevronUpIcon className="h-5 w-5 text-gray-600 hover:text-gray-800" />
+                  <ChevronUpIcon className="h-5 w-5" />
                 ) : (
-                  <ChevronDownIcon className="h-5 w-5 text-gray-600 hover:text-gray-800" />
+                  <ChevronDownIcon className="h-5 w-5" />
                 )}
               </button>
             </div>
@@ -464,9 +469,9 @@ const ExampleSection: FC<ExampleSectionProps> = ({ examples }) => {
 
           {/* Romaji & English */}
           {openStates[i] && (
-            <div className="mt-2 space-y-1 text-sm">
-              <div className="text-gray-700">{ex.romaji}</div>
-              <div className="italic text-gray-600">{ex.en}</div>
+            <div className="mt-4 space-y-2 text-sm animate-in slide-in-from-top-2 duration-300">
+              <div className="text-slate-400 font-medium italic">{ex.romaji}</div>
+              <div className="text-slate-600 font-bold italic">{ex.en}</div>
             </div>
           )}
         </div>

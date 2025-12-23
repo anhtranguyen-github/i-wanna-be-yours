@@ -378,7 +378,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
               >
                 {/* Fixed-size modal with responsive breakpoints */}
                 <Dialog.Panel
-                  className="relative transform w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl h-auto min-h-[500px] max-h-[80vh] overflow-hidden rounded-2xl bg-gray-50 dark:bg-gray-900 p-4 sm:p-6 text-left shadow-xl transition-all z-50 flex flex-col"
+                  className="relative transform w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl h-[85vh] max-h-[700px] overflow-hidden rounded-[2.5rem] bg-white p-4 sm:p-8 text-left shadow-2xl transition-all z-50 border border-slate-100 flex flex-col"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <div className="h-full flex flex-col">
@@ -404,62 +404,58 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
 
                     {/* Settings Panel */}
                     {showSettings && (
-                      <div className="absolute top-12 right-4 z-20 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 p-4 animate-in fade-in slide-in-from-top-5">
-                        <h3 className="font-bold text-gray-800 dark:text-gray-200 mb-3 border-b pb-2 dark:border-gray-700">Detailed Settings</h3>
+                      <div className="absolute top-16 right-8 z-20 w-72 bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-slate-100 p-6 animate-in fade-in slide-in-from-top-5">
+                        <h3 className="font-black text-slate-900 text-xs uppercase tracking-widest mb-4 border-b pb-3 border-slate-50 italic">Registry Calibration</h3>
 
-                        <div className="space-y-4">
+                        <div className="space-y-6">
                           {/* Mode Toggle */}
-                          <div className="flex flex-col gap-1">
-                            <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Mode</label>
-                            <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+                          <div className="flex flex-col gap-2">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Operation Mode</label>
+                            <div className="flex bg-slate-50 rounded-2xl p-1.5 border border-slate-100">
                               <button
                                 onClick={() => setSettings(s => ({ ...s, mode: 'basic' }))}
-                                className={`flex-1 text-sm py-1 rounded-md transition-all ${settings.mode === 'basic' ? 'bg-white dark:bg-gray-600 shadow text-brand-salmon' : 'text-gray-500 dark:text-gray-400'}`}
+                                className={`flex-1 text-[10px] font-black uppercase tracking-widest py-2 rounded-xl transition-all ${settings.mode === 'basic' ? 'bg-white shadow-sm text-primary' : 'text-slate-400 hover:text-slate-600'}`}
                               >
-                                Basic
+                                Static
                               </button>
                               <button
                                 onClick={() => setSettings(s => ({ ...s, mode: 'learn' }))}
-                                className={`flex-1 text-sm py-1 rounded-md transition-all ${settings.mode === 'learn' ? 'bg-white dark:bg-gray-600 shadow text-brand-salmon' : 'text-gray-500 dark:text-gray-400'}`}
+                                className={`flex-1 text-[10px] font-black uppercase tracking-widest py-2 rounded-xl transition-all ${settings.mode === 'learn' ? 'bg-primary text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                               >
-                                SR
+                                Neural
                               </button>
                             </div>
                           </div>
 
                           {/* Shuffle Toggle */}
                           <div className="flex items-center justify-between">
-                            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                              <FontAwesomeIcon icon={faShuffle} className="text-gray-400" />
-                              Shuffle
-                            </label>
+                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Randomize Order</label>
                             <button
                               onClick={() => setSettings(s => ({ ...s, shuffle: !s.shuffle }))}
-                              className={`w-10 h-5 rounded-full relative transition-colors ${settings.shuffle ? 'bg-brand-salmon' : 'bg-gray-300 dark:bg-gray-600'}`}
+                              className={`w-12 h-6 rounded-full relative transition-all ${settings.shuffle ? 'bg-primary' : 'bg-slate-100 border border-slate-200'}`}
                             >
-                              <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${settings.shuffle ? 'left-5.5' : 'left-0.5'}`} style={{ left: settings.shuffle ? '1.35rem' : '0.15rem' }}></div>
+                              <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow-md transition-all ${settings.shuffle ? 'left-7' : 'left-1'}`}></div>
                             </button>
                           </div>
 
                           {/* Default Side Toggle */}
-                          <div className="flex flex-col gap-1">
-                            <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Start Side</label>
-                            <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+                          <div className="flex flex-col gap-2">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Initiation Side</label>
+                            <div className="flex bg-slate-50 rounded-2xl p-1.5 border border-slate-100">
                               <button
                                 onClick={() => setSettings(s => ({ ...s, defaultSide: 'front' }))}
-                                className={`flex-1 text-sm py-1 rounded-md transition-all ${settings.defaultSide === 'front' ? 'bg-white dark:bg-gray-600 shadow text-brand-salmon' : 'text-gray-500 dark:text-gray-400'}`}
+                                className={`flex-1 text-[10px] font-black uppercase tracking-widest py-2 rounded-xl transition-all ${settings.defaultSide === 'front' ? 'bg-white shadow-sm text-primary' : 'text-slate-400 hover:text-slate-600'}`}
                               >
-                                Def
+                                Front
                               </button>
                               <button
                                 onClick={() => setSettings(s => ({ ...s, defaultSide: 'back' }))}
-                                className={`flex-1 text-sm py-1 rounded-md transition-all ${settings.defaultSide === 'back' ? 'bg-white dark:bg-gray-600 shadow text-brand-salmon' : 'text-gray-500 dark:text-gray-400'}`}
+                                className={`flex-1 text-[10px] font-black uppercase tracking-widest py-2 rounded-xl transition-all ${settings.defaultSide === 'back' ? 'bg-white shadow-sm text-primary' : 'text-slate-400 hover:text-slate-600'}`}
                               >
-                                Rev
+                                Rear
                               </button>
                             </div>
                           </div>
-
                         </div>
                       </div>
                     )}
@@ -481,23 +477,22 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                       >
                         {/* ===== FRONT SIDE - Fixed size ===== */}
                         <div
-                          className="absolute inset-0 w-full h-full dark:bg-gray-800 bg-white rounded-xl shadow-md flex flex-col items-center justify-center p-4 sm:p-6"
+                          className="absolute inset-0 w-full h-full bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-slate-100 flex flex-col items-center justify-center p-6 sm:p-12 overflow-hidden"
                           style={{ backfaceVisibility: 'hidden' }}
                         >
-                          <div className="text-center">
-                            <div className="text-xs sm:text-sm text-gray-400 uppercase tracking-wider mb-4 sm:mb-6">
-                              Tap to reveal answer
-                            </div>
-                            <span className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold dark:text-gray-200 text-gray-700 block font-noto-sans-jp">
+                          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
+                          <div className="text-center relative z-10">
+                            <div className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em] mb-12 font-display italic">Spectral Signature</div>
+                            <span className="text-7xl sm:text-8xl md:text-9xl font-black text-slate-900 block mb-12 font-jp tracking-tighter italic">
                               {currentQuestion.kanji}
                             </span>
                             <button
                               onClick={(e) => { e.stopPropagation(); playKanjiAudio(); }}
-                              className="mt-4 sm:mt-6 p-2 sm:p-3 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                              className="w-16 h-16 rounded-3xl bg-slate-50 border border-slate-100 text-slate-400 hover:text-primary hover:border-primary/20 hover:bg-white flex items-center justify-center transition-all active:scale-90 shadow-sm mx-auto"
                             >
                               <FontAwesomeIcon
                                 icon={faPlayCircle}
-                                className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600 dark:text-white"
+                                className="w-7 h-7"
                               />
                             </button>
                           </div>
@@ -505,62 +500,59 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
 
                         {/* ===== BACK SIDE - Fixed size with scroll ===== */}
                         <div
-                          className="absolute inset-0 w-full h-full dark:bg-gray-800 bg-white rounded-xl shadow-md flex flex-col overflow-hidden"
+                          className="absolute inset-0 w-full h-full bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-slate-100 flex flex-col overflow-hidden"
                           style={{
                             backfaceVisibility: 'hidden',
                             transform: 'rotateY(180deg)',
                           }}
                         >
+                          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none" />
+
+                          {/* Header - Fixed */}
+                          <div className="flex-shrink-0 p-8 sm:p-10 border-b border-slate-50 bg-slate-50/30 relative z-10">
+                            <div className="flex items-center space-x-6">
+                              <button
+                                onClick={(e) => { e.stopPropagation(); playKanjiAudio(); }}
+                                className="w-16 h-16 rounded-2xl bg-white border border-slate-100 text-slate-400 hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all active:scale-90 shadow-sm"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faPlayCircle}
+                                  className="w-7 h-7"
+                                />
+                              </button>
+                              <div className="flex-1 min-w-0">
+                                <div className="text-2xl sm:text-3xl font-black text-slate-900 truncate tracking-tight italic font-jp">
+                                  {currentQuestion.reading}
+                                </div>
+                                <div className="text-sm font-bold text-slate-500 mt-1 truncate italic">
+                                  {currentQuestion.translation}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
                           {/* Content - Scrollable */}
-                          <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6">
-                            <div className="flex flex-col sm:flex-row gap-4">
-                              {/* Large Kanji */}
-                              <div className="flex justify-center items-center sm:flex-1">
-                                <span className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold dark:text-gray-200 text-gray-600 font-noto-sans-jp">
+                          <div className="flex-1 min-h-0 overflow-y-auto p-8 sm:p-10 custom-scrollbar relative z-10">
+                            <div className="space-y-10">
+                              <div className="flex justify-center">
+                                <span className="text-8xl sm:text-9xl font-black text-slate-900 font-jp tracking-tighter italic">
                                   {currentQuestion.kanji}
                                 </span>
                               </div>
 
-                              {/* Details */}
-                              <div className="sm:flex-1 text-center space-y-3 sm:space-y-4">
-                                <div className="space-y-1 sm:space-y-2">
-                                  <div className="text-xl sm:text-2xl md:text-3xl font-bold flex items-center justify-center gap-2">
-                                    <span className="dark:text-white text-gray-800 truncate">
-                                      {currentQuestion.kanji}
-                                    </span>
-                                    <button
-                                      onClick={(e) => { e.stopPropagation(); playKanjiAudio(); }}
-                                      className="flex-shrink-0 focus:outline-none dark:text-gray-300 text-gray-500"
-                                    >
-                                      <FontAwesomeIcon icon={faPlayCircle} size="xs" />
-                                    </button>
+                              <div className="space-y-4">
+                                <div className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em] font-display">Compound Pattern</div>
+                                <div className="p-8 bg-slate-50 border border-slate-100 rounded-[2rem] shadow-sm flex items-center justify-between group/comp">
+                                  <div className="flex-1">
+                                    <div className="text-3xl font-jp font-black text-slate-900 mb-2 tracking-tighter italic">{currentQuestion.exampleWord}</div>
+                                    <div className="text-base font-bold text-slate-500 italic">{currentQuestion.exampleReading}</div>
                                   </div>
-                                  <div className="text-base sm:text-lg md:text-xl dark:text-gray-300 text-gray-600 truncate">
-                                    {currentQuestion.reading}
-                                  </div>
-                                </div>
-
-                                <div className="border-t border-b border-gray-200 dark:border-gray-700 py-3 sm:py-4 space-y-2 sm:space-y-3">
-                                  <div className="text-xs sm:text-sm font-semibold dark:text-gray-200 text-gray-700">
-                                    Example:
-                                  </div>
-                                  <div className="text-sm sm:text-lg flex items-center justify-center gap-2">
-                                    <span className="text-base sm:text-xl dark:text-white text-gray-800 truncate">
-                                      {currentQuestion.exampleWord}
-                                    </span>
-                                    <button
-                                      onClick={(e) => { e.stopPropagation(); handlePlayAudio(); }}
-                                      className="flex-shrink-0 focus:outline-none dark:text-gray-300 text-gray-500"
-                                    >
-                                      <FontAwesomeIcon icon={faPlayCircle} size="sm" />
-                                    </button>
-                                  </div>
-                                  <div className="text-xs sm:text-sm dark:text-gray-200 text-gray-700 truncate">
-                                    {currentQuestion.exampleReading}
-                                  </div>
-                                  <div className="text-sm sm:text-base italic dark:text-gray-400 text-gray-600 line-clamp-2">
-                                    {currentQuestion.translation}
-                                  </div>
+                                  <button
+                                    onClick={(e) => { e.stopPropagation(); handlePlayAudio(); }}
+                                    className="w-12 h-12 rounded-xl bg-white border border-slate-100 text-slate-300 group-hover/comp:text-primary group-hover/comp:border-primary/20 flex items-center justify-center transition-all shadow-sm"
+                                  >
+                                    <FontAwesomeIcon icon={faPlayCircle} className="w-5 h-5" />
+                                  </button>
                                 </div>
                               </div>
                             </div>
@@ -599,9 +591,9 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
 
                             <button
                               onClick={(e) => { e.stopPropagation(); handleNextQuestion(); }}
-                              className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
+                              className="px-4 py-2 rounded-xl bg-slate-50 border border-slate-100 text-slate-400 hover:text-primary hover:border-primary/20 transition-all font-display font-black text-[10px] uppercase tracking-widest italic"
                             >
-                              <FontAwesomeIcon icon={faArrowRight} />
+                              <FontAwesomeIcon icon={faArrowRight} /> Next
                             </button>
                           </div>
                         </div>

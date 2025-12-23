@@ -76,76 +76,77 @@ export default function AuthForms({ initialMode = 'LOGIN', onSuccess, hideHeader
     return (
         <div className="w-full h-full flex flex-col justify-center">
             {!hideHeader && (
-                <div className="text-center mb-8">
-                    <h2 className="text-3xl font-display font-black text-brand-dark mb-2">
-                        {isLogin ? 'Welcome Back!' : 'Join hanachan'}
+                <div className="text-center mb-10">
+                    <h2 className="text-4xl font-display font-black text-foreground mb-3 tracking-tight">
+                        {isLogin ? 'Welcome Back' : 'Start Your Journey'}
                     </h2>
-                    <p className="text-gray-500 font-medium">
-                        {isLogin ? 'Continue your learning journey' : 'Start your Japanese adventure'}
+                    <p className="text-muted-foreground font-bold text-sm">
+                        {isLogin ? 'Continue where you left off' : 'Join a community of Japanese learners'}
                     </p>
                 </div>
             )}
 
             {error && (
-                <div className="bg-red-50 border-2 border-red-100 text-red-600 px-4 py-3 rounded-2xl mb-6 font-bold text-sm shadow-sm animate-shake">
+                <div className="bg-destructive/5 border border-destructive/20 text-destructive px-6 py-4 rounded-2xl mb-8 font-bold text-xs  animate-in fade-in slide-in-from-top-2 duration-300">
                     {error}
                 </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-5">
-                <div>
-                    <label className="block text-sm font-bold text-brand-dark mb-2 ml-1">Email Address</label>
+            <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-2">
+                    <label className="block text-[10px] font-black font-display uppercase tracking-widest text-muted-foreground ml-1">Email Address</label>
                     <input
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
-                        className="block w-full rounded-xl border-2 border-transparent bg-gray-50 shadow-inner p-3 text-brand-dark font-medium placeholder-gray-400 focus:outline-none focus:bg-white focus:border-brand-indigo focus:ring-4 focus:ring-brand-indigo/10 transition-all"
+                        className="block w-full rounded-xl border border-border/50 bg-muted/20 px-4 py-3.5 text-foreground font-bold placeholder-muted-foreground/30 focus:outline-none focus:bg-card focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all "
                         placeholder="you@example.com"
                     />
                 </div>
-                <div>
-                    <label className="block text-sm font-bold text-brand-dark mb-2 ml-1">Password</label>
+                <div className="space-y-2">
+                    <label className="block text-[10px] font-black font-display uppercase tracking-widest text-muted-foreground ml-1">Password</label>
                     <input
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
-                        className="block w-full rounded-xl border-2 border-transparent bg-gray-50 shadow-inner p-3 text-brand-dark font-medium placeholder-gray-400 focus:outline-none focus:bg-white focus:border-brand-indigo focus:ring-4 focus:ring-brand-indigo/10 transition-all"
+                        className="block w-full rounded-xl border border-border/50 bg-muted/20 px-4 py-3.5 text-foreground font-bold placeholder-muted-foreground/30 focus:outline-none focus:bg-card focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all "
                         placeholder="••••••••"
                     />
                 </div>
 
-                <div className="pt-2">
+                <div className="pt-4">
                     <button
                         type="submit"
                         disabled={loading}
-                        className="btnPrimary w-full py-3.5 text-lg shadow-lg shadow-indigo-200 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98] transition-transform"
+                        className="w-full py-4 text-xs font-black font-display uppercase tracking-[0.2em] bg-primary text-primary-foreground rounded-2xl  hover: hover:bg-primary/95 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 transition-all"
                     >
-                        {loading ? 'Processing...' : (isLogin ? 'Log In' : 'Create Account')}
+                        {loading ? 'Processing...' : (isLogin ? 'Sign In' : 'Create Account')}
                     </button>
                 </div>
             </form>
 
-            <div className="mt-8 text-center pt-6 border-t border-gray-100">
+            <div className="mt-10 text-center pt-8 border-t border-border/50">
                 <button
                     onClick={() => {
                         setIsLogin(!isLogin);
                         setError('');
                     }}
-                    className="text-sm font-bold text-slate-500 hover:text-brand-indigo transition-colors duration-200"
+                    className="text-[10px] font-black font-display uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors duration-300"
                 >
                     {isLogin ? (
                         <>
-                            Don&apos;t have an account? <span className="text-brand-indigo">Register Free</span>
+                            Don&apos;t have an account? <span className="text-secondary ml-1">Register Free</span>
                         </>
                     ) : (
                         <>
-                            Already have an account? <span className="text-brand-indigo">Login</span>
+                            Already have an account? <span className="text-secondary ml-1">Sign In</span>
                         </>
                     )}
                 </button>
             </div>
+
         </div>
     );
 }

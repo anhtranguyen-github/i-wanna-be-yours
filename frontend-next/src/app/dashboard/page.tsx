@@ -30,169 +30,19 @@ import {
     ChatBubbleLeftRightIcon,
 } from "@heroicons/react/24/solid";
 
-// ============================================
-// Progress Ring Component
-// ============================================
-
-interface ProgressRingProps {
-    progress: number;
-    size?: number;
-    strokeWidth?: number;
-    color?: string;
-    label?: string;
-    sublabel?: string;
-}
-
-function ProgressRing({
-    progress,
-    size = 120,
-    strokeWidth = 8,
-    color = "#4CAF50",
-    label,
-    sublabel,
-}: ProgressRingProps) {
-    const radius = (size - strokeWidth) / 2;
-    const circumference = radius * 2 * Math.PI;
-    const offset = circumference - (Math.min(progress, 100) / 100) * circumference;
-
-    return (
-        <div className="relative inline-flex items-center justify-center">
-            <svg width={size} height={size} className="transform -rotate-90">
-                <circle
-                    cx={size / 2}
-                    cy={size / 2}
-                    r={radius}
-                    stroke="currentColor"
-                    strokeWidth={strokeWidth}
-                    fill="none"
-                    className="text-gray-200 dark:text-gray-700"
-                />
-                <circle
-                    cx={size / 2}
-                    cy={size / 2}
-                    r={radius}
-                    stroke={color}
-                    strokeWidth={strokeWidth}
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeDasharray={circumference}
-                    strokeDashoffset={offset}
-                    className="transition-all duration-700 ease-out"
-                />
-            </svg>
-            <div className="absolute flex flex-col items-center justify-center">
-                <span className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {Math.round(progress)}%
-                </span>
-                {label && (
-                    <span className="text-xs text-gray-500 dark:text-gray-400">{label}</span>
-                )}
-            </div>
-        </div>
-    );
-}
+import {
+    StatCard,
+    ProgressRing,
+    StreakBadge,
+    StreakDisplay,
+    WeeklyProgressBar,
+    AchievementBadge,
+    AchievementGrid,
+    ProgressSummaryMini
+} from "@/components/dashboard/DashboardComponents";
 
 // ============================================
-// Stat Card Component
-// ============================================
-
-interface StatCardProps {
-    title: string;
-    value: string | number;
-    icon: React.ReactNode;
-    trend?: number;
-    color?: string;
-    description?: string;
-}
-
-function StatCard({ title, value, icon, trend, color = "#4CAF50", description }: StatCardProps) {
-    return (
-        <div className="relative overflow-hidden bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 group">
-            {/* Background decoration */}
-            <div
-                className="absolute top-0 right-0 w-24 h-24 rounded-full transform translate-x-8 -translate-y-8 opacity-10 group-hover:opacity-20 transition-opacity"
-                style={{ backgroundColor: color }}
-            />
-
-            <div className="flex items-start justify-between">
-                <div>
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                        {title}
-                    </p>
-                    <p className="text-3xl font-bold text-gray-900 dark:text-white">{value}</p>
-                    {description && (
-                        <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{description}</p>
-                    )}
-                    {trend !== undefined && (
-                        <div className="flex items-center mt-2">
-                            <ArrowTrendingUpIcon
-                                className={`w-4 h-4 ${trend >= 0 ? "text-green-500" : "text-red-500 rotate-180"}`}
-                            />
-                            <span
-                                className={`text-sm font-medium ml-1 ${trend >= 0 ? "text-green-500" : "text-red-500"
-                                    }`}
-                            >
-                                {trend >= 0 ? "+" : ""}{trend}%
-                            </span>
-                        </div>
-                    )}
-                </div>
-                <div
-                    className="p-3 rounded-xl"
-                    style={{ backgroundColor: `${color}20` }}
-                >
-                    <div className="w-6 h-6" style={{ color }}>
-                        {icon}
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-}
-
-// ============================================
-// Streak Display Component
-// ============================================
-
-interface StreakDisplayProps {
-    current: number;
-    longest: number;
-}
-
-function StreakDisplay({ current, longest }: StreakDisplayProps) {
-    const flames = Math.min(current, 7);
-
-    return (
-        <div className="bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl p-6 text-white shadow-lg">
-            <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">Study Streak</h3>
-                <FireIcon className="w-8 h-8 text-yellow-300 animate-pulse" />
-            </div>
-
-            <div className="flex items-baseline gap-2 mb-2">
-                <span className="text-5xl font-bold">{current}</span>
-                <span className="text-xl opacity-80">days</span>
-            </div>
-
-            <div className="flex gap-1 mb-4">
-                {Array.from({ length: 7 }).map((_, i) => (
-                    <div
-                        key={i}
-                        className={`h-2 flex-1 rounded-full ${i < flames ? "bg-yellow-400" : "bg-white/30"
-                            }`}
-                    />
-                ))}
-            </div>
-
-            <p className="text-sm opacity-80">
-                🏆 Longest streak: {longest} days
-            </p>
-        </div>
-    );
-}
-
-// ============================================
-// Achievement Card Component
+// Internal Page Components (Refactored)
 // ============================================
 
 interface AchievementCardProps {
@@ -202,97 +52,59 @@ interface AchievementCardProps {
 function AchievementCard({ achievement }: AchievementCardProps) {
     return (
         <div
-            className={`flex items-center gap-3 p-4 rounded-xl transition-all duration-300 ${achievement.earned
-                ? "bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 border border-yellow-200 dark:border-yellow-800"
-                : "bg-gray-50 dark:bg-gray-800/50 opacity-50 grayscale"
+            className={`flex items-center gap-3 p-4 rounded-xl transition-all duration-300 border ${achievement.earned
+                ? "bg-white border-primary/20 "
+                : "bg-muted/30 border-transparent opacity-50 grayscale"
                 }`}
         >
             <span className="text-3xl">{achievement.icon}</span>
             <div className="flex-1 min-w-0">
-                <p className="font-semibold text-gray-900 dark:text-white truncate">
+                <p className="font-bold text-foreground truncate font-display">
                     {achievement.name}
                 </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                <p className="text-xs text-muted-foreground truncate font-medium">
                     {achievement.description}
                 </p>
             </div>
             {achievement.earned && (
-                <CheckCircleIcon className="w-5 h-5 text-green-500 flex-shrink-0" />
+                <CheckCircleIcon className="w-5 h-5 text-primary flex-shrink-0" />
             )}
         </div>
     );
 }
 
-// ============================================
-// Weekly Goal Card Component
-// ============================================
-
-interface WeeklyGoalCardProps {
-    label: string;
-    current: number;
-    target: number;
-    icon: React.ReactNode;
-    color: string;
-    unit?: string;
-}
-
-function WeeklyGoalCard({ label, current, target, icon, color, unit = "" }: WeeklyGoalCardProps) {
+function WeeklyGoalCard({ label, current, target, icon, color, unit = "" }: any) {
     const progress = target > 0 ? Math.min(100, (current / target) * 100) : 0;
-
     return (
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+        <div className="bg-white rounded-xl p-4 border border-border ">
             <div className="flex items-center gap-3 mb-3">
-                <div className="p-2 rounded-lg" style={{ backgroundColor: `${color}20` }}>
+                <div className="p-2 rounded-lg" style={{ backgroundColor: `${color}15` }}>
                     <div className="w-5 h-5" style={{ color }}>{icon}</div>
                 </div>
-                <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-600 dark:text-gray-300">{label}</p>
-                </div>
+                <p className="text-xs font-bold text-muted-foreground uppercase tracking-tight font-display">{label}</p>
             </div>
-
             <div className="flex items-baseline gap-2 mb-2">
-                <span className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {current}{unit}
-                </span>
-                <span className="text-sm text-gray-400">/ {target}{unit}</span>
+                <span className="text-2xl font-black text-foreground font-display">{current}{unit}</span>
+                <span className="text-xs font-bold text-muted-foreground">/ {target}{unit}</span>
             </div>
-
-            <div className="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                <div
-                    className="h-full rounded-full transition-all duration-500"
-                    style={{ width: `${progress}%`, backgroundColor: color }}
-                />
+            <div className="h-2 bg-muted rounded-full overflow-hidden">
+                <div className="h-full rounded-full transition-all duration-500" style={{ width: `${progress}%`, backgroundColor: color }} />
             </div>
         </div>
     );
 }
 
-// ============================================
-// Quick Action Button Component
-// ============================================
-
-interface QuickActionProps {
-    label: string;
-    icon: React.ReactNode;
-    href: string;
-    color: string;
-}
-
-function QuickAction({ label, icon, href, color }: QuickActionProps) {
+function QuickAction({ label, icon, href, color }: any) {
     const router = useRouter();
-
     return (
         <button
             onClick={() => router.push(href)}
-            className="flex flex-col items-center gap-2 p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-all duration-300 group"
+            className="flex flex-col items-center gap-2 p-4 rounded-xl bg-white border border-border  hover:  transition-all duration-300 group"
         >
-            <div
-                className="p-3 rounded-xl group-hover:scale-110 transition-transform"
-                style={{ backgroundColor: `${color}15` }}
-            >
+            <div className="p-3 rounded-xl group-hover:scale-110 transition-transform" style={{ backgroundColor: `${color}15` }}>
                 <div className="w-6 h-6" style={{ color }}>{icon}</div>
             </div>
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{label}</span>
+            <span className="text-xs font-bold text-muted-foreground group-hover:text-foreground transition-colors font-display">{label}</span>
         </button>
     );
 }
@@ -410,23 +222,23 @@ export default function LearningDashboardPage() {
     })();
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
+        <div className="min-h-screen bg-background">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Premium Guest Banner */}
                 {isGuest && (
-                    <div className="relative mb-10 p-1 md:p-1.5 rounded-[2rem] bg-gradient-to-r from-brand-softBlue via-brand-pink to-brand-peach overflow-hidden shadow-2xl shadow-brand-softBlue/10 group">
-                        <div className="absolute inset-0 bg-white/20 backdrop-blur-3xl rounded-[1.8rem] transition-all group-hover:backdrop-blur-2xl" />
+                    <div className="relative mb-10 p-1 md:p-1.5 rounded-[2.5rem] bg-gradient-to-r from-primary/10 via-secondary to-accent/10 overflow-hidden  group transition-all duration-500">
+                        <div className="absolute inset-0 bg-white/40 -3xl rounded-[2.3rem]" />
 
-                        <div className="relative z-10 p-6 md:p-10 rounded-[1.8rem] flex flex-col lg:flex-row items-center justify-between gap-8">
+                        <div className="relative z-10 p-6 md:p-10 rounded-[2.3rem] flex flex-col lg:flex-row items-center justify-between gap-8">
                             <div className="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
-                                <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center text-4xl shadow-xl shadow-brand-softBlue/20 animate-bounce-slow">
+                                <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center text-4xl  animate-bounce-slow">
                                     🌸
                                 </div>
-                                <div>
-                                    <h2 className="text-2xl md:text-3xl font-black text-brand-dark mb-2 tracking-tight">
-                                        Your Personalized <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-softBlue to-brand-peach">Japanese Engine</span>
+                                <div className="flex-1">
+                                    <h2 className="text-2xl md:text-4xl font-black text-foreground mb-2 tracking-tight font-display">
+                                        Your Personalized <span className="text-primary">Japanese Engine</span>
                                     </h2>
-                                    <p className="text-slate-600 font-medium max-w-xl">
+                                    <p className="text-muted-foreground font-bold max-w-xl leading-relaxed">
                                         You&apos;re currently in Preview Mode. Create an account to save your progress, unlock AI deep-dives, and sync across all your devices.
                                     </p>
                                 </div>
@@ -435,13 +247,13 @@ export default function LearningDashboardPage() {
                             <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
                                 <button
                                     onClick={() => openAuth('REGISTER', { flowType: 'GENERAL' })}
-                                    className="px-8 py-4 bg-brand-dark text-white font-black rounded-2xl hover:bg-black hover:scale-105 hover:shadow-2xl transition-all whitespace-nowrap"
+                                    className="px-8 py-4 bg-primary text-primary-foreground font-black rounded-2xl hover:opacity-90   transition-all whitespace-nowrap"
                                 >
                                     Claim Your Progress
                                 </button>
                                 <button
                                     onClick={() => openAuth('LOGIN')}
-                                    className="px-8 py-4 bg-white/50 backdrop-blur text-brand-dark border border-white/60 font-black rounded-2xl hover:bg-white transition-all whitespace-nowrap"
+                                    className="px-8 py-4 bg-card  text-foreground border border-white font-black rounded-2xl hover:bg-white  transition-all whitespace-nowrap"
                                 >
                                     Login
                                 </button>
@@ -452,21 +264,21 @@ export default function LearningDashboardPage() {
 
                 {/* AI Tutor Insights (Guest specific or Premium) */}
                 {isGuest && (
-                    <div className="bg-white/40 backdrop-blur-xl border border-white/80 rounded-3xl p-6 md:p-8 mb-10 shadow-lg shadow-brand-softBlue/5 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden group">
+                    <div className="bg-card rounded-2xl p-6 md:p-8 mb-10  hover: border border-border flex flex-col md:flex-row items-center gap-8 relative overflow-hidden group transition-all">
                         <div className="absolute top-0 right-0 p-4 transform translate-x-4 -translate-y-4 opacity-5 group-hover:scale-110 transition-transform">
-                            <SparklesIcon className="w-32 h-32 text-brand-softBlue" />
+                            <SparklesIcon className="w-32 h-32 text-primary" />
                         </div>
 
-                        <div className="w-20 h-20 bg-gradient-to-br from-brand-softBlue to-indigo-400 rounded-full flex items-center justify-center shrink-0 shadow-lg shadow-brand-softBlue/20">
-                            <ChatBubbleLeftRightIcon className="w-10 h-10 text-white" />
+                        <div className="w-20 h-20 bg-secondary rounded-full flex items-center justify-center shrink-0 ">
+                            <ChatBubbleLeftRightIcon className="w-10 h-10 text-primary" />
                         </div>
 
                         <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
-                                <span className="px-3 py-1 bg-brand-softBlue text-white text-[10px] font-black uppercase tracking-widest rounded-full">AI Insight</span>
-                                <h3 className="text-xl font-black text-brand-dark tracking-tight">Hanachan&apos;s Recommendations</h3>
+                                <span className="px-3 py-1 bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-widest rounded-full">AI Insight</span>
+                                <h3 className="text-xl font-black text-foreground tracking-tight font-display">Hanabira Assistant</h3>
                             </div>
-                            <p className="text-slate-600 font-medium leading-relaxed italic max-w-2xl">
+                            <p className="text-muted-foreground font-bold leading-relaxed italic max-w-2xl">
                                 &quot;You&apos;re making amazing progress with N3 vocabulary! Based on our demo patterns, your retention is 15% higher in the morning. I recommend focusing on Kanji tomorrow to maintain your 5-day streak!&quot;
                             </p>
                         </div>
@@ -474,7 +286,7 @@ export default function LearningDashboardPage() {
                         <div className="shrink-0">
                             <button
                                 onClick={() => openAuth('REGISTER', { flowType: 'CHAT', title: 'Unlock Your Mentor' })}
-                                className="group flex items-center gap-2 text-brand-softBlue font-black hover:gap-3 transition-all"
+                                className="group flex items-center gap-2 text-primary font-black hover:gap-3 transition-all font-display"
                             >
                                 Get Personal Insights <ArrowTrendingUpIcon className="w-5 h-5" />
                             </button>
@@ -484,10 +296,10 @@ export default function LearningDashboardPage() {
 
                 {/* Header */}
                 <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                    <h1 className="text-4xl font-black text-foreground mb-2 font-display">
                         Learning Dashboard
                     </h1>
-                    <p className="text-gray-600 dark:text-gray-400">
+                    <p className="text-muted-foreground font-bold">
                         Track your Japanese learning progress and achievements
                     </p>
                 </div>
@@ -498,28 +310,28 @@ export default function LearningDashboardPage() {
                         title="Vocabulary Mastered"
                         value={progress?.vocabulary_mastered || 0}
                         icon={<BookOpenIcon className="w-full h-full" />}
-                        color={CATEGORY_COLORS.vocabulary}
+                        color="hsl(var(--vocab))"
                         description="words learned"
                     />
                     <StatCard
                         title="Kanji Learned"
                         value={progress?.kanji_mastered || 0}
                         icon={<PencilSquareIcon className="w-full h-full" />}
-                        color={CATEGORY_COLORS.kanji}
+                        color="hsl(var(--kanji))"
                         description="characters"
                     />
                     <StatCard
                         title="Grammar Points"
                         value={progress?.grammar_points_learned || 0}
                         icon={<AcademicCapIcon className="w-full h-full" />}
-                        color={CATEGORY_COLORS.grammar}
+                        color="hsl(var(--grammar))"
                         description="patterns studied"
                     />
                     <StatCard
                         title="Study Time"
                         value={learnerProgressService.formatStudyTime(progress?.total_study_time_minutes || 0)}
                         icon={<ClockIcon className="w-full h-full" />}
-                        color="#9C27B0"
+                        color="hsl(var(--primary))"
                         description="total time"
                     />
                 </div>
@@ -536,21 +348,19 @@ export default function LearningDashboardPage() {
                         />
 
                         {/* Weekly Progress Overview */}
-                        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+                        <div className="bg-card rounded-2xl p-6  border border-border">
                             <div className="flex items-center justify-between mb-6">
-                                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                                <h3 className="text-xl font-black text-foreground font-display">
                                     Weekly Progress
                                 </h3>
-                                <CalendarDaysIcon className="w-5 h-5 text-gray-400" />
+                                <CalendarDaysIcon className="w-5 h-5 text-muted-foreground" />
                             </div>
 
                             <div className="flex justify-center mb-6">
                                 <ProgressRing
                                     progress={weeklyProgress}
-                                    size={140}
+                                    size={150}
                                     strokeWidth={12}
-                                    color="#4CAF50"
-                                    label="complete"
                                 />
                             </div>
 
@@ -560,21 +370,21 @@ export default function LearningDashboardPage() {
                                     current={progress?.weekly_goals?.flashcard_reviews?.current || 0}
                                     target={progress?.weekly_goals?.flashcard_reviews?.target || 100}
                                     icon={<SparklesIcon className="w-full h-full" />}
-                                    color="#4CAF50"
+                                    color="hsl(var(--primary))"
                                 />
                                 <WeeklyGoalCard
                                     label="Quizzes Completed"
                                     current={progress?.weekly_goals?.quizzes_completed?.current || 0}
                                     target={progress?.weekly_goals?.quizzes_completed?.target || 5}
                                     icon={<ChartBarIcon className="w-full h-full" />}
-                                    color="#2196F3"
+                                    color="hsl(var(--grammar))"
                                 />
                                 <WeeklyGoalCard
                                     label="Study Minutes"
                                     current={progress?.weekly_goals?.study_minutes?.current || 0}
                                     target={progress?.weekly_goals?.study_minutes?.target || 150}
                                     icon={<ClockIcon className="w-full h-full" />}
-                                    color="#9C27B0"
+                                    color="hsl(var(--primary))"
                                     unit="m"
                                 />
                             </div>
@@ -584,8 +394,8 @@ export default function LearningDashboardPage() {
                     {/* Middle Column - Quick Actions & Recent Activity */}
                     <div className="lg:col-span-1 space-y-6">
                         {/* Quick Actions */}
-                        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
-                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                        <div className="bg-card rounded-2xl p-6  border border-border">
+                            <h3 className="text-xl font-black text-foreground mb-4 font-display">
                                 Quick Actions
                             </h3>
                             <div className="grid grid-cols-2 gap-3">
@@ -593,56 +403,56 @@ export default function LearningDashboardPage() {
                                     label="Flashcards"
                                     icon={<SparklesIcon className="w-full h-full" />}
                                     href="/flashcards"
-                                    color="#4CAF50"
+                                    color="hsl(var(--primary))"
                                 />
                                 <QuickAction
                                     label="Quiz"
                                     icon={<ChartBarIcon className="w-full h-full" />}
                                     href="/quiz"
-                                    color="#2196F3"
+                                    color="hsl(var(--grammar))"
                                 />
                                 <QuickAction
                                     label="Study Plan"
                                     icon={<CalendarDaysIcon className="w-full h-full" />}
                                     href="/study-plan"
-                                    color="#FF9800"
+                                    color="hsl(var(--kanji))"
                                 />
                                 <QuickAction
                                     label="AI Tutor"
                                     icon={<ChatBubbleLeftRightIcon className="w-full h-full" />}
                                     href="/chat"
-                                    color="#9C27B0"
+                                    color="hsl(var(--primary))"
                                 />
                             </div>
                         </div>
 
                         {/* This Week Stats */}
-                        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
-                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                        <div className="bg-card rounded-2xl p-6  border border-border">
+                            <h3 className="text-xl font-black text-foreground mb-4 font-display">
                                 This Week
                             </h3>
                             <div className="space-y-4">
-                                <div className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700">
-                                    <span className="text-gray-600 dark:text-gray-400">Cards Reviewed</span>
-                                    <span className="font-semibold text-gray-900 dark:text-white">
+                                <div className="flex items-center justify-between py-2 border-b border-border">
+                                    <span className="text-muted-foreground font-bold">Cards Reviewed</span>
+                                    <span className="font-black text-foreground font-display">
                                         {weeklyStats?.flashcard_reviews || 0}
                                     </span>
                                 </div>
-                                <div className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700">
-                                    <span className="text-gray-600 dark:text-gray-400">Quizzes Taken</span>
-                                    <span className="font-semibold text-gray-900 dark:text-white">
+                                <div className="flex items-center justify-between py-2 border-b border-border">
+                                    <span className="text-muted-foreground font-bold">Quizzes Taken</span>
+                                    <span className="font-black text-foreground font-display">
                                         {weeklyStats?.quizzes_completed || 0}
                                     </span>
                                 </div>
-                                <div className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700">
-                                    <span className="text-gray-600 dark:text-gray-400">Avg. Quiz Score</span>
-                                    <span className="font-semibold text-gray-900 dark:text-white">
+                                <div className="flex items-center justify-between py-2 border-b border-border">
+                                    <span className="text-muted-foreground font-bold">Avg. Quiz Score</span>
+                                    <span className="font-black text-foreground font-display">
                                         {weeklyStats?.avg_quiz_score || 0}%
                                     </span>
                                 </div>
                                 <div className="flex items-center justify-between py-2">
-                                    <span className="text-gray-600 dark:text-gray-400">Days Active</span>
-                                    <span className="font-semibold text-gray-900 dark:text-white">
+                                    <span className="text-muted-foreground font-bold">Days Active</span>
+                                    <span className="font-black text-foreground font-display">
                                         {weeklyStats?.days_active || 0} / 7
                                     </span>
                                 </div>
@@ -692,7 +502,7 @@ export default function LearningDashboardPage() {
                                         <AchievementCard key={achievement.id} achievement={achievement} />
                                     ))
                                 ) : (
-                                    <p className="text-gray-500 dark:text-gray-400 text-center py-8">
+                                    <p className="text-muted-foreground text-center py-8 font-bold">
                                         Start learning to earn achievements!
                                     </p>
                                 )}
@@ -702,20 +512,20 @@ export default function LearningDashboardPage() {
                 </div>
 
                 {/* Recent Activity */}
-                <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                <div className="bg-card rounded-2xl p-6  border border-border">
+                    <h3 className="text-xl font-black text-foreground mb-4 font-display">
                         Recent Activity
                     </h3>
                     {isGuest ? (
                         <div className="py-12 text-center group cursor-pointer" onClick={() => openAuth('REGISTER', { flowType: 'GENERAL' })}>
-                            <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                                <ClockIcon className="w-8 h-8 text-blue-400" />
+                            <div className="w-16 h-16 bg-secondary/20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform ">
+                                <ClockIcon className="w-8 h-8 text-primary" />
                             </div>
-                            <h4 className="text-lg font-black text-brand-dark mb-2">Unlock Your Timeline</h4>
-                            <p className="text-slate-500 max-w-sm mx-auto mb-6 font-medium">
+                            <h4 className="text-2xl font-black text-foreground mb-2 font-display">Unlock Your Timeline</h4>
+                            <p className="text-muted-foreground max-w-sm mx-auto mb-6 font-bold">
                                 Track every quiz, flashcard session, and milestone with a detailed history of your Japanese journey.
                             </p>
-                            <button className="px-6 py-2 bg-brand-dark text-white font-bold rounded-xl hover:scale-105 transition-all">
+                            <button className="px-8 py-3 bg-foreground text-background font-black rounded-2xl hover:opacity-90  transition-all">
                                 Create Account
                             </button>
                         </div>
@@ -726,14 +536,14 @@ export default function LearningDashboardPage() {
                                     key={activity.id || index}
                                     className="flex items-center gap-4 p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50"
                                 >
-                                    <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30">
-                                        <ChartBarIcon className="w-5 h-5 text-blue-500" />
+                                    <div className="p-2 rounded-lg bg-primary/10">
+                                        <ChartBarIcon className="w-5 h-5 text-primary" />
                                     </div>
                                     <div className="flex-1">
-                                        <p className="font-medium text-gray-900 dark:text-white capitalize">
+                                        <p className="font-bold text-foreground capitalize font-display">
                                             {activity.activity_type.replace(/_/g, ' ')}
                                         </p>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                                        <p className="text-xs font-bold text-muted-foreground">
                                             {new Date(activity.timestamp).toLocaleDateString('en-US', {
                                                 month: 'short',
                                                 day: 'numeric',
@@ -743,7 +553,7 @@ export default function LearningDashboardPage() {
                                         </p>
                                     </div>
                                     {activity.score !== undefined && (
-                                        <span className="px-3 py-1 text-sm font-medium text-green-700 bg-green-100 dark:text-green-400 dark:bg-green-900/30 rounded-full">
+                                        <span className="px-3 py-1 text-xs font-black text-primary bg-primary/10 rounded-full font-display">
                                             {activity.score}%
                                         </span>
                                     )}

@@ -57,6 +57,15 @@ SERVICE_PORT = int(os.getenv("STUDY_PLAN_SERVICE_PORT", 5500))
 def health_check():
     return jsonify({"message": "OK", "service": "study-plan-service", "port": SERVICE_PORT}), 200
 
+@app.errorhandler(Exception)
+def handle_exception(e):
+    # Log the error
+    app.logger.error(f"Unhandled exception: {str(e)}", exc_info=True)
+    return jsonify({
+        "error": str(e),
+        "type": type(e).__name__
+    }), 500
+
 
 # ---------------- Module imports ----------------- #
 

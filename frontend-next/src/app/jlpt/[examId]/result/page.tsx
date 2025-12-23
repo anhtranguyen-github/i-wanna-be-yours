@@ -129,14 +129,18 @@ export default function ExamResultPage() {
 
     if (!examConfig || !resultData) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-50">
-                <div className="text-center">
-                    <HelpCircle size={48} className="mx-auto mb-4 text-slate-400" />
-                    <h2 className="text-xl font-bold text-slate-700 mb-2">Results Not Found</h2>
-                    <Link href="/jlpt" className="text-brand-green hover:underline">
-                        Back to Practice
-                    </Link>
+            <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 text-center">
+                <div className="w-24 h-24 bg-muted/50 rounded-2xl flex items-center justify-center mb-8 ">
+                    <HelpCircle size={44} className="text-muted-foreground/20" />
                 </div>
+                <h2 className="text-2xl font-black text-foreground mb-4 font-display">Results Not Found</h2>
+                <Link
+                    href="/jlpt"
+                    className="flex items-center gap-3 px-8 py-4 bg-foreground text-background font-black rounded-2xl hover:opacity-90 active:scale-95 transition-all  font-display uppercase tracking-widest text-xs"
+                >
+                    <ArrowLeft size={18} />
+                    Back to Practice
+                </Link>
             </div>
         );
     }
@@ -176,108 +180,110 @@ export default function ExamResultPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50/30">
+        <div className="min-h-screen bg-background">
             {/* Header */}
-            <header className="bg-white/80 backdrop-blur-md border-b border-slate-100 sticky top-0 z-40">
-                <div className="max-w-5xl mx-auto px-4 py-4">
+            <header className="bg-card border-b border-border sticky top-0 z-40  animate-in fade-in duration-500">
+                <div className="max-w-5xl mx-auto px-6 py-6">
                     <div className="flex items-center justify-between">
                         <Link
                             href="/jlpt"
-                            className="flex items-center gap-2 text-slate-500 hover:text-brand-green transition-colors"
+                            className="flex items-center gap-2.5 text-muted-foreground hover:text-primary transition-all font-display uppercase tracking-widest text-[10px] font-black group"
                         >
-                            <ArrowLeft size={20} />
-                            <span className="font-medium">Back to Practice</span>
+                            <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+                            Back to Library
                         </Link>
-                        <div className="text-right">
-                            <h1 className="font-bold text-brand-dark">{examConfig.title}</h1>
-                            <p className="text-xs text-slate-500">{examConfig.level} · Results</p>
+                        <div className="text-right space-y-0.5">
+                            <h1 className="text-xl font-black text-foreground font-display tracking-tight leading-none">{examConfig.title}</h1>
+                            <p className="text-[10px] font-black text-muted-foreground/40 uppercase tracking-widest font-display">
+                                {examConfig.level} <span className="mx-1">•</span> Summary
+                            </p>
                         </div>
                     </div>
                 </div>
             </header>
 
             {/* Main Content */}
-            <main className="max-w-5xl mx-auto px-4 py-10">
+            <main className="max-w-5xl mx-auto px-6 py-12 space-y-12">
                 {/* ===== HERO SCORE CARD ===== */}
                 <div
                     className={`
-                        relative overflow-hidden rounded-3xl p-8 mb-8 text-white
-                        bg-gradient-to-br ${getScoreBgColor(resultData.scorePercentage)}
+                        relative overflow-hidden rounded-2xl p-12 text-white  animate-in zoom-in-95 duration-700
+                        ${resultData.passed ? "bg-primary" : "bg-foreground"}
                     `}
                 >
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-                    <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+                    <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
 
-                    <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-12">
                         {/* Score Circle */}
                         <div className="text-center">
-                            <div className="relative w-40 h-40 mx-auto">
+                            <div className="relative w-48 h-48 mx-auto group">
                                 <svg className="w-full h-full -rotate-90">
                                     <circle
-                                        cx="80"
-                                        cy="80"
-                                        r="70"
+                                        cx="96"
+                                        cy="96"
+                                        r="84"
                                         fill="none"
-                                        stroke="rgba(255,255,255,0.2)"
-                                        strokeWidth="12"
+                                        stroke="rgba(255,255,255,0.15)"
+                                        strokeWidth="16"
                                     />
                                     <circle
-                                        cx="80"
-                                        cy="80"
-                                        r="70"
+                                        cx="96"
+                                        cy="96"
+                                        r="84"
                                         fill="none"
                                         stroke="white"
-                                        strokeWidth="12"
+                                        strokeWidth="16"
                                         strokeLinecap="round"
-                                        strokeDasharray={`${resultData.scorePercentage * 4.4} 440`}
-                                        className="transition-all duration-1000"
+                                        strokeDasharray={`${resultData.scorePercentage * 5.27} 527`}
+                                        className="transition-all duration-[1500ms] ease-out shadow-inner"
                                     />
                                 </svg>
                                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                    <span className="text-5xl font-black">{resultData.scorePercentage}%</span>
-                                    <span className="text-sm opacity-80">Score</span>
+                                    <span className="text-6xl font-black font-display tracking-tighter leading-none">{resultData.scorePercentage}%</span>
+                                    <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60 font-display mt-2">Overall Score</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* Status & Stats */}
-                        <div className="flex-1 text-center md:text-left">
-                            <div className="flex items-center justify-center md:justify-start gap-3 mb-4">
-                                {resultData.passed ? (
-                                    <>
-                                        <Trophy size={32} />
-                                        <div>
-                                            <h2 className="text-3xl font-black">Passed!</h2>
-                                            <p className="text-white/80">Great job on this exam</p>
-                                        </div>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Target size={32} />
-                                        <div>
-                                            <h2 className="text-3xl font-black">Keep Practicing</h2>
-                                            <p className="text-white/80">You're getting closer!</p>
-                                        </div>
-                                    </>
-                                )}
+                        <div className="flex-1 text-center md:text-left space-y-10">
+                            <div className="flex items-center justify-center md:justify-start gap-6">
+                                <div className="p-4 bg-white/20 rounded-2xl ">
+                                    {resultData.passed ? <Trophy size={44} /> : <Target size={44} />}
+                                </div>
+                                <div className="space-y-1">
+                                    <h2 className="text-4xl font-black font-display tracking-tight leading-none">
+                                        {resultData.passed ? "Test Passed!" : "Keep Pushing"}
+                                    </h2>
+                                    <p className="text-white/60 font-bold">
+                                        {resultData.passed ? "Exceptional performance across all skills." : "You're building the foundation. Try again!"}
+                                    </p>
+                                </div>
                             </div>
 
-                            {/* Quick Stats */}
-                            <div className="grid grid-cols-3 gap-4 mt-6">
-                                <div className="bg-white/20 backdrop-blur rounded-xl p-3 text-center">
-                                    <CheckCircle2 size={20} className="mx-auto mb-1" />
-                                    <p className="text-2xl font-bold">{resultData.correctAnswers}</p>
-                                    <p className="text-xs opacity-80">Correct</p>
+                            {/* Quick Stats Grid */}
+                            <div className="grid grid-cols-3 gap-6">
+                                <div className="bg-white/10  rounded-2xl p-6 border border-white/10 space-y-2">
+                                    <div className="flex items-center justify-center md:justify-start gap-2 opacity-60">
+                                        <CheckCircle2 size={16} />
+                                        <p className="text-[9px] font-black uppercase tracking-widest font-display">Correct</p>
+                                    </div>
+                                    <p className="text-3xl font-black font-display">{resultData.correctAnswers}</p>
                                 </div>
-                                <div className="bg-white/20 backdrop-blur rounded-xl p-3 text-center">
-                                    <XCircle size={20} className="mx-auto mb-1" />
-                                    <p className="text-2xl font-bold">{resultData.incorrectAnswers}</p>
-                                    <p className="text-xs opacity-80">Incorrect</p>
+                                <div className="bg-white/10  rounded-2xl p-6 border border-white/10 space-y-2">
+                                    <div className="flex items-center justify-center md:justify-start gap-2 opacity-60">
+                                        <XCircle size={16} />
+                                        <p className="text-[9px] font-black uppercase tracking-widest font-display">Mistakes</p>
+                                    </div>
+                                    <p className="text-3xl font-black font-display">{resultData.incorrectAnswers}</p>
                                 </div>
-                                <div className="bg-white/20 backdrop-blur rounded-xl p-3 text-center">
-                                    <Clock size={20} className="mx-auto mb-1" />
-                                    <p className="text-2xl font-bold">{formatTime(resultData.timeTakenSeconds).split("m")[0]}m</p>
-                                    <p className="text-xs opacity-80">Time</p>
+                                <div className="bg-white/10  rounded-2xl p-6 border border-white/10 space-y-2">
+                                    <div className="flex items-center justify-center md:justify-start gap-2 opacity-60">
+                                        <Clock size={16} />
+                                        <p className="text-[9px] font-black uppercase tracking-widest font-display">Time</p>
+                                    </div>
+                                    <p className="text-3xl font-black font-display">{formatTime(resultData.timeTakenSeconds).split(" ")[0]}</p>
                                 </div>
                             </div>
                         </div>
@@ -285,42 +291,37 @@ export default function ExamResultPage() {
                 </div>
 
                 {/* ===== SKILL BREAKDOWN ===== */}
-                <div className="bg-white rounded-2xl border border-slate-200 p-6 mb-8 shadow-sm">
-                    <div className="flex items-center gap-3 mb-6">
-                        <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-                            <BarChart3 size={20} className="text-blue-600" />
+                <div className="bg-card rounded-2xl p-10 border border-border  animate-in slide-in-from-bottom-4 duration-700">
+                    <div className="flex items-center gap-4 mb-10 pb-6 border-b border-border/50">
+                        <div className="w-14 h-14 bg-primary/10 text-primary rounded-2xl flex items-center justify-center ">
+                            <BarChart3 size={28} />
                         </div>
-                        <div>
-                            <h3 className="font-bold text-brand-dark">Skill Breakdown</h3>
-                            <p className="text-xs text-slate-500">Performance by skill area</p>
+                        <div className="space-y-1">
+                            <h3 className="text-2xl font-black text-foreground font-display leading-none">Diagnostic Analysis</h3>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 font-display">Performance by skill category</p>
                         </div>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
                         {resultData.skillBreakdown.map((skill) => (
-                            <div key={skill.skill} className="flex items-center gap-4">
-                                <div className="w-32 sm:w-40 flex items-center gap-2">
-                                    <span className="text-xl">{skillIcons[skill.skill]}</span>
-                                    <span className="text-sm font-medium text-slate-700">{skillLabels[skill.skill]}</span>
-                                </div>
-                                <div className="flex-1">
-                                    <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
-                                        <div
-                                            className={`h-full rounded-full bg-gradient-to-r ${skill.percentage >= 70
-                                                ? "from-emerald-400 to-teal-500"
-                                                : skill.percentage >= 50
-                                                    ? "from-amber-400 to-orange-500"
-                                                    : "from-red-400 to-rose-500"
-                                                }`}
-                                            style={{ width: `${skill.percentage}%` }}
-                                        />
+                            <div key={skill.skill} className="space-y-4 group">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <span className="text-2xl grayscale group-hover:grayscale-0 transition-all duration-500 scale-110">{skillIcons[skill.skill]}</span>
+                                        <span className="text-xs font-black uppercase tracking-widest text-foreground font-display">{skillLabels[skill.skill]}</span>
                                     </div>
+                                    <p className="text-xs font-black font-display text-muted-foreground/60">
+                                        <span className={getScoreColor(skill.percentage)}>{skill.correct} / {skill.total}</span>
+                                        <span className="ml-2 italic opacity-50">({skill.percentage}%)</span>
+                                    </p>
                                 </div>
-                                <div className="w-20 text-right">
-                                    <span className={`text-sm font-bold ${getScoreColor(skill.percentage)}`}>
-                                        {skill.correct}/{skill.total}
-                                    </span>
-                                    <span className="text-xs text-slate-400 ml-1">({skill.percentage}%)</span>
+                                <div className="h-4 bg-muted rounded-full overflow-hidden border border-border/50 ">
+                                    <div
+                                        className={`h-full rounded-full transition-all duration-1000 ease-out shadow-inner ${skill.percentage >= 70 ? "bg-primary" :
+                                            skill.percentage >= 50 ? "bg-secondary" : "bg-destructive"
+                                            }`}
+                                        style={{ width: `${skill.percentage}%` }}
+                                    />
                                 </div>
                             </div>
                         ))}
@@ -328,53 +329,55 @@ export default function ExamResultPage() {
                 </div>
 
                 {/* ===== RECOMMENDATIONS ===== */}
-                <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl border border-amber-200 p-6 mb-8">
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
-                            <TrendingUp size={20} className="text-amber-600" />
+                <div className="bg-secondary/5 rounded-2xl border border-secondary/20 p-10 space-y-8 animate-in slide-in-from-bottom-6 duration-700">
+                    <div className="flex items-center gap-4">
+                        <div className="w-14 h-14 bg-secondary/10 text-secondary rounded-2xl flex items-center justify-center ">
+                            <TrendingUp size={28} />
                         </div>
-                        <div>
-                            <h3 className="font-bold text-amber-800">Recommendations</h3>
-                            <p className="text-xs text-amber-600">Based on your performance</p>
+                        <div className="space-y-1">
+                            <h3 className="text-2xl font-black text-secondary font-display leading-none">Smart Recommendations</h3>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-secondary/50 font-display">Pathways to mastery</p>
                         </div>
                     </div>
 
-                    <ul className="space-y-2 text-sm text-amber-800">
+                    <ul className="space-y-6 text-foreground/80 font-bold leading-relaxed">
                         {resultData.skillBreakdown
                             .filter((s) => s.percentage < 70)
                             .map((skill) => (
-                                <li key={skill.skill} className="flex items-start gap-2">
-                                    <span className="mt-1">•</span>
-                                    <span>
-                                        Focus more on <strong>{skillLabels[skill.skill]}</strong> practice. Your score was{" "}
-                                        {skill.percentage}% in this area.
-                                    </span>
+                                <li key={skill.skill} className="flex items-start gap-4 p-6 bg-white/50 rounded-2xl border border-secondary/10 hover: transition-all">
+                                    <div className="w-8 h-8 rounded-full bg-secondary/10 text-secondary flex items-center justify-center shrink-0 text-sm font-black font-display">
+                                        !
+                                    </div>
+                                    <p className="text-sm">
+                                        Deepen your exposure to <span className="text-secondary font-black underline decoration-secondary/30 decoration-4 underline-offset-4">{skillLabels[skill.skill]}</span>. Your diagnostic score of {skill.percentage}% indicates a need for reinforced learning in this domain.
+                                    </p>
                                 </li>
                             ))}
                         {resultData.skillBreakdown.every((s) => s.percentage >= 70) && (
-                            <li className="flex items-center gap-2">
-                                <Award size={16} />
-                                <span>Excellent work! Try a higher difficulty level to challenge yourself.</span>
+                            <li className="flex items-center gap-4 p-8 bg-emerald-500/10 rounded-2xl border border-emerald-500/20">
+                                <Award className="text-emerald-600 shrink-0" size={32} />
+                                <p className="text-emerald-700 font-black font-display uppercase tracking-widest text-xs">
+                                    Peak performance achieved. Hanna recommends advancing the difficulty level to sustain intellectual growth.
+                                </p>
                             </li>
                         )}
                     </ul>
                 </div>
 
                 {/* ===== DEEP AI INSIGHTS (GUEST HOOK) ===== */}
-                <div className="relative overflow-hidden bg-white rounded-3xl border border-slate-200 p-8 mb-8 shadow-sm">
-                    {/* Decorative Background Icon */}
-                    <div className="absolute -top-10 -right-10 opacity-5 pointer-events-none">
-                        <SparklesIcon size={160} className="text-brand-green" />
+                <div className="relative overflow-hidden bg-card rounded-2xl border border-border p-12  group">
+                    <div className="absolute -top-20 -right-20 opacity-5 group-hover:opacity-10 transition-all duration-700 pointer-events-none rotate-12">
+                        <SparklesIcon size={240} className="text-primary" />
                     </div>
 
-                    <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
-                        <div className="w-20 h-20 bg-brand-green/10 rounded-2xl flex items-center justify-center shrink-0">
-                            <SparklesIcon size={40} className="text-brand-green" />
+                    <div className="relative z-10 flex flex-col lg:flex-row items-center gap-10">
+                        <div className="w-24 h-24 bg-primary/10 text-primary rounded-2xl flex items-center justify-center shrink-0 ">
+                            <SparklesIcon size={48} className="animate-pulse-slow" />
                         </div>
-                        <div className="flex-1 text-center md:text-left">
-                            <h3 className="text-xl font-black text-brand-dark mb-2">Hanachan's Deep Analysis</h3>
-                            <p className="text-slate-500 text-sm leading-relaxed max-w-lg">
-                                Using advanced AI, Hanachan can analyze your mistakes to identify specific grammatical gaps and vocabulary patterns you struggle with.
+                        <div className="flex-1 text-center lg:text-left space-y-4">
+                            <h3 className="text-3xl font-black text-foreground font-display tracking-tight leading-none">Cognitive Pattern Analysis</h3>
+                            <p className="text-muted-foreground font-bold leading-relaxed max-w-xl text-lg opacity-80">
+                                Hanachan uses deep learning to scrutinize your decision paths and pinpoint conceptual gaps that standard tests miss.
                             </p>
                         </div>
                         <button
@@ -386,47 +389,46 @@ export default function ExamResultPage() {
                                         description: "Let Hanachan analyze your mistakes and build a personalized review plan just for you."
                                     });
                                 } else {
-                                    // Implementation of AI analysis for logged in users
                                     alert("AI Analysis is calculating your profile...");
                                 }
                             }}
-                            className="bg-brand-dark text-white px-6 py-3 rounded-xl font-bold hover:bg-black transition-all shadow-lg hover:shadow-xl active:scale-95 flex items-center gap-2"
+                            className="w-full lg:w-auto bg-foreground text-background px-10 py-6 rounded-2xl font-black font-display uppercase tracking-widest text-xs hover:opacity-90 transition-all  active:scale-95 flex items-center justify-center gap-4"
                         >
-                            Analyze with Hanachan
-                            <Zap size={18} className="text-brand-green fill-brand-green" />
+                            Analyze Patterns
+                            <Zap size={20} className="text-primary fill-primary" />
                         </button>
                     </div>
 
                     {!user && (
-                        <div className="mt-6 pt-6 border-t border-slate-100 flex items-center gap-2 text-xs text-slate-400 font-medium">
-                            <CheckCircle2 size={14} className="text-brand-green" />
-                            Guest Mode: Log in to save these insights to your lifelong learning profile.
+                        <div className="mt-10 pt-8 border-t border-border/50 flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 font-display">
+                            <CheckCircle2 size={16} className="text-primary" />
+                            Guest Session: Secure your lifelong Hanabira profile to store diagnostic data.
                         </div>
                     )}
                 </div>
 
                 {/* ===== ACTION BUTTONS ===== */}
-                <div className="flex flex-wrap gap-4 justify-center">
+                <div className="flex flex-wrap gap-6 justify-center pt-10">
                     <button
                         onClick={() => router.push(`/jlpt/${examId}`)}
-                        className="flex items-center gap-2 px-6 py-3 bg-white border-2 border-slate-200 text-slate-700 font-bold rounded-xl hover:border-brand-green hover:text-brand-green transition-colors"
+                        className="flex items-center gap-3 px-10 py-5 bg-card border border-border text-foreground font-black rounded-2xl hover:border-primary/30 transition-all  font-display uppercase tracking-widest text-xs active:scale-95 group"
                     >
-                        <RotateCcw size={20} />
-                        Retake Exam
+                        <RotateCcw size={20} className="group-hover:rotate-180 transition-transform duration-700" />
+                        Retake
                     </button>
                     <button
                         onClick={() => router.push(`/jlpt/${examId}?review=true`)}
-                        className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors"
+                        className="flex items-center gap-3 px-10 py-5 bg-card border border-border text-foreground font-black rounded-2xl hover:border-primary/30 transition-all  font-display uppercase tracking-widest text-xs active:scale-95 group"
                     >
-                        <HelpCircle size={20} />
-                        Review Answers
+                        <HelpCircle size={20} className="group- transition-transform" />
+                        Review
                     </button>
                     <Link
                         href="/jlpt"
-                        className="flex items-center gap-2 px-6 py-3 bg-brand-green text-white font-bold rounded-xl hover:bg-brand-green/90 transition-colors"
+                        className="flex items-center gap-3 px-10 py-5 bg-primary text-white font-black rounded-2xl hover:opacity-90 transition-all  font-display uppercase tracking-widest text-xs active:scale-95"
                     >
                         <Home size={20} />
-                        More Practice
+                        Library
                     </Link>
                 </div>
             </main>

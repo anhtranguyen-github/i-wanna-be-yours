@@ -15,7 +15,11 @@ import {
     AlertTriangle,
     CheckCircle2,
     HelpCircle,
+    ArrowLeft,
+    BookOpen,
+    Sparkles,
 } from "lucide-react";
+
 import { mockExamConfigs, getQuestionsForExam } from "@/data/mockPractice";
 import {
     ExamConfig,
@@ -248,71 +252,73 @@ export default function ExamSessionPage() {
 
     if (!examConfig || questions.length === 0) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-50">
-                <div className="text-center">
-                    <AlertTriangle size={48} className="mx-auto mb-4 text-amber-500" />
-                    <h2 className="text-xl font-bold text-slate-700 mb-2">Exam Not Found</h2>
-                    <p className="text-slate-500 mb-6">The requested exam could not be loaded.</p>
-                    <button
-                        onClick={() => router.push("/jlpt")}
-                        className="px-6 py-3 bg-brand-green text-white font-bold rounded-xl"
-                    >
-                        Back to Practice
-                    </button>
+            <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 text-center">
+                <div className="w-32 h-32 bg-destructive/5 rounded-2xl flex items-center justify-center mb-10 ">
+                    <AlertTriangle className="w-16 h-16 text-destructive/20" />
                 </div>
+                <h2 className="text-3xl font-black text-foreground mb-4 font-display">Exam Not Found</h2>
+                <p className="text-muted-foreground font-bold mb-10 max-w-md">The requested exam could not be loaded. Please check your connection or try again later.</p>
+                <button
+                    onClick={() => router.push("/jlpt")}
+                    className="flex items-center gap-3 px-10 py-5 bg-foreground text-background font-black rounded-2xl hover:opacity-90 active:scale-95 transition-all  font-display uppercase tracking-widest text-xs"
+                >
+                    <ArrowLeft size={20} />
+                    Back to Practice
+                </button>
             </div>
         );
     }
 
     const currentQuestion = questions[currentIndex];
-
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col">
+        <div className="min-h-screen bg-background flex flex-col">
             {/* ===== TOP BAR ===== */}
-            <header className="bg-white border-b border-slate-200 px-4 py-3 sticky top-0 z-50">
+            <header className="bg-card border-b border-border px-6 py-4 sticky top-0 z-50 ">
                 <div className="flex items-center justify-between max-w-screen-2xl mx-auto">
                     {/* Left: Title & Mode */}
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-6">
                         <button
                             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                            className="lg:hidden p-2 hover:bg-slate-100 rounded-lg"
+                            className="lg:hidden p-3 bg-muted rounded-xl hover:text-primary transition-all"
                         >
                             {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
                         </button>
-                        <div>
-                            <h1 className="font-bold text-brand-dark">{examConfig.title}</h1>
-                            <p className="text-xs text-slate-500">{examConfig.level} · {examConfig.mode.replace("_", " ")}</p>
+                        <div className="space-y-0.5">
+                            <h1 className="text-xl font-black text-foreground font-display tracking-tight leading-none">{examConfig.title}</h1>
+                            <p className="text-[10px] font-black text-muted-foreground/50 uppercase tracking-widest font-display">
+                                {examConfig.level} <span className="mx-1">•</span> {examConfig.mode.replace("_", " ")}
+                            </p>
                         </div>
                     </div>
 
                     {/* Center: Timer */}
                     <div
                         className={`
-                            flex items-center gap-2 px-4 py-2 rounded-xl font-mono font-bold text-lg
+                            flex items-center gap-3 px-8 py-3 rounded-2xl font-black text-xl font-display  transition-all duration-500
                             ${timerStyles}
                         `}
                     >
-                        <Clock size={20} />
+                        <Clock size={22} className={isTimeLow ? "animate-pulse" : ""} />
                         {formattedTime}
                     </div>
 
                     {/* Right: Controls */}
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-6">
                         {/* Display Mode Toggle */}
-                        <div className="hidden sm:flex items-center gap-1 p-1 bg-slate-100 rounded-lg">
+                        <div className="hidden md:flex items-center gap-1.5 p-1.5 bg-muted rounded-2xl border border-border/50">
                             <button
                                 onClick={() => setDisplayMode("FOCUS")}
-                                className={`p-2 rounded-md transition-colors ${displayMode === "FOCUS" ? "bg-white shadow text-brand-green" : "text-slate-400 hover:text-slate-600"}`}
+                                className={`p-2.5 rounded-xl transition-all duration-500 ${displayMode === "FOCUS" ? "bg-card text-primary " : "text-muted-foreground/40 hover:text-foreground"}`}
                                 title="Focus Mode"
                             >
-                                <LayoutGrid size={18} />
+                                <LayoutGrid size={20} />
                             </button>
                             <button
                                 onClick={() => setDisplayMode("SCROLL")}
-                                className={`p-2 rounded-md transition-colors ${displayMode === "SCROLL" ? "bg-white shadow text-brand-green" : "text-slate-400 hover:text-slate-600"}`}
+                                className={`p-2.5 rounded-xl transition-all duration-500 ${displayMode === "SCROLL" ? "bg-card text-primary " : "text-muted-foreground/40 hover:text-foreground"}`}
                                 title="Scroll Mode"
                             >
-                                <AlignJustify size={18} />
+                                <AlignJustify size={20} />
                             </button>
                         </div>
 
@@ -320,18 +326,18 @@ export default function ExamSessionPage() {
                         {!isSubmitted ? (
                             <button
                                 onClick={() => setShowSubmitConfirm(true)}
-                                className="flex items-center gap-2 px-4 py-2 bg-brand-green text-white font-bold rounded-xl hover:bg-brand-green/90 transition-colors"
+                                className="flex items-center gap-3 px-8 py-4 bg-foreground text-background font-black rounded-2xl hover:opacity-90 active:scale-95 transition-all  font-display uppercase tracking-widest text-xs"
                             >
                                 <Send size={18} />
-                                <span className="hidden sm:inline">Submit</span>
+                                Submit
                             </button>
                         ) : (
                             <button
                                 onClick={handleViewResults}
-                                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors"
+                                className="flex items-center gap-3 px-8 py-4 bg-primary text-white font-black rounded-2xl hover:opacity-90 active:scale-95 transition-all  font-display uppercase tracking-widest text-xs"
                             >
                                 <CheckCircle2 size={18} />
-                                <span className="hidden sm:inline">View Results</span>
+                                View Results
                             </button>
                         )}
                     </div>
@@ -339,140 +345,174 @@ export default function ExamSessionPage() {
             </header>
 
             {/* ===== MAIN CONTENT ===== */}
-            <div ref={contentRef} className="flex-1 flex">
+            <div ref={contentRef} className="flex-1 flex overflow-hidden">
                 <aside
                     className={`
-                        fixed lg:sticky lg:top-20 lg:h-[calc(100vh-5rem)] inset-y-0 lg:inset-y-auto left-0 lg:left-auto z-30 w-64 lg:w-80 
-                        transform transition-transform duration-300 lg:transform-none
+                        fixed lg:sticky lg:top-0 lg:h-[calc(100vh-5.5rem)] inset-y-0 lg:inset-y-auto left-0 lg:left-auto z-40 w-80 
+                        transform transition-all duration-500 lg:transform-none select-none
                         ${isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-                        pt-16 lg:pt-0 lg:pl-6
+                        bg-background lg:bg-transparent border-r border-border lg:border-none
                     `}
                 >
-                    <div className="p-4 h-full bg-white lg:rounded-2xl lg:border lg:border-slate-200 lg:shadow-sm flex flex-col">
-                        {/* Test Info */}
-                        <div className="mb-4 pb-4 border-b border-slate-100">
-                            <p className="text-sm text-slate-500">
-                                Question <span className="font-bold text-brand-dark">{currentIndex + 1}</span> of{" "}
-                                <span className="font-bold text-brand-dark">{questions.length}</span>
-                            </p>
-                            <div className="mt-2 flex gap-4 text-xs">
-                                <span className="text-emerald-600">✓ {answeredCount} answered</span>
-                                <span className="text-amber-600">⚑ {flaggedCount} flagged</span>
+                    <div className="px-6 py-8 h-full flex flex-col gap-10">
+                        {/* Stats Summary */}
+                        <div className="bg-card rounded-2xl p-8 border border-border  space-y-6">
+                            <div className="flex items-end justify-between">
+                                <h3 className="text-4xl font-black text-foreground font-display leading-none">
+                                    {currentIndex + 1}<span className="text-muted-foreground/20 italic mx-1">/</span><span className="text-xl text-muted-foreground/40">{questions.length}</span>
+                                </h3>
+                                <div className="text-right">
+                                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest font-display">Active Question</p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-2 h-1.5 bg-muted rounded-full overflow-hidden">
+                                <div
+                                    className="h-full bg-primary transition-all duration-700 ease-out"
+                                    style={{ width: `${(answeredCount / questions.length) * 100}%` }}
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="p-4 bg-muted/30 rounded-2xl space-y-1">
+                                    <p className="text-[9px] font-black text-primary/50 uppercase tracking-widest font-display">Answered</p>
+                                    <p className="text-xl font-black text-primary font-display">{answeredCount}</p>
+                                </div>
+                                <div className="p-4 bg-muted/30 rounded-2xl space-y-1">
+                                    <p className="text-[9px] font-black text-secondary/50 uppercase tracking-widest font-display">Flagged</p>
+                                    <p className="text-xl font-black text-secondary font-display">{flaggedCount}</p>
+                                </div>
                             </div>
                         </div>
 
-                        {/* Question Grid */}
-                        <div className="flex-1 overflow-y-auto">
-                            <div className="grid grid-cols-5 gap-2">
-                                {questions.map((q, index) => {
-                                    const status = getQuestionStatus(q.id);
-                                    const isCurrent = index === currentIndex;
+                        {/* Navigation Grid */}
+                        <div className="flex-1 bg-card rounded-2xl p-8 border border-border  flex flex-col overflow-hidden">
+                            <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] font-display mb-6">Question Map</h3>
+                            <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+                                <div className="grid grid-cols-4 gap-3">
+                                    {questions.map((q, index) => {
+                                        const status = getQuestionStatus(q.id);
+                                        const isCurrent = index === currentIndex;
 
-                                    let bgColor = "bg-slate-100 text-slate-600";
-                                    if (status === "ANSWERED") bgColor = "bg-emerald-100 text-emerald-700";
-                                    if (status === "FLAGGED") bgColor = "bg-amber-100 text-amber-700";
-                                    if (isCurrent) bgColor = "bg-brand-green text-white";
+                                        let style = "bg-muted/50 text-muted-foreground/40 hover:bg-muted font-black";
+                                        if (status === "ANSWERED") style = "bg-primary/10 text-primary hover:bg-primary/20 font-black";
+                                        if (status === "FLAGGED") style = "bg-secondary text-white font-black";
+                                        if (isCurrent) style = "bg-foreground text-background scale-110  ring-4 ring-foreground/10 font-black";
 
-                                    if (isSubmitted) {
-                                        const userAnswer = answers[q.id]?.selectedOptionId;
-                                        const isCorrect = userAnswer === q.correctOptionId;
-                                        if (userAnswer) {
-                                            bgColor = isCorrect
-                                                ? "bg-emerald-500 text-white"
-                                                : "bg-red-500 text-white";
+                                        if (isSubmitted) {
+                                            const userAnswer = answers[q.id]?.selectedOptionId;
+                                            const isCorrect = userAnswer === q.correctOptionId;
+                                            if (userAnswer) {
+                                                style = isCorrect
+                                                    ? "bg-emerald-500 text-white font-black"
+                                                    : "bg-destructive text-white font-black";
+                                            }
+                                            if (isCurrent) style += " ring-4 ring-foreground/20";
                                         }
-                                        if (isCurrent) bgColor += " ring-2 ring-brand-dark ring-offset-2";
-                                    }
 
-                                    return (
-                                        <button
-                                            key={q.id}
-                                            onClick={() => goToQuestion(index)}
-                                            className={`w-10 h-10 rounded-lg font-bold text-sm transition-all hover:scale-105 ${bgColor}`}
-                                        >
-                                            {index + 1}
-                                        </button>
-                                    );
-                                })}
+                                        return (
+                                            <button
+                                                key={q.id}
+                                                onClick={() => goToQuestion(index)}
+                                                className={`aspect-square rounded-xl text-xs transition-all duration-300 active:scale-90 font-display ${style} flex items-center justify-center`}
+                                            >
+                                                {index + 1}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
                             </div>
                         </div>
 
                         {/* Legend */}
-                        <div className="mt-4 pt-4 border-t border-slate-100 text-xs text-slate-500">
-                            <div className="flex flex-wrap gap-3">
-                                <span className="flex items-center gap-1">
-                                    <span className="w-3 h-3 rounded bg-slate-100" /> Unanswered
-                                </span>
-                                <span className="flex items-center gap-1">
-                                    <span className="w-3 h-3 rounded bg-emerald-100" /> Answered
-                                </span>
-                                <span className="flex items-center gap-1">
-                                    <span className="w-3 h-3 rounded bg-amber-100" /> Flagged
-                                </span>
+                        <div className="p-4 bg-muted/20 rounded-2xl border border-border/30">
+                            <div className="flex flex-wrap gap-4 justify-center">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2.5 h-2.5 rounded-full bg-muted/50" />
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40 font-display">Idle</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2.5 h-2.5 rounded-full bg-primary/20" />
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40 font-display">Passed</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2.5 h-2.5 rounded-full bg-secondary" />
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40 font-display">Flagged</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </aside>
 
                 {/* ===== QUESTION AREA ===== */}
-                <main className="flex-1 p-6 lg:p-8">
+                <main className="flex-1 p-6 md:p-12 overflow-y-auto custom-scrollbar">
                     {displayMode === "FOCUS" ? (
-                        <FocusModeView
-                            question={currentQuestion}
-                            questionIndex={currentIndex}
-                            totalQuestions={questions.length}
-                            selectedOptionId={answers[currentQuestion.id]?.selectedOptionId || null}
-                            isFlagged={flagged.has(currentQuestion.id)}
-                            isSubmitted={isSubmitted}
-                            onSelectAnswer={(optionId) => handleSelectAnswer(currentQuestion.id, optionId)}
-                            onToggleFlag={() => handleToggleFlag(currentQuestion.id)}
-                            onPrevious={() => goToQuestion(currentIndex - 1)}
-                            onNext={() => goToQuestion(currentIndex + 1)}
-                        />
+                        <div className="animate-in fade-in slide-in-from-right-4 duration-500">
+                            <FocusModeView
+                                question={currentQuestion}
+                                questionIndex={currentIndex}
+                                totalQuestions={questions.length}
+                                selectedOptionId={answers[currentQuestion.id]?.selectedOptionId || null}
+                                isFlagged={flagged.has(currentQuestion.id)}
+                                isSubmitted={isSubmitted}
+                                onSelectAnswer={(optionId) => handleSelectAnswer(currentQuestion.id, optionId)}
+                                onToggleFlag={() => handleToggleFlag(currentQuestion.id)}
+                                onPrevious={() => goToQuestion(currentIndex - 1)}
+                                onNext={() => goToQuestion(currentIndex + 1)}
+                            />
+                        </div>
                     ) : (
-                        <ScrollModeView
-                            questions={questions}
-                            answers={answers}
-                            flagged={flagged}
-                            isSubmitted={isSubmitted}
-                            onSelectAnswer={handleSelectAnswer}
-                            onToggleFlag={handleToggleFlag}
-                        />
+                        <div className="animate-in fade-in slide-in-from-bottom-6 duration-700">
+                            <ScrollModeView
+                                questions={questions}
+                                answers={answers}
+                                flagged={flagged}
+                                isSubmitted={isSubmitted}
+                                onSelectAnswer={handleSelectAnswer}
+                                onToggleFlag={handleToggleFlag}
+                            />
+                        </div>
                     )}
                 </main>
             </div>
 
             {/* ===== SUBMIT CONFIRMATION MODAL ===== */}
             {showSubmitConfirm && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-                    <div className="bg-white rounded-2xl p-6 max-w-md mx-4 shadow-2xl">
-                        <div className="text-center mb-6">
-                            <div className="w-16 h-16 mx-auto mb-4 bg-amber-100 rounded-full flex items-center justify-center">
-                                <AlertTriangle size={32} className="text-amber-600" />
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-background/80  animate-in fade-in duration-300">
+                    <div className="bg-card rounded-2xl p-12 max-w-lg w-full  border border-border space-y-10 animate-in zoom-in-95 duration-500">
+                        <div className="text-center space-y-6">
+                            <div className="w-24 h-24 mx-auto bg-primary/5 rounded-2xl flex items-center justify-center ">
+                                <Send size={44} className="text-primary animate-bounce-slow" />
                             </div>
-                            <h3 className="text-xl font-bold text-brand-dark mb-2">Submit Exam?</h3>
-                            <p className="text-slate-500 text-sm">
-                                You have answered <strong>{answeredCount}</strong> of{" "}
-                                <strong>{questions.length}</strong> questions.
-                                {questions.length - answeredCount > 0 && (
-                                    <span className="text-amber-600 block mt-1">
-                                        {questions.length - answeredCount} questions are unanswered!
-                                    </span>
-                                )}
-                            </p>
+                            <div className="space-y-2">
+                                <h3 className="text-4xl font-black text-foreground font-display tracking-tight">Finalized?</h3>
+                                <p className="text-muted-foreground font-bold leading-relaxed">
+                                    Ready to submit your work? You've confirmed <span className="text-foreground">{answeredCount}</span> out of <span className="text-foreground">{questions.length}</span> questions.
+                                </p>
+                            </div>
                         </div>
-                        <div className="flex gap-3">
+
+                        {questions.length - answeredCount > 0 && (
+                            <div className="p-4 bg-destructive/5 rounded-2xl border border-destructive/20 flex items-center gap-4">
+                                <AlertTriangle className="text-destructive shrink-0" size={24} />
+                                <p className="text-destructive font-black text-xs uppercase tracking-widest font-display">
+                                    Attention: {questions.length - answeredCount} questions are still empty!
+                                </p>
+                            </div>
+                        )}
+
+                        <div className="flex gap-4">
                             <button
                                 onClick={() => setShowSubmitConfirm(false)}
-                                className="flex-1 px-4 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl hover:bg-slate-200 transition-colors"
+                                className="flex-1 px-8 py-5 bg-muted text-muted-foreground font-black rounded-2xl hover:text-foreground transition-all font-display uppercase tracking-widest text-xs active:scale-95"
                             >
-                                Cancel
+                                Continue Work
                             </button>
                             <button
                                 onClick={handleSubmit}
-                                className="flex-1 px-4 py-3 bg-brand-green text-white font-bold rounded-xl hover:bg-brand-green/90 transition-colors"
+                                className="flex-1 px-8 py-5 bg-foreground text-background font-black rounded-2xl hover:opacity-90 transition-all  font-display uppercase tracking-widest text-xs active:scale-95"
                             >
-                                Submit
+                                Submit Exam
                             </button>
                         </div>
                     </div>
@@ -512,57 +552,73 @@ function FocusModeView({
     onNext,
 }: FocusModeViewProps) {
     return (
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-4xl mx-auto space-y-10">
             {/* Question Header */}
-            <div className="flex items-center justify-between mb-6">
-                <span className="text-sm font-medium text-slate-500">
-                    Question {questionIndex + 1} / {totalQuestions}
-                </span>
+            <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] font-display">Sequence</p>
+                    <p className="text-xl font-black text-foreground font-display">
+                        Question {questionIndex + 1} <span className="text-muted-foreground/20 italic mx-1">/</span> <span className="text-muted-foreground/40">{totalQuestions}</span>
+                    </p>
+                </div>
+
                 <button
                     onClick={onToggleFlag}
                     disabled={isSubmitted}
                     className={`
-                        flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors
-                        ${isFlagged ? "bg-amber-100 text-amber-700" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}
-                        ${isSubmitted ? "opacity-50 cursor-not-allowed" : ""}
+                        flex items-center gap-3 px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest font-display transition-all duration-300
+                        ${isFlagged ? "bg-secondary text-white " : "bg-card text-muted-foreground hover:text-foreground border border-border "}
+                        ${isSubmitted ? "opacity-30 cursor-not-allowed" : "active:scale-95"}
                     `}
                 >
-                    <Flag size={16} />
-                    {isFlagged ? "Flagged" : "Flag"}
+                    <Flag size={16} fill={isFlagged ? "currentColor" : "none"} />
+                    {isFlagged ? "Flagged for review" : "Flag question"}
                 </button>
             </div>
 
             {/* Passage (if reading question) */}
             {question.passage && (
-                <div className="mb-6 p-6 bg-slate-100 rounded-2xl border border-slate-200">
-                    <p className="text-sm text-slate-600 whitespace-pre-line leading-relaxed">
+                <div className="bg-card rounded-2xl p-10 border border-border  space-y-6">
+                    <div className="flex items-center gap-3 text-reading">
+                        <BookOpen size={20} />
+                        <h4 className="text-[10px] font-black uppercase tracking-[0.2em] font-display">Japanese Passage</h4>
+                    </div>
+                    <p className="text-xl font-bold text-foreground leading-[2] font-jp whitespace-pre-line bg-muted/20 p-8 rounded-2xl border border-border/50">
                         {question.passage}
                     </p>
                 </div>
             )}
 
             {/* Question Content */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-6 mb-6 shadow-sm">
-                <p className="text-lg text-brand-dark whitespace-pre-line leading-relaxed">
+            <div className="bg-card rounded-2xl p-10 border border-border  animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="flex items-center gap-3 text-primary mb-6">
+                    <HelpCircle size={20} />
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] font-display">Question Prompt</h4>
+                </div>
+                <p className="text-2xl font-black text-foreground font-jp leading-relaxed">
                     {question.content}
                 </p>
             </div>
 
             {/* Answer Options */}
-            <div className="space-y-3 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {question.options.map((option, idx) => {
                     const isSelected = selectedOptionId === option.id;
                     const isCorrect = option.id === question.correctOptionId;
 
-                    let optionStyle = "bg-white border-slate-200 hover:border-brand-green hover:bg-emerald-50";
+                    let style = "bg-card border-border hover:border-primary/30 hover:";
+
                     if (isSelected && !isSubmitted) {
-                        optionStyle = "bg-emerald-50 border-brand-green ring-2 ring-brand-green/20";
+                        style = "bg-primary/5 border-primary  text-primary";
                     }
+
                     if (isSubmitted) {
                         if (isCorrect) {
-                            optionStyle = "bg-emerald-100 border-emerald-500";
+                            style = "bg-emerald-500 text-white border-transparent  scale-[1.02] z-10";
                         } else if (isSelected && !isCorrect) {
-                            optionStyle = "bg-red-100 border-red-500";
+                            style = "bg-destructive text-white border-transparent  opacity-80";
+                        } else {
+                            style = "bg-muted/30 border-border opacity-40";
                         }
                     }
 
@@ -572,24 +628,22 @@ function FocusModeView({
                             onClick={() => onSelectAnswer(option.id)}
                             disabled={isSubmitted}
                             className={`
-                                w-full text-left p-4 rounded-xl border-2 transition-all duration-200
-                                ${optionStyle}
-                                ${isSubmitted ? "cursor-default" : "cursor-pointer"}
+                                relative w-full text-left p-6 rounded-2xl border transition-all duration-500 flex items-center gap-6 group
+                                ${style}
+                                ${isSubmitted ? "cursor-default" : "cursor-pointer active:scale-95"}
                             `}
                         >
-                            <div className="flex items-start gap-3">
-                                <span
-                                    className={`
-                                        w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shrink-0
-                                        ${isSelected ? "bg-brand-green text-white" : "bg-slate-100 text-slate-600"}
-                                        ${isSubmitted && isCorrect ? "bg-emerald-500 text-white" : ""}
-                                        ${isSubmitted && isSelected && !isCorrect ? "bg-red-500 text-white" : ""}
-                                    `}
-                                >
-                                    {String.fromCharCode(65 + idx)}
-                                </span>
-                                <span className="text-brand-dark">{option.text}</span>
-                            </div>
+                            <span
+                                className={`
+                                    w-10 h-10 rounded-2xl flex items-center justify-center font-black text-sm shrink-0 font-display transition-all duration-500 group-
+                                    ${isSelected && !isSubmitted ? "bg-primary text-white" : "bg-muted text-muted-foreground"}
+                                    ${isSubmitted && isCorrect ? "bg-white text-emerald-500" : ""}
+                                    ${isSubmitted && isSelected && !isCorrect ? "bg-white text-destructive" : ""}
+                                `}
+                            >
+                                {String.fromCharCode(65 + idx)}
+                            </span>
+                            <span className="font-bold text-lg font-jp">{option.text}</span>
                         </button>
                     );
                 })}
@@ -597,25 +651,27 @@ function FocusModeView({
 
             {/* Explanation (shown after submission) */}
             {isSubmitted && (
-                <div className="mb-8 p-6 bg-blue-50 border border-blue-200 rounded-2xl">
-                    <div className="flex items-start gap-3">
-                        <HelpCircle size={20} className="text-blue-600 shrink-0 mt-0.5" />
-                        <div>
-                            <h4 className="font-bold text-blue-800 mb-2">Explanation</h4>
-                            <p className="text-sm text-blue-700">{question.explanation}</p>
-                        </div>
+                <div className="bg-grammar/5 border border-grammar/20 rounded-2xl p-10 space-y-6 animate-in slide-in-from-top-4 duration-700">
+                    <div className="flex items-center gap-3 text-grammar">
+                        <Sparkles size={20} />
+                        <h4 className="text-[10px] font-black uppercase tracking-[0.2em] font-display">Deep Explanation</h4>
+                    </div>
+                    <div className="flex items-start gap-6">
+                        <p className="text-lg font-bold text-grammar/80 leading-relaxed italic">
+                            "{question.explanation}"
+                        </p>
                     </div>
                 </div>
             )}
 
             {/* Navigation */}
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between pt-10 border-t border-border/50">
                 <button
                     onClick={onPrevious}
                     disabled={questionIndex === 0}
                     className={`
-                        flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-colors
-                        ${questionIndex === 0 ? "bg-slate-100 text-slate-400 cursor-not-allowed" : "bg-slate-200 text-slate-700 hover:bg-slate-300"}
+                        flex items-center gap-3 px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest font-display transition-all duration-300
+                        ${questionIndex === 0 ? "opacity-30 cursor-not-allowed" : "bg-muted text-muted-foreground hover:text-foreground active:scale-95"}
                     `}
                 >
                     <ChevronLeft size={20} />
@@ -625,11 +681,11 @@ function FocusModeView({
                     onClick={onNext}
                     disabled={questionIndex === totalQuestions - 1}
                     className={`
-                        flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-colors
-                        ${questionIndex === totalQuestions - 1 ? "bg-slate-100 text-slate-400 cursor-not-allowed" : "bg-brand-green text-white hover:bg-brand-green/90"}
+                        flex items-center gap-3 px-10 py-5 bg-foreground text-background font-black rounded-2xl hover:opacity-90 active:scale-95 transition-all  font-display uppercase tracking-widest text-xs
+                        ${questionIndex === totalQuestions - 1 ? "opacity-30 cursor-not-allowed" : ""}
                     `}
                 >
-                    Next
+                    Next Question
                     <ChevronRight size={20} />
                 </button>
             </div>
@@ -659,7 +715,7 @@ function ScrollModeView({
     onToggleFlag,
 }: ScrollModeViewProps) {
     return (
-        <div className="max-w-3xl mx-auto space-y-8">
+        <div className="max-w-4xl mx-auto space-y-12 pb-24">
             {questions.map((question, idx) => {
                 const selectedOptionId = answers[question.id]?.selectedOptionId || null;
                 const isFlagged = flagged.has(question.id);
@@ -668,47 +724,67 @@ function ScrollModeView({
                     <div
                         key={question.id}
                         id={`question-${idx}`}
-                        className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm scroll-mt-32"
+                        className="bg-card rounded-2xl p-10 border border-border  scroll-mt-32 space-y-8 group transition-all duration-500 hover:"
                     >
                         {/* Question Header */}
-                        <div className="flex items-center justify-between mb-4">
-                            <span className="text-sm font-bold text-slate-500">Question {idx + 1}</span>
+                        <div className="flex items-center justify-between border-b border-border/50 pb-6">
+                            <div className="space-y-1">
+                                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] font-display">Sequence</p>
+                                <p className="text-lg font-black text-foreground font-display">Question {idx + 1}</p>
+                            </div>
+
                             <button
                                 onClick={() => onToggleFlag(question.id)}
                                 disabled={isSubmitted}
                                 className={`
-                                    flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors
-                                    ${isFlagged ? "bg-amber-100 text-amber-700" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}
+                                    flex items-center gap-3 px-5 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest font-display transition-all duration-300
+                                    ${isFlagged ? "bg-secondary text-white " : "bg-muted/50 text-muted-foreground hover:text-foreground border border-border/30"}
+                                    ${isSubmitted ? "opacity-30 cursor-not-allowed" : "active:scale-95"}
                                 `}
                             >
-                                <Flag size={14} />
+                                <Flag size={14} fill={isFlagged ? "currentColor" : "none"} />
                                 {isFlagged ? "Flagged" : "Flag"}
                             </button>
                         </div>
 
                         {/* Passage */}
                         {question.passage && (
-                            <div className="mb-4 p-4 bg-slate-50 rounded-xl text-sm text-slate-600 whitespace-pre-line">
-                                {question.passage}
+                            <div className="bg-muted/30 rounded-2xl p-8 border border-border/50 space-y-4">
+                                <div className="flex items-center gap-2 text-reading">
+                                    <BookOpen size={16} />
+                                    <span className="text-[9px] font-black uppercase tracking-widest font-display">Context</span>
+                                </div>
+                                <p className="text-lg font-bold text-foreground font-jp leading-loose whitespace-pre-line italic opacity-80">
+                                    {question.passage}
+                                </p>
                             </div>
                         )}
 
                         {/* Question */}
-                        <p className="text-brand-dark mb-4 whitespace-pre-line">{question.content}</p>
+                        <p className="text-xl font-black text-foreground font-jp leading-relaxed group-hover:text-primary transition-colors">
+                            {question.content}
+                        </p>
 
                         {/* Options */}
-                        <div className="space-y-2">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
                             {question.options.map((option, optIdx) => {
                                 const isSelected = selectedOptionId === option.id;
                                 const isCorrect = option.id === question.correctOptionId;
 
-                                let optionStyle = "bg-slate-50 border-slate-200 hover:border-brand-green";
+                                let style = "bg-muted/30 border-border/50 hover:border-primary/30 hover:bg-card";
+
                                 if (isSelected && !isSubmitted) {
-                                    optionStyle = "bg-emerald-50 border-brand-green";
+                                    style = "bg-primary/5 border-primary  text-primary";
                                 }
+
                                 if (isSubmitted) {
-                                    if (isCorrect) optionStyle = "bg-emerald-100 border-emerald-500";
-                                    else if (isSelected) optionStyle = "bg-red-100 border-red-500";
+                                    if (isCorrect) {
+                                        style = "bg-emerald-500 text-white border-transparent ";
+                                    } else if (isSelected) {
+                                        style = "bg-destructive text-white border-transparent  opacity-80";
+                                    } else {
+                                        style = "bg-muted/20 border-border opacity-30";
+                                    }
                                 }
 
                                 return (
@@ -716,14 +792,17 @@ function ScrollModeView({
                                         key={option.id}
                                         onClick={() => onSelectAnswer(question.id, option.id)}
                                         disabled={isSubmitted}
-                                        className={`w-full text-left p-3 rounded-lg border transition-all ${optionStyle}`}
+                                        className={`w-full text-left p-5 rounded-2xl border transition-all duration-500 flex items-center gap-4 group/opt ${style} ${isSubmitted ? "" : "active:scale-95"}`}
                                     >
-                                        <span className="flex items-center gap-2">
-                                            <span className="w-6 h-6 rounded-full bg-white border flex items-center justify-center text-xs font-bold">
-                                                {String.fromCharCode(65 + optIdx)}
-                                            </span>
-                                            <span className="text-sm">{option.text}</span>
+                                        <span className={`
+                                            w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black font-display shrink-0 transition-all duration-500
+                                            ${isSelected && !isSubmitted ? "bg-primary text-white" : "bg-card border border-border text-muted-foreground"}
+                                            ${isSubmitted && isCorrect ? "bg-white text-emerald-500" : ""}
+                                            ${isSubmitted && isSelected && !isCorrect ? "bg-white text-destructive" : ""}
+                                        `}>
+                                            {String.fromCharCode(65 + optIdx)}
                                         </span>
+                                        <span className="font-bold text-base font-jp">{option.text}</span>
                                     </button>
                                 );
                             })}
@@ -731,8 +810,11 @@ function ScrollModeView({
 
                         {/* Explanation */}
                         {isSubmitted && (
-                            <div className="mt-4 p-4 bg-blue-50 rounded-xl text-sm text-blue-700">
-                                <strong>Explanation:</strong> {question.explanation}
+                            <div className="mt-8 p-8 bg-grammar/5 border border-grammar/20 rounded-2xl animate-in fade-in duration-700">
+                                <p className="text-sm font-bold text-grammar/80 leading-relaxed italic">
+                                    <span className="font-black uppercase tracking-widest text-[10px] block mb-2 opacity-50 font-display">Rationale:</span>
+                                    {question.explanation}
+                                </p>
                             </div>
                         )}
                     </div>

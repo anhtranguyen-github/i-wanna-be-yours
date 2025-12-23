@@ -19,14 +19,14 @@ const Tabs: React.FC<TabsProps> = ({ children, activeTabIndex }) => {
   }, [activeTabIndex]);
 
   return (
-    <div className="bg-white rounded-xl border-2 border-brand-dark shadow-hard p-5 text-brand-dark clay-card">
-      <div className="flex border-b-2 border-brand-dark mb-4 overflow-x-auto">
+    <div className="bg-white rounded-[2rem] border border-slate-100 shadow-xl shadow-primary/5 p-2">
+      <div className="flex gap-2 p-2 bg-slate-50/50 rounded-[1.5rem] mb-6 overflow-x-auto no-scrollbar scroll-smooth">
         {children.map((tab, index) => (
           <button
             key={index}
-            className={`text-sm font-bold px-4 py-3 -mb-[2px] border-2 rounded-t-xl mr-2 transition-all duration-200 ${activeTab === index
-              ? "text-white bg-brand-blue border-brand-dark border-b-brand-blue z-10"
-              : "text-brand-dark bg-brand-cream border-transparent hover:bg-brand-blue/10 hover:border-brand-dark/50"
+            className={`whitespace-nowrap px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all duration-300 ${activeTab === index
+              ? "bg-white text-slate-900 shadow-md ring-1 ring-slate-200"
+              : "text-slate-400 hover:text-slate-600 hover:bg-white/50"
               }`}
             onClick={() => setActiveTab(index)}
           >
@@ -34,9 +34,9 @@ const Tabs: React.FC<TabsProps> = ({ children, activeTabIndex }) => {
           </button>
         ))}
       </div>
-      <div className="p-6 border-2 border-brand-dark rounded-xl bg-white">
+      <div className="p-2 transition-all duration-500 ease-out">
         {children.map((tab, index) =>
-          activeTab === index ? <div key={index}>{tab}</div> : null
+          activeTab === index ? <div key={index} className="animate-in fade-in slide-in-from-bottom-2 duration-500">{tab}</div> : null
         )}
       </div>
     </div>
@@ -44,73 +44,3 @@ const Tabs: React.FC<TabsProps> = ({ children, activeTabIndex }) => {
 };
 
 export default Tabs;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// 'use client';
-
-// // ---------------------------- Helper Components -------------------------------------- //
-
-// import { ReactNode, useState } from "react";
-
-// // Define the props for the Tabs component
-// interface TabsProps {
-//   children: ReactNode[];
-// }
-
-
-// const Tabs: React.FC<TabsProps> = ({ children }) => {
-//   const [activeTab, setActiveTab] = useState(0);
-
-//   return (
-//     <div className="bg-white rounded-lg shadow-lg p-5 border border-gray-200 text-black">
-//       <div className="flex border-b border-gray-200 mb-4">
-//         {children.map((tab, index) => (
-//           <button
-//             key={index}
-//             className={`text-xs px-2 py-2 -mb-px border-t border-l border-r rounded-t ${activeTab === index
-//               ? "text-blue-700 border-blue-700 bg-white"
-//               : "text-gray-500 border-transparent hover:text-blue-700 hover:border-gray-300"
-//               }`}
-//             onClick={() => setActiveTab(index)}
-//           >
-//             {/* TypeScript needs to know that tab has a 'props' property with a 'label' */}
-//             {(tab as React.ReactElement<any>).props.label}
-//           </button>
-//         ))}
-//       </div>
-//       <div className="p-6 border border-gray-200 rounded-b">
-//         {children.map((tab, index) =>
-//           activeTab === index ? <div key={index}>{tab}</div> : null
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Tabs;

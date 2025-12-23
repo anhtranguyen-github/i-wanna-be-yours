@@ -573,7 +573,7 @@ export function ChatMainArea({ conversationId }: ChatMainAreaProps) {
 
             {/* Drag Overlay */}
             {isDragging && (
-                <div className="absolute inset-0 z-50 bg-brand-green/10 backdrop-blur-sm border-2 border-dashed border-brand-green flex items-center justify-center pointer-events-none">
+                <div className="absolute inset-0 z-50 bg-brand-green/10  border-2 border-dashed border-brand-green flex items-center justify-center pointer-events-none">
                     <div className="bg-white p-6 rounded-2xl shadow-xl text-center">
                         <div className="w-16 h-16 bg-brand-green/10 rounded-full flex items-center justify-center mx-auto mb-4 text-brand-green">
                             <Paperclip size={32} />

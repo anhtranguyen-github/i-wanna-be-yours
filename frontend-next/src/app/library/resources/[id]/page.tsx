@@ -56,20 +56,24 @@ export default function ResourceDetailPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-slate-50 flex items-center justify-center text-slate-400">
-                <div className="animate-pulse">Loading resource...</div>
+            <div className="min-h-screen bg-background flex flex-col items-center justify-center text-muted-foreground">
+                <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mb-6"></div>
+                <div className="text-xs font-black uppercase tracking-widest font-display animate-pulse">Loading resource...</div>
             </div>
         );
     }
 
     if (error || !resource) {
         return (
-            <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center">
-                <h2 className="text-xl font-semibold text-slate-700 mb-2">Resource Not Found</h2>
-                <p className="text-slate-500 mb-6">{error || "The requested resource could not be found."}</p>
+            <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 text-center">
+                <div className="w-24 h-24 bg-card rounded-2xl flex items-center justify-center mb-10 ">
+                    <FileText size={48} className="text-muted-foreground/20" />
+                </div>
+                <h2 className="text-3xl font-black text-foreground mb-4 font-display">Resource Not Found</h2>
+                <p className="text-muted-foreground font-bold mb-10 max-w-md leading-relaxed">{error || "The requested resource could not be found."}</p>
                 <button
                     onClick={() => router.push('/library/resources')}
-                    className="flex items-center gap-2 text-brand-green font-medium hover:underline"
+                    className="flex items-center gap-3 px-8 py-4 bg-foreground text-background rounded-2xl font-black font-display uppercase tracking-widest text-sm  hover:opacity-90 active:scale-95 transition-all"
                 >
                     <ArrowLeft size={18} />
                     Back to Resources
@@ -79,88 +83,84 @@ export default function ResourceDetailPage() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 p-6">
+        <div className="min-h-screen bg-background p-6 md:p-12">
             {/* Back button */}
             <button
                 onClick={() => router.back()}
-                className="flex items-center gap-2 text-slate-600 hover:text-brand-green mb-6 transition-colors"
+                className="flex items-center gap-3 text-muted-foreground hover:text-primary mb-10 transition-all active:scale-95 group"
             >
-                <ArrowLeft size={20} />
-                Back
+                <ArrowLeft size={24} className="group-hover:-translate-x-1 transition-transform" />
+                <span className="text-xs font-black uppercase tracking-widest font-display">Back to Vault</span>
             </button>
 
-            <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-sm overflow-hidden">
+            <div className="max-w-6xl mx-auto bg-card rounded-2xl  border border-border overflow-hidden">
                 {/* Header */}
-                <div className="p-6 md:p-8 border-b border-slate-100">
-                    <div className="flex flex-col md:flex-row justify-between items-start gap-4">
+                <div className="p-8 md:p-12 border-b border-border">
+                    <div className="flex flex-col md:flex-row justify-between items-start gap-8">
                         <div className="flex-1">
-                            <h1 className="text-2xl md:text-3xl font-bold text-brand-dark mb-3">
+                            <h1 className="text-3xl md:text-4xl font-black text-foreground mb-6 font-display leading-tight">
                                 {resource.title}
                             </h1>
-                            <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500">
-                                <span className="flex items-center gap-1.5 px-3 py-1 bg-slate-100 rounded-full">
+                            <div className="flex flex-wrap items-center gap-6">
+                                <span className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary border border-primary/20 rounded-full text-[10px] font-black uppercase tracking-widest font-display">
                                     <FileText size={14} />
                                     <span className="capitalize">{resource.type}</span>
                                 </span>
-                                <span className="flex items-center gap-1.5">
-                                    <HardDrive size={14} />
+                                <span className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest font-display">
+                                    <HardDrive size={16} className="text-muted-foreground/40" />
                                     {formatFileSize(resource.fileSize)}
                                 </span>
-                                <span className="flex items-center gap-1.5">
-                                    <Calendar size={14} />
+                                <span className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest font-display">
+                                    <Calendar size={16} className="text-muted-foreground/40" />
                                     {resource.createdAt ? new Date(resource.createdAt).toLocaleDateString() : 'N/A'}
                                 </span>
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-2 self-start">
-                            {/* Future: Edit functionality 
-                            <button className="p-2.5 hover:bg-slate-100 text-slate-500 rounded-xl transition-colors" title="Edit Metadata">
-                                <Edit size={20} />
-                            </button>
-                             */}
+                        <div className="flex items-center gap-4 self-start">
                             <button
                                 onClick={handleDownload}
-                                className="flex items-center gap-2 px-4 py-2.5 bg-brand-green/10 text-brand-green hover:bg-brand-green hover:text-white rounded-xl transition-all font-medium"
+                                className="flex items-center gap-3 px-8 py-4 bg-foreground text-background rounded-2xl hover:opacity-90 hover:scale-105  transition-all font-black font-display uppercase tracking-widest text-[11px]"
                             >
                                 <Download size={20} />
                                 <span>Download</span>
                             </button>
                             <button
                                 onClick={handleDelete}
-                                className="p-2.5 hover:bg-red-50 text-slate-400 hover:text-red-500 rounded-xl transition-colors"
+                                className="p-3.5 hover:bg-destructive/5 text-muted-foreground/40 hover:text-destructive rounded-xl transition-all "
                                 title="Delete Resource"
                             >
-                                <Trash2 size={20} />
+                                <Trash2 size={24} />
                             </button>
                         </div>
                     </div>
                 </div>
 
                 {/* Content Area */}
-                <div className="p-6 md:p-8">
+                <div className="p-8 md:p-12 bg-muted/20">
                     {resource.type === 'image' ? (
-                        <div className="bg-slate-50 rounded-xl p-4 flex justify-center border border-slate-100">
+                        <div className="bg-card rounded-2xl p-6 flex justify-center border border-border ">
                             <img
                                 src={resourceService.getDownloadUrl(resource.id)}
                                 alt={resource.title}
-                                className="max-w-full max-h-[600px] rounded-lg shadow-sm"
+                                className="max-w-full max-h-[700px] rounded-xl "
                             />
                         </div>
                     ) : (
-                        <div className="bg-slate-50 rounded-xl p-12 text-center border border-slate-100 flex flex-col items-center">
-                            <div className="bg-white p-6 rounded-full shadow-sm mb-4">
-                                <FileText size={64} className="text-slate-300" />
+                        <div className="bg-card rounded-2xl p-20 text-center border border-border  flex flex-col items-center">
+                            <div className="bg-muted/50 p-10 rounded-2xl  mb-8 transform group- transition-transform duration-700">
+                                <FileText size={80} className="text-muted-foreground/20" />
                             </div>
-                            <h3 className="text-lg font-medium text-slate-700 mb-2">Document Preview</h3>
-                            <p className="text-slate-500 max-w-md mx-auto mb-6">
-                                This file type cannot be previewed directly in the browser.
-                                Please download the file to view its contents.
+                            <h3 className="text-2xl font-black text-foreground mb-4 font-display">Document Preview</h3>
+                            <p className="text-muted-foreground font-bold max-w-sm mx-auto mb-10 leading-relaxed text-sm">
+                                This file type cannot be previewed directly in the browser yet.
+                                Please download it to view its contents.
                             </p>
                             <button
                                 onClick={handleDownload}
-                                className="text-brand-green font-medium hover:underline"
+                                className="flex items-center gap-3 text-primary font-black uppercase tracking-widest text-xs font-display hover:opacity-80 transition-all"
                             >
+                                <Download size={18} />
                                 Download File ({formatFileSize(resource.fileSize)})
                             </button>
                         </div>
@@ -169,14 +169,14 @@ export default function ResourceDetailPage() {
 
                 {/* Tags & Metadata Footer */}
                 {resource.tags && resource.tags.length > 0 && (
-                    <div className="px-6 md:px-8 pb-8 pt-2 border-t border-slate-50/50">
+                    <div className="p-8 md:p-12 pt-4 border-t border-border/50">
                         <div className="flex items-start gap-4">
-                            <Tag size={18} className="text-slate-400 mt-1.5" />
-                            <div className="flex flex-wrap gap-2">
+                            <Tag size={20} className="text-muted-foreground/30 mt-1" />
+                            <div className="flex flex-wrap gap-2.5">
                                 {resource.tags.map((tag, idx) => (
                                     <span
                                         key={idx}
-                                        className="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-sm font-medium"
+                                        className="px-4 py-1.5 bg-muted text-muted-foreground rounded-full text-[10px] font-black uppercase tracking-widest font-display "
                                     >
                                         {tag}
                                     </span>

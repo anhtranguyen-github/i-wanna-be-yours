@@ -40,10 +40,10 @@ export function ChatRightSidebar() {
     // COLLAPSED STATE
     if (rightSidebar === 'collapsed') {
         return (
-            <div className="flex flex-col items-center py-4 h-full border-l border-slate-200 bg-white">
+            <div className="flex flex-col items-center py-4 h-full border-l border-border bg-sidebar ">
                 <button
                     onClick={() => setRightSidebar('minimized')}
-                    className="p-2 rounded-lg hover:bg-slate-100 text-slate-400 transition-colors"
+                    className="p-2.5 rounded-2xl hover:bg-muted text-muted-foreground transition-all active:scale-95"
                     title="Open sidebar"
                 >
                     <PanelRightOpen size={20} />
@@ -55,14 +55,14 @@ export function ChatRightSidebar() {
     // MINIMIZED STATE (List View)
     if (rightSidebar === 'minimized') {
         return (
-            <div className="flex flex-col h-full border-l border-slate-200 bg-white">
+            <div className="flex flex-col h-full border-l border-border bg-sidebar ">
                 {/* Header */}
-                <div className="flex items-center justify-between p-4 border-b border-slate-100">
-                    <h3 className="font-display font-bold text-brand-dark">Session Artifacts</h3>
+                <div className="flex items-center justify-between p-4 border-b border-border bg-card/50  ">
+                    <h3 className="font-display font-black text-foreground tracking-tight">Resources</h3>
                     <div className="flex gap-1">
                         <button
                             onClick={() => setRightSidebar('collapsed')}
-                            className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 transition-colors"
+                            className="p-2 rounded-2xl hover:bg-muted text-muted-foreground transition-all active:scale-95"
                             title="Close"
                         >
                             <PanelRightClose size={18} />
@@ -72,10 +72,13 @@ export function ChatRightSidebar() {
 
                 {/* Artifact List */}
                 <div className="flex-1 overflow-y-auto p-3">
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                         {(!artifacts || artifacts.length === 0) && (
-                            <div className="text-center py-8 text-slate-400 text-sm">
-                                No artifacts yet. Ask Hanachan to create some!
+                            <div className="text-center py-12 px-4">
+                                <FileText size={40} className="mx-auto text-muted-foreground/30 mb-3" />
+                                <p className="text-sm font-bold text-muted-foreground">
+                                    No resources yet. Let&apos;s create some together!
+                                </p>
                             </div>
                         )}
 
@@ -83,23 +86,23 @@ export function ChatRightSidebar() {
                             <button
                                 key={artifact.id}
                                 onClick={() => openArtifact(artifact)}
-                                className="w-full flex items-center gap-3 p-3 rounded-xl bg-slate-50 hover:bg-brand-green/10 transition-colors group text-left border border-transparent hover:border-brand-green/20"
+                                className="w-full flex items-center gap-4 p-4 rounded-2xl bg-card border border-border hover:border-primary/30  hover: transition-all group text-left relative overflow-hidden"
                             >
-                                <div className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center group-hover:border-brand-green/30 transition-colors shadow-sm">
+                                <div className="w-12 h-12 rounded-xl bg-muted/50 border border-border flex items-center justify-center group-hover:border-primary/20 transition-colors ">
                                     <ArtifactIcon type={artifact.type} />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <h4 className="text-sm font-semibold text-brand-dark truncate group-hover:text-brand-green transition-colors">
+                                    <h4 className="text-sm font-black text-foreground truncate group-hover:text-primary transition-colors font-display">
                                         {artifact.title}
                                     </h4>
-                                    <p className="text-xs text-slate-400 flex items-center gap-1">
+                                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
                                         {formatArtifactType(artifact.type)}
                                         {artifact.metadata?.status === 'new' && (
-                                            <span className="w-1.5 h-1.5 rounded-full bg-brand-green" />
+                                            <span className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(var(--primary),0.5)]" />
                                         )}
                                     </p>
                                 </div>
-                                <ChevronLeft size={16} className="text-slate-300 group-hover:text-brand-green opacity-0 group-hover:opacity-100 transition-all transform group-hover:-translate-x-1" />
+                                <ChevronLeft size={18} className="text-muted-foreground group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all transform group-hover:-translate-x-1" />
                             </button>
                         ))}
                     </div>
@@ -110,60 +113,60 @@ export function ChatRightSidebar() {
 
     // EXPANDED STATE (Artifact Window)
     return (
-        <div className="flex flex-col h-full border-l border-slate-200 bg-white shadow-xl relative z-20">
+        <div className="flex flex-col h-full border-l border-border bg-background  relative z-20">
             {/* Window Header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 bg-slate-50/50">
-                <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-border bg-card  ">
+                <div className="flex items-center gap-4">
                     <button
                         onClick={() => setRightSidebar('minimized')}
-                        className="p-1.5 rounded-lg hover:bg-slate-200 text-slate-500 transition-colors"
+                        className="p-2 rounded-2xl hover:bg-muted text-muted-foreground transition-all active:scale-95"
                         title="Back to list"
                     >
-                        <ChevronRight size={20} />
+                        <ChevronRight size={22} />
                     </button>
                     {activeArtifact && (
-                        <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-white border border-border flex items-center justify-center ">
                                 <ArtifactIcon type={activeArtifact.type} />
                             </div>
                             <div>
-                                <h3 className="font-bold text-brand-dark leading-tight line-clamp-1">{activeArtifact.title}</h3>
-                                <p className="text-xs text-slate-500 capitalize">{formatArtifactType(activeArtifact.type)} Viewer</p>
+                                <h3 className="font-display font-black text-foreground leading-tight line-clamp-1 truncate tracking-tight">{activeArtifact.title}</h3>
+                                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">{formatArtifactType(activeArtifact.type)} Viewer</p>
                             </div>
                         </div>
                     )}
                 </div>
 
-                <div className="flex items-center gap-2">
-                    <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-brand-green text-white text-sm font-medium hover:bg-brand-green/90 transition-colors shadow-sm">
-                        <Save size={16} />
+                <div className="flex items-center gap-3">
+                    <button className="flex items-center gap-2 px-5 py-2 rounded-2xl bg-primary text-primary-foreground text-xs font-black uppercase tracking-widest hover:opacity-90  transition-all active:scale-95 font-display">
+                        <Save size={18} />
                         Save
                     </button>
-                    <button className="p-2 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-brand-dark transition-colors">
-                        <MoreHorizontal size={20} />
+                    <button className="p-2.5 rounded-2xl hover:bg-muted text-muted-foreground transition-all active:scale-95">
+                        <MoreHorizontal size={22} />
                     </button>
-                    <div className="w-px h-6 bg-slate-200 mx-1" />
+                    <div className="w-px h-8 bg-border mx-1" />
                     <button
                         onClick={() => {
                             setRightSidebar('minimized');
                             setActiveArtifact(null);
                         }}
-                        className="p-2 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors"
+                        className="p-2.5 rounded-2xl hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-all active:scale-95"
                         title="Close Viewer"
                     >
-                        <X size={20} />
+                        <X size={22} />
                     </button>
                 </div>
             </div>
 
             {/* Artifact Content Area */}
-            <div className="flex-1 overflow-auto bg-slate-50/30 p-6">
+            <div className="flex-1 overflow-auto bg-muted/10 p-8">
                 {activeArtifact ? (
                     <ArtifactContent artifact={activeArtifact} />
                 ) : (
-                    <div className="flex flex-col items-center justify-center h-full text-slate-400">
-                        <FileText size={48} className="mb-4 opacity-50" />
-                        <p>Select an artifact to view or edit</p>
+                    <div className="flex flex-col items-center justify-center h-full text-muted-foreground/50">
+                        <FileText size={64} className="mb-6 opacity-30 animate-pulse" />
+                        <p className="text-lg font-bold font-display">Select a resource to view</p>
                     </div>
                 )}
             </div>
@@ -197,14 +200,14 @@ function ArtifactContent({ artifact }: { artifact: Artifact }) {
 
 function ArtifactIcon({ type }: { type: string }) {
     const icons: Record<string, React.ReactNode> = {
-        flashcard: <Layers size={18} className="text-brand-green" />,
-        flashcard_deck: <Layers size={18} className="text-brand-green" />,
-        quiz: <CheckSquare size={18} className="text-purple-500" />,
-        exam: <BookOpen size={18} className="text-red-500" />,
-        note: <FileText size={18} className="text-blue-500" />,
-        mindmap: <BrainCircuit size={18} className="text-orange-500" />,
+        flashcard: <Layers size={18} className="text-primary" />,
+        flashcard_deck: <Layers size={18} className="text-primary" />,
+        quiz: <CheckSquare size={18} className="text-grammar" />,
+        exam: <BookOpen size={18} className="text-destructive font-bold" />,
+        note: <FileText size={18} className="text-accent" />,
+        mindmap: <BrainCircuit size={18} className="text-kanji" />,
     };
-    return icons[type] || <FileText size={18} className="text-slate-400" />;
+    return icons[type] || <FileText size={18} className="text-muted-foreground" />;
 }
 
 function formatArtifactType(type: string): string {

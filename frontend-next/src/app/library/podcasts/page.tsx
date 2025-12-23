@@ -96,37 +96,45 @@ function VideoSection({ title, videos, onDelete, icon, defaultOpen = true }: Vid
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
-    <div className="mb-8">
+    <div className="mb-10 last:mb-0">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex justify-between items-center w-full text-left text-xl font-display font-bold mb-4 p-4 bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-all focus:outline-none text-brand-dark"
+        className="flex justify-between items-center w-full text-left p-6 bg-card rounded-2xl  border border-border hover: transition-all focus:outline-none group/btn"
       >
-        <span className="flex items-center gap-3">
-          {icon}
+        <span className="flex items-center gap-4 text-xl font-black text-foreground font-display">
+          <div className={`p-3 rounded-xl bg-muted/50 group-hover/btn:bg-primary/10 group-hover/btn:text-primary transition-colors`}>
+            {icon}
+          </div>
           {title}
-          <span className="text-sm font-normal text-slate-400">({videos.length})</span>
+          <span className="text-xs font-black text-muted-foreground/40 uppercase tracking-widest ml-2">({videos.length})</span>
         </span>
-        <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+        <ChevronDown className={`w-6 h-6 text-muted-foreground transition-transform duration-500 ${isOpen ? "rotate-180" : ""}`} />
       </button>
 
       {isOpen && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 py-8 animate-in fade-in slide-in-from-top-4 duration-500">
           {videos.map((video) => (
-            <div key={video.id} className="clay-card overflow-hidden cursor-pointer hover:-translate-y-1 bg-white relative group">
+            <div key={video.id} className="group relative bg-card rounded-2xl overflow-hidden border border-border  hover:  transition-all duration-500">
               <Link href={video.internalLink}>
-                <div className="relative">
-                  <img src={video.thumbnail} alt={video.title} className="w-full h-40 object-cover" />
-                  <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-all" />
+                <div className="relative aspect-video overflow-hidden">
+                  <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover group- transition-transform duration-700" />
+                  <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all" />
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center ">
+                      <Headphones size={24} />
+                    </div>
+                  </div>
                 </div>
-                <div className="p-4">
-                  <h3 className="text-sm font-bold text-brand-dark leading-tight mb-1 line-clamp-2">{video.title}</h3>
-                  <p className="text-xs text-gray-500 line-clamp-2">{video.description}</p>
+                <div className="p-6">
+                  <h3 className="text-sm font-black text-foreground mb-2 line-clamp-2 font-display leading-tight group-hover:text-primary transition-colors">{video.title}</h3>
+                  <p className="text-xs font-bold text-muted-foreground line-clamp-2 leading-relaxed">{video.description}</p>
                 </div>
               </Link>
               {onDelete && (
                 <button
                   onClick={(e) => { e.stopPropagation(); onDelete(video.id); }}
-                  className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                  className="absolute top-3 right-3 p-2.5 bg-destructive text-destructive-foreground rounded-xl opacity-0 group-hover:opacity-100 transition-all  "
+                  title="Remove Video"
                 >
                   <Trash2 size={14} />
                 </button>
@@ -205,129 +213,128 @@ export default function PodcastsPage() {
   };
 
   return (
-    <>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-brand-cream/30">
-        <div className="container mx-auto px-4 py-8 max-w-7xl">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-3xl font-display font-extrabold text-brand-dark mb-2">
-                Podcasts & Videos
-              </h1>
-              <p className="text-gray-500">Japanese listening practice from YouTube</p>
-            </div>
-            <button
-              onClick={() => {
-                if (isGuest) {
-                  openAuth('REGISTER', {
-                    flowType: 'LIBRARY',
-                    title: 'Personal Video Library',
-                    description: 'Add your own YouTube videos to your personal learning library.'
-                  });
-                } else {
-                  setShowAddForm(!showAddForm);
-                }
-              }}
-              className="flex items-center gap-2 px-4 py-2 bg-brand-green text-white font-bold rounded-xl hover:bg-brand-green/90 transition-all shadow-sm"
-            >
-              <Plus size={20} />
-              Add Your Video
-            </button>
+    <div className="min-h-screen bg-background p-6 md:p-12">
+      <div className="max-w-7xl mx-auto space-y-12">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
+          <div>
+            <h1 className="text-4xl md:text-5xl font-black text-foreground mb-3 font-display tracking-tight">
+              Podcasts & <span className="text-primary">Videos</span>
+            </h1>
+            <p className="text-muted-foreground font-bold text-sm">Japanese listening practice from YouTube</p>
           </div>
+          <button
+            onClick={() => {
+              if (isGuest) {
+                openAuth('REGISTER', {
+                  flowType: 'LIBRARY',
+                  title: 'Personal Video Library',
+                  description: 'Add your own YouTube videos to your personal learning library.'
+                });
+              } else {
+                setShowAddForm(!showAddForm);
+              }
+            }}
+            className="flex items-center gap-3 px-8 py-4 bg-foreground text-background font-black rounded-2xl hover:opacity-90 active:scale-95 transition-all  font-display uppercase tracking-widest text-[11px]"
+          >
+            <Plus size={20} />
+            Add Your Video
+          </button>
+        </div>
 
-          {/* Add Video Form */}
-          {showAddForm && !isGuest && (
-            <div className="clay-card p-6 mb-8 bg-white">
-              <h2 className="text-xl font-bold text-brand-dark mb-4">Add Custom YouTube Video</h2>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-brand-dark font-medium mb-1 text-sm">YouTube URL</label>
+        {/* Add Video Form */}
+        {showAddForm && !isGuest && (
+          <div className="bg-card p-10 rounded-2xl border border-border  animate-in zoom-in-95 duration-300">
+            <h2 className="text-2xl font-black text-foreground mb-8 font-display">Add Custom YouTube Video</h2>
+            <form onSubmit={handleSubmit} className="space-y-8">
+              <div className="space-y-3">
+                <label className="block text-[10px] font-black text-muted-foreground/50 uppercase tracking-[0.2em] font-display ml-4">YouTube URL</label>
+                <input
+                  type="text"
+                  value={newVideo.url}
+                  onChange={(e) => setNewVideo({ ...newVideo, url: e.target.value })}
+                  className="w-full p-6 bg-muted/30 border-none rounded-2xl focus:ring-4 focus:ring-primary/10 font-bold placeholder:text-muted-foreground/30 "
+                  placeholder="https://www.youtube.com/watch?v=..."
+                  required
+                />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-3">
+                  <label className="block text-[10px] font-black text-muted-foreground/50 uppercase tracking-[0.2em] font-display ml-4">Title (optional)</label>
                   <input
                     type="text"
-                    value={newVideo.url}
-                    onChange={(e) => setNewVideo({ ...newVideo, url: e.target.value })}
-                    className="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-green focus:border-brand-green"
-                    placeholder="https://www.youtube.com/watch?v=..."
-                    required
+                    value={newVideo.customTitle}
+                    onChange={(e) => setNewVideo({ ...newVideo, customTitle: e.target.value })}
+                    className="w-full p-6 bg-muted/30 border-none rounded-2xl focus:ring-4 focus:ring-primary/10 font-bold placeholder:text-muted-foreground/30 "
+                    placeholder="Custom title"
                   />
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-brand-dark font-medium mb-1 text-sm">Title (optional)</label>
-                    <input
-                      type="text"
-                      value={newVideo.customTitle}
-                      onChange={(e) => setNewVideo({ ...newVideo, customTitle: e.target.value })}
-                      className="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-green focus:border-brand-green"
-                      placeholder="Custom title"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-brand-dark font-medium mb-1 text-sm">Description (optional)</label>
-                    <input
-                      type="text"
-                      value={newVideo.customDescription}
-                      onChange={(e) => setNewVideo({ ...newVideo, customDescription: e.target.value })}
-                      className="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-green focus:border-brand-green"
-                      placeholder="Short description"
-                    />
-                  </div>
+                <div className="space-y-3">
+                  <label className="block text-[10px] font-black text-muted-foreground/50 uppercase tracking-[0.2em] font-display ml-4">Description (optional)</label>
+                  <input
+                    type="text"
+                    value={newVideo.customDescription}
+                    onChange={(e) => setNewVideo({ ...newVideo, customDescription: e.target.value })}
+                    className="w-full p-6 bg-muted/30 border-none rounded-2xl focus:ring-4 focus:ring-primary/10 font-bold placeholder:text-muted-foreground/30 "
+                    placeholder="Short description"
+                  />
                 </div>
-                <div className="flex gap-3">
-                  <button type="submit" className="px-6 py-2 bg-brand-green text-white font-bold rounded-xl hover:bg-brand-green/90">
-                    Add Video
-                  </button>
-                  <button type="button" onClick={() => setShowAddForm(false)} className="px-6 py-2 bg-slate-100 text-slate-600 font-bold rounded-xl hover:bg-slate-200">
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            </div>
-          )}
-
-          {/* My Videos Section */}
-          {customVideos.length > 0 && (
-            <VideoSection
-              title="My Videos"
-              videos={customVideos}
-              onDelete={handleDelete}
-              icon={<User className="w-5 h-5 text-brand-green" />}
-            />
-          )}
-
-          {/* Recommended Channels */}
-          <div className="mb-8 p-6 bg-white rounded-2xl border border-slate-100">
-            <h2 className="text-lg font-bold text-brand-dark mb-4">Recommended YouTube Channels</h2>
-            <div className="flex flex-wrap gap-2">
-              {youtubeChannels.map((channel) => (
-                <a
-                  key={channel.name}
-                  href={channel.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-3 py-1.5 bg-slate-50 text-slate-600 text-sm font-medium rounded-lg hover:bg-brand-blue hover:text-white transition-all"
-                >
-                  {channel.name}
-                </a>
-              ))}
-            </div>
+              </div>
+              <div className="flex gap-4 pt-4">
+                <button type="submit" className="px-10 py-4 bg-primary text-primary-foreground font-black rounded-2xl hover:opacity-90  font-display uppercase tracking-widest text-xs">
+                  Add Video
+                </button>
+                <button type="button" onClick={() => setShowAddForm(false)} className="px-10 py-4 bg-muted text-muted-foreground font-black rounded-2xl hover:bg-muted/80 font-display uppercase tracking-widest text-xs">
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
+        )}
 
-          {/* Curated Videos */}
+        {/* My Videos Section */}
+        {customVideos.length > 0 && (
           <VideoSection
-            title="Podcasts"
-            videos={podcastVideos}
-            icon={<Headphones className="w-5 h-5 text-brand-blue" />}
+            title="My Videos"
+            videos={customVideos}
+            onDelete={handleDelete}
+            icon={<User className="w-5 h-5 text-brand-green" />}
           />
+        )}
 
-          <VideoSection
-            title="Common Situations"
-            videos={situationVideos}
-            icon={<Headphones className="w-5 h-5 text-brand-peach" />}
-            defaultOpen={false}
-          />
+        {/* Recommended Channels */}
+        <div className="bg-card p-8 rounded-2xl border border-border ">
+          <h2 className="text-[10px] font-black text-muted-foreground/50 uppercase tracking-[0.2em] mb-6 font-display ml-2">Recommended YouTube Channels</h2>
+          <div className="flex flex-wrap gap-3">
+            {youtubeChannels.map((channel) => (
+              <a
+                key={channel.name}
+                href={channel.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-5 py-2 bg-muted/50 text-muted-foreground text-xs font-black rounded-full hover:bg-primary hover:text-white transition-all font-display uppercase tracking-widest "
+              >
+                {channel.name}
+              </a>
+            ))}
+          </div>
         </div>
+
+        {/* Curated Videos */}
+        <VideoSection
+          title="Podcasts"
+          videos={podcastVideos}
+          icon={<Headphones className="w-5 h-5 text-brand-blue" />}
+        />
+
+        <VideoSection
+          title="Common Situations"
+          videos={situationVideos}
+          icon={<Headphones className="w-5 h-5 text-brand-peach" />}
+          defaultOpen={false}
+        />
       </div>
-    </>
+    </div>
   );
 }
+

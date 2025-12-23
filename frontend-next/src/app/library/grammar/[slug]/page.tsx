@@ -88,21 +88,25 @@ export default function GrammarDetailPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-brand-cream flex items-center justify-center">
-                <Loader2 className="w-10 h-10 animate-spin text-pink-500" />
+            <div className="min-h-screen bg-background flex flex-col items-center justify-center">
+                <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mb-6"></div>
+                <p className="text-xs font-black text-muted-foreground uppercase tracking-widest font-display">Loading Details...</p>
             </div>
         );
     }
 
     if (error || !grammar) {
         return (
-            <div className="min-h-screen bg-brand-cream flex flex-col items-center justify-center p-4">
-                <AlertCircle className="w-12 h-12 text-red-400 mb-4" />
-                <p className="text-slate-600 mb-4">{error || "Grammar point not found"}</p>
+            <div className="min-h-screen bg-background p-6 md:p-12 flex flex-col items-center justify-center text-center">
+                <div className="w-24 h-24 bg-destructive/5 rounded-2xl flex items-center justify-center mb-8 ">
+                    <AlertCircle className="w-12 h-12 text-destructive/20" />
+                </div>
+                <h3 className="text-2xl font-black text-foreground mb-4 font-display">{error || "Grammar point not found"}</h3>
                 <Link
                     href="/library/grammar"
-                    className="px-6 py-2 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors font-bold text-slate-600"
+                    className="flex items-center gap-3 px-8 py-4 bg-foreground text-background font-black rounded-2xl hover:opacity-90 active:scale-95 transition-all  font-display uppercase tracking-widest text-xs"
                 >
+                    <ArrowLeft size={18} />
                     Back to Library
                 </Link>
             </div>
@@ -110,134 +114,146 @@ export default function GrammarDetailPage() {
     }
 
     return (
-        <div className="min-h-screen bg-brand-cream pb-20">
-            {/* Header / Nav */}
-            <div className="bg-white border-b border-gray-100 sticky top-0 z-30">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center justify-between">
-                        <Link
-                            href="/library/grammar"
-                            className="flex items-center gap-2 text-slate-500 hover:text-brand-dark transition-colors font-medium text-sm"
-                        >
-                            <ArrowLeft size={18} />
-                            Back to Library
-                        </Link>
+        <div className="min-h-screen bg-background p-6 md:p-12">
+            <div className="max-w-4xl mx-auto space-y-10">
+                {/* Navigation */}
+                <div className="flex items-center justify-between">
+                    <Link
+                        href="/library/grammar"
+                        className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-all active:scale-95 group"
+                    >
+                        <ArrowLeft size={24} />
+                        <span className="text-xs font-black uppercase tracking-widest font-display">Back to Library</span>
+                    </Link>
 
-                        <div className="flex gap-2">
-                            <span className="bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-xs font-bold tracking-wider uppercase">
-                                {grammar.p_tag?.replace('JLPT_', '')}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Main Content */}
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
-                {/* Title Card */}
-                <div className="bg-white rounded-3xl p-8 mb-6 shadow-sm border border-slate-100 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 p-6 opacity-5">
-                        <BookOpen size={120} className="text-brand-dark" />
-                    </div>
-
-                    <div className="relative z-10">
-                        <h1 className="text-4xl md:text-5xl font-black text-brand-dark mb-4 tracking-tight leading-tight">
-                            {grammar.title}
-                        </h1>
-                        <p className="text-xl md:text-2xl text-slate-600 font-medium leading-relaxed">
-                            {grammar.short_explanation}
-                        </p>
-
-                        <div className="flex flex-wrap gap-3 mt-8">
-                            <button
-                                onClick={handleAddToStudyList}
-                                disabled={added || adding}
-                                className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all transform active:scale-95 ${added
-                                    ? "bg-green-100 text-green-700 border border-green-200 cursor-default"
-                                    : "bg-brand-dark text-white hover:bg-black hover:shadow-lg"
-                                    }`}
-                            >
-                                {adding ? <Loader2 size={18} className="animate-spin" /> :
-                                    added ? <CheckCircle size={18} /> :
-                                        <Plus size={18} />}
-                                {added ? "Added to Reviews" : "Add to Reviews"}
-                            </button>
-                        </div>
-                    </div>
+                    <span className="bg-primary/10 text-primary px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase font-display border border-primary/20">
+                        {grammar.p_tag?.replace('JLPT_', '')}
+                    </span>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {/* Left Column: Details */}
-                    <div className="md:col-span-2 space-y-6">
+                {/* Main Content */}
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-                        {/* Formation */}
-                        <div className="bg-white rounded-2xl p-6 border border-slate-100">
-                            <h2 className="text-lg font-black text-brand-dark mb-4 flex items-center gap-2">
-                                <span className="w-1 h-6 bg-pink-500 rounded-full"></span>
-                                Formation
-                            </h2>
-                            <div className="bg-slate-50 rounded-xl p-4 text-slate-700 font-mono text-sm leading-relaxed whitespace-pre-wrap">
-                                {grammar.formation}
-                            </div>
+                    {/* Title Card */}
+                    <div className="bg-card rounded-2xl p-10 md:p-12  border border-border relative overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <div className="absolute top-0 right-0 p-10 opacity-[0.03] rotate-12">
+                            <BookOpen size={200} />
                         </div>
 
-                        {/* Explanation */}
-                        <div className="bg-white rounded-2xl p-6 border border-slate-100">
-                            <h2 className="text-lg font-black text-brand-dark mb-4 flex items-center gap-2">
-                                <span className="w-1 h-6 bg-blue-500 rounded-full"></span>
-                                Usage & nuance
-                            </h2>
-                            <div className="prose prose-slate max-w-none text-slate-600 leading-7">
-                                {grammar.long_explanation}
-                            </div>
-                        </div>
-
-                        {/* Examples */}
-                        <div className="bg-white rounded-2xl p-6 border border-slate-100">
-                            <h2 className="text-lg font-black text-brand-dark mb-6 flex items-center gap-2">
-                                <span className="w-1 h-6 bg-green-500 rounded-full"></span>
-                                Example Sentences
-                            </h2>
-
-                            <div className="space-y-6">
-                                {grammar.examples?.map((ex, idx) => (
-                                    <div key={idx} className="group relative pl-4 border-l-2 border-slate-100 hover:border-brand-green transition-colors pb-1">
-                                        <div className="mb-2">
-                                            <p className="text-lg font-bold text-slate-800 leading-relaxed font-jp">
-                                                {ex.jp}
-                                            </p>
-                                        </div>
-                                        <p className="text-sm text-slate-400 mb-1 font-medium">{ex.romaji}</p>
-                                        <p className="text-slate-600">{ex.en}</p>
-
-                                        {/* Audio Button (if available) */}
-                                        {ex.grammar_audio && (
-                                            <button
-                                                onClick={() => playAudio(ex.grammar_audio)}
-                                                className="absolute top-0 right-0 p-2 text-slate-300 hover:text-brand-green transition-colors"
-                                            >
-                                                <PlayCircle size={20} />
-                                            </button>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Right Column: Sidebar info or Ads placeholder */}
-                    <div className="md:col-span-1 space-y-6">
-                        <div className="bg-brand-cream-dark rounded-2xl p-6 border border-brand-cream-darker">
-                            <h3 className="font-bold text-brand-dark mb-2">Study Tip</h3>
-                            <p className="text-sm text-slate-600 leading-relaxed">
-                                Use the "Add to Reviews" button to include this grammar point in your daily SRS flashcards.
+                        <div className="relative z-10 space-y-6">
+                            <h1 className="text-5xl md:text-6xl font-black text-foreground font-display tracking-tight leading-tight">
+                                {grammar.title}
+                            </h1>
+                            <p className="text-xl md:text-2xl text-muted-foreground font-bold leading-relaxed max-w-2xl">
+                                {grammar.short_explanation}
                             </p>
+
+                            <div className="flex flex-wrap gap-4 pt-4">
+                                <button
+                                    onClick={handleAddToStudyList}
+                                    disabled={added || adding}
+                                    className={`flex items-center gap-3 px-10 py-5 rounded-2xl font-black transition-all active:scale-95  font-display uppercase tracking-widest text-xs ${added
+                                        ? "bg-green-500/10 text-green-600 border border-green-500/20 cursor-default shadow-none"
+                                        : "bg-foreground text-background hover:opacity-90"
+                                        }`}
+                                >
+                                    {adding ? <Loader2 size={18} className="animate-spin" /> :
+                                        added ? <CheckCircle size={18} /> :
+                                            <Plus size={18} />}
+                                    {added ? "In Your Reviews" : "Add to Reviews"}
+                                </button>
+
+                                <button className="p-5 bg-card border border-border rounded-2xl text-muted-foreground hover:text-foreground hover:border-foreground/20 transition-all ">
+                                    <Share2 size={20} />
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
 
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+                        <div className="md:col-span-3 space-y-10">
+                            {/* Formation */}
+                            <div className="bg-card rounded-2xl p-8 border border-border ">
+                                <h2 className="text-xs font-black text-primary/50 uppercase tracking-[0.2em] font-display mb-6 flex items-center gap-3">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                                    Formation Rules
+                                </h2>
+                                <div className="bg-muted/30 rounded-2xl p-6 border border-border/50 text-foreground font-black font-display text-lg leading-relaxed whitespace-pre-wrap ">
+                                    {grammar.formation}
+                                </div>
+                            </div>
+
+                            {/* Explanation */}
+                            <div className="bg-card rounded-2xl p-8 border border-border ">
+                                <h2 className="text-xs font-black text-primary/50 uppercase tracking-[0.2em] font-display mb-6 flex items-center gap-3">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                                    Usage & Nuance
+                                </h2>
+                                <div className="prose prose-slate max-w-none text-muted-foreground font-bold leading-8 text-[17px]">
+                                    {grammar.long_explanation}
+                                </div>
+                            </div>
+
+                            {/* Examples */}
+                            <div className="bg-card rounded-2xl p-8 border border-border ">
+                                <h2 className="text-xs font-black text-primary/50 uppercase tracking-[0.2em] font-display mb-8 flex items-center gap-3">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                                    Example Sentences
+                                </h2>
+
+                                <div className="space-y-10">
+                                    {grammar.examples?.map((ex, idx) => (
+                                        <div key={idx} className="group relative pl-8 border-l-4 border-muted hover:border-primary/30 transition-all duration-500">
+                                            <div className="space-y-4">
+                                                <p className="text-2xl font-bold text-foreground leading-[1.6] font-jp group-hover:text-primary transition-colors">
+                                                    {ex.jp}
+                                                </p>
+                                                <div className="space-y-1">
+                                                    <p className="text-[11px] font-black text-muted-foreground/40 uppercase tracking-widest font-display italic leading-relaxed">
+                                                        {ex.romaji}
+                                                    </p>
+                                                    <p className="text-base font-bold text-muted-foreground leading-relaxed">
+                                                        {ex.en}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            {ex.grammar_audio && (
+                                                <button
+                                                    onClick={() => playAudio(ex.grammar_audio)}
+                                                    className="absolute top-0 right-0 w-12 h-12 bg-muted/30 text-muted-foreground hover:bg-primary hover:text-white rounded-xl transition-all  flex items-center justify-center"
+                                                >
+                                                    <PlayCircle size={24} />
+                                                </button>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="md:col-span-1 space-y-8 pt-4">
+                            <div className="bg-primary/5 rounded-2xl p-8 border border-primary/10 relative overflow-hidden">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -z-10"></div>
+                                <h3 className="text-xs font-black text-primary uppercase tracking-[0.2em] mb-4 font-display">Study Tip</h3>
+                                <p className="text-sm font-bold text-muted-foreground leading-relaxed">
+                                    Use the <span className="text-foreground">"Add to Reviews"</span> button to include this grammar pattern in your daily SRS review queue.
+                                </p>
+                            </div>
+
+                            <div className="p-8 bg-card border border-border rounded-2xl ">
+                                <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-4 font-display">Mastery Level</h3>
+                                <div className="h-2 bg-muted rounded-full overflow-hidden">
+                                    <div className="h-full bg-primary w-1/3 rounded-full"></div>
+                                </div>
+                                <p className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-widest mt-4 font-display">Beginner 33%</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
     );
 }
+

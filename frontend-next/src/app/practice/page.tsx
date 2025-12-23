@@ -2,17 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import {
-    GraduationCap,
-    Brain,
-    BookCheck,
-    ListChecks,
-    Timer,
-    Target,
-    Zap,
-    ArrowRight,
-    Lock
-} from "lucide-react";
+import { GraduationCap, Brain, BookCheck, Timer, Zap, ArrowRight, Lock, Flame, LayoutGrid, Target as TargetIcon, History } from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import { useGlobalAuth } from "@/context/GlobalAuthContext";
 
@@ -30,49 +20,49 @@ interface PracticeCategory {
 const practiceCategories: PracticeCategory[] = [
     {
         id: "jlpt-practice",
-        title: "JLPT Practice",
-        description: "Quizzes, single skill exams, and full JLPT simulations for all levels.",
-        icon: <GraduationCap size={28} />,
+        title: "JLPT Simulator",
+        description: "Adaptive simulations and skill-specific drills for all levels.",
+        icon: <GraduationCap size={24} />,
         href: "/practice/jlpt",
-        color: "text-emerald-600",
-        bgColor: "bg-emerald-50",
+        color: "text-primary",
+        bgColor: "bg-primary/10",
     },
     {
         id: "flashcards",
         title: "Flashcards",
-        description: "Review vocabulary, kanji, and grammar with spaced repetition.",
-        icon: <Brain size={28} />,
+        description: "Master vocabulary and kanji through spaced repetition.",
+        icon: <Brain size={24} />,
         href: "/flashcards",
-        color: "text-brand-green",
-        bgColor: "bg-green-50",
-    },
-    {
-        id: "quizzes",
-        title: "Quick Quizzes",
-        description: "Test your knowledge with vocabulary, grammar, and kanji quizzes.",
-        icon: <BookCheck size={28} />,
-        href: "/practice/quiz",
         color: "text-blue-600",
         bgColor: "bg-blue-50",
     },
     {
+        id: "quizzes",
+        title: "Quick Quizzes",
+        description: "Rapid practice across grammar, vocabulary, and kanji.",
+        icon: <BookCheck size={24} />,
+        href: "/practice/quiz",
+        color: "text-foreground",
+        bgColor: "bg-muted",
+    },
+    {
         id: "speed-drill",
-        title: "Speed Drill",
+        title: "Speed Drills",
         description: "Timed exercises to improve recall speed.",
-        icon: <Timer size={28} />,
+        icon: <Timer size={24} />,
         href: "/practice/speed-drill",
-        color: "text-orange-600",
-        bgColor: "bg-orange-50",
+        color: "text-muted-foreground",
+        bgColor: "bg-muted",
         comingSoon: true,
     },
     {
         id: "daily-challenge",
         title: "Daily Challenge",
-        description: "Complete today's challenge to maintain your streak.",
-        icon: <Zap size={28} />,
+        description: "Complete daily challenges to maintain your streak.",
+        icon: <Zap size={24} />,
         href: "/practice/daily",
-        color: "text-yellow-600",
-        bgColor: "bg-yellow-50",
+        color: "text-accent",
+        bgColor: "bg-accent/10",
         comingSoon: true,
     },
 ];
@@ -82,36 +72,39 @@ export default function PracticePage() {
     const { openAuth } = useGlobalAuth();
 
     return (
-        <div className="min-h-screen bg-brand-cream text-brand-dark pb-20">
+        <div className="min-h-screen bg-background pb-24">
             {/* Header */}
-            <div className="bg-white shadow-sm sticky top-0 z-30">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                    <div className="flex items-center gap-4">
-                        <div className="w-14 h-14 bg-gradient-to-br from-brand-salmon to-brand-peach rounded-2xl flex items-center justify-center text-white shadow-lg">
-                            <GraduationCap size={32} />
-                        </div>
-                        <div>
-                            <h1 className="text-3xl font-black tracking-tight text-brand-dark">Practice</h1>
-                            <p className="text-slate-500 text-sm mt-1">Quizzes, exercises, and drills to reinforce your learning.</p>
-                        </div>
+            <header className="bg-card border-b border-border px-6 py-8 sticky top-0 z-50">
+                <div className="max-w-6xl mx-auto flex items-center gap-4">
+                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                        <GraduationCap size={24} className="text-primary" />
+                    </div>
+                    <div>
+                        <h1 className="text-2xl font-bold text-foreground font-display">Practice</h1>
+                        <p className="text-sm text-muted-foreground">Reinforce your Japanese skills</p>
                     </div>
                 </div>
-            </div>
+            </header>
 
-            {/* Content */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-                {/* Quick Stats (if user is logged in) */}
+            <main className="max-w-6xl mx-auto px-6 py-8">
+                {/* Stats */}
                 {user && (
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-                        <StatCard label="Daily Streak" value="0" icon="🔥" />
-                        <StatCard label="Cards Reviewed" value="0" icon="📚" />
-                        <StatCard label="Accuracy" value="--%" icon="🎯" />
-                        <StatCard label="Time Spent" value="0m" icon="⏱️" />
+                        <StatCard label="Streak" value="0" icon={<Flame className="text-secondary" size={20} />} />
+                        <StatCard label="Cards" value="0" icon={<LayoutGrid className="text-primary" size={20} />} />
+                        <StatCard label="Accuracy" value="--%" icon={<TargetIcon className="text-foreground" size={20} />} />
+                        <StatCard label="Time" value="0m" icon={<History className="text-muted-foreground" size={20} />} />
                     </div>
                 )}
 
+                {/* Section Title */}
+                <div className="flex items-center gap-3 mb-6">
+                    <div className="w-1 h-5 bg-primary rounded-full" />
+                    <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wide">Categories</h2>
+                </div>
+
                 {/* Practice Categories */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
                     {practiceCategories.map((category) => (
                         <PracticeCard key={category.id} category={category} />
                     ))}
@@ -119,83 +112,63 @@ export default function PracticePage() {
 
                 {/* Guest Prompt */}
                 {!user && (
-                    <div className="mt-12 text-center p-8 bg-white rounded-3xl shadow-sm border border-slate-100">
-                        <Lock className="w-12 h-12 mx-auto text-slate-300 mb-4" />
-                        <h3 className="text-xl font-bold text-brand-dark mb-2">Track Your Progress</h3>
-                        <p className="text-slate-500 mb-6 max-w-md mx-auto">
-                            Log in to save your quiz scores, track your daily streak, and see personalized recommendations.
+                    <div className="bg-card rounded-2xl border border-border p-8 text-center">
+                        <div className="w-16 h-16 bg-muted rounded-2xl flex items-center justify-center mx-auto mb-6">
+                            <Lock className="w-8 h-8 text-muted-foreground" />
+                        </div>
+                        <h3 className="text-xl font-bold text-foreground mb-2">Sign in to track progress</h3>
+                        <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                            Create an account to save your practice history, track streaks, and unlock achievements.
                         </p>
                         <button
-                            onClick={() => openAuth('REGISTER', {
-                                flowType: 'PRACTICE',
-                                title: 'Track Your Mastery',
-                                description: 'Join Hanabira to save your streak, track accuracy across skills, and see your progress graphs.'
-                            })}
-                            className="inline-block px-8 py-3 bg-brand-green text-white font-bold rounded-xl shadow-clay-img hover:bg-brand-green/90 transition-all"
+                            onClick={() => openAuth('REGISTER', { flowType: 'PRACTICE', title: 'Join Hanabira', description: 'Sign up to save your progress.' })}
+                            className="px-8 py-3 bg-foreground text-background font-bold rounded-xl hover:bg-foreground/90 transition-colors"
                         >
-                            Log In / Register
+                            Sign Up
                         </button>
                     </div>
                 )}
-            </div>
+            </main>
         </div>
     );
 }
 
-function StatCard({ label, value, icon }: { label: string; value: string; icon: string }) {
+function StatCard({ label, value, icon }: { label: string; value: string; icon: React.ReactNode }) {
     return (
-        <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center gap-4">
-            <div className="text-3xl">{icon}</div>
+        <div className="bg-card rounded-2xl border border-border p-4 flex items-center gap-4">
+            <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center">{icon}</div>
             <div>
-                <div className="text-2xl font-black text-brand-dark">{value}</div>
-                <div className="text-xs text-slate-500 font-medium">{label}</div>
+                <div className="text-2xl font-bold text-foreground">{value}</div>
+                <div className="text-xs text-muted-foreground font-bold">{label}</div>
             </div>
         </div>
     );
 }
 
 function PracticeCard({ category }: { category: PracticeCategory }) {
+    const isComingSoon = category.comingSoon;
+
     const content = (
-        <div className={`
-            bg-white rounded-2xl p-6 shadow-sm border border-slate-100 
-            transition-all duration-200 flex flex-col h-full group
-            ${category.comingSoon ? 'opacity-60' : 'hover:shadow-md hover:-translate-y-1'}
-        `}>
+        <div className={`bg-card rounded-2xl border border-border p-6 transition-colors flex flex-col h-full ${isComingSoon ? 'opacity-50' : 'hover:border-primary/40 cursor-pointer'}`}>
             <div className="flex items-start justify-between mb-4">
-                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${category.bgColor} ${category.color}`}>
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${category.bgColor} ${category.color}`}>
                     {category.icon}
                 </div>
-                {category.comingSoon && (
-                    <span className="text-xs font-bold px-2 py-1 rounded-full bg-slate-100 text-slate-500">
-                        Coming Soon
-                    </span>
+                {isComingSoon && (
+                    <span className="px-2 py-1 bg-muted rounded-lg text-xs font-bold text-muted-foreground">Soon</span>
                 )}
             </div>
-
-            <h3 className={`text-lg font-bold text-brand-dark mb-2 transition-colors ${!category.comingSoon && 'group-hover:text-brand-green'}`}>
-                {category.title}
-            </h3>
-            <p className="text-sm text-slate-500 mb-6 flex-grow">
-                {category.description}
-            </p>
-
-            <div className={`
-                mt-auto flex items-center justify-between text-sm font-bold 
-                ${category.comingSoon ? 'text-slate-400' : `${category.color} group-hover:gap-2 transition-all`}
-            `}>
-                <span>{category.comingSoon ? 'In Development' : 'Start Practice'}</span>
-                {!category.comingSoon && <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />}
-            </div>
+            <h3 className="text-lg font-bold text-foreground mb-2">{category.title}</h3>
+            <p className="text-sm text-muted-foreground mb-4 flex-1">{category.description}</p>
+            {!isComingSoon && (
+                <div className="flex items-center gap-2 text-sm font-bold text-primary">
+                    <span>Start</span>
+                    <ArrowRight size={16} />
+                </div>
+            )}
         </div>
     );
 
-    if (category.comingSoon) {
-        return <div className="cursor-not-allowed">{content}</div>;
-    }
-
-    return (
-        <Link href={category.href}>
-            {content}
-        </Link>
-    );
+    if (isComingSoon) return <div>{content}</div>;
+    return <Link href={category.href}>{content}</Link>;
 }

@@ -38,7 +38,7 @@ const WordDetailsSidebar: React.FC<WordDetailsSidebarProps> = ({
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  const audioUrl = word ? `/d-api/v1/audio/v_${encodeURIComponent(word)}.mp3` : '';  
+  const audioUrl = word ? `/d-api/v1/audio/v_${encodeURIComponent(word)}.mp3` : '';
   //const audioUrl = word ? `/audio/jitendex_audio/v_${encodeURIComponent(word)}.mp3` : '';
   //const audioUrl: string = `/audio/jitendex_audio/v_自衛権.mp3`; // hardcoded placeholder
 
@@ -134,19 +134,19 @@ const WordDetailsSidebar: React.FC<WordDetailsSidebarProps> = ({
   };
 
   return (
-    <div className="bg-white p-6 shadow-md rounded-lg text-gray-800 mb-4">
-      <h2 className="text-2xl font-bold mb-4">Word Details</h2>
+    <div className="space-y-8">
       {clickedWordDetails ? (
-        <div>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-3xl font-bold text-blue-700">
+        <div className="animate-in fade-in slide-in-from-right-4 duration-500">
+          <div className="flex items-center justify-between mb-8">
+            <h3 className="text-4xl font-black text-slate-900 font-display">
               {clickedWordDetails.dictionary}
             </h3>
             <button
               onClick={togglePlay}
-              className="text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 rounded-full px-4 py-1 shadow-md transition ease-in-out duration-150 text-sm"
+              className="flex items-center gap-2 px-5 py-2.5 bg-primary/10 text-primary rounded-xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-primary/20 active:scale-95 transition-all shadow-sm ring-1 ring-primary/20"
             >
-              {isPlaying ? "Pause Audio" : "Play Audio"}
+              <div className={`w-2 h-2 rounded-full ${isPlaying ? 'bg-primary animate-pulse' : 'bg-primary/40'}`} />
+              {isPlaying ? "Pause" : "Play Audio"}
             </button>
             <audio
               ref={audioRef}
@@ -156,124 +156,82 @@ const WordDetailsSidebar: React.FC<WordDetailsSidebarProps> = ({
             />
           </div>
 
-          {/* <div className="text-2xl mt-2 font-semibold text-slate-500">
-            <span className="font-medium">English:</span>{" "}
-            {vocabularyData.englishTranslations.join(", ")}
-          </div> */}
+          <div className="space-y-6">
+            <section>
+              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-3 pb-1 border-b border-slate-50">Semantic Intent</h4>
+              <p className="text-lg text-slate-700 font-medium leading-relaxed">
+                {vocabularyData.englishTranslations.join(", ") || "No semantic map found."}
+              </p>
+            </section>
 
-          <div className="text-2xl mt-2 font-semibold text-slate-500">
-            <span className="text-base font-semibold text-slate-500">English:</span>{" "}
-            <span className="text-lg text-gray-700">{vocabularyData.englishTranslations.join(", ")}</span>
-          </div>
+            <div className="grid grid-cols-2 gap-4">
+              <section className="bg-slate-50/50 p-4 rounded-2xl border border-slate-100/50">
+                <h4 className="text-[9px] font-black uppercase tracking-[0.1em] text-slate-400 mb-2">Phonetic</h4>
+                <p className="text-sm font-bold text-slate-600">{clickedWordDetails.furigana}</p>
+              </section>
+              <section className="bg-slate-50/50 p-4 rounded-2xl border border-slate-100/50">
+                <h4 className="text-[9px] font-black uppercase tracking-[0.1em] text-slate-400 mb-2">Lexical Index</h4>
+                <p className="text-sm font-bold text-slate-600 uppercase">{clickedWordDetails.status}</p>
+              </section>
+            </div>
 
-
-          <hr className="my-6 border-gray-300" />
-
-
-
-
-          <div className="mb-4">
-            <h4 className="text-lg font-semibold mb-2">JapanDict.com:</h4>
-            <div className="grid grid-cols-2 gap-x-4">
-              <p className="mb-1">
-                <span className="font-medium">Original:</span>{" "}
+            <section className="pt-4">
+              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4">External Intelligence</h4>
+              <div className="flex gap-2">
                 <a
                   href={`https://www.japandict.com/?s=${encodeURIComponent(clickedWordDetails.original)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-500 underline hover:text-blue-700"
+                  className="flex-1 text-center py-2.5 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-[0.1em] text-slate-500 hover:border-primary/30 hover:text-primary transition-all shadow-sm"
                 >
-                  {clickedWordDetails.original}
+                  JapanDict
                 </a>
-              </p>
-              <p className="mb-1">
-                <span className="font-medium">Dictionary:</span>{" "}
                 <a
-                  href={`https://www.japandict.com/?s=${encodeURIComponent(clickedWordDetails.dictionary)}`}
+                  href={`https://jisho.org/search/${encodeURIComponent(clickedWordDetails.dictionary)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-500 underline hover:text-blue-700"
+                  className="flex-1 text-center py-2.5 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-[0.1em] text-slate-500 hover:border-primary/30 hover:text-primary transition-all shadow-sm"
                 >
-                  {clickedWordDetails.dictionary}
+                  Jisho
                 </a>
-              </p>
-            </div>
-          </div>
+              </div>
+            </section>
 
+            <hr className="my-8 border-slate-50" />
 
-
-
-          <div className="mb-4">
-            <h4 className="text-lg font-semibold mb-2">Mecab Data:</h4>
-            <div className="grid grid-cols-2 gap-x-4">
-              <p className="mb-1">
-                <span className="font-medium">Original:</span>{" "}
-                {clickedWordDetails.original}
-              </p>
-              <p className="mb-1">
-                <span className="font-medium">Dictionary:</span>{" "}
-                {clickedWordDetails.dictionary}
-              </p>
-              <p className="mb-1">
-                <span className="font-medium">Furigana:</span>{" "}
-                {clickedWordDetails.furigana}
-              </p>
-              <p className="mb-1">
-                <span className="font-medium">Status:</span>{" "}
-                {clickedWordDetails.status}
-              </p>
-            </div>
-          </div>
-
-          <div className="mb-4">
-            <h4 className="text-lg font-semibold mb-2">JMDICT Data:</h4>
-            {vocabularyData && (
-              <>
-                <div className="mt-2">
-                  <span className="font-medium">Japanese:</span>{" "}
-                  {vocabularyData.original}
-                </div>
-                <div className="mt-2">
-                  <span className="font-medium">Simplified:</span>{" "}
-                  {vocabularyData.hiragana}
-                </div>
-                <div className="mt-2">
-                  <span className="font-medium">English:</span>{" "}
-                  {vocabularyData.englishTranslations.join(", ")}
-                </div>
-              </>
-            )}
-          </div>
-
-          <p className="text-xs text-gray-600 my-3">
-            We should add a hook to get translations from JMDICT, so we have
-            quick info about the clicked word.
-          </p>
-
-          {/* Buttons to update word status */}
-          <div className="flex space-x-2 text-xs">
-            <button
-              onClick={() => handleUpdateStatus("known")}
-              className="bg-slate-300 text-green-800 px-3 py-1 rounded-md hover:bg-slate-400 focus:outline-none focus:ring focus:ring-green-300"
-            >
-              Mark as Known
-            </button>
-            <button
-              onClick={() => handleUpdateStatus("unknown")}
-              className="bg-orange-300 text-orange-800 px-3 py-1 rounded-md hover:bg-orange-400 focus:outline-none focus:ring focus:ring-orange-300"
-            >
-              Mark as Unknown
-            </button>
-            <button
-              onClick={() => handleUpdateStatus("seen")}
-              className="bg-blue-300 text-blue-800 px-3 py-1 rounded-md hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300"
-            >
-              Mark as Seen
-            </button>
+            <section>
+              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4">State Management</h4>
+              <div className="flex flex-col gap-2">
+                <button
+                  onClick={() => handleUpdateStatus("known")}
+                  className="w-full flex items-center justify-between px-6 py-4 bg-emerald-50 text-emerald-700 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-emerald-100 active:scale-[0.98] transition-all border border-emerald-100"
+                >
+                  Synchronize as Known
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                </button>
+                <button
+                  onClick={() => handleUpdateStatus("unknown")}
+                  className="w-full flex items-center justify-between px-6 py-4 bg-amber-50 text-amber-700 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-amber-100 active:scale-[0.98] transition-all border border-amber-100"
+                >
+                  Mark as Critical Path
+                  <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                </button>
+                <button
+                  onClick={() => handleUpdateStatus("seen")}
+                  className="w-full flex items-center justify-between px-6 py-4 bg-sky-50 text-sky-700 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-sky-100 active:scale-[0.98] transition-all border border-sky-100"
+                >
+                  Register as Familiar
+                  <div className="w-1.5 h-1.5 rounded-full bg-sky-500" />
+                </button>
+              </div>
+            </section>
           </div>
         </div>
       ) : (
-        <p className="text-gray-500">No word clicked</p>
+        <div className="flex flex-col items-center justify-center p-12 text-slate-300 min-h-[400px]">
+          <div className="text-8xl mb-8 opacity-10">?</div>
+          <p className="text-center font-black text-[10px] uppercase tracking-widest leading-loose">Initialize deep analysis by<br />selecting a lexicon node</p>
+        </div>
       )}
     </div>
   );

@@ -10,7 +10,10 @@ import {
     AlertCircle,
     Loader2,
     Send,
-    ArrowLeft
+    ArrowLeft,
+    Brain,
+    LayoutGrid,
+    Target,
 } from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import { getQuiz, submitQuiz, Quiz, QuizSubmissionResult } from "@/services/quizService";
@@ -50,7 +53,7 @@ export default function QuizPlayerPage() {
                     setTimeLeft(data.time_limit_seconds);
                 }
             } catch (err) {
-                setError("Failed to load quiz");
+                setError("Protocol synchronization failed. Retrieval unsuccessful.");
                 console.error(err);
             } finally {
                 setLoading(false);
@@ -60,7 +63,26 @@ export default function QuizPlayerPage() {
         loadQuiz();
     }, [quizId]);
 
-    // Timer
+    // Timer logic
+    const handleSubmit = useCallback(async () => {
+        if (!quiz) return;
+        setSubmitting(true);
+        try {
+            const res = await submitQuiz(
+                quizId,
+                answers,
+                user?.id ? String(user.id) : undefined,
+                startedAt
+            );
+            setResult(res);
+        } catch (err) {
+            console.error("Submission failed:", err);
+            setError("Logic commit failed. Retransmission required.");
+        } finally {
+            setSubmitting(false);
+        }
+    }, [quiz, quizId, answers, user, startedAt]);
+
     useEffect(() => {
         if (timeLeft === null || timeLeft <= 0 || result) return;
 
@@ -68,7 +90,6 @@ export default function QuizPlayerPage() {
             setTimeLeft((prev) => {
                 if (prev === null || prev <= 1) {
                     clearInterval(timer);
-                    // Auto-submit when time runs out
                     handleSubmit();
                     return 0;
                 }
@@ -77,7 +98,7 @@ export default function QuizPlayerPage() {
         }, 1000);
 
         return () => clearInterval(timer);
-    }, [timeLeft, result]);
+    }, [timeLeft, result, handleSubmit]);
 
     const formatTime = (seconds: number) => {
         const mins = Math.floor(seconds / 60);
@@ -109,46 +130,30 @@ export default function QuizPlayerPage() {
         }
     };
 
-    const handleSubmit = async () => {
-        if (!quiz) return;
-
-        setSubmitting(true);
-        try {
-            const res = await submitQuiz(
-                quizId,
-                answers,
-                user?.id ? String(user.id) : undefined,
-                startedAt
-            );
-            setResult(res);
-        } catch (err) {
-            console.error("Submit failed:", err);
-            setError("Failed to submit quiz");
-        } finally {
-            setSubmitting(false);
-        }
-    };
-
-    // Loading state
     if (loading) {
         return (
-            <div className="min-h-screen bg-brand-cream flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+            <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-6">
+                <div className="relative">
+                    <Loader2 className="w-16 h-16 animate-spin text-primary opacity-20" />
+                    <Brain className="absolute inset-0 m-auto w-6 h-6 text-primary animate-pulse" />
+                </div>
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40 font-display">Allocating Logic Blocks...</p>
             </div>
         );
     }
 
-    // Error state
     if (error || !quiz) {
         return (
-            <div className="min-h-screen bg-brand-cream flex flex-col items-center justify-center p-4">
-                <AlertCircle className="w-16 h-16 text-red-400 mb-4" />
-                <p className="text-slate-600 mb-4">{error || "Quiz not found"}</p>
+            <div className="min-h-screen bg-background flex flex-col items-center justify-center p-8 text-center animate-in zoom-in-95 duration-700">
+                <div className="w-24 h-24 bg-destructive/10 text-destructive rounded-2xl flex items-center justify-center mb-8  border border-destructive/20 rotate-12">
+                    <AlertCircle size={48} />
+                </div>
+                <h2 className="text-3xl font-black text-foreground font-display tracking-tight mb-4">{error || "Manifest Not Found"}</h2>
                 <Link
                     href="/practice/quiz"
-                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                    className="px-10 py-4 bg-foreground text-background font-black font-display text-[11px] uppercase tracking-widest rounded-2xl  active:scale-95 transition-all"
                 >
-                    Back to Quizzes
+                    Return to Cluster
                 </Link>
             </div>
         );
@@ -157,77 +162,68 @@ export default function QuizPlayerPage() {
     // Result view
     if (result) {
         return (
-            <div className="min-h-screen bg-brand-cream py-10 px-4">
-                <div className="max-w-2xl mx-auto">
-                    {/* Result Card */}
-                    <div className="bg-white rounded-2xl border-2 border-gray-100 p-8 text-center">
-                        <div className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-6 ${result.percentage >= 80
-                            ? "bg-green-100 text-green-600"
-                            : result.percentage >= 50
-                                ? "bg-amber-100 text-amber-600"
-                                : "bg-red-100 text-red-600"
+            <div className="min-h-screen bg-background py-16 px-8 selection:bg-primary/20 animate-in fade-in duration-1000">
+                <div className="max-w-3xl mx-auto">
+                    <div className="bg-card rounded-[3.5rem] border border-border/50 p-12 text-center  relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 group-hover:bg-primary/10 transition-colors" />
+
+                        <div className={`w-24 h-24 mx-auto rounded-[2.5rem] flex items-center justify-center mb-10  border border-border/50 transition-transform duration-700 rotate-6 group-hover:rotate-0 ${result.percentage >= 80 ? "bg-primary/10 text-primary border-primary/20" :
+                                result.percentage >= 50 ? "bg-secondary/10 text-secondary border-secondary/20" :
+                                    "bg-destructive/10 text-destructive border-destructive/20"
                             }`}>
-                            <CheckCircle size={40} />
+                            <CheckCircle size={48} />
                         </div>
 
-                        <h1 className="text-3xl font-black text-brand-dark mb-2">
-                            {result.percentage >= 80 ? "Great Job!" : result.percentage >= 50 ? "Good Effort!" : "Keep Practicing!"}
+                        <h1 className="text-4xl font-black text-foreground font-display tracking-tighter mb-4 italic leading-none">
+                            {result.percentage >= 80 ? "Synthesis Success" : result.percentage >= 50 ? "Partial Convergence" : "System Anomaly"}
                         </h1>
 
-                        <p className="text-slate-500 mb-6">{quiz.title}</p>
+                        <p className="text-muted-foreground font-bold tracking-tight mb-12 italic opacity-60">{quiz.title}</p>
 
-                        {/* Score */}
-                        <div className="text-6xl font-black text-brand-dark mb-2">
-                            {result.percentage}%
+                        <div className="relative mb-8">
+                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground/30 font-display block mb-2">Sync Accuracy</span>
+                            <div className="text-7xl font-black text-foreground font-display tracking-tighter inline-flex items-baseline">
+                                {result.percentage}<span className="text-2xl text-muted-foreground/30 ml-2">%</span>
+                            </div>
                         </div>
-                        <p className="text-slate-500 mb-8">
-                            {result.total_score} / {result.max_score} points
+
+                        <p className="text-[11px] font-black font-display uppercase tracking-[0.3em] text-muted-foreground/40 mb-12 italic">
+                            {result.total_score} of {result.max_score} Logic Nodes Validated
                         </p>
 
-                        {/* Stats */}
-                        <div className="grid grid-cols-2 gap-4 mb-8">
-                            <div className="bg-slate-50 rounded-xl p-4">
-                                <div className="text-2xl font-bold text-green-600">
-                                    {result.answers.filter(a => a.is_correct).length}
-                                </div>
-                                <div className="text-sm text-slate-500">Correct</div>
+                        <div className="grid grid-cols-2 gap-6 mb-12">
+                            <div className="bg-muted/30 rounded-3xl p-6 border border-border/20 ">
+                                <div className="text-3xl font-black text-primary font-display mb-1">{result.answers.filter(a => a.is_correct).length}</div>
+                                <div className="text-[9px] font-black text-muted-foreground/50 uppercase tracking-widest font-display">Valid Gates</div>
                             </div>
-                            <div className="bg-slate-50 rounded-xl p-4">
-                                <div className="text-2xl font-bold text-red-500">
-                                    {result.answers.filter(a => !a.is_correct).length}
-                                </div>
-                                <div className="text-sm text-slate-500">Incorrect</div>
+                            <div className="bg-muted/30 rounded-3xl p-6 border border-border/20 ">
+                                <div className="text-3xl font-black text-destructive font-display mb-1">{result.answers.filter(a => !a.is_correct).length}</div>
+                                <div className="text-[9px] font-black text-muted-foreground/50 uppercase tracking-widest font-display">Shield Failures</div>
                             </div>
                         </div>
 
-                        {/* Weak Areas */}
                         {result.weak_items.length > 0 && (
-                            <div className="text-left mb-8">
-                                <h3 className="font-bold text-brand-dark mb-3">Areas to Review:</h3>
-                                <div className="space-y-2">
-                                    {result.weak_items.slice(0, 5).map((item, i) => (
-                                        <div key={i} className="bg-red-50 text-red-700 px-3 py-2 rounded-lg text-sm">
-                                            {item.learning_point}
+                            <div className="text-left mb-12 bg-muted/20 p-8 rounded-[2rem] border border-border/30">
+                                <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground font-display mb-6">Structural Vulnerabilities</h3>
+                                <div className="space-y-3">
+                                    {result.weak_items.slice(0, 3).map((item, i) => (
+                                        <div key={i} className="flex items-center gap-4 group/v">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-destructive/40 group-hover/v:scale-150 transition-transform" />
+                                            <div className="text-sm font-bold text-foreground/80 italic group-hover:text-foreground transition-colors">
+                                                {item.learning_point}
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
                             </div>
                         )}
 
-                        {/* Guest message */}
-                        {!user && (
-                            <div className="bg-blue-50 text-blue-700 px-4 py-3 rounded-xl mb-6 text-sm">
-                                <Link href="/login" className="font-bold underline">Log in</Link> to save your progress and track your scores.
-                            </div>
-                        )}
-
-                        {/* Actions */}
-                        <div className="flex gap-3 justify-center">
+                        <div className="flex flex-col sm:flex-row gap-6 justify-center">
                             <Link
                                 href="/practice/quiz"
-                                className="px-6 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl hover:bg-slate-200 transition-colors"
+                                className="px-10 py-5 bg-card border border-border/50 text-foreground font-black font-display text-[10px] uppercase tracking-[0.2em] rounded-2xl hover:text-primary hover:border-primary/30 transition-all  active:scale-95"
                             >
-                                More Quizzes
+                                Cluster Home
                             </Link>
                             <button
                                 onClick={() => {
@@ -239,9 +235,9 @@ export default function QuizPlayerPage() {
                                         setTimeLeft(quiz.time_limit_seconds);
                                     }
                                 }}
-                                className="px-6 py-3 bg-blue-500 text-white font-bold rounded-xl hover:bg-blue-600 transition-colors"
+                                className="px-10 py-5 bg-primary text-primary-foreground font-black font-display text-[10px] uppercase tracking-[0.2em] rounded-2xl  hover:opacity-95 transition-all active:scale-95"
                             >
-                                Try Again
+                                Initiate Recalibration
                             </button>
                         </div>
                     </div>
@@ -252,82 +248,101 @@ export default function QuizPlayerPage() {
 
     // Quiz player
     return (
-        <div className="min-h-screen bg-brand-cream">
+        <div className="min-h-screen bg-background pb-20 selection:bg-primary/20">
             {/* Header */}
-            <div className="bg-white border-b border-gray-100 sticky top-0 z-30">
-                <div className="max-w-3xl mx-auto px-4 py-4">
-                    <div className="flex items-center justify-between">
-                        <Link
-                            href="/practice/quiz"
-                            className="flex items-center gap-2 text-slate-500 hover:text-brand-dark transition-colors"
-                        >
-                            <ArrowLeft size={20} />
-                            <span className="text-sm font-medium">Exit</span>
-                        </Link>
+            <header className="bg-card  border-b border-border/50 sticky top-0 z-50 px-8 py-5 ">
+                <div className="max-w-4xl mx-auto flex items-center justify-between">
+                    <Link
+                        href="/practice/quiz"
+                        className="group flex items-center gap-3 px-5 py-2.5 bg-muted/50 hover:bg-card border border-border/30 rounded-2xl transition-all  active:scale-95"
+                    >
+                        <ArrowLeft size={18} className="text-muted-foreground group-hover:text-primary transition-colors" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground group-hover:text-foreground font-display">Abort Sync</span>
+                    </Link>
 
-                        <div className="text-center">
-                            <h2 className="font-bold text-brand-dark text-sm line-clamp-1">{quiz.title}</h2>
-                            <p className="text-xs text-slate-400">
-                                Question {currentIndex + 1} of {totalQuestions}
-                            </p>
-                        </div>
-
-                        {timeLeft !== null && (
-                            <div className={`flex items-center gap-1 px-3 py-1 rounded-lg text-sm font-bold ${timeLeft < 60 ? "bg-red-100 text-red-600" : "bg-slate-100 text-slate-600"
-                                }`}>
-                                <Clock size={16} />
-                                {formatTime(timeLeft)}
-                            </div>
-                        )}
+                    <div className="text-center">
+                        <h2 className="text-sm font-black text-foreground font-display tracking-tight leading-none mb-1 max-w-[200px] truncate">{quiz.title}</h2>
+                        <p className="text-[9px] font-black text-muted-foreground/40 uppercase tracking-widest font-display">
+                            Node {currentIndex + 1} of {totalQuestions}
+                        </p>
                     </div>
 
-                    {/* Progress bar */}
-                    <div className="mt-3 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                    {timeLeft !== null && (
+                        <div className={`
+                            flex items-center gap-3 px-5 py-2.5 rounded-2xl font-display font-black text-[10px] uppercase tracking-widest  border transition-all duration-500
+                            ${timeLeft < 60 ? "bg-destructive/10 text-destructive border-destructive/20 animate-pulse" : "bg-muted/50 text-muted-foreground border-border/30"}
+                        `}>
+                            <Clock size={16} className={timeLeft < 60 ? "animate-spin-slow" : ""} />
+                            {formatTime(timeLeft)}
+                        </div>
+                    )}
+                </div>
+
+                {/* Tactical Progress Indicator */}
+                <div className="max-w-4xl mx-auto mt-5 px-1">
+                    <div className="h-2 bg-muted rounded-full overflow-hidden  border border-border/10">
                         <div
-                            className="h-full bg-blue-500 transition-all duration-300"
+                            className="h-full bg-primary shadow-[0_0_15px_rgba(var(--primary),0.3)] transition-all duration-700 ease-spring"
                             style={{ width: `${((currentIndex + 1) / totalQuestions) * 100}%` }}
                         />
                     </div>
                 </div>
-            </div>
+            </header>
 
-            {/* Question */}
-            <div className="max-w-3xl mx-auto px-4 py-8">
+            {/* Question Workspace */}
+            <main className="max-w-4xl mx-auto px-8 py-12">
                 {currentQuestion && (
-                    <div className="bg-white rounded-2xl border-2 border-gray-100 p-6 md:p-8">
-                        {/* Passage (if reading comprehension) */}
+                    <div className="bg-card rounded-[3rem] border border-border/50 p-10 md:p-14  relative overflow-hidden group/card animate-in slide-in-from-bottom-8 duration-700">
+                        {/* Background Deco */}
+                        <div className="absolute top-0 right-0 w-80 h-80 bg-primary/2 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 group-hover/card:bg-primary/5 transition-colors duration-1000" />
+
+                        {/* Passage Segment */}
                         {currentQuestion.content.passage && (
-                            <div className="bg-slate-50 rounded-xl p-4 mb-6 text-sm leading-relaxed border-l-4 border-blue-400">
+                            <div className="bg-muted/30 rounded-[2rem] p-10 mb-10 text-xl font-jp leading-[1.8] tracking-tight border border-border/30  relative group/passage">
+                                <div className="absolute top-4 right-4 text-muted-foreground/10 group-hover/passage:text-primary/20 transition-colors">
+                                    <LayoutGrid size={24} />
+                                </div>
                                 {currentQuestion.content.passage}
                             </div>
                         )}
 
-                        {/* Question prompt */}
-                        <h3 className="text-lg md:text-xl font-bold text-brand-dark mb-6">
-                            {currentQuestion.content.prompt}
-                        </h3>
+                        {/* Question Prompt */}
+                        <div className="relative mb-12">
+                            <h3 className="text-3xl font-black text-foreground font-display leading-tight tracking-tight italic group-hover/card:text-primary transition-colors">
+                                {currentQuestion.content.prompt}
+                            </h3>
+                            <div className="h-1.5 w-24 bg-primary/20 rounded-full mt-6 group-hover/card:w-32 transition-all duration-700" />
+                        </div>
 
-                        {/* Options */}
+                        {/* Logic Options */}
                         {currentQuestion.content.options && (
-                            <div className="space-y-3">
+                            <div className="grid grid-cols-1 gap-5 relative z-10">
                                 {currentQuestion.content.options.map((option, idx) => {
                                     const isSelected = answers[currentQuestion.question_id] === option;
                                     return (
                                         <button
                                             key={idx}
                                             onClick={() => handleAnswer(option)}
-                                            className={`w-full p-4 rounded-xl text-left transition-all border-2 ${isSelected
-                                                ? "border-blue-500 bg-blue-50 text-blue-700"
-                                                : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
-                                                }`}
+                                            className={`
+                                                group/opt w-full p-8 rounded-[2rem] text-left transition-all duration-500 border-2 flex items-center gap-8
+                                                ${isSelected
+                                                    ? "border-primary bg-primary/5  scale-[1.02]"
+                                                    : "border-border/30 bg-card hover:border-primary/30 hover: active:scale-[0.98]"
+                                                }
+                                            `}
                                         >
-                                            <span className={`inline-block w-7 h-7 rounded-full mr-3 text-center leading-7 text-sm font-bold ${isSelected
-                                                ? "bg-blue-500 text-white"
-                                                : "bg-slate-100 text-slate-500"
-                                                }`}>
+                                            <span className={`
+                                                w-14 h-14 rounded-2xl flex items-center justify-center font-display font-black text-xl transition-all duration-500
+                                                ${isSelected
+                                                    ? "bg-primary text-primary-foreground  rotate-12"
+                                                    : "bg-muted text-muted-foreground/30  group-hover/opt:rotate-6 group-hover/opt:bg-primary/10 group-hover/opt:text-primary"
+                                                }
+                                            `}>
                                                 {String.fromCharCode(65 + idx)}
                                             </span>
-                                            {option}
+                                            <span className="text-2xl font-bold font-jp leading-snug tracking-tight text-foreground/80 group-hover/opt:text-foreground transition-colors">
+                                                {option}
+                                            </span>
                                         </button>
                                     );
                                 })}
@@ -336,29 +351,37 @@ export default function QuizPlayerPage() {
                     </div>
                 )}
 
-                {/* Navigation */}
-                <div className="flex items-center justify-between mt-6">
+                {/* Navigation Matrix */}
+                <div className="flex items-center justify-between mt-12 pt-12 border-t border-border/20">
                     <button
                         onClick={handlePrev}
                         disabled={currentIndex === 0}
-                        className="flex items-center gap-2 px-4 py-2 text-slate-500 hover:text-brand-dark disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                        className={`
+                            flex items-center gap-4 px-10 py-5 rounded-2xl font-black font-display text-[10px] uppercase tracking-[0.2em] transition-all  active:scale-90
+                            ${currentIndex === 0
+                                ? "bg-muted text-muted-foreground/20 border border-border/10 cursor-not-allowed opacity-50 shadow-none"
+                                : "bg-card text-foreground hover:text-primary border border-border/50 hover:border-primary/30"}
+                        `}
                     >
                         <ChevronLeft size={20} />
-                        Previous
+                        Previous Node
                     </button>
 
-                    {/* Question dots */}
-                    <div className="hidden md:flex items-center gap-1">
+                    {/* Question Matrix (Breadcrumbs) */}
+                    <div className="hidden lg:flex items-center gap-3 px-6 py-4 bg-muted/20 rounded-full border border-border/20 ">
                         {quiz.questions.map((q, idx) => (
                             <button
                                 key={q.question_id}
                                 onClick={() => setCurrentIndex(idx)}
-                                className={`w-3 h-3 rounded-full transition-all ${idx === currentIndex
-                                    ? "bg-blue-500 scale-125"
-                                    : answers[q.question_id]
-                                        ? "bg-green-400"
-                                        : "bg-slate-200"
-                                    }`}
+                                className={`
+                                    w-3.5 h-3.5 rounded-full transition-all duration-500
+                                    ${idx === currentIndex
+                                        ? "bg-primary shadow-[0_0_10px_rgba(var(--primary),0.5)] scale-150 rotate-45 rounded-sm"
+                                        : answers[q.question_id]
+                                            ? "bg-primary/40"
+                                            : "bg-muted-foreground/20 hover:bg-primary/20"
+                                    }
+                                `}
                             />
                         ))}
                     </div>
@@ -367,31 +390,36 @@ export default function QuizPlayerPage() {
                         <button
                             onClick={handleSubmit}
                             disabled={submitting}
-                            className="flex items-center gap-2 px-6 py-2 bg-green-500 text-white font-bold rounded-xl hover:bg-green-600 disabled:opacity-50 transition-all"
+                            className={`
+                                flex items-center gap-4 px-12 py-5 rounded-2xl font-black font-display text-[10px] uppercase tracking-[0.2em] transition-all  active:scale-95
+                                ${submitting ? "bg-muted text-muted-foreground/30" : "bg-foreground text-background hover:opacity-95 shadow-[0_0_30px_rgba(var(--foreground),0.2)]"}
+                            `}
                         >
                             {submitting ? (
                                 <Loader2 className="w-5 h-5 animate-spin" />
                             ) : (
-                                <Send size={18} />
+                                <Send size={20} className="rotate-12" />
                             )}
-                            Submit
+                            Commit Sync
                         </button>
                     ) : (
                         <button
                             onClick={handleNext}
-                            className="flex items-center gap-2 px-4 py-2 text-blue-600 font-bold hover:text-blue-700 transition-colors"
+                            className="flex items-center gap-4 px-10 py-5 bg-card text-foreground font-black font-display text-[10px] uppercase tracking-[0.2em] rounded-2xl border border-border/50 hover:border-primary/30 hover:text-primary transition-all  active:scale-90group"
                         >
-                            Next
-                            <ChevronRight size={20} />
+                            Next Node
+                            <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
                         </button>
                     )}
                 </div>
 
-                {/* Answer summary */}
-                <div className="mt-8 text-center text-sm text-slate-400">
-                    {answeredCount} of {totalQuestions} questions answered
+                {/* State Summary Metadata */}
+                <div className="mt-10 text-center">
+                    <span className="px-6 py-2.5 bg-muted/30 rounded-full text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40 font-display border border-border/20 italic">
+                        {answeredCount} of {totalQuestions} Nodes Synchronized
+                    </span>
                 </div>
-            </div>
+            </main>
         </div>
     );
 }

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Headphones } from "lucide-react";
 
 import TextWithTranslation from "@/components/TextWithTranslation";
 import AudioPlayer from "@/components/AudioPlayer";
@@ -39,14 +40,11 @@ type ReadingComponentProps = {
 
 type Tab = {
   name: string;
-  //key: keyof ReadingData;
   key: string;
 };
 
 const ReadingComponent: React.FC<ReadingComponentProps> = ({ data }) => {
-  //const [activeTab, setActiveTab] = useState<keyof ReadingData>("japaneseText");
   const [activeTab, setActiveTab] = useState("japaneseText");
-
   const [isEnglishSpeaker, setisEnglishSpeaker] = useState(true);
 
   const tabs: Tab[] = [
@@ -57,46 +55,57 @@ const ReadingComponent: React.FC<ReadingComponentProps> = ({ data }) => {
     { name: "Vocabulary", key: "readingVocabulary" },
     { name: "Grammar", key: "readingGrammar" },
     { name: "Sentences", key: "sentencePayload" },
-    // Add more tabs as needed
   ];
 
   return (
-    <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow space-y-4">
-      <div className="flex justify-between items-start">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">{data.title}</h1>
-          <p className="text-xl text-gray-700 dark:text-gray-300">{data.titleRomaji}</p>
-          <p className="text-lg text-gray-600 dark:text-gray-400">{data.titleJp}</p>
+    <div className="bg-card rounded-2xl border border-border  p-8 md:p-12 space-y-10">
+      <div className="flex flex-col md:flex-row justify-between items-start gap-8">
+        <div className="space-y-4">
+          <h1 className="text-4xl md:text-5xl font-black text-foreground font-display leading-tight">{data.title}</h1>
+          <div className="space-y-1">
+            <p className="text-xs font-black text-muted-foreground uppercase tracking-widest font-display">{data.titleRomaji}</p>
+            <p className="text-2xl font-bold text-reading font-jp">{data.titleJp}</p>
+          </div>
         </div>
         <button
           onClick={() => setisEnglishSpeaker(!isEnglishSpeaker)}
-          className="text-md font-semibold text-gray-600 bg-gray-200 hover:bg-gray-300 rounded-full px-4 py-2 transition-colors duration-150 ease-in-out focus:outline-none focus:shadow-outline"
+          className="flex items-center gap-3 px-6 py-3 bg-muted hover:bg-muted/80 text-foreground font-black rounded-xl transition-all active:scale-95  font-display uppercase tracking-widest text-[10px]"
         >
-          {isEnglishSpeaker ? '日本語' : 'English'}
+          {isEnglishSpeaker ? (
+            <>
+              <span className="w-2 h-2 rounded-full bg-reading animate-pulse"></span>
+              日本語で表示
+            </>
+          ) : (
+            <>
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+              Show in English
+            </>
+          )}
         </button>
       </div>
-  
+
       {/* Audio Player Section */}
-      <div className="bg-white dark:bg-slate-700 p-5 rounded-lg shadow">
-        <h2 className="text-lg text-gray-900 dark:text-gray-100 mb-2">Listen to the Article</h2>
+      <div className="bg-muted/30 p-8 rounded-2xl border border-border/50 ">
+        <div className="flex items-center gap-4 mb-6">
+          <div className="p-3 bg-reading/10 text-reading rounded-xl">
+            <Headphones size={20} />
+          </div>
+          <h2 className="text-xs font-black text-foreground uppercase tracking-widest font-display">Listen to the Story</h2>
+        </div>
         <AudioPlayer src={isEnglishSpeaker ? data.textAudio : data.textAudioEn} />
       </div>
 
-  
-
-
       {/* Tabs */}
-      <div className="flex flex-wrap justify-center md:justify-start gap-1 p-4 bg-gray-50 dark:bg-gray-900">
+      <div className="flex items-center p-1.5 bg-muted rounded-2xl border border-border/50 overflow-x-auto scrollbar-hide">
         {tabs.map((tab) => (
           <button
             key={tab.key}
-            className={`px-4 py-2 text-sm font-medium transition-colors duration-150 ease-in-out leading-5 ${
-              activeTab === tab.key
-                ? "bg-gray-700 text-white dark:bg-gray-700 dark:text-white"
-                : "bg-gray-300 text-gray-800 hover:bg-gray-400 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
-            } focus:outline-none rounded-md`}
+            className={`flex-1 min-w-[100px] px-6 py-3 text-[10px] font-black uppercase tracking-widest transition-all font-display rounded-xl ${activeTab === tab.key
+              ? "bg-card text-reading "
+              : "text-muted-foreground hover:text-foreground"
+              }`}
             onClick={() => setActiveTab(tab.key)}
-            style={{ minWidth: "80px" }} // Ensures that buttons have a minimum width for better mobile appearance
           >
             {tab.name}
           </button>
@@ -104,150 +113,113 @@ const ReadingComponent: React.FC<ReadingComponentProps> = ({ data }) => {
       </div>
 
       {/* Tab Content */}
-      <div className="mt-2 bg-white dark:bg-gray-800">
+      <div className="mt-4 min-h-[300px] animate-in fade-in duration-500">
         {activeTab === "japaneseText" && (
-          <div className="space-y-4">
+          <div className="space-y-8 py-4">
             {data.japaneseText.map((text, index) => (
               <p
                 key={index}
-                className="text-gray-800 dark:text-gray-200 mb-4 text-japanese"
-                style={{
-                  fontFamily: "Noto Serif JP, sans-serif",
-                  fontWeight: "normal",
-                }}
+                className="text-2xl font-bold text-foreground leading-[1.8] font-jp"
               >
                 {text}
               </p>
             ))}
           </div>
         )}
-      </div>
 
-      {activeTab === "romanizedText" && (
-        <div className="space-y-4">
-          {" "}
-          {/* This class adds space between children */}
-          {data.romanizedText.map((text, index) => (
-            <p key={index} className="text-gray-800 dark:text-gray-200 mb-4">
-              {" "}
-              {/* Additional margin-bottom class */}
-              {text}
-            </p>
-          ))}
-        </div>
-      )}
-
-      {activeTab === "englishTranslation" && (
-        <div className="space-y-4">
-          {" "}
-          {/* This class adds space between children */}
-          {data.englishTranslation.map((text, index) => (
-            <p key={index} className="text-gray-800 dark:text-gray-200 mb-4">
-              {" "}
-              {/* Additional margin-bottom class */}
-              {text}
-            </p>
-          ))}
-        </div>
-      )}
-
-      {activeTab === "combined" && (
-        <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-          <div className="md:flex-1 p-4 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm bg-white dark:bg-gray-800">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
-              Japanese
-            </h2>
-            {data.japaneseText.map((paragraph, index) => (
-              <p key={index} className="mb-4 text-gray-800 dark:text-gray-200">
-                {paragraph}
+        {activeTab === "romanizedText" && (
+          <div className="space-y-6 py-4">
+            {data.romanizedText.map((text, index) => (
+              <p key={index} className="text-lg font-bold text-muted-foreground leading-relaxed italic">
+                {text}
               </p>
             ))}
           </div>
-          <div className="md:flex-1 p-4 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm bg-white dark:bg-gray-800">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
-              Romanized
-            </h2>
-            {data.romanizedText.map((paragraph, index) => (
-              <p key={index} className="mb-4 text-gray-800 dark:text-gray-200">
-                {paragraph}
-              </p>
-            ))}
-          </div>
-          <div className="md:flex-1 p-4 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm bg-white dark:bg-gray-800">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
-              English
-            </h2>
-            {data.englishTranslation.map((paragraph, index) => (
-              <p key={index} className="mb-4 text-gray-800 dark:text-gray-200">
-                {paragraph}
-              </p>
-            ))}
-          </div>
-        </div>
-      )}
+        )}
 
-      {activeTab === "readingVocabulary" && (
-        <div className="space-y-4">
-          {(isEnglishSpeaker ? data.readingVocabulary : data.readingVocabularyEn).map(
-            (entry, index) => {
+        {activeTab === "englishTranslation" && (
+          <div className="space-y-6 py-4">
+            {data.englishTranslation.map((text, index) => (
+              <p key={index} className="text-lg font-bold text-foreground leading-relaxed">
+                {text}
+              </p>
+            ))}
+          </div>
+        )}
+
+        {activeTab === "combined" && (
+          <div className="grid grid-cols-1 gap-8 py-4">
+            <div className="bg-muted/20 p-8 rounded-2xl border border-border/50">
+              <h2 className="text-xs font-black text-reading/50 uppercase tracking-[0.2em] font-display mb-6">Japanese</h2>
+              <div className="space-y-4">
+                {data.japaneseText.map((paragraph, index) => (
+                  <p key={index} className="text-xl font-bold text-foreground leading-relaxed font-jp">{paragraph}</p>
+                ))}
+              </div>
+            </div>
+            <div className="bg-muted/20 p-8 rounded-2xl border border-border/50">
+              <h2 className="text-xs font-black text-muted-foreground/50 uppercase tracking-[0.2em] font-display mb-6">Translation</h2>
+              <div className="space-y-4">
+                {data.englishTranslation.map((paragraph, index) => (
+                  <p key={index} className="text-lg font-bold text-muted-foreground leading-relaxed">{paragraph}</p>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "readingVocabulary" && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
+            {(isEnglishSpeaker ? data.readingVocabulary : data.readingVocabularyEn).map((entry, index) => {
               const [firstWord, ...rest] = entry.split(" ");
               return (
-                <p
-                  key={index}
-                  className="text-gray-800 dark:text-gray-200 mb-4"
-                >
-                  <span
-                    className="text-2xl text-japanese"
-                    style={{
-                      fontFamily: "Noto Serif JP, sans-serif",
-                      fontWeight: "normal",
-                    }}
-                  >
-                    {firstWord}
-                  </span>{" "}
-                  {rest.join(" ")}
-                </p>
+                <div key={index} className="p-6 bg-muted/20 rounded-2xl border border-border/50 group/item hover:bg-reading/5 transition-colors">
+                  <div className="flex items-start gap-4">
+                    <span className="text-3xl font-black text-reading font-jp group-hover/item:scale-110 transition-transform">
+                      {firstWord}
+                    </span>
+                    <div className="flex-1 pt-1">
+                      <p className="text-sm font-bold text-foreground leading-relaxed">
+                        {rest.join(" ")}
+                      </p>
+                    </div>
+                  </div>
+                </div>
               );
-            }
-          )}
-        </div>
-      )}
+            })}
+          </div>
+        )}
 
-      {activeTab === "readingGrammar" && (
-        <div className="space-y-4">
-          {(isEnglishSpeaker ? data.readingGrammar : data.readingGrammarEn).map(
-            (rule, index) => {
+        {activeTab === "readingGrammar" && (
+          <div className="space-y-6 py-4">
+            {(isEnglishSpeaker ? data.readingGrammar : data.readingGrammarEn).map((rule, index) => {
               const [firstWord, ...rest] = rule.split(" ");
               return (
-                <p
-                  key={index}
-                  className="text-gray-800 dark:text-gray-200 mb-4"
-                >
-                  <span
-                    className="text-2xl text-japanese"
-                    style={{
-                      fontFamily: "Noto Serif JP, sans-serif",
-                      fontWeight: "normal",
-                    }}
-                  >
-                    {firstWord}
-                  </span>{" "}
-                  {rest.join(" ")}
-                </p>
+                <div key={index} className="p-8 bg-card rounded-2xl border border-border  relative overflow-hidden group/grammar hover:border-reading/30 transition-all">
+                  <div className="absolute top-0 left-0 w-1 h-full bg-reading/20 group-hover:bg-reading transition-colors"></div>
+                  <div className="space-y-4 ml-2">
+                    <span className="text-2xl font-black text-reading font-jp block">
+                      {firstWord}
+                    </span>
+                    <p className="text-base font-bold text-foreground leading-relaxed">
+                      {rest.join(" ")}
+                    </p>
+                  </div>
+                </div>
               );
-            }
-          )}
-        </div>
-      )}
+            })}
+          </div>
+        )}
 
-      {activeTab === "sentencePayload" && (
-        <div>
-          <TextWithTranslation
-            sentences={data.sentencePayload}
-            isEnglishSpeaker={isEnglishSpeaker}
-          />
-        </div>
-      )}
+        {activeTab === "sentencePayload" && (
+          <div className="py-4">
+            <TextWithTranslation
+              sentences={data.sentencePayload}
+              isEnglishSpeaker={isEnglishSpeaker}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 };

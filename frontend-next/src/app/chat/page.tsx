@@ -16,15 +16,16 @@ const ChatRightSidebar = dynamic(
     () => import('@/components/chat/ChatRightSidebar').then(mod => mod.ChatRightSidebar),
     {
         ssr: false,
-        loading: () => <div className="h-full w-[300px] border-l border-slate-100 bg-white" />
+        loading: () => <div className="h-full w-[300px] border-l border-border bg-background" />
     }
 );
 
+
 export default function ChatPage() {
     return (
-        <div className="flex flex-1 h-full">
+        <div className="flex flex-1 h-full bg-background">
             {/* Main Chat Area */}
-            <main className="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-white">
+            <main className="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-background">
                 <ChatMainArea />
             </main>
 
@@ -32,6 +33,7 @@ export default function ChatPage() {
             <ChatRightSidebarWrapper />
         </div>
     );
+
 }
 
 // Import SIDEBAR_WIDTHS from context
@@ -44,7 +46,7 @@ function ChatRightSidebarWrapper() {
 
     return (
         <aside
-            className="flex-shrink-0 h-full bg-white border-l border-slate-100 transition-all duration-300 ease-out z-20 shadow-xl"
+            className="flex-shrink-0 h-full bg-background border-l border-border transition-all duration-500 ease-spring z-20"
             style={{ width: SIDEBAR_WIDTHS.right[rightSidebar] }}
         >
             <ChatRightSidebar />

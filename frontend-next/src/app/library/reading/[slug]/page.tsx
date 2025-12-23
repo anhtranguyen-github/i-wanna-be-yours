@@ -28,55 +28,55 @@ interface ReadingData {
 
 
 
-export default function ReadingPage( { params }: { params: {slug: string} }) {  
-  // here we can get the params from page uri and then call api accordingly
-
-  // call with URI like
-  // http://localhost:3000/reading/JLPT_n3/reading_1
-  // CAREFUL - Edge is casting JLPT_N3 to JLPT_n3 in URI for some reason, better use lowercase in DB as well
-  //http://localhost:3000/reading/JLPT_N3/reading_1
-  //
-  //so we will just use lowercase straight away in db
-  //http://localhost:3000/japanese/reading/jlpt_n3_reading_01
-
+export default function ReadingPage({ params }: { params: { slug: string } }) {
   const fetcher = (...args: Parameters<typeof fetch>) =>
     fetch(...args).then((res) => res.json());
 
-
-  //const apiUrl = "http://localhost:8000/e-api/v1/reading?key=reading_1";
-////////////  const apiUrl = `http://localhost:8000/e-api/v1/reading?key=${params.slug}`;
-
-
- let apiUrl;
- if (process.env.REACT_APP_HOST_IP) {
-   apiUrl = `http://${process.env.REACT_APP_HOST_IP}:8000/e-api/v1/reading?key=${params.slug}`;
- } else {
-   apiUrl = `/e-api/v1/reading?key=${params.slug}`;
- }
-
-
-
-
-
-
-
-
-
+  let apiUrl;
+  if (process.env.REACT_APP_HOST_IP) {
+    apiUrl = `http://${process.env.REACT_APP_HOST_IP}:8000/e-api/v1/reading?key=${params.slug}`;
+  } else {
+    apiUrl = `/e-api/v1/reading?key=${params.slug}`;
+  }
 
   const { data: readingPayload, error } = useSWR(apiUrl, fetcher);
-  if (error) return <div>Failed to load</div>;
-  if (!readingPayload) return <div>Loading...</div>;
 
   return (
-    <div className="bg-white dark:bg-gray-800">
-      <h1 className="text-black dark:text-white">{params.slug}</h1>
+    <div className="min-h-screen bg-background p-6 md:p-12">
+      <div className="max-w-4xl mx-auto space-y-10">
+        <Link
+          href="/library/reading"
+          className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-all active:scale-95 group w-fit"
+        >
+          <ArrowLeft size={24} />
+          <span className="text-xs font-black uppercase tracking-widest font-display">Back to Stories</span>
+        </Link>
 
-      <h1 className="text-black dark:text-white">Reading Exercise</h1>
-      {/* <ReadingComponent data={exampleData} /> */}
-      <ReadingComponent data={readingPayload} />
+        {error ? (
+          <div className="text-center py-20 bg-card rounded-2xl border-2 border-dashed border-border flex flex-col items-center">
+            <div className="w-24 h-24 bg-destructive/5 rounded-2xl flex items-center justify-center mb-8 ">
+              <BookOpen className="w-12 h-12 text-destructive/20" />
+            </div>
+            <h3 className="text-2xl font-black text-foreground mb-3 font-display">Failed to Load Story</h3>
+            <p className="text-muted-foreground font-bold">Please try again later or check your connection.</p>
+          </div>
+        ) : !readingPayload ? (
+          <div className="flex flex-col justify-center items-center py-32">
+            <div className="w-16 h-16 border-4 border-reading border-t-transparent rounded-full animate-spin mb-6"></div>
+            <p className="text-xs font-black text-muted-foreground uppercase tracking-widest font-display">Loading Story...</p>
+          </div>
+        ) : (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <ReadingComponent data={readingPayload} />
+          </div>
+        )}
+      </div>
     </div>
   );
-};
+}
+
+import { ArrowLeft, BookOpen } from "lucide-react";
+import Link from "next/link";
 
 
 

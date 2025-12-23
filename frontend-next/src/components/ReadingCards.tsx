@@ -110,19 +110,38 @@ const readingCardsData: ReadingCardData[] = [
 
 const ReadingCards: React.FC = () => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {readingCardsData.map((card) => (
         <Link key={card.key} href={`/japanese/reading/${card.key}`} passHref>
-          <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-lg dark:hover:shadow-dark-lg transition-shadow cursor-pointer">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              {card.title}
-            </h2>
-            <p className="text-gray-600 dark:text-gray-300">
-              {card.titleRomaji}
-            </p>
-            <p className="text-gray-600 dark:text-gray-300">({card.titleJp})</p>
-            <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-              {card.shortDescription}
+          <div className="group relative bg-card border border-border rounded-2xl p-8 hover:  transition-all duration-500 cursor-pointer h-full flex flex-col">
+            <div className="flex-1">
+              <div className="mb-6">
+                <h2 className="text-2xl font-black text-foreground font-display leading-tight group-hover:text-reading transition-colors">
+                  {card.title}
+                </h2>
+                <div className="mt-2 flex flex-col gap-1">
+                  <p className="text-xs font-black text-muted-foreground uppercase tracking-widest font-display">
+                    {card.titleRomaji}
+                  </p>
+                  <p className="text-xl font-bold text-reading font-jp">
+                    {card.titleJp}
+                  </p>
+                </div>
+              </div>
+
+              <div className="text-sm font-bold text-muted-foreground leading-relaxed">
+                {card.shortDescription}
+              </div>
+            </div>
+
+            <div className="mt-8 pt-6 border-t border-border/50 flex items-center justify-between text-[10px] font-black uppercase tracking-widest font-display text-muted-foreground/40">
+              <span className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-reading animate-pulse-slow"></span>
+                {card.p_tag.replace('_', ' ')}
+              </span>
+              <span className="px-3 py-1 bg-muted rounded-full group-hover:bg-reading group-hover:text-white transition-all">
+                Read Now
+              </span>
             </div>
           </div>
         </Link>

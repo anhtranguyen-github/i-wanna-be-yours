@@ -184,18 +184,21 @@ export default function TextParserMain({ initialMode = 'text' }: TextParserMainP
     // - Large screens: 2 columns (Input+Output | Details Sticky)
 
     return (
-        <div className="min-h-screen bg-brand-cream text-brand-dark p-4 md:p-8">
+        <div className="min-h-screen bg-[#F8FAFC] py-12 px-6">
             {/* HEADER */}
-            <div className="max-w-7xl mx-auto mb-8 flex flex-col md:flex-row justify-between items-start md:items-center">
+            <div className="max-w-7xl mx-auto mb-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
-                    <h1 className="text-3xl md:text-4xl font-extrabold text-brand-dark tracking-tight">
-                        Japanese Text Parser
+                    <h1 className="text-4xl font-black text-slate-900 font-display tracking-tight uppercase tracking-[0.1em]">
+                        Text <span className="text-primary italic">Parser</span>
                     </h1>
-                    <p className="text-brand-dark/70 mt-1 font-medium">Reading Assistant & Analyzer</p>
+                    <p className="text-slate-500 mt-2 font-medium">Advanced Reading Intelligence & Linguistic Analysis</p>
                 </div>
-                {userId && <div className="mt-2 md:mt-0 px-4 py-2 bg-white rounded-full border-2 border-brand-dark font-bold text-sm shadow-sm">
-                    User: {userId}
-                </div>}
+                {userId && (
+                    <div className="px-6 py-2.5 bg-white rounded-2xl border border-slate-200 font-bold text-[10px] uppercase tracking-[0.2em] text-slate-400 shadow-sm flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                        Intelligence Agent: {userId}
+                    </div>
+                )}
             </div>
 
             <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -204,49 +207,51 @@ export default function TextParserMain({ initialMode = 'text' }: TextParserMainP
                 <div className="lg:col-span-8 flex flex-col space-y-8">
 
                     {/* MODE SWITCHER */}
-                    <div className="bg-white rounded-2xl border-2 border-brand-dark shadow-hard overflow-hidden">
-                        <div className="flex border-b-2 border-brand-dark">
+                    <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl shadow-primary/5 overflow-hidden">
+                        <div className="flex bg-slate-50/50 p-2 gap-2">
                             <button
                                 onClick={() => setParserMode('text')}
-                                className={`flex-1 py-4 text-center font-black text-lg uppercase tracking-wide transition-colors ${parserMode === 'text' ? 'bg-brand-blue text-white' : 'bg-brand-cream hover:bg-brand-blue/10'}`}
+                                className={`flex-1 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all ${parserMode === 'text' ? 'bg-white text-slate-900 shadow-md ring-1 ring-slate-200' : 'text-slate-400 hover:text-slate-600 hover:bg-white/50'}`}
                             >
-                                Custom Text Input
+                                Custom Lexicon
                             </button>
-                            <div className="w-[2px] bg-brand-dark"></div>
                             <button
                                 onClick={() => setParserMode('youtube')}
-                                className={`flex-1 py-4 text-center font-black text-lg uppercase tracking-wide transition-colors ${parserMode === 'youtube' ? 'bg-brand-blue text-white' : 'bg-brand-cream hover:bg-brand-blue/10'}`}
+                                className={`flex-1 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all ${parserMode === 'youtube' ? 'bg-white text-slate-900 shadow-md ring-1 ring-slate-200' : 'text-slate-400 hover:text-slate-600 hover:bg-white/50'}`}
                             >
-                                YouTube Analysis
+                                YouTube Intelligence
                             </button>
                         </div>
 
-                        <div className="p-6">
+                        <div className="p-10">
                             {parserMode === 'text' && (
-                                <form onSubmit={handleSubmit}>
+                                <form onSubmit={handleSubmit} className="space-y-6">
                                     <Disclaimer />
-                                    <div className="mt-4">
+                                    <div className="">
                                         <TextFormattingOptions inputMode={inputMode} handleModeChange={handleModeChange} />
                                     </div>
-                                    <textarea
-                                        value={inputText}
-                                        onChange={handleInputChange}
-                                        className="w-full h-48 p-4 rounded-xl border-2 border-brand-dark text-lg font-jp focus:outline-none focus:ring-4 focus:ring-brand-blue/20 transition-shadow resize-y"
-                                        placeholder="Enter Japanese text here..."
-                                    />
-                                    <div className="mt-4 flex justify-end">
+                                    <div className="relative group">
+                                        <div className="absolute -inset-0.5 bg-gradient-to-br from-primary/20 to-emerald-100 rounded-[2rem] blur opacity-25 group-focus-within:opacity-50 transition duration-500"></div>
+                                        <textarea
+                                            value={inputText}
+                                            onChange={handleInputChange}
+                                            className="relative w-full h-64 p-8 rounded-[2rem] bg-white border border-slate-100 text-lg font-jp focus:outline-none focus:ring-0 focus:border-primary/30 transition-all resize-y shadow-inner text-slate-800"
+                                            placeholder="Paste Japanese text for deep analysis..."
+                                        />
+                                    </div>
+                                    <div className="flex justify-end">
                                         <button
                                             type="submit"
-                                            className="bg-brand-dark text-white px-8 py-3 rounded-xl font-bold text-lg hover:translate-y-[-2px] hover:shadow-lg active:translate-y-[1px] transition-all"
+                                            className="bg-primary text-white px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/20"
                                         >
-                                            Analyze Text
+                                            Deconstruct Text
                                         </button>
                                     </div>
                                 </form>
                             )}
 
                             {parserMode === 'youtube' && (
-                                <div className="space-y-6">
+                                <div className="space-y-8">
                                     <SubtitleInfo />
                                     <YouTubeUrlInputForm
                                         inputUrl={inputUrl}
@@ -254,31 +259,36 @@ export default function TextParserMain({ initialMode = 'text' }: TextParserMainP
                                         setFinalInputUrl={setFinalInputUrl}
                                     />
                                     {finalInputUrl && (
-                                        <YouTubeComponent
-                                            videoUrl={finalInputUrl}
-                                            onSubtitleUpdate={handleSubtitleUpdate}
-                                        />
+                                        <div className="rounded-[2rem] overflow-hidden border border-slate-100 shadow-2xl">
+                                            <YouTubeComponent
+                                                videoUrl={finalInputUrl}
+                                                onSubtitleUpdate={handleSubtitleUpdate}
+                                            />
+                                        </div>
                                     )}
                                     <SubtitleUploader url={inputUrl} />
 
                                     {/* Current subtitle parser section */}
-                                    <div className="bg-brand-cream/50 p-4 rounded-xl border-2 border-brand-dark/10">
-                                        <p className="font-bold mb-2">Current Subtitle Analysis:</p>
+                                    <div className="bg-primary/5 p-8 rounded-[2rem] border border-primary/10 relative overflow-hidden group">
+                                        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-primary/20 transition-colors" />
+                                        <p className="font-black text-[10px] uppercase tracking-[0.15em] text-primary/60 mb-6 relative z-10">Live Stream Analysis:</p>
                                         {userId ? (
-                                            <JapaneseTextParser
-                                                inputText={currentJapaneseSubtitle}
-                                                inputMode={inputMode}
-                                                revisionCount={revisionCount}
-                                                userId={userId}
-                                                setClickedWord={setClickedWord}
-                                                setClickedWordDictForm={setClickedWordDictForm}
-                                                setHoveredWord={setHoveredWord}
-                                                setHoveredSentence={setHoveredSentence}
-                                                setClickedWordSentence={setClickedWordSentence}
-                                                setClickedWordDetails={setClickedWordDetails}
-                                            />
+                                            <div className="relative z-10">
+                                                <JapaneseTextParser
+                                                    inputText={currentJapaneseSubtitle}
+                                                    inputMode={inputMode}
+                                                    revisionCount={revisionCount}
+                                                    userId={userId}
+                                                    setClickedWord={setClickedWord}
+                                                    setClickedWordDictForm={setClickedWordDictForm}
+                                                    setHoveredWord={setHoveredWord}
+                                                    setHoveredSentence={setHoveredSentence}
+                                                    setClickedWordSentence={setClickedWordSentence}
+                                                    setClickedWordDetails={setClickedWordDetails}
+                                                />
+                                            </div>
                                         ) : (
-                                            <p className="text-red-500 font-bold">Please log in to use the live parser.</p>
+                                            <p className="text-red-500 font-black text-sm relative z-10">Authentication Required for Live Parser.</p>
                                         )}
                                     </div>
 
@@ -292,36 +302,38 @@ export default function TextParserMain({ initialMode = 'text' }: TextParserMainP
                     </div>
 
                     {/* OUTPUT TABS Area */}
-                    <div className="">
+                    <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl shadow-primary/5 p-8">
                         <Tabs>
                             <Tab label="Mecab Parser">
-                                <JapaneseTextParser
-                                    inputText={inputText}
-                                    inputMode={inputMode}
-                                    revisionCount={revisionCount}
-                                    userId={userId}
-                                    setClickedWord={setClickedWord}
-                                    setClickedWordDictForm={setClickedWordDictForm}
-                                    setHoveredWord={setHoveredWord}
-                                    setHoveredSentence={setHoveredSentence}
-                                    setClickedWordSentence={setClickedWordSentence}
-                                    setClickedWordDetails={setClickedWordDetails}
-                                />
+                                <div className="p-4 leading-relaxed bg-slate-50/50 rounded-2xl min-h-[400px]">
+                                    <JapaneseTextParser
+                                        inputText={inputText}
+                                        inputMode={inputMode}
+                                        revisionCount={revisionCount}
+                                        userId={userId}
+                                        setClickedWord={setClickedWord}
+                                        setClickedWordDictForm={setClickedWordDictForm}
+                                        setHoveredWord={setHoveredWord}
+                                        setHoveredSentence={setHoveredSentence}
+                                        setClickedWordSentence={setClickedWordSentence}
+                                        setClickedWordDetails={setClickedWordDetails}
+                                    />
+                                </div>
                             </Tab>
                             <Tab label="Kuroshiro">
-                                <KuroShiroPropsConverter text={inputText} url={convertAllUrl} />
+                                <div className="p-4"><KuroShiroPropsConverter text={inputText} url={convertAllUrl} /></div>
                             </Tab>
                             <Tab label="Translate">
-                                <UnifiedGptComponent japaneseText={inputText} url={gptTranslateUrl} task="translate" />
+                                <div className="p-4"><UnifiedGptComponent japaneseText={inputText} url={gptTranslateUrl} task="translate" /></div>
                             </Tab>
                             <Tab label="Side-by-Side">
-                                <UnifiedGptComponent japaneseText={inputText} url={gptTranslateSbSUrl} task="translate" />
+                                <div className="p-4"><UnifiedGptComponent japaneseText={inputText} url={gptTranslateSbSUrl} task="translate" /></div>
                             </Tab>
                             <Tab label="Summary">
-                                <UnifiedGptComponent japaneseText={inputText} url={gptSummaryUrl} task="summarize" />
+                                <div className="p-4"><UnifiedGptComponent japaneseText={inputText} url={gptSummaryUrl} task="summarize" /></div>
                             </Tab>
                             <Tab label="Sentiment">
-                                <UnifiedGptComponent japaneseText={inputText} url={gptSentimentUrl} task="analyzeSentiment" />
+                                <div className="p-4"><UnifiedGptComponent japaneseText={inputText} url={gptSentimentUrl} task="analyzeSentiment" /></div>
                             </Tab>
                         </Tabs>
                     </div>
@@ -329,9 +341,9 @@ export default function TextParserMain({ initialMode = 'text' }: TextParserMainP
 
                 {/* RIGHT COLUMN: Sidebar (4 cols) */}
                 <div className="lg:col-span-4 space-y-6">
-                    <div className="sticky top-8 max-h-[90vh] overflow-y-auto custom-scrollbar pt-1">
+                    <div className="sticky top-8 max-h-[90vh] overflow-y-auto custom-scrollbar bg-white rounded-[2.5rem] border border-slate-100 shadow-xl shadow-primary/5 p-8">
                         <Tabs>
-                            <Tab label="Word Details">
+                            <Tab label="Lexicon">
                                 {clickedWordDetails ? (
                                     <WordDetailsSidebar
                                         clickedWordDetails={clickedWordDetails}
@@ -341,54 +353,60 @@ export default function TextParserMain({ initialMode = 'text' }: TextParserMainP
                                         setRevisionCount={setRevisionCount}
                                     />
                                 ) : (
-                                    <div className="flex flex-col items-center justify-center p-10 text-brand-dark/50 min-h-[300px]">
-                                        <div className="text-6xl mb-4 opacity-20">?</div>
-                                        <p className="text-center font-bold">Click a word in the parser to see details here.</p>
+                                    <div className="flex flex-col items-center justify-center p-12 text-slate-300 min-h-[400px]">
+                                        <div className="text-8xl mb-8 opacity-10">?</div>
+                                        <p className="text-center font-black text-[10px] uppercase tracking-widest leading-loose">Select a word in the parser<br />to initialize deep analysis</p>
                                     </div>
                                 )}
                             </Tab>
-                            <Tab label="Create Flashcard">
-                                <CreateReadingFlashcard
-                                    word={clickedWord}
-                                    wordDictForm={clickedWordDictForm}
-                                    sentence={clickedWordSentence}
-                                    userId={userId}
-                                    url0={deeplUrl}
-                                    url1={simpleVocabUrl}
-                                    url2={convertHiraganaUrl}
-                                    url3={storeVocabUrl}
-                                    url4={gptTranslateUrl}
-                                />
+                            <Tab label="Flashcard">
+                                <div className="p-4 pt-8">
+                                    <CreateReadingFlashcard
+                                        word={clickedWord}
+                                        wordDictForm={clickedWordDictForm}
+                                        sentence={clickedWordSentence}
+                                        userId={userId}
+                                        url0={deeplUrl}
+                                        url1={simpleVocabUrl}
+                                        url2={convertHiraganaUrl}
+                                        url3={storeVocabUrl}
+                                        url4={gptTranslateUrl}
+                                    />
+                                </div>
                             </Tab>
                             <Tab label="Grammar">
-                                <GrammarExplanation
-                                    word={clickedWord}
-                                    sentence={clickedWordSentence}
-                                    url={gptGrammarUrl}
-                                />
+                                <div className="p-4 pt-8">
+                                    <GrammarExplanation
+                                        word={clickedWord}
+                                        sentence={clickedWordSentence}
+                                        url={gptGrammarUrl}
+                                    />
+                                </div>
                             </Tab>
-                            <Tab label="Meta">
-                                <div className="space-y-6">
-                                    <div>
-                                        <h3 className="font-bold border-b-2 border-brand-dark mb-2">Hovered</h3>
+                            <Tab label="Telemetry">
+                                <div className="space-y-10 p-4 pt-8">
+                                    <section>
+                                        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-4 pb-2 border-b border-slate-50">Hover State</h3>
                                         <DisplayHoveredWord hoveredWord={hoveredWord} />
-                                    </div>
-                                    <div>
-                                        <h3 className="font-bold border-b-2 border-brand-dark mb-2">Sentence</h3>
+                                    </section>
+                                    <section>
+                                        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-4 pb-2 border-b border-slate-50">Structural Flow</h3>
                                         <DisplaySentence sentence={hoveredSentence} />
-                                        <DisplaySentenceV2 sentence={hoveredSentence} url={furiganaUrl} />
-                                    </div>
-                                    <div>
-                                        <h3 className="font-bold border-b-2 border-brand-dark mb-2">Translation</h3>
+                                        <div className="mt-4 opacity-75">
+                                            <DisplaySentenceV2 sentence={hoveredSentence} url={furiganaUrl} />
+                                        </div>
+                                    </section>
+                                    <section>
+                                        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-4 pb-2 border-b border-slate-50">Semantic Mapping</h3>
                                         <DisplayWord word={clickedWord} sentence={clickedWordSentence} url={deeplUrl} />
-                                    </div>
+                                    </section>
                                 </div>
                             </Tab>
                             <Tab label="Kanji">
-                                <KanjiDisplay word={clickedWord || ""} url0={extractKanjiUrl} url1={kanjiUrl} />
+                                <div className="p-4 pt-8"><KanjiDisplay word={clickedWord || ""} url0={extractKanjiUrl} url1={kanjiUrl} /></div>
                             </Tab>
                             <Tab label="Radicals">
-                                <RadicalInfo word={clickedWord || ""} url={radicalUrl} />
+                                <div className="p-4 pt-8"><RadicalInfo word={clickedWord || ""} url={radicalUrl} /></div>
                             </Tab>
                         </Tabs>
                     </div>
