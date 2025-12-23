@@ -30,17 +30,18 @@ export function MyResultsList({
 
     if (attempts.length === 0) {
         return (
-            <div className="text-center py-12">
-                <div className="w-16 h-16 mx-auto mb-4 bg-slate-100 rounded-full flex items-center justify-center">
-                    <History size={32} className="text-slate-300" />
+            <div className="text-center py-20 px-8 bg-muted/20 rounded-2xl border-2 border-dashed border-border">
+                <div className="w-20 h-20 mx-auto mb-6 bg-card rounded-2xl flex items-center justify-center  text-muted-foreground/30">
+                    <History size={40} />
                 </div>
-                <h3 className="text-lg font-bold text-slate-600 mb-2">No Results Yet</h3>
-                <p className="text-sm text-slate-400 max-w-xs mx-auto">
-                    Complete an exam to see your results here. Your progress will be tracked automatically.
+                <h3 className="text-xl font-black text-foreground mb-3 font-display tracking-tight">No Results Yet</h3>
+                <p className="text-sm font-bold text-muted-foreground max-w-xs mx-auto leading-relaxed">
+                    Once you complete a challenge, your achievements will bloom here.
                 </p>
             </div>
         );
     }
+
 
     const formatDate = (date: Date | string) => {
         const d = new Date(date);
@@ -58,99 +59,104 @@ export function MyResultsList({
     };
 
     const getScoreColor = (percentage: number) => {
-        if (percentage >= 80) return 'text-emerald-600';
-        if (percentage >= 60) return 'text-amber-600';
-        return 'text-red-500';
+        if (percentage >= 80) return 'text-primary';
+        if (percentage >= 60) return 'text-secondary';
+        return 'text-destructive';
     };
 
     const getScoreBg = (percentage: number) => {
-        if (percentage >= 80) return 'bg-emerald-100';
-        if (percentage >= 60) return 'bg-amber-100';
-        return 'bg-red-100';
+        if (percentage >= 80) return 'bg-primary/10 border-primary/20';
+        if (percentage >= 60) return 'bg-secondary/10 border-secondary/20';
+        return 'bg-destructive/10 border-destructive/20';
     };
 
     const getProgressColor = (percentage: number) => {
-        if (percentage >= 80) return 'bg-emerald-500';
-        if (percentage >= 60) return 'bg-amber-500';
-        return 'bg-red-500';
+        if (percentage >= 80) return 'bg-primary';
+        if (percentage >= 60) return 'bg-secondary';
+        return 'bg-destructive';
     };
 
+
     return (
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 gap-6">
             {attempts.map((attempt) => (
                 <div
                     key={attempt.id}
-                    className="p-4 bg-slate-50 rounded-xl border border-slate-100 hover:border-slate-200 transition-all"
+                    className="group p-6 bg-card rounded-2xl border border-border/50 hover:border-primary/30 transition-all duration-500  hover: "
                 >
                     {/* Header */}
-                    <div className="flex items-start justify-between mb-3">
-                        <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                                <h4 className="font-bold text-brand-dark">{attempt.examTitle}</h4>
-                                <span className={`px-2 py-0.5 rounded text-xs font-bold ${attempt.passed
-                                        ? 'bg-emerald-100 text-emerald-700'
-                                        : 'bg-red-100 text-red-600'
+                    <div className="flex items-start justify-between mb-6">
+                        <div className="flex-1 space-y-2">
+                            <div className="flex items-center gap-3">
+                                <h4 className="text-lg font-black text-foreground font-display tracking-tight group-hover:text-primary transition-colors">{attempt.examTitle}</h4>
+                                <span className={`px-3 py-1 rounded-full text-[9px] font-black font-display uppercase tracking-widest border  ${attempt.passed
+                                    ? 'bg-primary/5 text-primary border-primary/20'
+                                    : 'bg-destructive/5 text-destructive border-destructive/20'
                                     }`}>
-                                    {attempt.passed ? '✓ Passed' : '✗ Failed'}
+                                    {attempt.passed ? 'PASSED' : 'FAILED'}
                                 </span>
                             </div>
-                            <div className="flex items-center gap-3 text-xs text-slate-500">
-                                <span className="px-2 py-0.5 bg-slate-200 rounded font-medium">
+                            <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.15em] text-muted-foreground/60 font-display">
+                                <span className="px-2.5 py-1 bg-muted rounded  text-foreground/70">
                                     {attempt.level}
                                 </span>
-                                <span>{formatDate(attempt.completedAt)}</span>
+                                <span className="flex items-center gap-1.5 grayscale opacity-60">
+                                    <Clock size={12} />
+                                    {formatDate(attempt.completedAt)}
+                                </span>
                             </div>
                         </div>
 
                         {/* Score Badge */}
-                        <div className={`w-14 h-14 rounded-xl flex flex-col items-center justify-center ${getScoreBg(attempt.scorePercentage)}`}>
-                            <span className={`text-lg font-black ${getScoreColor(attempt.scorePercentage)}`}>
+                        <div className={`w-16 h-16 rounded-2xl flex flex-col items-center justify-center border  ${getScoreBg(attempt.scorePercentage)} transition-transform duration-500 group-`}>
+                            <span className={`text-xl font-black font-display tracking-tighter ${getScoreColor(attempt.scorePercentage)}`}>
                                 {Math.round(attempt.scorePercentage)}%
                             </span>
                         </div>
                     </div>
 
-                    {/* Progress Bar */}
-                    <div className="h-2 bg-slate-200 rounded-full overflow-hidden mb-3">
-                        <div
-                            className={`h-full rounded-full transition-all ${getProgressColor(attempt.scorePercentage)}`}
-                            style={{ width: `${attempt.scorePercentage}%` }}
-                        />
-                    </div>
+                    {/* Progress & Stats */}
+                    <div className="space-y-4 mb-6">
+                        <div className="h-2.5 bg-muted rounded-full overflow-hidden  border border-border/20">
+                            <div
+                                className={`h-full rounded-full transition-all duration-1000 ease-spring ${getProgressColor(attempt.scorePercentage)}`}
+                                style={{ width: `${attempt.scorePercentage}%` }}
+                            />
+                        </div>
 
-                    {/* Stats */}
-                    <div className="flex items-center gap-4 text-xs text-slate-600 mb-3">
-                        <span className="flex items-center gap-1">
-                            <CheckCircle2 size={12} className="text-emerald-500" />
-                            {attempt.correctAnswers}/{attempt.totalQuestions} correct
-                        </span>
-                        <span className="flex items-center gap-1">
-                            <Clock size={12} />
-                            {formatTime(attempt.timeTakenSeconds)}
-                        </span>
-                        {attempt.unansweredQuestions > 0 && (
-                            <span className="flex items-center gap-1 text-amber-600">
-                                <XCircle size={12} />
-                                {attempt.unansweredQuestions} skipped
+                        <div className="flex items-center gap-6 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 font-display">
+                            <span className="flex items-center gap-2">
+                                <CheckCircle2 size={14} className="text-primary" />
+                                <span className="text-foreground/80">{attempt.correctAnswers}/{attempt.totalQuestions}</span> Correct
                             </span>
-                        )}
+                            <span className="flex items-center gap-2">
+                                <Clock size={14} />
+                                <span className="text-foreground/80">{formatTime(attempt.timeTakenSeconds)}</span> Taken
+                            </span>
+                            {attempt.unansweredQuestions > 0 && (
+                                <span className="flex items-center gap-2 text-secondary">
+                                    <XCircle size={14} />
+                                    <span className="text-secondary">{attempt.unansweredQuestions}</span> Skipped
+                                </span>
+                            )}
+                        </div>
                     </div>
 
                     {/* Actions */}
-                    <div className="flex gap-2">
+                    <div className="flex gap-4 pt-4 border-t border-border/50">
                         <button
                             onClick={() => onReview(attempt.id)}
-                            className="flex-1 flex items-center justify-center gap-2 py-2 px-3 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors"
+                            className="flex-1 flex items-center justify-center gap-2 py-3 px-6 bg-muted/30 border border-border/50 rounded-xl text-[10px] font-black uppercase tracking-widest font-display text-muted-foreground hover:text-foreground hover:bg-card hover: transition-all"
                         >
-                            <Eye size={14} />
-                            Review
+                            <Eye size={16} />
+                            Review Result
                         </button>
                         <button
                             onClick={() => onRetake(attempt.examId)}
-                            className="flex-1 flex items-center justify-center gap-2 py-2 px-3 bg-brand-green text-white rounded-lg text-sm font-medium hover:bg-brand-green/90 transition-colors"
+                            className="flex-1 flex items-center justify-center gap-2 py-3 px-6 bg-foreground text-background rounded-xl text-[10px] font-black uppercase tracking-widest font-display hover:opacity-90 active:scale-95 transition-all "
                         >
-                            <RotateCcw size={14} />
-                            Retake
+                            <RotateCcw size={16} />
+                            Retry Challenge
                         </button>
                     </div>
                 </div>

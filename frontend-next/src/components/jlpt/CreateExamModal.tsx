@@ -130,45 +130,45 @@ export function CreateExamModal({ isOpen, onClose, onExamCreated }: CreateExamMo
         <div className="fixed inset-0 z-50 flex items-stretch justify-end">
             {/* Backdrop */}
             <div
-                className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+                className="absolute inset-0 bg-background/80  animate-in fade-in duration-500"
                 onClick={handleClose}
             />
 
             {/* Panel */}
-            <div className="relative w-full max-w-4xl bg-white shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
+            <div className="relative w-full max-w-4xl bg-background  flex flex-col animate-in slide-in-from-right duration-500 border-l border-border">
                 {/* Header */}
-                <header className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-gradient-to-r from-emerald-50 to-teal-50">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl flex items-center justify-center text-white shadow-lg">
-                            <Sparkles size={20} />
+                <header className="flex items-center justify-between px-8 py-6 border-b border-border bg-card">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-secondary/10 text-secondary rounded-2xl flex items-center justify-center  border border-secondary/20">
+                            <Sparkles size={24} />
                         </div>
                         <div>
-                            <h2 className="text-lg font-bold text-brand-dark">Create New Exam</h2>
-                            <p className="text-xs text-slate-500">Configure manually or use AI to generate</p>
+                            <h2 className="text-xl font-black text-foreground font-display tracking-tight">Create New Exam</h2>
+                            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Manual Setup & AI Synthesis</p>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-4">
                         <button
                             onClick={handleSave}
                             disabled={isSaving}
-                            className="flex items-center gap-2 px-4 py-2 bg-brand-green text-white font-bold rounded-xl hover:bg-brand-green/90 transition-colors disabled:opacity-50"
+                            className="flex items-center gap-3 px-6 py-3 bg-primary text-primary-foreground font-black rounded-2xl hover:opacity-90 transition-all disabled:opacity-50  font-display text-[10px] uppercase tracking-widest"
                         >
                             {isSaving ? (
                                 <>
-                                    <Loader2 size={18} className="animate-spin" />
+                                    <Loader2 size={16} className="animate-spin" />
                                     Saving...
                                 </>
                             ) : (
                                 <>
-                                    <Save size={18} />
+                                    <Save size={16} />
                                     Save Exam
                                 </>
                             )}
                         </button>
                         <button
                             onClick={handleClose}
-                            className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                            className="p-3 hover:bg-muted rounded-xl transition-all text-muted-foreground hover:text-foreground active:scale-95  bg-card border border-border/50"
                         >
                             <X size={20} />
                         </button>
@@ -177,28 +177,28 @@ export function CreateExamModal({ isOpen, onClose, onExamCreated }: CreateExamMo
 
                 {/* Error Banner */}
                 {error && (
-                    <div className="px-6 py-3 bg-red-50 border-b border-red-200 text-red-600 text-sm flex items-center justify-between">
+                    <div className="px-8 py-4 bg-destructive/5 border-b border-destructive/10 text-destructive text-xs font-black uppercase tracking-widest font-display flex items-center justify-between animate-in slide-in-from-top-4 duration-300">
                         <span>{error}</span>
-                        <button onClick={() => setError(null)} className="text-red-400 hover:text-red-600">×</button>
+                        <button onClick={() => setError(null)} className="p-1 hover:bg-destructive/10 rounded-lg">×</button>
                     </div>
                 )}
 
                 {/* Mobile Tab Switcher */}
-                <div className="lg:hidden flex border-b border-slate-200">
+                <div className="lg:hidden flex border-b border-border bg-card/50">
                     <button
                         onClick={() => setActiveTab('config')}
-                        className={`flex-1 py-3 text-sm font-medium transition-colors ${activeTab === 'config'
-                            ? 'text-brand-green border-b-2 border-brand-green'
-                            : 'text-slate-500 hover:text-slate-700'
+                        className={`flex-1 py-4 text-[10px] font-black uppercase tracking-widest font-display transition-all ${activeTab === 'config'
+                            ? 'text-primary border-b-2 border-primary bg-primary/5'
+                            : 'text-muted-foreground hover:text-foreground'
                             }`}
                     >
                         Configuration
                     </button>
                     <button
                         onClick={() => setActiveTab('chat')}
-                        className={`flex-1 py-3 text-sm font-medium transition-colors ${activeTab === 'chat'
-                            ? 'text-brand-green border-b-2 border-brand-green'
-                            : 'text-slate-500 hover:text-slate-700'
+                        className={`flex-1 py-4 text-[10px] font-black uppercase tracking-widest font-display transition-all ${activeTab === 'chat'
+                            ? 'text-primary border-b-2 border-primary bg-primary/5'
+                            : 'text-muted-foreground hover:text-foreground'
                             }`}
                     >
                         AI Assistant
@@ -208,7 +208,7 @@ export function CreateExamModal({ isOpen, onClose, onExamCreated }: CreateExamMo
                 {/* Content */}
                 <div className="flex-1 flex overflow-hidden">
                     {/* Left: Configuration Form */}
-                    <div className={`lg:w-1/2 lg:border-r border-slate-200 overflow-y-auto ${activeTab === 'config' ? 'block' : 'hidden lg:block'
+                    <div className={`lg:w-1/2 lg:border-r border-border overflow-y-auto custom-scrollbar ${activeTab === 'config' ? 'block' : 'hidden lg:block'
                         }`}>
                         <ExamConfigForm
                             formState={formState}
@@ -217,14 +217,14 @@ export function CreateExamModal({ isOpen, onClose, onExamCreated }: CreateExamMo
                         />
 
                         {generatedQuestions.length > 0 && (
-                            <div className="p-6 border-t border-slate-200 bg-slate-50/50">
+                            <div className="p-8 border-t border-border bg-muted/20">
                                 <ExamPreview questions={generatedQuestions} />
                             </div>
                         )}
                     </div>
 
                     {/* Right: AI Chat */}
-                    <div className={`lg:w-1/2 flex flex-col ${activeTab === 'chat' ? 'flex' : 'hidden lg:flex'
+                    <div className={`lg:w-1/2 flex flex-col bg-muted/5 ${activeTab === 'chat' ? 'flex' : 'hidden lg:flex'
                         }`}>
                         <ExamChatAssistant
                             formState={formState}
@@ -235,5 +235,6 @@ export function CreateExamModal({ isOpen, onClose, onExamCreated }: CreateExamMo
                 </div>
             </div>
         </div>
+
     );
 }

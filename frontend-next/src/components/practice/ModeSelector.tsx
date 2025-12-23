@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
+import { BookCheck, FileText, Zap } from "lucide-react";
 import { PracticeMode } from "@/types/practice";
-import { ListChecks, Zap, FileText, BookOpen } from "lucide-react";
 
 interface ModeSelectorProps {
     selectedMode: PracticeMode;
@@ -10,31 +10,28 @@ interface ModeSelectorProps {
 }
 
 const modes: { value: PracticeMode; label: string; icon: React.ReactNode }[] = [
-    { value: "ALL", label: "All", icon: <ListChecks size={18} /> },
-    { value: "QUIZ", label: "Quiz", icon: <Zap size={18} /> },
-    { value: "SINGLE_EXAM", label: "Single Exam", icon: <FileText size={18} /> },
-    { value: "FULL_EXAM", label: "Full Exam", icon: <BookOpen size={18} /> },
+    { value: "FULL_EXAM", label: "Full Exam", icon: <BookCheck size={20} /> },
+    { value: "QUIZ", label: "Quick Quiz", icon: <Zap size={20} /> },
+    { value: "SINGLE_EXAM", label: "Single Topic", icon: <FileText size={20} /> },
 ];
 
 export default function ModeSelector({ selectedMode, onModeChange }: ModeSelectorProps) {
     return (
-        <div className="flex flex-wrap gap-2 p-1 bg-slate-100 rounded-xl">
+        <div className="flex flex-wrap gap-3 p-1.5 bg-muted rounded-2xl w-fit">
             {modes.map((mode) => (
                 <button
                     key={mode.value}
                     onClick={() => onModeChange(mode.value)}
                     className={`
-            flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200
-            ${selectedMode === mode.value
-                            ? "bg-white text-brand-dark shadow-md"
-                            : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
+                        flex items-center gap-3 px-5 py-3 rounded-xl transition-colors font-display font-bold text-sm
+                        ${selectedMode === mode.value
+                            ? "bg-card text-foreground border border-border"
+                            : "text-muted-foreground hover:text-foreground"
                         }
-          `}
+                    `}
                 >
-                    <span className={selectedMode === mode.value ? "text-brand-green" : "text-slate-400"}>
-                        {mode.icon}
-                    </span>
-                    {mode.label}
+                    {mode.icon}
+                    <span>{mode.label}</span>
                 </button>
             ))}
         </div>

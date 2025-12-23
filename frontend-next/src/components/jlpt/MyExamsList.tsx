@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import {
     Play, Edit3, Trash2, Share2, Lock, Globe,
-    Loader2, FileEdit, Clock, Users, MoreVertical
+    Loader2, FileEdit, Clock, Users, MoreVertical, Trophy
 } from 'lucide-react';
 import { UserCreatedExam } from '@/types/practice';
 
@@ -35,13 +35,13 @@ export function MyExamsList({
 
     if (exams.length === 0) {
         return (
-            <div className="text-center py-12">
-                <div className="w-16 h-16 mx-auto mb-4 bg-slate-100 rounded-full flex items-center justify-center">
-                    <FileEdit size={32} className="text-slate-300" />
+            <div className="text-center py-20 px-8 bg-muted/20 rounded-2xl border-2 border-dashed border-border">
+                <div className="w-20 h-20 mx-auto mb-6 bg-card rounded-2xl flex items-center justify-center  text-muted-foreground/30">
+                    <FileEdit size={40} />
                 </div>
-                <h3 className="text-lg font-bold text-slate-600 mb-2">No Custom Exams</h3>
-                <p className="text-sm text-slate-400 max-w-xs mx-auto">
-                    Create your own exam using the &quot;Create New Exam&quot; button above.
+                <h3 className="text-xl font-black text-foreground mb-3 font-display tracking-tight">No Custom Exams</h3>
+                <p className="text-sm font-bold text-muted-foreground max-w-xs mx-auto leading-relaxed">
+                    Create your own challenges to test your limits.
                 </p>
             </div>
         );
@@ -62,36 +62,41 @@ export function MyExamsList({
     };
 
     return (
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 gap-6">
             {exams.map((exam) => (
                 <div
                     key={exam.id}
-                    className="p-4 bg-slate-50 rounded-xl border border-slate-100 hover:border-slate-200 transition-all"
+                    className="group p-6 bg-card rounded-2xl border border-border/50 hover:border-primary/30 transition-all duration-500  hover: "
                 >
                     {/* Header */}
-                    <div className="flex items-start justify-between mb-3">
-                        <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                                <h4 className="font-bold text-brand-dark">{exam.config.title}</h4>
+                    <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1 space-y-2">
+                            <div className="flex items-center gap-3">
+                                <h4 className="text-lg font-black text-foreground font-display tracking-tight group-hover:text-primary transition-colors">{exam.config.title}</h4>
                                 {exam.isPublic ? (
-                                    <span className="flex items-center gap-1 px-2 py-0.5 bg-blue-100 text-blue-600 rounded text-xs font-medium">
+                                    <span className="flex items-center gap-1.5 px-2.5 py-1 bg-secondary/5 text-secondary border border-secondary/20 rounded-full text-[9px] font-black font-display uppercase tracking-widest ">
                                         <Globe size={10} />
                                         Public
                                     </span>
                                 ) : (
-                                    <span className="flex items-center gap-1 px-2 py-0.5 bg-slate-200 text-slate-600 rounded text-xs font-medium">
+                                    <span className="flex items-center gap-1.5 px-2.5 py-1 bg-muted text-muted-foreground border border-border/50 rounded-full text-[9px] font-black font-display uppercase tracking-widest ">
                                         <Lock size={10} />
                                         Private
                                     </span>
                                 )}
                             </div>
-                            <div className="flex items-center gap-3 text-xs text-slate-500">
-                                <span className="px-2 py-0.5 bg-slate-200 rounded font-medium">
+                            <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.15em] text-muted-foreground/60 font-display">
+                                <span className="px-2.5 py-1 bg-muted rounded  text-foreground/70">
                                     {exam.config.level}
                                 </span>
-                                <span>{exam.questions.length} questions</span>
-                                <span className="text-slate-400">•</span>
-                                <span>{formatDate(exam.createdAt)}</span>
+                                <span className="flex items-center gap-1.5 opacity-60">
+                                    <Clock size={12} />
+                                    {exam.questions.length} questions
+                                </span>
+                                <span className="flex items-center gap-1.5 opacity-60">
+                                    <Clock size={12} />
+                                    {formatDate(exam.createdAt)}
+                                </span>
                             </div>
                         </div>
 
@@ -99,9 +104,9 @@ export function MyExamsList({
                         <div className="relative">
                             <button
                                 onClick={() => setMenuOpenId(menuOpenId === exam.id ? null : exam.id)}
-                                className="p-2 hover:bg-slate-200 rounded-lg transition-colors"
+                                className="p-3 hover:bg-muted rounded-xl transition-all  bg-card border border-border/50 text-muted-foreground hover:text-foreground active:scale-90"
                             >
-                                <MoreVertical size={16} className="text-slate-500" />
+                                <MoreVertical size={16} />
                             </button>
 
                             {menuOpenId === exam.id && (
@@ -110,20 +115,20 @@ export function MyExamsList({
                                         className="fixed inset-0 z-10"
                                         onClick={() => setMenuOpenId(null)}
                                     />
-                                    <div className="absolute right-0 top-full mt-1 w-36 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-20">
+                                    <div className="absolute right-0 top-full mt-2 w-48 bg-card rounded-[1.5rem]  border border-border/50 py-2 z-20 animate-in zoom-in-95 duration-200">
                                         <button
                                             onClick={() => { onEdit(exam.id); setMenuOpenId(null); }}
-                                            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
+                                            className="w-full flex items-center gap-3 px-4 py-3 text-[10px] font-black font-display uppercase tracking-widest text-muted-foreground hover:text-primary hover:bg-muted/30 transition-all border-b border-border/10"
                                         >
                                             <Edit3 size={14} />
-                                            Edit
+                                            Modify Exam
                                         </button>
                                         <button
                                             onClick={() => setDeleteConfirmId(exam.id)}
-                                            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50"
+                                            className="w-full flex items-center gap-3 px-4 py-3 text-[10px] font-black font-display uppercase tracking-widest text-destructive hover:bg-destructive/5 transition-all"
                                         >
                                             <Trash2 size={14} />
-                                            Delete
+                                            Purge Challenge
                                         </button>
                                     </div>
                                 </>
@@ -133,40 +138,41 @@ export function MyExamsList({
 
                     {/* Description */}
                     {exam.config.description && (
-                        <p className="text-sm text-slate-600 mb-3 line-clamp-2">
+                        <p className="text-sm font-bold text-muted-foreground mb-6 line-clamp-2 leading-relaxed">
                             {exam.config.description}
                         </p>
                     )}
 
                     {/* Skills Tags */}
-                    <div className="flex flex-wrap gap-1 mb-3">
+                    <div className="flex flex-wrap gap-2 mb-6">
                         {exam.config.skills.map((skill) => (
                             <span
                                 key={skill}
-                                className="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded text-xs font-medium"
+                                className="px-3 py-1.5 bg-primary/5 text-primary border border-primary/20 rounded-full text-[9px] font-black font-display uppercase tracking-widest "
                             >
                                 {skill.toLowerCase()}
                             </span>
                         ))}
                     </div>
 
-                    {/* Stats */}
-                    <div className="flex items-center gap-4 text-xs text-slate-500 mb-3">
+                    {/* Meta Stats */}
+                    <div className="flex items-center gap-6 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 font-display mb-8">
                         {exam.config.timerMode !== 'UNLIMITED' && exam.config.timeLimitMinutes && (
-                            <span className="flex items-center gap-1">
-                                <Clock size={12} />
-                                {exam.config.timeLimitMinutes} min
+                            <span className="flex items-center gap-2">
+                                <Clock size={14} />
+                                <span className="text-foreground/80">{exam.config.timeLimitMinutes}</span> MINS
                             </span>
                         )}
                         {exam.timesAttempted > 0 && (
-                            <span className="flex items-center gap-1">
-                                <Users size={12} />
-                                {exam.timesAttempted} attempts
+                            <span className="flex items-center gap-2">
+                                <Users size={14} />
+                                <span className="text-foreground/80">{exam.timesAttempted}</span> ATTEMPTS
                             </span>
                         )}
                         {exam.averageScore !== undefined && exam.averageScore > 0 && (
-                            <span className="text-emerald-600 font-medium">
-                                Avg: {Math.round(exam.averageScore)}%
+                            <span className="flex items-center gap-2 text-primary">
+                                <Trophy size={14} />
+                                AVG: <span className="text-primary">{Math.round(exam.averageScore)}%</span>
                             </span>
                         )}
                     </div>
@@ -174,30 +180,30 @@ export function MyExamsList({
                     {/* Start Button */}
                     <button
                         onClick={() => onStart(exam.id)}
-                        className="w-full flex items-center justify-center gap-2 py-2.5 bg-brand-green text-white rounded-lg font-bold text-sm hover:bg-brand-green/90 transition-colors"
+                        className="w-full flex items-center justify-center gap-3 py-4 bg-foreground text-background rounded-xl font-black font-display text-[10px] uppercase tracking-[0.2em] hover:opacity-90 active:scale-[0.98] transition-all  group/btn"
                     >
-                        <Play size={16} />
-                        Start Exam
+                        <Play size={16} className="fill-current group-hover/btn:scale-125 transition-transform" />
+                        Engage Challenge
                     </button>
 
-                    {/* Delete Confirmation */}
+                    {/* Delete Confirmation Overlay */}
                     {deleteConfirmId === exam.id && (
-                        <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
-                            <p className="text-sm text-red-700 mb-2">
-                                Are you sure you want to delete this exam?
+                        <div className="absolute inset-0 z-30 bg-background/95  rounded-2xl flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-300">
+                            <p className="text-sm font-black font-display uppercase tracking-widest text-destructive mb-6">
+                                Irreversible purification action?
                             </p>
-                            <div className="flex gap-2">
+                            <div className="flex gap-4 w-full max-w-xs">
                                 <button
                                     onClick={() => setDeleteConfirmId(null)}
-                                    className="flex-1 py-1.5 bg-white border border-slate-200 rounded text-sm font-medium"
+                                    className="flex-1 py-3 bg-card border border-border/50 rounded-xl text-[10px] font-black font-display uppercase tracking-widest text-muted-foreground hover:text-foreground transition-all "
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     onClick={() => handleDelete(exam.id)}
-                                    className="flex-1 py-1.5 bg-red-600 text-white rounded text-sm font-medium"
+                                    className="flex-1 py-3 bg-destructive text-destructive-foreground rounded-xl text-[10px] font-black font-display uppercase tracking-widest hover:opacity-90 transition-all "
                                 >
-                                    Delete
+                                    Confirm
                                 </button>
                             </div>
                         </div>

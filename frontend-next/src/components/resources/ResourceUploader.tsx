@@ -59,22 +59,22 @@ export function ResourceUploader({ onClose, onUploadComplete }: ResourceUploader
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
             <div
-                className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+                className="absolute inset-0 bg-black/50 "
                 onClick={onClose}
             />
 
-            <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md p-6 m-4 animate-in fade-in zoom-in duration-200">
-                <div className="flex justify-between items-center mb-4">
-                    <h3 className="font-semibold text-lg text-brand-dark">Upload Resource</h3>
-                    <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
-                        <X size={20} />
+            <div className="relative bg-card rounded-2xl  border border-border w-full max-w-lg p-10 m-4 animate-in fade-in zoom-in duration-300">
+                <div className="flex justify-between items-center mb-8">
+                    <h3 className="text-2xl font-black text-foreground font-display">Upload Resource</h3>
+                    <button onClick={onClose} className="text-muted-foreground/40 hover:text-foreground hover:bg-muted p-2 rounded-xl transition-all">
+                        <X size={24} />
                     </button>
                 </div>
 
                 <div
                     className={`
-                        border-2 border-dashed rounded-xl p-8 text-center transition-colors cursor-pointer
-                        ${isDragging ? 'border-brand-green bg-brand-green/5' : 'border-slate-200 hover:border-brand-green/50'}
+                        border-2 border-dashed rounded-2xl p-12 text-center transition-all duration-300 cursor-pointer 
+                        ${isDragging ? 'border-primary bg-primary/5 scale-[0.98]' : 'border-border hover:border-primary/50 hover:bg-muted/30'}
                     `}
                     onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
                     onDragLeave={() => setIsDragging(false)}
@@ -94,25 +94,25 @@ export function ResourceUploader({ onClose, onUploadComplete }: ResourceUploader
                     />
 
                     {isUploading ? (
-                        <div className="flex flex-col items-center py-4">
-                            <div className="w-8 h-8 border-2 border-brand-green border-t-transparent rounded-full animate-spin mb-3"></div>
-                            <p className="text-sm text-slate-500">Uploading...</p>
+                        <div className="flex flex-col items-center py-6">
+                            <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+                            <p className="text-xs font-black text-muted-foreground uppercase tracking-widest font-display">Uploading...</p>
                         </div>
                     ) : (
-                        <div className="flex flex-col items-center py-4">
-                            <div className="bg-brand-green/10 p-3 rounded-full mb-3">
-                                <Upload className="text-brand-green" size={24} />
+                        <div className="flex flex-col items-center py-6">
+                            <div className="bg-primary/10 p-5 rounded-2xl mb-6 ">
+                                <Upload className="text-primary" size={32} />
                             </div>
-                            <p className="font-medium text-brand-dark mb-1">Click to upload or drag and drop</p>
-                            <p className="text-xs text-slate-400">PDF, DOCX, TXT, Images (max 50MB)</p>
+                            <p className="text-lg font-black text-foreground mb-2 font-display">Click to upload or drag & drop</p>
+                            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest leading-relaxed">PDF, DOCX, TXT, Images (max 50MB)</p>
                         </div>
                     )}
                 </div>
 
                 {error && (
-                    <div className="mt-4 p-3 bg-red-50 text-red-600 text-sm rounded-lg flex items-center gap-2">
-                        <AlertCircle size={16} />
-                        {error}
+                    <div className="mt-8 p-4 bg-destructive/5 text-destructive text-sm font-bold rounded-xl border border-destructive/20 flex items-center gap-3">
+                        <AlertCircle size={20} className="shrink-0" />
+                        <span>{error}</span>
                     </div>
                 )}
             </div>

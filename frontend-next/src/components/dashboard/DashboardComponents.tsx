@@ -32,7 +32,7 @@ export function ProgressRing({
     progress,
     size = 120,
     strokeWidth = 8,
-    color = "#4CAF50",
+    color = "hsl(var(--primary))",
     label,
     showPercentage = true,
     children,
@@ -104,7 +104,7 @@ export function StatCard({ title, value, icon, trend, color = "#4CAF50", descrip
     return (
         <Wrapper
             onClick={onClick}
-            className={`relative overflow-hidden bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 group text-left w-full ${onClick ? 'cursor-pointer' : ''}`}
+            className={`relative overflow-hidden bg-card rounded-2xl p-6  hover: transition-all duration-300 border border-border group text-left w-full ${onClick ? 'cursor-pointer' : ''}`}
         >
             {/* Background decoration */}
             <div
@@ -114,10 +114,10 @@ export function StatCard({ title, value, icon, trend, color = "#4CAF50", descrip
 
             <div className="flex items-start justify-between">
                 <div>
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+                    <p className="text-sm font-bold text-muted-foreground mb-1 uppercase tracking-tight font-display">
                         {title}
                     </p>
-                    <p className="text-3xl font-bold text-gray-900 dark:text-white">{value}</p>
+                    <p className="text-3xl font-display font-black text-foreground">{value}</p>
                     {description && (
                         <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{description}</p>
                     )}
@@ -172,9 +172,9 @@ export function StreakBadge({ streak, size = 'md' }: StreakBadgeProps) {
 
     return (
         <div
-            className={`inline-flex items-center gap-1 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full font-semibold ${sizeClasses[size]}`}
+            className={`inline-flex items-center gap-1 bg-primary text-primary-foreground rounded-full font-bold  ${sizeClasses[size]}`}
         >
-            <FireIcon className={`${iconSizes[size]} text-yellow-300`} />
+            <FireIcon className={`${iconSizes[size]} text-accent`} />
             <span>{streak}</span>
         </div>
     );
@@ -202,6 +202,57 @@ export function MiniStreak({ current, message }: MiniStreakProps) {
             <span className="text-sm text-gray-600 dark:text-gray-400">
                 {message || defaultMessage}
             </span>
+        </div>
+    );
+}
+
+// ============================================
+// Streak Display Component
+// ============================================
+
+interface StreakDisplayProps {
+    current: number;
+    longest: number;
+}
+
+export function StreakDisplay({ current, longest }: StreakDisplayProps) {
+    return (
+        <div className="bg-card rounded-2xl p-8  border border-border overflow-hidden relative">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl" />
+
+            <div className="flex items-center justify-between mb-8">
+                <h3 className="text-2xl font-black text-foreground font-display">
+                    Learning Streak
+                </h3>
+                <FireIcon className="w-10 h-10 text-accent animate-bounce-slow" />
+            </div>
+
+            <div className="flex items-end gap-3 mb-8">
+                <span className="text-7xl font-black text-foreground font-display leading-none">
+                    {current}
+                </span>
+                <span className="text-xs font-black text-muted-foreground uppercase tracking-widest font-display pb-2">
+                    Days Running
+                </span>
+            </div>
+
+            <div className="flex items-center gap-4 p-5 bg-muted/30 rounded-2xl border border-border/50 ">
+                <div className="w-12 h-12 bg-accent rounded-xl flex items-center justify-center text-white ">
+                    <TrophyIcon className="w-6 h-6" />
+                </div>
+                <div className="flex-1">
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest font-display">
+                        Longest Streak
+                    </p>
+                    <p className="text-lg font-black text-foreground font-display">
+                        {longest} Days
+                    </p>
+                </div>
+            </div>
+
+            <p className="mt-8 text-sm font-bold text-muted-foreground leading-relaxed">
+                Study every day to keep your streak alive and build your mastery!
+            </p>
         </div>
     );
 }
@@ -255,7 +306,7 @@ export function WeeklyProgressBar({
     current,
     target,
     label,
-    color = "#4CAF50",
+    color = "hsl(var(--primary))",
     showLabel = true
 }: WeeklyProgressBarProps) {
     const progress = target > 0 ? Math.min(100, (current / target) * 100) : 0;
@@ -309,7 +360,7 @@ export function ProgressSummaryMini({ progress, variant = 'compact' }: ProgressS
     }
 
     return (
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+        <div className="bg-card rounded-2xl p-4 border border-border ">
             <div className="flex items-center justify-between mb-3">
                 <MiniStreak current={progress.current_streak} />
             </div>
@@ -369,7 +420,7 @@ export function AchievementGrid({
             {!showAll && achievements.length > maxDisplay && onViewAll && (
                 <button
                     onClick={onViewAll}
-                    className="text-sm text-blue-500 hover:text-blue-600 transition"
+                    className="text-sm font-bold text-primary hover:opacity-80 transition-all font-display"
                 >
                     View all {achievements.length} achievements →
                 </button>

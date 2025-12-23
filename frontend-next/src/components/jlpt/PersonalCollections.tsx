@@ -37,24 +37,24 @@ export function PersonalCollections({
     ];
 
     return (
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+        <div className="bg-card rounded-2xl border border-border/50 overflow-hidden ">
             {/* Tabs */}
-            <div className="flex border-b border-slate-200">
+            <div className="flex p-1.5 bg-muted/30 border-b border-border/50">
                 {tabs.map((tab) => (
                     <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 text-sm font-medium transition-colors ${activeTab === tab.id
-                                ? 'text-brand-green border-b-2 border-brand-green bg-emerald-50/50'
-                                : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'
+                        className={`flex-1 flex items-center justify-center gap-3 py-3.5 px-6 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all font-display ${activeTab === tab.id
+                            ? 'bg-card text-primary  border border-border/50'
+                            : 'text-muted-foreground hover:text-foreground'
                             }`}
                     >
                         {tab.icon}
                         {tab.label}
                         {tab.count > 0 && (
-                            <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${activeTab === tab.id
-                                    ? 'bg-brand-green text-white'
-                                    : 'bg-slate-200 text-slate-600'
+                            <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-black ${activeTab === tab.id
+                                ? 'bg-primary text-primary-foreground '
+                                : 'bg-muted text-muted-foreground'
                                 }`}>
                                 {tab.count}
                             </span>
@@ -64,7 +64,7 @@ export function PersonalCollections({
             </div>
 
             {/* Tab Content */}
-            <div className="p-4">
+            <div className="p-8">
                 {activeTab === 'results' && (
                     <MyResultsList
                         attempts={attempts}
