@@ -168,8 +168,8 @@ export default function QuizPlayerPage() {
                         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 group-hover:bg-primary/10 transition-colors" />
 
                         <div className={`w-24 h-24 mx-auto rounded-[2.5rem] flex items-center justify-center mb-10  border border-border/50 transition-transform duration-700 rotate-6 group-hover:rotate-0 ${result.percentage >= 80 ? "bg-primary/10 text-primary border-primary/20" :
-                                result.percentage >= 50 ? "bg-secondary/10 text-secondary border-secondary/20" :
-                                    "bg-destructive/10 text-destructive border-destructive/20"
+                            result.percentage >= 50 ? "bg-secondary/10 text-secondary border-secondary/20" :
+                                "bg-destructive/10 text-destructive border-destructive/20"
                             }`}>
                             <CheckCircle size={48} />
                         </div>
@@ -292,13 +292,25 @@ export default function QuizPlayerPage() {
             {/* Question Workspace */}
             <main className="max-w-4xl mx-auto px-8 py-12">
                 {currentQuestion && (
-                    <div className="bg-card rounded-[3rem] border border-border/50 p-10 md:p-14  relative overflow-hidden group/card animate-in slide-in-from-bottom-8 duration-700">
+                    <div className="bg-card rounded-2xl border border-border p-10 md:p-14 relative overflow-hidden group/card animate-in slide-in-from-bottom-8 duration-700 space-y-10">
                         {/* Background Deco */}
                         <div className="absolute top-0 right-0 w-80 h-80 bg-primary/2 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 group-hover/card:bg-primary/5 transition-colors duration-1000" />
 
+                        {/* Question Header - Unified with JLPT */}
+                        <div className="flex items-center justify-between border-b border-border/50 pb-8 relative z-10">
+                            <div className="space-y-1">
+                                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] font-display">Step</p>
+                                <p className="text-xl font-black text-foreground font-display">Node {currentIndex + 1}</p>
+                            </div>
+                            <div className="flex items-center gap-3 px-6 py-3 rounded-xl bg-muted/50 text-muted-foreground border border-border/30 text-[10px] font-black uppercase tracking-widest font-display">
+                                <Target size={16} className="text-primary" />
+                                Interactive Node
+                            </div>
+                        </div>
+
                         {/* Passage Segment */}
                         {currentQuestion.content.passage && (
-                            <div className="bg-muted/30 rounded-[2rem] p-10 mb-10 text-xl font-jp leading-[1.8] tracking-tight border border-border/30  relative group/passage">
+                            <div className="bg-muted/20 rounded-2xl p-10 text-xl font-jp leading-[2] tracking-tight border border-border/50 relative group/passage italic text-foreground/80">
                                 <div className="absolute top-4 right-4 text-muted-foreground/10 group-hover/passage:text-primary/20 transition-colors">
                                     <LayoutGrid size={24} />
                                 </div>
@@ -307,16 +319,15 @@ export default function QuizPlayerPage() {
                         )}
 
                         {/* Question Prompt */}
-                        <div className="relative mb-12">
-                            <h3 className="text-3xl font-black text-foreground font-display leading-tight tracking-tight italic group-hover/card:text-primary transition-colors">
+                        <div className="relative">
+                            <h3 className="text-2xl font-black text-foreground font-jp leading-relaxed group-hover/card:text-primary transition-colors">
                                 {currentQuestion.content.prompt}
                             </h3>
-                            <div className="h-1.5 w-24 bg-primary/20 rounded-full mt-6 group-hover/card:w-32 transition-all duration-700" />
                         </div>
 
-                        {/* Logic Options */}
+                        {/* Logic Options - Updated to 2-column Grid */}
                         {currentQuestion.content.options && (
-                            <div className="grid grid-cols-1 gap-5 relative z-10">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 relative z-10">
                                 {currentQuestion.content.options.map((option, idx) => {
                                     const isSelected = answers[currentQuestion.question_id] === option;
                                     return (
@@ -324,23 +335,23 @@ export default function QuizPlayerPage() {
                                             key={idx}
                                             onClick={() => handleAnswer(option)}
                                             className={`
-                                                group/opt w-full p-8 rounded-[2rem] text-left transition-all duration-500 border-2 flex items-center gap-8
+                                                group/opt w-full p-6 rounded-2xl text-left transition-all duration-500 border flex items-center gap-6
                                                 ${isSelected
-                                                    ? "border-primary bg-primary/5  scale-[1.02]"
-                                                    : "border-border/30 bg-card hover:border-primary/30 hover: active:scale-[0.98]"
+                                                    ? "border-primary bg-primary/5 shadow-lg shadow-primary/10"
+                                                    : "border-border/50 bg-card hover:border-primary/30 hover:bg-muted/20 active:scale-[0.98]"
                                                 }
                                             `}
                                         >
                                             <span className={`
-                                                w-14 h-14 rounded-2xl flex items-center justify-center font-display font-black text-xl transition-all duration-500
+                                                w-10 h-10 rounded-2xl flex items-center justify-center font-display font-black text-sm transition-all duration-500
                                                 ${isSelected
-                                                    ? "bg-primary text-primary-foreground  rotate-12"
-                                                    : "bg-muted text-muted-foreground/30  group-hover/opt:rotate-6 group-hover/opt:bg-primary/10 group-hover/opt:text-primary"
+                                                    ? "bg-primary text-primary-foreground rotate-12"
+                                                    : "bg-muted text-muted-foreground/30 group-hover/opt:bg-primary/10 group-hover/opt:text-primary"
                                                 }
                                             `}>
                                                 {String.fromCharCode(65 + idx)}
                                             </span>
-                                            <span className="text-2xl font-bold font-jp leading-snug tracking-tight text-foreground/80 group-hover/opt:text-foreground transition-colors">
+                                            <span className="text-lg font-bold font-jp leading-snug text-foreground/80 group-hover/opt:text-foreground transition-colors">
                                                 {option}
                                             </span>
                                         </button>

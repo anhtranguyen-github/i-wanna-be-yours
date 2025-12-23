@@ -553,100 +553,104 @@ function FocusModeView({
 }: FocusModeViewProps) {
     return (
         <div className="max-w-4xl mx-auto space-y-10">
-            {/* Question Header */}
-            <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] font-display">Sequence</p>
-                    <p className="text-xl font-black text-foreground font-display">
-                        Question {questionIndex + 1} <span className="text-muted-foreground/20 italic mx-1">/</span> <span className="text-muted-foreground/40">{totalQuestions}</span>
-                    </p>
-                </div>
+            {/* Integrated Question Card */}
+            <div className="bg-card rounded-2xl p-10 md:p-14 border border-border space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500 relative overflow-hidden group/card shadow-xl shadow-primary/5">
+                {/* Background Deco */}
+                <div className="absolute top-0 right-0 w-80 h-80 bg-primary/2 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 group-hover/card:bg-primary/5 transition-colors duration-1000" />
 
-                <button
-                    onClick={onToggleFlag}
-                    disabled={isSubmitted}
-                    className={`
-                        flex items-center gap-3 px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest font-display transition-all duration-300
-                        ${isFlagged ? "bg-secondary text-white " : "bg-card text-muted-foreground hover:text-foreground border border-border "}
-                        ${isSubmitted ? "opacity-30 cursor-not-allowed" : "active:scale-95"}
-                    `}
-                >
-                    <Flag size={16} fill={isFlagged ? "currentColor" : "none"} />
-                    {isFlagged ? "Flagged for review" : "Flag question"}
-                </button>
-            </div>
-
-            {/* Passage (if reading question) */}
-            {question.passage && (
-                <div className="bg-card rounded-2xl p-10 border border-border  space-y-6">
-                    <div className="flex items-center gap-3 text-reading">
-                        <BookOpen size={20} />
-                        <h4 className="text-[10px] font-black uppercase tracking-[0.2em] font-display">Japanese Passage</h4>
+                {/* Question Header */}
+                <div className="flex items-center justify-between border-b border-border/50 pb-8 relative z-10">
+                    <div className="space-y-1">
+                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] font-display">Sequence</p>
+                        <p className="text-xl font-black text-foreground font-display">
+                            Question {questionIndex + 1} <span className="text-muted-foreground/20 italic mx-1">/</span> <span className="text-muted-foreground/40">{totalQuestions}</span>
+                        </p>
                     </div>
-                    <p className="text-xl font-bold text-foreground leading-[2] font-jp whitespace-pre-line bg-muted/20 p-8 rounded-2xl border border-border/50">
+
+                    <button
+                        onClick={onToggleFlag}
+                        disabled={isSubmitted}
+                        className={`
+                            flex items-center gap-3 px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest font-display transition-all duration-300
+                            ${isFlagged ? "bg-secondary text-white shadow-lg shadow-secondary/20" : "bg-muted/50 text-muted-foreground hover:text-foreground border border-border/30"}
+                            ${isSubmitted ? "opacity-30 cursor-not-allowed" : "active:scale-95"}
+                        `}
+                    >
+                        <Flag size={16} fill={isFlagged ? "currentColor" : "none"} />
+                        {isFlagged ? "Flagged" : "Flag Question"}
+                    </button>
+                </div>
+
+                {/* Passage Segment */}
+                {question.passage && (
+                    <div className="bg-muted/20 rounded-2xl p-10 text-xl font-jp leading-[2] tracking-tight border border-border/50 relative group/passage italic text-foreground/80">
+                        <div className="flex items-center gap-3 text-primary/40 mb-4">
+                            <BookOpen size={20} />
+                            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] font-display">Japanese Context</h4>
+                        </div>
                         {question.passage}
+                    </div>
+                )}
+
+                {/* Question Content */}
+                <div className="relative">
+                    <div className="flex items-center gap-3 text-primary/40 mb-4">
+                        <HelpCircle size={20} />
+                        <h4 className="text-[10px] font-black uppercase tracking-[0.2em] font-display">Question Prompt</h4>
+                    </div>
+                    <p className="text-2xl font-black text-foreground font-jp leading-relaxed group-hover/card:text-primary transition-colors">
+                        {question.content}
                     </p>
                 </div>
-            )}
 
-            {/* Question Content */}
-            <div className="bg-card rounded-2xl p-10 border border-border  animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="flex items-center gap-3 text-primary mb-6">
-                    <HelpCircle size={20} />
-                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] font-display">Question Prompt</h4>
-                </div>
-                <p className="text-2xl font-black text-foreground font-jp leading-relaxed">
-                    {question.content}
-                </p>
-            </div>
+                {/* Answer Options Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 relative z-10">
+                    {question.options.map((option, idx) => {
+                        const isSelected = selectedOptionId === option.id;
+                        const isCorrect = option.id === question.correctOptionId;
 
-            {/* Answer Options */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {question.options.map((option, idx) => {
-                    const isSelected = selectedOptionId === option.id;
-                    const isCorrect = option.id === question.correctOptionId;
+                        let style = "bg-card border-border/50 hover:border-primary/30 hover:bg-muted/20";
 
-                    let style = "bg-card border-border hover:border-primary/30 hover:";
-
-                    if (isSelected && !isSubmitted) {
-                        style = "bg-primary/5 border-primary  text-primary";
-                    }
-
-                    if (isSubmitted) {
-                        if (isCorrect) {
-                            style = "bg-emerald-500 text-white border-transparent  scale-[1.02] z-10";
-                        } else if (isSelected && !isCorrect) {
-                            style = "bg-destructive text-white border-transparent  opacity-80";
-                        } else {
-                            style = "bg-muted/30 border-border opacity-40";
+                        if (isSelected && !isSubmitted) {
+                            style = "bg-primary/5 border-primary text-primary shadow-lg shadow-primary/10";
                         }
-                    }
 
-                    return (
-                        <button
-                            key={option.id}
-                            onClick={() => onSelectAnswer(option.id)}
-                            disabled={isSubmitted}
-                            className={`
-                                relative w-full text-left p-6 rounded-2xl border transition-all duration-500 flex items-center gap-6 group
-                                ${style}
-                                ${isSubmitted ? "cursor-default" : "cursor-pointer active:scale-95"}
-                            `}
-                        >
-                            <span
+                        if (isSubmitted) {
+                            if (isCorrect) {
+                                style = "bg-emerald-500 text-white border-transparent scale-[1.02] z-10 shadow-lg shadow-emerald-500/20";
+                            } else if (isSelected && !isCorrect) {
+                                style = "bg-destructive text-white border-transparent opacity-80 shadow-lg shadow-destructive/20";
+                            } else {
+                                style = "bg-muted/30 border-border opacity-40";
+                            }
+                        }
+
+                        return (
+                            <button
+                                key={option.id}
+                                onClick={() => onSelectAnswer(option.id)}
+                                disabled={isSubmitted}
                                 className={`
-                                    w-10 h-10 rounded-2xl flex items-center justify-center font-black text-sm shrink-0 font-display transition-all duration-500 group-
-                                    ${isSelected && !isSubmitted ? "bg-primary text-white" : "bg-muted text-muted-foreground"}
-                                    ${isSubmitted && isCorrect ? "bg-white text-emerald-500" : ""}
-                                    ${isSubmitted && isSelected && !isCorrect ? "bg-white text-destructive" : ""}
+                                    relative w-full text-left p-6 rounded-2xl border transition-all duration-500 flex items-center gap-6 group/opt
+                                    ${style}
+                                    ${isSubmitted ? "cursor-default" : "cursor-pointer active:scale-95"}
                                 `}
                             >
-                                {String.fromCharCode(65 + idx)}
-                            </span>
-                            <span className="font-bold text-lg font-jp">{option.text}</span>
-                        </button>
-                    );
-                })}
+                                <span
+                                    className={`
+                                        w-10 h-10 rounded-2xl flex items-center justify-center font-black text-sm shrink-0 font-display transition-all duration-500
+                                        ${isSelected && !isSubmitted ? "bg-primary text-white rotate-12" : "bg-muted text-muted-foreground/40 group-hover/opt:bg-primary/10 group-hover/opt:text-primary"}
+                                        ${isSubmitted && isCorrect ? "bg-white text-emerald-500" : ""}
+                                        ${isSubmitted && isSelected && !isCorrect ? "bg-white text-destructive" : ""}
+                                    `}
+                                >
+                                    {String.fromCharCode(65 + idx)}
+                                </span>
+                                <span className="font-bold text-lg font-jp">{option.text}</span>
+                            </button>
+                        );
+                    })}
+                </div>
             </div>
 
             {/* Explanation (shown after submission) */}
@@ -724,64 +728,68 @@ function ScrollModeView({
                     <div
                         key={question.id}
                         id={`question-${idx}`}
-                        className="bg-card rounded-2xl p-10 border border-border  scroll-mt-32 space-y-8 group transition-all duration-500 hover:"
+                        className="bg-card rounded-2xl p-10 md:p-14 border border-border scroll-mt-32 space-y-10 group/card transition-all duration-500 hover:shadow-xl hover:shadow-primary/5 relative overflow-hidden"
                     >
+                        {/* Background Deco */}
+                        <div className="absolute top-0 right-0 w-80 h-80 bg-primary/2 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 group-hover/card:bg-primary/5 transition-colors duration-1000" />
+
                         {/* Question Header */}
-                        <div className="flex items-center justify-between border-b border-border/50 pb-6">
+                        <div className="flex items-center justify-between border-b border-border/50 pb-8 relative z-10">
                             <div className="space-y-1">
                                 <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] font-display">Sequence</p>
-                                <p className="text-lg font-black text-foreground font-display">Question {idx + 1}</p>
+                                <p className="text-xl font-black text-foreground font-display">Question {idx + 1}</p>
                             </div>
 
                             <button
                                 onClick={() => onToggleFlag(question.id)}
                                 disabled={isSubmitted}
                                 className={`
-                                    flex items-center gap-3 px-5 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest font-display transition-all duration-300
-                                    ${isFlagged ? "bg-secondary text-white " : "bg-muted/50 text-muted-foreground hover:text-foreground border border-border/30"}
+                                    flex items-center gap-3 px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest font-display transition-all duration-300
+                                    ${isFlagged ? "bg-secondary text-white shadow-lg shadow-secondary/20" : "bg-muted/50 text-muted-foreground hover:text-foreground border border-border/30"}
                                     ${isSubmitted ? "opacity-30 cursor-not-allowed" : "active:scale-95"}
                                 `}
                             >
-                                <Flag size={14} fill={isFlagged ? "currentColor" : "none"} />
+                                <Flag size={16} fill={isFlagged ? "currentColor" : "none"} />
                                 {isFlagged ? "Flagged" : "Flag"}
                             </button>
                         </div>
 
-                        {/* Passage */}
+                        {/* Passage Segment */}
                         {question.passage && (
-                            <div className="bg-muted/30 rounded-2xl p-8 border border-border/50 space-y-4">
-                                <div className="flex items-center gap-2 text-reading">
-                                    <BookOpen size={16} />
-                                    <span className="text-[9px] font-black uppercase tracking-widest font-display">Context</span>
+                            <div className="bg-muted/20 rounded-2xl p-10 text-xl font-jp leading-[2] tracking-tight border border-border/50 relative group/passage italic text-foreground/80">
+                                <div className="flex items-center gap-3 text-primary/40 mb-4">
+                                    <BookOpen size={20} />
+                                    <span className="text-[10px] font-black uppercase tracking-widest font-display">Context</span>
                                 </div>
-                                <p className="text-lg font-bold text-foreground font-jp leading-loose whitespace-pre-line italic opacity-80">
-                                    {question.passage}
-                                </p>
+                                {question.passage}
                             </div>
                         )}
 
-                        {/* Question */}
-                        <p className="text-xl font-black text-foreground font-jp leading-relaxed group-hover:text-primary transition-colors">
-                            {question.content}
-                        </p>
+                        {/* Question Content */}
+                        <div className="relative">
+                            <h3 className="text-2xl font-black text-foreground font-jp leading-relaxed group-hover/card:text-primary transition-colors">
+                                {question.content}
+                            </h3>
+                        </div>
 
-                        {/* Options */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+                        {/* Options Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-4 relative z-10">
                             {question.options.map((option, optIdx) => {
+                                const selectedOptionId = answers[question.id]?.selectedOptionId || null;
                                 const isSelected = selectedOptionId === option.id;
                                 const isCorrect = option.id === question.correctOptionId;
 
-                                let style = "bg-muted/30 border-border/50 hover:border-primary/30 hover:bg-card";
+                                let style = "bg-card border-border/50 hover:border-primary/30 hover:bg-muted/20";
 
                                 if (isSelected && !isSubmitted) {
-                                    style = "bg-primary/5 border-primary  text-primary";
+                                    style = "bg-primary/5 border-primary text-primary shadow-lg shadow-primary/10";
                                 }
 
                                 if (isSubmitted) {
                                     if (isCorrect) {
-                                        style = "bg-emerald-500 text-white border-transparent ";
+                                        style = "bg-emerald-500 text-white border-transparent scale-[1.02] z-10 shadow-lg shadow-emerald-500/20";
                                     } else if (isSelected) {
-                                        style = "bg-destructive text-white border-transparent  opacity-80";
+                                        style = "bg-destructive text-white border-transparent opacity-80 shadow-lg shadow-destructive/20";
                                     } else {
                                         style = "bg-muted/20 border-border opacity-30";
                                     }
@@ -792,17 +800,17 @@ function ScrollModeView({
                                         key={option.id}
                                         onClick={() => onSelectAnswer(question.id, option.id)}
                                         disabled={isSubmitted}
-                                        className={`w-full text-left p-5 rounded-2xl border transition-all duration-500 flex items-center gap-4 group/opt ${style} ${isSubmitted ? "" : "active:scale-95"}`}
+                                        className={`w-full text-left p-6 rounded-2xl border transition-all duration-500 flex items-center gap-6 group/opt ${style} ${isSubmitted ? "cursor-default" : "cursor-pointer active:scale-95"}`}
                                     >
                                         <span className={`
-                                            w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black font-display shrink-0 transition-all duration-500
-                                            ${isSelected && !isSubmitted ? "bg-primary text-white" : "bg-card border border-border text-muted-foreground"}
+                                            w-10 h-10 rounded-2xl flex items-center justify-center font-black text-sm shrink-0 font-display transition-all duration-500
+                                            ${isSelected && !isSubmitted ? "bg-primary text-white rotate-12" : "bg-muted text-muted-foreground/40 group-hover/opt:bg-primary/10 group-hover/opt:text-primary"}
                                             ${isSubmitted && isCorrect ? "bg-white text-emerald-500" : ""}
                                             ${isSubmitted && isSelected && !isCorrect ? "bg-white text-destructive" : ""}
                                         `}>
                                             {String.fromCharCode(65 + optIdx)}
                                         </span>
-                                        <span className="font-bold text-base font-jp">{option.text}</span>
+                                        <span className="font-bold text-lg font-jp">{option.text}</span>
                                     </button>
                                 );
                             })}
@@ -810,10 +818,13 @@ function ScrollModeView({
 
                         {/* Explanation */}
                         {isSubmitted && (
-                            <div className="mt-8 p-8 bg-grammar/5 border border-grammar/20 rounded-2xl animate-in fade-in duration-700">
-                                <p className="text-sm font-bold text-grammar/80 leading-relaxed italic">
-                                    <span className="font-black uppercase tracking-widest text-[10px] block mb-2 opacity-50 font-display">Rationale:</span>
-                                    {question.explanation}
+                            <div className="mt-8 p-10 bg-grammar/5 border border-grammar/20 rounded-2xl animate-in fade-in duration-700">
+                                <div className="flex items-center gap-3 text-grammar mb-4">
+                                    <Sparkles size={20} />
+                                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] font-display">Deep Explanation</h4>
+                                </div>
+                                <p className="text-lg font-bold text-grammar/80 leading-relaxed italic">
+                                    "{question.explanation}"
                                 </p>
                             </div>
                         )}
