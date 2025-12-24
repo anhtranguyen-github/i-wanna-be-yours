@@ -13,7 +13,7 @@ import { useUser } from '@/context/UserContext';
 
 export interface ChatMessage {
     id: string;
-    role: 'user' | 'assistant';
+    role: 'user' | 'assistant' | 'system';
     content: string;
     timestamp: Date;
     artifacts?: Artifact[];
@@ -27,7 +27,7 @@ interface StreamState {
 
 interface UseChatStreamOptions {
     onMessageComplete?: (message: ChatMessage) => void;
-    onArtifactsReceived?: (artifacts: Artifact[]) => void;
+    onArtifactsReceived?: (artifacts: Artifact[], conversationId: string) => void;
     onConversationCreated?: (conversationId: string) => void;
 }
 
@@ -93,14 +93,16 @@ export function useChatStream(options: UseChatStreamOptions = {}): UseChatStream
                         resourceIds
                     );
 
+                const activeConvoId = (backendConvoId || conversationId)?.toString();
+
                 // Notify about new conversation
                 if (backendConvoId && !conversationId) {
                     options.onConversationCreated?.(backendConvoId.toString());
                 }
 
                 // Notify about artifacts
-                if (artifacts && artifacts.length > 0) {
-                    options.onArtifactsReceived?.(artifacts);
+                if (artifacts && artifacts.length > 0 && activeConvoId) {
+                    options.onArtifactsReceived?.(artifacts, activeConvoId);
                 }
 
                 // Stream the response

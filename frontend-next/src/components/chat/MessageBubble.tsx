@@ -22,7 +22,7 @@ import {
 
 export interface ChatMessage {
     id: string;
-    role: 'user' | 'assistant';
+    role: 'user' | 'assistant' | 'system';
     content: string;
     timestamp: Date;
     artifacts?: Artifact[];

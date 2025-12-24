@@ -118,34 +118,12 @@ class AgentService:
                 # Default DTOs
                 content_dto = ArtifactContent(title=a_title)
                 
-                # Fill content_dto based on type (Mock Data -> DTO)
-                if a_type == "flashcard":
-                    cards_list = a_data.get("cards", [])
-                    content_dto.flashcards = {"title": a_title, "cards": cards_list}
-                elif a_type == "mindmap":
-                    root = a_data.get("root", {})
-                    nodes = a_data.get("nodes", [])
-                    # Transform to DTO structure roughly
-                    children = []
-                    for n in nodes:
-                         children.append({'label': n['label'], 'children': []})
-                    content_dto.mindmap = {
-                        "title": a_title, 
-                        "nodes": [{"label": root.get("label", "Root"), "children": children}]
-                    }
-                elif a_type == "task":
-                    t = a_data.get("task", {})
-                    content_dto.task = {"title": t.get("title"), "description": t.get("description")}
-                elif a_type == "vocabulary":
-                    items = a_data.get("items", [])
-                    content_dto.vocabulary = {"title": a_title, "items": items}
-                elif a_type == "quiz":
-                    content_dto.quiz = a_data # Pass through
-                
-                # DB Persistence if available
+                # DB Persistence pointers
                 db_art_id = "temp-art"
+                sql_artifact = None
+                
+                # 1. Mongo Persistence (Canonical)
                 if asst_msg_id:
-                    # Sync to Mongo
                     try: 
                         mongo_artifact = ArtifactService.create_artifact(
                             user_id=request_data.user_id,
@@ -160,7 +138,151 @@ class AgentService:
                         db_art_id = mongo_artifact["_id"]
                     except Exception as e:
                         print(f"Mongo Artifact Save Error: {e}")
-                
+
+                # 2. SQL Persistence (for History/Bubble display)
+                if asst_msg_id:
+                    try:
+                        sql_artifact = MessageArtifact(
+                            message_id=asst_msg_id,
+                            artifact_external_id=db_art_id,
+                            type=a_type,
+                            title=a_title,
+                            metadata_=art.get("sidebar", {})
+                        )
+                        
+                        # Type-specific SQL sub-models (Extract from mock/agent data)
+                        if a_type in ["flashcard", "flashcard_deck"]:
+                            # Mock data is often already in a format we can use
+                            from models.content.flashcard import FlashcardSet, Flashcard
+                            f_set = FlashcardSet(title=a_title)
+                            db.session.add(f_set)
+                            db.session.flush() # Get ID
+                            
+                            cards = a_data.get("cards", [])
+                            for c in cards:
+                                card = Flashcard(
+                                    set_id=f_set.id,
+                                    front=c.get("front"),
+                                    back=c.get("back"),
+                                    reading=c.get("reading"),
+                                    example=c.get("example")
+                                )
+                                db.session.add(card)
+                            
+                            sql_artifact.flashcard_set_id = f_set.id
+                            content_dto.flashcards = {"title": a_title, "cards": cards}
+                            
+                        elif a_type in ["quiz", "exam"]:
+                            from models.content.quiz import QuizSet, QuizQuestion, QuizOption
+                            q_set = QuizSet(title=a_title, description=a_data.get("description"))
+                            db.session.add(q_set)
+                            db.session.flush()
+                            
+                            questions = a_data.get("questions", [])
+                            for q in questions:
+                                question = QuizQuestion(
+                                    quiz_set_id=q_set.id,
+                                    question_text=q.get("content"),
+                                    explanation=q.get("explanation"),
+                                    question_type=q.get("type", "multiple_choice")
+                                )
+                                db.session.add(question)
+                                db.session.flush()
+                                
+                                options = q.get("options", [])
+                                for opt in options:
+                                    o = QuizOption(
+                                        question_id=question.id,
+                                        option_text=opt.get("text"),
+                                        is_correct=(opt.get("id") == q.get("correctAnswer"))
+                                    )
+                                    db.session.add(o)
+                            
+                            sql_artifact.quiz_set_id = q_set.id
+                            content_dto.quiz = a_data
+                            
+                        elif a_type == "vocabulary":
+                            from models.content.vocabulary import VocabularySet, VocabularyItem
+                            v_set = VocabularySet(title=a_title)
+                            db.session.add(v_set)
+                            db.session.flush()
+                            
+                            items = a_data.get("items", [])
+                            for i in items:
+                                item = VocabularyItem(
+                                    set_id=v_set.id,
+                                    word=i.get("word"),
+                                    reading=i.get("reading"),
+                                    definition=i.get("definition"),
+                                    example=i.get("example")
+                                )
+                                db.session.add(item)
+                            
+                            sql_artifact.vocabulary_set_id = v_set.id
+                            content_dto.vocabulary = {"title": a_title, "items": items}
+
+                        elif a_type == "mindmap":
+                            from models.content.mindmap import Mindmap, MindmapNode
+                            mm = Mindmap(title=a_title)
+                            db.session.add(mm)
+                            db.session.flush()
+
+                            def save_nodes(nodes_list, parent_id=None):
+                                for node_data in nodes_list:
+                                    node = MindmapNode(
+                                        mindmap_id=mm.id,
+                                        parent_node_id=parent_id,
+                                        label=node_data.get("label", "Node")
+                                    )
+                                    db.session.add(node)
+                                    db.session.flush()
+                                    if "children" in node_data:
+                                        save_nodes(node_data["children"], node.id)
+
+                            # Mock data might have different structure, handle both DTO and raw
+                            root_data = a_data.get("root")
+                            if root_data:
+                                # Create root node first
+                                root_node = MindmapNode(
+                                    mindmap_id=mm.id,
+                                    label=root_data.get("label", "Root")
+                                )
+                                db.session.add(root_node)
+                                db.session.flush()
+                                
+                                # Find nodes that have this root as parent in raw structure
+                                # OR handle nested structure
+                                nodes = a_data.get("nodes", [])
+                                # Simple flat list to tree if needed, but for mock let's assume simple children or flat
+                                for n in nodes:
+                                    if n.get("parent") == "root":
+                                         db.session.add(MindmapNode(mindmap_id=mm.id, parent_node_id=root_node.id, label=n.get("label")))
+                            
+                            sql_artifact.mindmap_id = mm.id
+                            # dto mapping
+                            content_dto.mindmap = a_data
+
+                        elif a_type == "task":
+                            t_data = a_data.get("task", {})
+                            from models.action import ProposedTask
+                            new_task = ProposedTask(
+                                message_id=asst_msg_id,
+                                title=t_data.get("title", a_title),
+                                prompt=t_data.get("description", "")
+                            )
+                            db.session.add(new_task)
+                            db.session.flush()
+                            sql_artifact.task_id = new_task.id
+                            content_dto.task = {"title": new_task.title, "description": new_task.prompt}
+
+                        db.session.add(sql_artifact)
+                        db.session.commit()
+                        
+                    except Exception as sql_e:
+                        print(f"SQL Artifact Persist Error: {sql_e}")
+                        traceback.print_exc()
+                        db.session.rollback()
+
                 resp_item = ResponseItemDTO(
                     responseId=db_art_id,
                     type=a_type,
@@ -169,6 +291,21 @@ class AgentService:
                     metadata=art.get("metadata")
                 )
                 response_items.append(resp_item)
+            
+            # Process Suggestions
+            for sugg in suggestions_data:
+                try:
+                    from models.action import Suggestion
+                    new_sugg = Suggestion(
+                        message_id=asst_msg_id,
+                        title=sugg.get("text"),
+                        prompt=sugg.get("text")
+                    )
+                    db.session.add(new_sugg)
+                    db.session.commit()
+                except Exception as s_e:
+                    print(f"Suggestion Persist Error: {s_e}")
+                    db.session.rollback()
                 
         except Exception as e:
             print(f"Error saving assistant response to DB (continuing): {e}")

@@ -18,6 +18,8 @@ interface UseConversationOptions {
     paused?: boolean;
 }
 
+const EMPTY_MESSAGES: Message[] = [];
+
 interface UseConversationReturn {
     /**
      * The conversation data
@@ -82,12 +84,12 @@ export function useConversation(
         await mutate();
     }, [mutate]);
 
-    return {
+    return useMemo(() => ({
         conversation: data ?? null,
-        messages: data?.messages ?? [],
+        messages: data?.messages ?? EMPTY_MESSAGES,
         sessionId: data?.sessionId ?? null,
         isLoading,
         error,
         revalidate,
-    };
+    }), [data, isLoading, error, revalidate]);
 }

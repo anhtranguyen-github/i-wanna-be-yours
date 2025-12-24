@@ -23,9 +23,13 @@ class Flashcard(db.Model):
     set_id = db.Column(db.Integer, db.ForeignKey('flashcard_sets.id'), nullable=False)
     front = db.Column(db.Text, nullable=False)
     back = db.Column(db.Text, nullable=False)
+    reading = db.Column(db.Text, nullable=True)
+    example = db.Column(db.Text, nullable=True)
 
     def to_dict(self):
         return {
             'front': self.front,
-            'back': self.back
+            'back': self.back,
+            'reading': self.reading,
+            'example': self.example
         }

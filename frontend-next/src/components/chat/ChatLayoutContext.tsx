@@ -4,6 +4,8 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
 import { Resource } from '@/services/resourceService';
 import { Artifact } from '@/types/artifact';
+import { usePathname, useParams } from 'next/navigation';
+import { ChatConversationProvider } from './ChatConversationContext';
 
 // Types for sidebar states
 export type LeftSidebarState = 'collapsed' | 'expanded';
@@ -38,7 +40,6 @@ interface ChatLayoutState {
     rightSidebar: RightSidebarState;
     viewport: Viewport;
     activeArtifact: ActiveArtifact | null;
-    effectiveConversationId: string | null;
 }
 
 // Context interface
@@ -53,7 +54,6 @@ interface ChatLayoutContextType extends ChatLayoutState {
     stageResource: (resource: ResourceToStage) => void;
     stagedResourceToProcess: ResourceToStage | null;
     consumeStagedResource: () => void;
-    setEffectiveConversationId: (id: string | null) => void;
 
     // Resource Preview
     previewResource: Resource | null;
@@ -97,21 +97,15 @@ function validateState(
         }
     }
 
-    // Tablet: expanded + expanded not allowed? Allow for now but logic might need tweak
+    // Tablet: expanded + expanded not allowed
     if (viewport === 'tablet') {
         if (left === 'expanded' && right === 'expanded') {
-            // Priority to right expand if active
             return { left: 'collapsed', right: 'expanded' };
         }
     }
 
-    // Desktop: If right is expanded (max), force left collapsed?
-    // Maybe allow both if screen is huge ( > 1600)
-    // For now, let's keep logic simple
     return { left, right };
 }
-
-import { usePathname, useParams } from 'next/navigation';
 
 interface ChatLayoutProviderProps {
     children: ReactNode;
@@ -121,24 +115,13 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
     const pathname = usePathname();
     const params = useParams();
     const conversationIdFromParams = params?.conversationId as string | undefined;
+
     const [leftSidebar, setLeftSidebarState] = useState<LeftSidebarState>('expanded');
     const [rightSidebar, setRightSidebarState] = useState<RightSidebarState>('minimized');
     const [viewport, setViewport] = useState<Viewport>('desktop');
     const [activeArtifact, setActiveArtifactState] = useState<ActiveArtifact | null>(null);
     const [stagedResourceToProcess, setStagedResourceToProcess] = useState<ResourceToStage | null>(null);
     const [previewResource, setPreviewResource] = useState<Resource | null>(null);
-    // Effective conversation ID - can be updated after shallow URL update
-    const [effectiveConversationId, setEffectiveConversationId] = useState<string | null>(conversationIdFromParams || null);
-
-    // Sync effectiveConversationId when params change (user navigated via Next.js router)
-    useEffect(() => {
-        if (conversationIdFromParams) {
-            setEffectiveConversationId(conversationIdFromParams);
-        } else if (pathname === '/chat') {
-            // User navigated to new chat
-            setEffectiveConversationId(null);
-        }
-    }, [conversationIdFromParams, pathname]);
 
     // Initialize viewport on mount
     useEffect(() => {
@@ -160,14 +143,15 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
     const resetRightSidebar = useCallback(() => {
         setActiveArtifactState(null);
         setRightSidebarState('minimized');
-        // Clear sessionStorage when explicitly resetting
+        setStagedResourceToProcess(null);
+        setPreviewResource(null);
         if (typeof window !== 'undefined') {
             sessionStorage.removeItem('hanachan:rightSidebar');
             sessionStorage.removeItem('hanachan:activeArtifact');
         }
     }, []);
 
-    // EFFECT: Restore sidebar state from sessionStorage on mount (for navigation bridge)
+    // EFFECT: Restore sidebar state from sessionStorage on mount
     useEffect(() => {
         if (typeof window === 'undefined') return;
 
@@ -187,15 +171,13 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
             }
             sessionStorage.removeItem('hanachan:activeArtifact');
         }
-    }, []); // Only on mount
+    }, []);
 
-    // EFFECT: Reset right sidebar ONLY when navigating to /chat (new chat) or switching between different chats
+    // EFFECT: Reset right sidebar when navigating to /chat (new chat)
     useEffect(() => {
-        // Only reset when pathname is exactly /chat (user clicked New Chat)
         if (pathname === '/chat') {
             resetRightSidebar();
         }
-        // Note: We no longer reset when conversationId changes, as this breaks the navigation bridge
     }, [pathname, resetRightSidebar]);
 
     const setLeftSidebar = useCallback((state: LeftSidebarState) => {
@@ -205,7 +187,6 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
     }, [rightSidebar, viewport]);
 
     const setRightSidebar = useCallback((state: RightSidebarState) => {
-        // If expanding right sidebar to max, maybe auto-collapse left sidebar on smaller desktop?
         let nextLeft = leftSidebar;
         if (state === 'expanded' && viewport !== 'desktop') {
             nextLeft = 'collapsed';
@@ -236,13 +217,13 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
             setRightSidebar('expanded');
         }
     }, [rightSidebar, setRightSidebar]);
+
     const openArtifact = useCallback((artifact: ActiveArtifact) => {
         setActiveArtifactState(artifact);
         setRightSidebar('expanded');
         if (window.innerWidth < 1600) {
             setLeftSidebar('collapsed');
         }
-        // Persist to sessionStorage for navigation bridge
         if (typeof window !== 'undefined') {
             sessionStorage.setItem('hanachan:rightSidebar', 'expanded');
             sessionStorage.setItem('hanachan:activeArtifact', JSON.stringify(artifact));
@@ -272,7 +253,6 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
                 rightSidebar,
                 viewport,
                 activeArtifact,
-                effectiveConversationId,
                 setLeftSidebar,
                 setRightSidebar,
                 toggleLeftSidebar,
@@ -283,14 +263,15 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
                 stageResource,
                 stagedResourceToProcess,
                 consumeStagedResource,
-                setEffectiveConversationId,
                 previewResource,
                 openResourcePreview,
                 closeResourcePreview,
                 resetRightSidebar,
             }}
         >
-            {children}
+            <ChatConversationProvider initialConversationId={conversationIdFromParams}>
+                {children}
+            </ChatConversationProvider>
         </ChatLayoutContext.Provider>
     );
 }

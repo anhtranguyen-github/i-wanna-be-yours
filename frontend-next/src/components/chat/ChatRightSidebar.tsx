@@ -3,6 +3,7 @@
 
 import React from 'react';
 import { useChatLayout } from './ChatLayoutContext';
+import { useChatConversation } from './ChatConversationContext';
 import { Artifact } from '@/types/artifact';
 import { useArtifacts } from '@/hooks/useArtifacts';
 import { NoteRenderer } from '../artifacts/NoteRenderer';
@@ -27,7 +28,8 @@ import {
 } from 'lucide-react';
 
 export function ChatRightSidebar() {
-    const { rightSidebar, setRightSidebar, activeArtifact, openArtifact, setActiveArtifact, effectiveConversationId } = useChatLayout();
+    const { rightSidebar, setRightSidebar, activeArtifact, openArtifact, setActiveArtifact } = useChatLayout();
+    const { effectiveConversationId } = useChatConversation();
 
     // Use the new useArtifacts hook for consistent SWR-based artifact management
     const { artifacts, isLoading, error } = useArtifacts(effectiveConversationId);

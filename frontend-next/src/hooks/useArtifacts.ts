@@ -51,31 +51,20 @@ export function useArtifacts(
     const { user } = useUser();
     const { paused = false } = options;
 
-    // CRITICAL FIX: Return empty immediately if no conversationId
-    // This prevents stale artifacts from showing when navigating to new chat
-    if (!conversationId) {
-        return {
-            artifacts: [],
-            isLoading: false,
-            error: undefined,
-            revalidate: async () => { },
-            findById: () => undefined,
-        };
-    }
-
-    // Build SWR key - null if not ready to fetch
+    // Build SWR key - null if no conversationId (prevents stale data)
+    // When key is null, SWR won't fetch and returns undefined for data
     const swrKey = useMemo(() => {
-        if (!user || paused) {
+        if (!conversationId || !user || paused) {
             return null;
         }
         return swrKeys.artifacts(conversationId, user.id.toString());
     }, [conversationId, user, paused]);
 
-    // Fetch artifacts
+    // Fetch artifacts - only fetches when swrKey is non-null
     const { data, error, isLoading, mutate } = useSWR<Artifact[]>(
         swrKey,
         () => {
-            if (!user) {
+            if (!conversationId || !user) {
                 return Promise.resolve([]);
             }
             return artifactService.listByConversation(conversationId, user.id.toString());
@@ -85,21 +74,26 @@ export function useArtifacts(
 
     // Revalidate handler
     const revalidate = useCallback(async () => {
-        await mutate();
-    }, [mutate]);
+        if (swrKey) {
+            await mutate();
+        }
+    }, [mutate, swrKey]);
 
     // Find artifact by ID helper
     const findById = useCallback(
         (id: string): Artifact | undefined => {
+            if (!conversationId) return undefined;
             return data?.find((a) => a.id === id);
         },
-        [data]
+        [data, conversationId]
     );
 
+    // CRITICAL: Return empty array when no conversationId to prevent stale artifacts
+    // This handles the case after hooks (respecting React rules)
     return {
-        artifacts: data ?? [],
-        isLoading,
-        error,
+        artifacts: conversationId ? (data ?? []) : [],
+        isLoading: conversationId ? isLoading : false,
+        error: conversationId ? error : undefined,
         revalidate,
         findById,
     };

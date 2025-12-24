@@ -52,6 +52,11 @@ export function ChatConversationProvider({
     );
     const [sessionId, setSessionId] = useState<string | null>(null);
 
+    // Sync with prop (which comes from URL params)
+    React.useEffect(() => {
+        setEffectiveConversationId(initialConversationId);
+    }, [initialConversationId]);
+
     const updateConversationId = useCallback((id: string | null) => {
         setEffectiveConversationId(id);
     }, []);

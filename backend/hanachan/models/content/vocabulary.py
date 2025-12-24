@@ -22,12 +22,14 @@ class VocabularyItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     set_id = db.Column(db.Integer, db.ForeignKey('vocabulary_sets.id'), nullable=False)
     word = db.Column(db.String(255), nullable=False)
+    reading = db.Column(db.String(255), nullable=True)
     definition = db.Column(db.Text, nullable=True)
     example = db.Column(db.Text, nullable=True)
     
     def to_dict(self):
         return {
             'word': self.word,
+            'reading': self.reading,
             'definition': self.definition,
             'example': self.example
         }

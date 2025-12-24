@@ -6,25 +6,36 @@ import dynamic from 'next/dynamic';
 import { useUser } from '@/context/UserContext';
 import { useGlobalAuth } from '@/context/GlobalAuthContext';
 import { Loader2 } from 'lucide-react';
+import { SIDEBAR_WIDTHS } from '@/components/chat/ChatLayoutContext';
 
 // Dynamically import components with no SSR
 const ChatMainArea = dynamic(
     () => import('@/components/chat/ChatMainArea').then(mod => mod.ChatMainArea),
-    { ssr: false }
+    {
+        ssr: false,
+        loading: () => <div className="flex-1 flex items-center justify-center h-full text-slate-400">Loading Chat Area...</div>
+    }
 );
 
 const ChatRightSidebar = dynamic(
     () => import('@/components/chat/ChatRightSidebar').then(mod => mod.ChatRightSidebar),
-    { ssr: false }
+    {
+        ssr: false,
+        loading: () => <div className="h-full w-[300px] border-l border-border bg-background" />
+    }
 );
 
-export default function ChatConversationPage() {
+export default function UnifiedChatPage() {
     const params = useParams();
     const router = useRouter();
-    const conversationId = params?.conversationId as string;
     const { user, loading } = useUser();
     const { openAuth } = useGlobalAuth();
     const hasRedirected = useRef(false);
+
+    // Get conversationId from optional catch-all params
+    // params.conversationId will be an array: [] for /chat or ["id"] for /chat/id
+    const conversationIdArr = params?.conversationId;
+    const conversationId = Array.isArray(conversationIdArr) ? conversationIdArr[0] : undefined;
 
     // Redirect guests trying to access specific conversations
     useEffect(() => {
@@ -39,7 +50,7 @@ export default function ChatConversationPage() {
                 });
             }, 100);
         }
-    }, [user, loading, conversationId]);
+    }, [user, loading, conversationId, router, openAuth]);
 
     // Show loading while checking auth
     if (loading) {
@@ -52,20 +63,17 @@ export default function ChatConversationPage() {
                             <div className="w-2 h-2 bg-secondary rounded-full animate-pulse" />
                         </div>
                     </div>
-                    <p className="text-xs font-black font-display uppercase tracking-widest">Preparing your Dojo...</p>
+                    <p className="text-xs font-black font-display uppercase tracking-widest text-center">Preparing Hanachan...</p>
                 </div>
             </div>
         );
     }
 
-
-    // If guest is being redirected, show nothing (redirect is in progress)
-    if (!user && conversationId) {
-        return null;
-    }
+    // If guest is being redirected, show empty state or main area
+    // Actually, letting ChatMainArea handle the 'no ID' case is fine.
 
     return (
-        <div className="flex flex-1 h-full bg-background">
+        <div className="flex flex-1 h-full bg-background overflow-hidden">
             {/* Main Chat Area */}
             <main className="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-background">
                 <ChatMainArea conversationId={conversationId} />
@@ -75,19 +83,16 @@ export default function ChatConversationPage() {
             <ChatRightSidebarWrapper />
         </div>
     );
-
 }
 
-// Import SIDEBAR_WIDTHS from context
-import { SIDEBAR_WIDTHS } from '@/components/chat/ChatLayoutContext';
-
 function ChatRightSidebarWrapper() {
+    // Import the hook dynamically to avoid SSR issues
     const { useChatLayout } = require('@/components/chat/ChatLayoutContext');
     const { rightSidebar } = useChatLayout();
 
     return (
         <aside
-            className="flex-shrink-0 h-full bg-background border-l border-border transition-all duration-500 ease-spring z-20 "
+            className="flex-shrink-0 h-full bg-background border-l border-border transition-all duration-500 ease-spring z-20"
             style={{ width: SIDEBAR_WIDTHS.right[rightSidebar] }}
         >
             <ChatRightSidebar />
