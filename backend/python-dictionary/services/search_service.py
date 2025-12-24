@@ -129,6 +129,28 @@ class SearchService:
             del data["readings"]
             final_vocab.append(data)
 
+        # 2.5 Fallback for English -> Japanese (if no results or input is purely alpha/spaces)
+        is_alpha = re.match(r'^[a-zA-Z\s\d\-_]+$', text.strip())
+        if not final_vocab or is_alpha:
+            # Search meanings directly if we couldn't find matches via tokenization/expression
+            # or if it looks like an English query
+            cursor_en = db.db.entries.find({
+                "meanings": {"$regex": re.escape(text.strip()), "$options": "i"}
+            }).limit(20)
+            
+            async for entry in cursor_en:
+                expr = entry.get("expression")
+                if expr not in vocab_map:
+                    final_vocab.append({
+                        "expression": expr,
+                        "reading": entry.get("reading", ""),
+                        "meanings": entry.get("meanings", []),
+                        "pos_tags": [], # We don't have this from direct lookup
+                        "id": str(entry.get("_id"))
+                    })
+                    # Add to vocab_map to prevent duplicates in this list
+                    vocab_map[expr] = True 
+
         # 3. Extract kanji and collect keys for sentence lookup
         kanji_set = set()
         lookup_keys = set()

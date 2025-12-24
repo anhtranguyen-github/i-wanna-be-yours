@@ -1,7 +1,7 @@
 import React from 'react';
 import { Book, Edit3, MessageCircle, GitBranch, LayoutGrid, Globe } from 'lucide-react';
 
-export type DictionaryTab = 'vocab' | 'kanji' | 'sentences' | 'grammar' | 'j-j';
+export type DictionaryTab = 'vocab' | 'kanji' | 'sentences' | 'grammar';
 
 interface TabNavigatorProps {
     activeTab: DictionaryTab;
@@ -13,7 +13,6 @@ const TABS: { id: DictionaryTab; icon: any; label: string }[] = [
     { id: 'kanji', icon: Edit3, label: 'Kanji' },
     { id: 'sentences', icon: MessageCircle, label: 'Sentences' },
     { id: 'grammar', icon: GitBranch, label: 'Grammar' },
-    { id: 'j-j', icon: Globe, label: 'J-J' },
 ];
 
 export const TabNavigator = ({ activeTab, onTabChange }: TabNavigatorProps) => {

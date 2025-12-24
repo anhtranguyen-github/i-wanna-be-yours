@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Search, BookOpen, X, Sparkles, Book, ArrowRight, Volume2, Mic, PenTool, Image as ImageIcon, ChevronDown, Loader2 } from 'lucide-react';
+import { Search, BookOpen, X, Sparkles, Book, ArrowRight, Volume2, ChevronDown, Loader2 } from 'lucide-react';
 import { dictionaryService, DictionaryEntry, ExampleSentence } from '@/services/dictionaryService';
 import { TabNavigator, DictionaryTab } from '@/components/dictionary/TabNavigator';
 
 export default function DictionaryPage() {
     const [query, setQuery] = useState('');
+    const [searchMode, setSearchMode] = useState<'JP-EN' | 'EN-JP'>('JP-EN');
     const [activeTab, setActiveTab] = useState<DictionaryTab>('vocab');
     const [isLoading, setIsLoading] = useState(false);
     const [parseResult, setParseResult] = useState<any>(null);
@@ -30,7 +31,7 @@ export default function DictionaryPage() {
             finally { setIsLoading(false); }
         }, 600);
         return () => clearTimeout(debounce);
-    }, [query]);
+    }, [query, searchMode]);
 
     useEffect(() => {
         const fetchVocab = async () => {
@@ -218,24 +219,24 @@ export default function DictionaryPage() {
             {/* Header */}
             <div className="flex-shrink-0 bg-card border-b border-border px-6 py-4 space-y-4">
                 <div className="max-w-[1400px] mx-auto flex items-center gap-4">
-                    <button className="px-4 py-2.5 bg-primary text-primary-foreground rounded-xl font-bold flex items-center gap-2 hover:bg-primary/90 transition-colors">
-                        JP → EN <ChevronDown size={16} />
+                    <button
+                        onClick={() => setSearchMode(searchMode === 'JP-EN' ? 'EN-JP' : 'JP-EN')}
+                        className="px-4 py-2.5 bg-primary text-primary-foreground rounded-xl font-bold flex items-center gap-2 hover:bg-primary/90 transition-colors whitespace-nowrap"
+                    >
+                        {searchMode === 'JP-EN' ? 'JP → EN' : 'EN → JP'} <ChevronDown size={16} />
                     </button>
 
                     <div className="flex-1 relative">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
                         <input
                             type="text"
-                            placeholder="Search for a word or sentence..."
+                            placeholder={searchMode === 'JP-EN' ? "Search for a word or sentence..." : "Search for an English word..."}
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             className="w-full pl-12 pr-24 py-3 bg-muted rounded-xl border-none focus:outline-none focus:ring-2 focus:ring-primary/20 text-lg font-jp"
                         />
                         <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
                             {query && <button onClick={() => setQuery('')} className="p-2 text-muted-foreground hover:text-foreground"><X size={18} /></button>}
-                            <button className="p-2 text-muted-foreground hover:text-primary"><PenTool size={18} /></button>
-                            <button className="p-2 text-muted-foreground hover:text-primary"><Mic size={18} /></button>
-                            <button className="p-2 text-muted-foreground hover:text-primary"><ImageIcon size={18} /></button>
                         </div>
                     </div>
                 </div>
