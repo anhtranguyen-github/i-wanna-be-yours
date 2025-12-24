@@ -345,10 +345,10 @@ export default function ExamSessionPage() {
             </header>
 
             {/* ===== MAIN CONTENT ===== */}
-            <div ref={contentRef} className="flex-1 flex overflow-hidden">
+            <div ref={contentRef} className="flex-1 flex min-h-0">
                 <aside
                     className={`
-                        fixed lg:sticky lg:top-0 lg:h-[calc(100vh-5.5rem)] inset-y-0 lg:inset-y-auto left-0 lg:left-auto z-40 w-80 
+                        fixed lg:sticky lg:top-[5.5rem] lg:h-[calc(100vh-5.5rem)] inset-y-0 lg:inset-y-auto left-0 lg:left-auto z-40 w-80 
                         transform transition-all duration-500 lg:transform-none select-none
                         ${isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
                         bg-background lg:bg-transparent border-r border-border lg:border-none
@@ -445,7 +445,7 @@ export default function ExamSessionPage() {
                 </aside>
 
                 {/* ===== QUESTION AREA ===== */}
-                <main className="flex-1 p-6 md:p-12 overflow-y-auto custom-scrollbar">
+                <main className="flex-1 p-6 md:p-12">
                     {displayMode === "FOCUS" ? (
                         <div className="animate-in fade-in slide-in-from-right-4 duration-500">
                             <FocusModeView

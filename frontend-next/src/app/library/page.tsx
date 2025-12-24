@@ -9,21 +9,21 @@ const routes = [
         description: "Listen to Japanese podcasts and videos.",
         href: "/library/podcasts",
         icon: <Headphones className="w-6 h-6" />,
-        color: "bg-blue-50 text-blue-600"
+        color: "bg-blue-100 text-blue-700"
     },
     {
         title: "Reading",
         description: "Japanese short stories with translations.",
         href: "/library/reading",
         icon: <BookOpen className="w-6 h-6" />,
-        color: "bg-primary/10 text-primary"
+        color: "bg-primary/20 text-primary"
     },
     {
         title: "Mnemonics",
         description: "Memory aids for Kanji and vocabulary.",
         href: "/library/mnemonics",
         icon: <Brain className="w-6 h-6" />,
-        color: "bg-accent/10 text-accent"
+        color: "bg-accent/20 text-accent"
     },
     {
         title: "Grammar Library",
@@ -37,21 +37,21 @@ const routes = [
         description: "Essential words for all JLPT levels.",
         href: "/library/vocabulary",
         icon: <BookOpen className="w-6 h-6" />,
-        color: "bg-teal-50 text-teal-600"
+        color: "bg-teal-100 text-teal-700"
     },
     {
         title: "Kanji",
         description: "Master kanji and their readings.",
         href: "/library/kanji",
         icon: <span className="text-xl font-jp font-bold">漢</span>,
-        color: "bg-red-50 text-red-600"
+        color: "bg-red-100 text-red-700"
     },
     {
         title: "Resources & Assets",
         description: "Your uploaded files and materials.",
         href: "/library/resources",
         icon: <FileText className="w-6 h-6" />,
-        color: "bg-indigo-50 text-indigo-600"
+        color: "bg-indigo-100 text-indigo-700"
     },
 ];
 

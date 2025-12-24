@@ -58,16 +58,16 @@ const config: Config = {
 				'text-dark': '#2C3E50',
 				'bg-canvas': '#FFFFFF', // White
 				primary: {
-					DEFAULT: '#FA8072', // Salmon
-					foreground: '#FFFFFF'
+					DEFAULT: 'hsl(var(--primary))',
+					foreground: 'hsl(var(--primary-foreground))'
 				},
 				secondary: {
-					DEFAULT: '#87CEEB', // Sky Blue
-					foreground: '#FFFFFF'
+					DEFAULT: 'hsl(var(--secondary))',
+					foreground: 'hsl(var(--secondary-foreground))'
 				},
 				accent: {
-					DEFAULT: '#50C878', // Emerald
-					foreground: '#FFFFFF'
+					DEFAULT: 'hsl(var(--accent))',
+					foreground: 'hsl(var(--accent-foreground))'
 				},
 				green: '#50C878',
 				background: 'hsl(var(--background))',
