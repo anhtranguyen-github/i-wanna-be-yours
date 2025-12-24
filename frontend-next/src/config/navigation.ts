@@ -43,7 +43,7 @@ export const NAV_CONFIG: NavSection[] = [
         label: 'Game',
         href: '/game',
         icon: Gamepad2,
-        matchPaths: ['/game'],
+        matchPaths: ['/game', '/flashcards'],
     },
     {
         id: 'library',
@@ -74,7 +74,6 @@ export const NAV_CONFIG: NavSection[] = [
         matchPaths: [
             '/practice',
             '/jlpt',
-            '/flashcards',
             '/quiz',
             '/kanji-dashboard',
             // Example of explicit child routes that might not share the prefix

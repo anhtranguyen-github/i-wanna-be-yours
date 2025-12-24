@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { GraduationCap, Brain, BookCheck, Timer, Zap, ArrowRight, Lock, Flame, LayoutGrid, Target as TargetIcon, History } from "lucide-react";
+import { GraduationCap, BookCheck, ArrowRight, Lock, Flame, LayoutGrid, Target as TargetIcon, History } from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import { useGlobalAuth } from "@/context/GlobalAuthContext";
 
@@ -28,15 +28,6 @@ const practiceCategories: PracticeCategory[] = [
         bgColor: "bg-primary/10",
     },
     {
-        id: "flashcards",
-        title: "Flashcards",
-        description: "Master vocabulary and kanji through spaced repetition.",
-        icon: <Brain size={24} />,
-        href: "/flashcards",
-        color: "text-blue-600",
-        bgColor: "bg-blue-50",
-    },
-    {
         id: "quizzes",
         title: "Quick Quizzes",
         description: "Rapid practice across grammar, vocabulary, and kanji.",
@@ -44,26 +35,6 @@ const practiceCategories: PracticeCategory[] = [
         href: "/practice/quiz",
         color: "text-foreground",
         bgColor: "bg-muted",
-    },
-    {
-        id: "speed-drill",
-        title: "Speed Drills",
-        description: "Timed exercises to improve recall speed.",
-        icon: <Timer size={24} />,
-        href: "/practice/speed-drill",
-        color: "text-muted-foreground",
-        bgColor: "bg-muted",
-        comingSoon: true,
-    },
-    {
-        id: "daily-challenge",
-        title: "Daily Challenge",
-        description: "Complete daily challenges to maintain your streak.",
-        icon: <Zap size={24} />,
-        href: "/practice/daily",
-        color: "text-accent",
-        bgColor: "bg-accent/10",
-        comingSoon: true,
     },
 ];
 
