@@ -54,7 +54,7 @@ export const defaultFeatures: FeatureItem[] = [
         description: "Discover new words and sentences.",
         icon: <SparklesIcon className="h-6 w-6" />,
         color: "bg-brand-softBlue",
-        href: "/tools/word-relations"
+        href: "/dictionary"
     },
     {
         name: "Kanji",

@@ -35,13 +35,6 @@ const routes = [
         color: "bg-primary/10 text-primary"
     },
     {
-        title: "Word Relations",
-        description: "Explore connections between words.",
-        href: "/tools/word-relations",
-        icon: <ArrowRightLeft className="w-6 h-6" />,
-        color: "bg-amber-50 text-amber-600"
-    },
-    {
         title: "Auto Task",
         description: "Automated learning tasks.",
         href: "/tools/auto-task",
