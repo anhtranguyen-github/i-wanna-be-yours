@@ -5,7 +5,7 @@ import { X, Sparkles, Save, Loader2 } from 'lucide-react';
 import { ExamConfigForm } from './ExamConfigForm';
 import { ExamChatAssistant } from './ExamChatAssistant';
 import { ExamPreview } from './ExamPreview';
-import { JLPTLevel, SkillType, TimerMode, Question, UserCreatedExam } from '@/types/practice';
+import { JLPTLevel, SkillType, TimerMode, Question, UserCreatedExam, ExamConfig } from '@/types/practice';
 import * as jlptService from '@/services/jlptService';
 import { useUser } from '@/context/UserContext';
 
@@ -79,8 +79,25 @@ export function CreateExamModal({ isOpen, onClose, onExamCreated }: CreateExamMo
             const tempId = `user-exam-${Date.now()}`;
             let examId = '';
 
+            const nodeConfig: ExamConfig = {
+                id: tempId,
+                title: formState.title,
+                description: formState.description,
+                mode: formState.mode,
+                tags: {
+                    level: formState.level,
+                    skills: formState.skills,
+                    origin: 'manual',
+                    timerMode: formState.timerMode,
+                },
+                stats: {
+                    questionCount: formState.questionCount,
+                    timeLimitMinutes: formState.timeLimitMinutes || undefined,
+                }
+            };
+
             const examPayload = {
-                config: { ...formState, id: tempId },
+                config: nodeConfig,
                 questions: generatedQuestions,
                 origin: 'manual' as const,
                 isPublic: formState.isPublic,

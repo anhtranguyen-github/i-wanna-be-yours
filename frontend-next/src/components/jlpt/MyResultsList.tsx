@@ -88,7 +88,7 @@ export function MyResultsList({
                     <div className="flex items-start justify-between mb-6">
                         <div className="flex-1 space-y-2">
                             <div className="flex items-center gap-3">
-                                <h4 className="text-lg font-black text-foreground font-display tracking-tight group-hover:text-primary transition-colors">{attempt.examTitle}</h4>
+                                <h4 className="text-lg font-black text-foreground font-display tracking-tight group-hover:text-primary transition-colors">{attempt.nodeTitle || (attempt as any).examTitle}</h4>
                                 <span className={`px-3 py-1 rounded-full text-[9px] font-black font-display uppercase tracking-widest border  ${attempt.passed
                                     ? 'bg-primary/5 text-primary border-primary/20'
                                     : 'bg-destructive/5 text-destructive border-destructive/20'
@@ -98,7 +98,7 @@ export function MyResultsList({
                             </div>
                             <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.15em] text-neutral-ink font-display">
                                 <span className="px-2.5 py-1 bg-muted rounded  text-foreground/70">
-                                    {attempt.level}
+                                    {attempt.tags?.level || (attempt as any).level}
                                 </span>
                                 <span className="flex items-center gap-1.5 grayscale opacity-60">
                                     <Clock size={12} />
@@ -152,7 +152,7 @@ export function MyResultsList({
                             Review Result
                         </button>
                         <button
-                            onClick={() => onRetake(attempt.examId)}
+                            onClick={() => onRetake(attempt.nodeId || (attempt as any).examId)}
                             className="flex-1 flex items-center justify-center gap-2 py-3 px-6 bg-foreground text-background rounded-xl text-[10px] font-black uppercase tracking-widest font-display hover:opacity-90 active:scale-95 transition-all "
                         >
                             <RotateCcw size={16} />

@@ -87,7 +87,7 @@ export function MyExamsList({
                             </div>
                             <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.15em] text-neutral-ink font-display">
                                 <span className="px-2.5 py-1 bg-muted rounded  text-foreground/70">
-                                    {exam.config.level}
+                                    {exam.config.tags.level}
                                 </span>
                                 <span className="flex items-center gap-1.5 opacity-60">
                                     <Clock size={12} />
@@ -145,7 +145,7 @@ export function MyExamsList({
 
                     {/* Skills Tags */}
                     <div className="flex flex-wrap gap-2 mb-6">
-                        {exam.config.skills.map((skill) => (
+                        {exam.config.tags.skills.map((skill) => (
                             <span
                                 key={skill}
                                 className="px-3 py-1.5 bg-primary/5 text-primary border border-primary/20 rounded-full text-[9px] font-black font-display uppercase tracking-widest "
@@ -157,10 +157,10 @@ export function MyExamsList({
 
                     {/* Meta Stats */}
                     <div className="flex items-center gap-6 text-[10px] font-black uppercase tracking-widest text-neutral-ink font-display mb-8">
-                        {exam.config.timerMode !== 'UNLIMITED' && exam.config.timeLimitMinutes && (
+                        {exam.config.tags.timerMode !== 'UNLIMITED' && exam.config.stats.timeLimitMinutes && (
                             <span className="flex items-center gap-2">
                                 <Clock size={14} />
-                                <span className="text-foreground/80">{exam.config.timeLimitMinutes}</span> MINS
+                                <span className="text-foreground/80">{exam.config.stats.timeLimitMinutes}</span> MINS
                             </span>
                         )}
                         {exam.timesAttempted > 0 && (

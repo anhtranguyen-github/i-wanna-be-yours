@@ -50,7 +50,7 @@ interface SessionResults {
 interface QuestionResult {
     questionId: string;
     isCorrect: boolean;
-    userAnswer: string | null;
+    userAnswer: string | string[] | null;
     correctAnswer: string;
 }
 

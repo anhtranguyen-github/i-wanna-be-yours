@@ -71,8 +71,8 @@ export function ExamChatAssistant({
                 explanation: `This tests your understanding of ${skill.toLowerCase()} at the ${level} level.`,
                 tags: {
                     level,
-                    skill,
-                    difficulty: Math.floor(Math.random() * 3) + 2,
+                    skills: [skill],
+                    origin: 'ai',
                 },
             });
         }
@@ -218,14 +218,14 @@ export function ExamChatAssistant({
                         className={`flex gap-3 ${message.role === 'user' ? 'flex-row-reverse' : ''}`}
                     >
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${message.role === 'assistant'
-                                ? 'bg-gradient-to-br from-emerald-400 to-teal-500 text-white'
-                                : 'bg-slate-200 text-slate-600'
+                            ? 'bg-gradient-to-br from-emerald-400 to-teal-500 text-white'
+                            : 'bg-slate-200 text-slate-600'
                             }`}>
                             {message.role === 'assistant' ? <Bot size={16} /> : <User size={16} />}
                         </div>
                         <div className={`max-w-[80%] p-4 rounded-2xl ${message.role === 'assistant'
-                                ? 'bg-white border border-slate-200 text-slate-700'
-                                : 'bg-brand-green text-white'
+                            ? 'bg-white border border-slate-200 text-slate-700'
+                            : 'bg-brand-green text-white'
                             }`}>
                             <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                         </div>

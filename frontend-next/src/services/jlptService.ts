@@ -121,7 +121,7 @@ export function calculateExamResult(options: CalculateResultOptions): ExamAttemp
     const skillStats: Record<string, { total: number; correct: number }> = {};
 
     for (const question of questions) {
-        const skill = question.tags.skill;
+        const skill = question.tags.skills[0] || 'VOCABULARY';
         if (!skillStats[skill]) {
             skillStats[skill] = { total: 0, correct: 0 };
         }
@@ -161,10 +161,14 @@ export function calculateExamResult(options: CalculateResultOptions): ExamAttemp
 
     return {
         id: `attempt-${Date.now()}`,
-        examId,
-        examTitle,
-        examMode,
-        level,
+        nodeId: examId,
+        nodeTitle: examTitle,
+        mode: examMode as any,
+        tags: {
+            level: level as any,
+            skills: Object.keys(skillStats) as any[],
+            origin: 'system'
+        },
         totalQuestions,
         correctAnswers,
         incorrectAnswers,
@@ -176,7 +180,7 @@ export function calculateExamResult(options: CalculateResultOptions): ExamAttemp
         timeTakenSeconds,
         skillBreakdown,
         answers,
-    };
+    } as any;
 }
 
 // === API Functions (for authenticated users) ===
