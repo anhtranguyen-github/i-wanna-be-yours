@@ -11,7 +11,7 @@ export default function JLPTExamRedirect() {
     useEffect(() => {
         const targetUrl = examId ? `/practice/jlpt/session/${examId}` : "/practice";
         router.replace(targetUrl);
-    }, [examId]); // Only depend on examId, router is stable
+    }, [router, examId]);
 
     return (
         <div className="min-h-screen bg-background flex items-center justify-center">

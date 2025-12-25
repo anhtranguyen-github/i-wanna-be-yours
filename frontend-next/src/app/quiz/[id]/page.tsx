@@ -9,10 +9,9 @@ export default function QuizRedirect() {
     const id = params?.id as string | undefined;
 
     useEffect(() => {
-        // Redirect to the new practice quiz route
         const targetUrl = id ? `/practice/quiz/${id}` : "/practice";
         router.replace(targetUrl);
-    }, [id]); // Only depend on id, router is stable
+    }, [router, id]);
 
     return (
         <div className="min-h-screen bg-background flex items-center justify-center">
