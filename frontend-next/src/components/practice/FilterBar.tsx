@@ -27,31 +27,31 @@ export default function FilterBar({
     return (
         <div className="flex flex-wrap items-center gap-4">
             {/* Level Filter */}
-            <div className="relative">
-                <label className="block text-xs font-bold text-muted-foreground mb-1.5 ml-1">Level</label>
+            <div className="relative min-w-[160px]">
+                <label className="block text-[10px] font-black text-neutral-ink/40 uppercase tracking-widest mb-2 ml-1">Cognitive Level</label>
                 <select
                     value={selectedLevel}
                     onChange={(e) => onLevelChange(e.target.value as JLPTLevel | "ALL")}
-                    className="appearance-none bg-card border border-border rounded-xl px-4 py-2.5 pr-10 text-sm font-bold text-foreground cursor-pointer hover:border-primary/50 focus:outline-none focus:border-primary transition-colors"
+                    className="appearance-none w-full bg-neutral-white border border-neutral-gray/30 rounded-2xl px-5 py-3 pr-12 text-xs font-black text-neutral-ink cursor-pointer hover:border-primary-strong/50 focus:outline-none focus:border-primary-strong focus:ring-4 focus:ring-primary/10 transition-all font-display shadow-sm"
                 >
                     <option value="ALL">All Levels</option>
                     {levels.filter((l) => l !== "ALL").map((level) => (
                         <option key={level} value={level}>JLPT {level}</option>
                     ))}
                 </select>
-                <ChevronDown size={16} className="absolute right-3 bottom-3 text-muted-foreground pointer-events-none" />
+                <ChevronDown size={14} className="absolute right-5 bottom-4 text-neutral-ink pointer-events-none" />
             </div>
 
             {/* Skill Filter */}
-            <div className="relative">
-                <label className="block text-xs font-bold text-muted-foreground mb-1.5 ml-1">Skill</label>
+            <div className="relative min-w-[200px]">
+                <label className="block text-[10px] font-black text-neutral-ink/40 uppercase tracking-widest mb-2 ml-1">Domain Specification</label>
                 <select
                     value={selectedSkill}
                     onChange={(e) => onSkillChange(e.target.value as SkillType | "ALL")}
                     disabled={isSkillDisabled}
                     className={`
-                        appearance-none bg-card border border-border rounded-xl px-4 py-2.5 pr-10 text-sm font-bold cursor-pointer focus:outline-none transition-colors
-                        ${isSkillDisabled ? "opacity-50 cursor-not-allowed text-muted-foreground" : "text-foreground hover:border-primary/50 focus:border-primary"}
+                        appearance-none w-full bg-neutral-white border border-neutral-gray/30 rounded-2xl px-5 py-3 pr-12 text-xs font-black cursor-pointer focus:outline-none focus:border-primary-strong focus:ring-4 focus:ring-primary/10 transition-all font-display shadow-sm
+                        ${isSkillDisabled ? "opacity-30 cursor-not-allowed text-neutral-ink/40" : "text-neutral-ink hover:border-primary-strong/50"}
                     `}
                 >
                     <option value="ALL">All Skills</option>
@@ -59,7 +59,7 @@ export default function FilterBar({
                         <option key={skill} value={skill}>{skill.charAt(0) + skill.slice(1).toLowerCase()}</option>
                     ))}
                 </select>
-                <ChevronDown size={16} className="absolute right-3 bottom-3 text-muted-foreground pointer-events-none" />
+                <ChevronDown size={14} className="absolute right-5 bottom-4 text-neutral-ink pointer-events-none" />
             </div>
         </div>
     );
