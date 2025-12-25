@@ -47,7 +47,7 @@ const config: Config = {
 				neutral: {
 					white: '#FAFAF7',   // N-01 Rice White
 					beige: '#EFE6D8',   // N-02 Paper Beige
-					gray: '#666666',    // N-03 Stone Gray (Darkened)
+					gray: '#4A4A4A',    // N-04 Ink Gray (Black equivalent)
 					ink: '#4A4A4A',     // N-04 Ink Gray
 					night: '#2E2E2E',   // N-05 Night Ink
 				},
