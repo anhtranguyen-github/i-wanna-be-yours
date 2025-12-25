@@ -35,6 +35,7 @@ export default function UnifiedSessionPage() {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
+    const [isRedirecting, setIsRedirecting] = useState(false);
 
     // Initialize timer based on node config
     useEffect(() => {
@@ -89,7 +90,29 @@ export default function UnifiedSessionPage() {
     const handleSubmit = useCallback(() => {
         setIsSubmitted(true);
         setShowSubmitConfirm(false);
-    }, []);
+        setIsRedirecting(true);
+
+        // Save session results for the results page
+        try {
+            const sessionResult = {
+                nodeId,
+                answers,
+                timestamp: new Date().toISOString(),
+                timeSpentSeconds: node?.stats.timeLimitMinutes
+                    ? (node.stats.timeLimitMinutes * 60 - timeRemaining)
+                    : 0
+            };
+            localStorage.setItem(`last_practice_session`, JSON.stringify(sessionResult));
+            localStorage.setItem(`practice_session_${nodeId}`, JSON.stringify(sessionResult));
+        } catch (e) {
+            console.error("Failed to save practice results:", e);
+        }
+
+        // Redirect after a short delay for feedback
+        setTimeout(() => {
+            router.push(`/practice/result/${nodeId}`);
+        }, 1200);
+    }, [nodeId, router, answers, node, timeRemaining]);
 
     const handleViewResults = () => {
         router.push(`/practice/result/${nodeId}`);
@@ -327,6 +350,21 @@ export default function UnifiedSessionPage() {
                             </button>
                         </div>
                     </div>
+                </div>
+            )}
+
+            {/* Redirecting Overlay */}
+            {isRedirecting && (
+                <div className="fixed inset-0 z-[110] flex flex-col items-center justify-center bg-background/90 backdrop-blur-md">
+                    <div className="relative w-24 h-24 mb-6">
+                        <div className="absolute inset-0 border-4 border-primary/20 rounded-full"></div>
+                        <div className="absolute inset-0 border-4 border-primary rounded-full border-t-transparent animate-spin"></div>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <Target className="text-primary animate-pulse" size={32} />
+                        </div>
+                    </div>
+                    <h3 className="text-2xl font-black text-foreground font-display mb-2">Analyzing your results...</h3>
+                    <p className="text-muted-foreground font-bold animate-pulse">Calculating score and preparing insights</p>
                 </div>
             )}
         </div>

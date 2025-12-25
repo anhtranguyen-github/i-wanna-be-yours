@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { AUTH_SESSION_EXPIRED_EVENT } from '@/lib/authFetch';
 
 // Define the shape of the features/offer context we might pass when opening auth
-export type AuthFlowType = 'CHAT' | 'PRACTICE' | 'STUDY_PLAN' | 'LIBRARY' | 'GENERAL';
+export type AuthFlowType = 'CHAT' | 'PRACTICE' | 'STUDY_PLAN' | 'LIBRARY' | 'DICTIONARY' | 'FLASHCARDS' | 'GENERAL';
 
 export interface AuthFeatureContext {
     title?: string;

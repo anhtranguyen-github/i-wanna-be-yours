@@ -13,9 +13,10 @@ interface ResultShellProps {
     result: UnifiedSessionResult;
     onRetry?: () => void;
     customActions?: React.ReactNode;
+    children?: React.ReactNode;
 }
 
-export function ResultShell({ result, onRetry, customActions }: ResultShellProps) {
+export function ResultShell({ result, onRetry, customActions, children }: ResultShellProps) {
     return (
         <div className="min-h-screen bg-secondary/30 pb-20">
             {/* Success Atmosphere */}
@@ -110,6 +111,8 @@ export function ResultShell({ result, onRetry, customActions }: ResultShellProps
                                 <ArrowRight size={20} />
                             </Link>
                         </div>
+
+                        {children}
                     </div>
                 </div>
             </div>

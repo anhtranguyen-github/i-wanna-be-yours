@@ -26,7 +26,8 @@ import {
     CheckSquare,
     GraduationCap,
     FileText,
-    Sparkles
+    Sparkles,
+    Brain
 } from 'lucide-react';
 
 // Internal ArtifactIcon component
@@ -101,28 +102,24 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
         }
 
         if (historyMessages && historyMessages.length > 0) {
-            setMessages(historyMessages);
+            setMessages(historyMessages.map(m => ({
+                ...m,
+                timestamp: m.timestamp ? new Date(m.timestamp) : new Date()
+            } as ChatMessage)));
             setEffectiveConversationId(conversationIdProp);
         }
     }, [conversationIdProp, historyMessages, setEffectiveConversationId, setSessionId]);
 
-    const { streamState, sendMessage } = useChatStream({
-        conversationId: effectiveConversationId || undefined,
-        sessionId: sessionId || undefined,
-        onNewMessages: (newMessages) => {
-            setMessages(newMessages);
-        },
+    const { streamState, sendMessage: streamMessage } = useChatStream({
         onConversationCreated: (id) => {
             setEffectiveConversationId(id);
-            // Replace URL without reload
             router.replace(`/chat/${id}`, { scroll: false });
         },
-        onArtifactCreated: (artifact) => {
-            mutateArtifacts();
-            // Optional: openArtifact(artifact.id);
+        onArtifactsReceived: (artifacts, convoId) => {
+            mutateArtifacts(convoId);
         },
-        onStreamEnd: () => {
-            mutateArtifacts();
+        onMessageComplete: (msg) => {
+            setMessages(prev => [...prev, msg]);
         }
     });
 
@@ -143,21 +140,36 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
         const text = overrideInput !== undefined ? overrideInput : inputValue;
         if (!text.trim() || streamState.isStreaming) return;
 
+        // Optimistically add user message
+        const userMsg: ChatMessage = {
+            id: `user-${Date.now()}`,
+            role: 'user',
+            content: text,
+            timestamp: new Date()
+        };
+        setMessages(prev => [...prev, userMsg]);
+
         setInputValue('');
         setAttachedFiles([]);
 
         try {
-            await sendMessage(text, attachedFiles);
+            await streamMessage(
+                text,
+                effectiveConversationId,
+                sessionId || 'default-session',
+                attachedFiles.map(f => f.id)
+            );
         } catch (error) {
             console.error("Failed to send message:", error);
         }
     };
 
-    const handleFileUpload = (files: FileList) => {
-        const newFiles = Array.from(files).map(file => ({
+    const handleFileUpload = (files: File[]) => {
+        const newFiles: AttachedFile[] = files.map(file => ({
             id: Math.random().toString(36).substr(2, 9),
             file,
-            preview: file.type.startsWith('image/') ? URL.createObjectURL(file) : undefined
+            title: file.name,
+            uploading: false
         }));
         setAttachedFiles(prev => [...prev, ...newFiles]);
     };
@@ -210,6 +222,14 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
                                 <InformativeLoginCard
                                     title="Synchronize Your Journey"
                                     description="Log in to preserve your neural history and unlock advanced Hanachan analysis across all modules."
+                                    icon={Brain}
+                                    benefits={[
+                                        "Unlimited Neural History",
+                                        "Personalized Learning Metrics",
+                                        "Artifact Cloud Synchronization",
+                                        "Priority AI Processing"
+                                    ]}
+                                    flowType="CHAT"
                                 />
                             </div>
                         )}
@@ -217,7 +237,8 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
                 ) : (
                     <VirtualizedMessageList
                         messages={messages}
-                        isStreaming={streamState.isStreaming}
+                        isLoading={streamState.isStreaming}
+                        onOpenArtifact={openArtifact}
                     />
                 )}
             </div>
@@ -228,10 +249,10 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
                     value={inputValue}
                     onChange={setInputValue}
                     onSend={() => handleSend()}
-                    onFileUpload={handleFileUpload}
+                    onFileSelect={handleFileUpload}
                     attachedFiles={attachedFiles}
-                    onRemoveFile={removeFile}
-                    isStreaming={streamState.isStreaming}
+                    onRemoveAttachment={removeFile}
+                    isLoading={streamState.isStreaming}
                     placeholder={isGuest ? "Ask Hanachan anything..." : "Synchronize your thoughts..."}
                 />
             </div>
@@ -239,9 +260,11 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
             {/* Resource Modal */}
             {stagedResourceToProcess && (
                 <ResourcePreviewModal
-                    resource={stagedResourceToProcess}
+                    resource={stagedResourceToProcess as any}
+                    isOpen={!!stagedResourceToProcess}
                     onClose={closeResourcePreview}
-                    onProcess={(res) => {
+                    onAddToChat={() => {
+                        const res = stagedResourceToProcess;
                         consumeStagedResource();
                         handleSend(`Please analyze this ${res.type}: ${res.title}`);
                     }}
