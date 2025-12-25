@@ -8,51 +8,55 @@
 
 @layer base {
   :root {
-    /* Modern Zen Palette - Higher Contrast */
-    --background: 210 40% 98%;
-    /* Very clean white-blue background */
-    --foreground: 222 47% 11%;
-    /* Deep Navy for text */
+    /* OFFICIAL HANABIRA.ORG DESIGN SYSTEM PALETTE */
+    --background: 28 100% 96%;
+    /* S-01 Warm Cream: #FFF1E6 */
+    --foreground: 0 0% 29%;
+    /* N-04 Ink Gray: #4A4A4A */
 
-    --card: 0 0% 100%;
-    /* Pure White cards */
-    --card-foreground: 222 47% 11%;
+    --card: 60 25% 98%;
+    /* N-01 Rice White: #FAFAF7 */
+    --card-foreground: 0 0% 29%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover: 60 25% 98%;
+    --popover-foreground: 0 0% 29%;
 
-    --primary: 161 94% 30%;
-    /* Deep Forest/Emerald Green - High contrast */
-    --primary-foreground: 0 0% 100%;
+    --primary: 345 77% 83%;
+    /* P-01 Sakura Pink: #F6B1C3 */
+    --primary-foreground: 0 0% 29%;
 
-    --secondary: 13 90% 65%;
-    /* Vibrant Salmon/Coral - Clearly distinct from white */
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 20 25% 90%;
+    /* N-02 Paper Beige: #EFE6D8 */
+    --secondary-foreground: 0 0% 29%;
 
-    --muted: 210 40% 94%;
-    /* Soft but visible gray */
-    --muted-foreground: 215 25% 27%;
-    /* Much darker muted text for readability */
+    --muted: 20 25% 90%;
+    --muted-foreground: 0 0% 40%;
+    /* N-03 Stone Gray (Darkened): #666666 */
 
-    --accent: 45 93% 47%;
-    /* Deep Golden Yellow */
-    --accent-foreground: 222 47% 11%;
+    --accent: 45 97% 48%;
+    /* A-02 Golden Sun: #F2B705 */
+    --accent-foreground: 0 0% 29%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 8 70% 53%;
+    /* A-01 Torii Red: #D94A38 */
+    --destructive-foreground: 60 25% 98%;
 
-    --border: 214 32% 91%;
-    /* Clear borders */
-    --input: 214 32% 91%;
-    --ring: 161 94% 30%;
+    --border: 0 0% 60%;
+    /* N-03 (Border version) */
+    --input: 0 0% 72%;
+    --ring: 345 77% 83%;
 
-    --radius: 1rem;
+    --radius: 0.75rem;
 
-    /* Semantic Categories */
-    --kanji: 27 87% 50%;
+    /* Semantic Categories (Refined) */
+    --kanji: 8 70% 53%;
+    /* Torii Red */
     --grammar: 221 83% 53%;
-    --vocab: 161 94% 30%;
-    --reading: 330 80% 50%;
+    /* Indigo */
+    --vocab: 148 37% 67%;
+    /* Leaf Green */
+    --reading: 345 77% 83%;
+    /* Sakura Pink */
   }
 
   /* No dark mode per user request "Modern, Plain, Clean" often favors light/warm foundations */
