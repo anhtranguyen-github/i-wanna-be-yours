@@ -1,64 +1,88 @@
 "use client";
 
 /**
- * Unified Practice Result Page
- * Shows results for any PracticeNode type (QUIZ, SINGLE_EXAM, FULL_EXAM)
+ * Premium Practice Result Page
+ * Featuring "Midnight Sakura" design, Lantern Score Indicator, and AI Assistant
  */
 
-import React, { useMemo } from "react";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import React, { useMemo, useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
     Trophy, CheckCircle2, XCircle, AlertTriangle,
     RotateCcw, Home, ChevronRight, Target, BookOpen,
-    Clock, Flame, Star, ArrowLeft
+    Clock, Flame, Star, ArrowLeft, Sparkles, MessageSquare,
+    ChevronDown, ChevronUp, Brain, Volume2
 } from "lucide-react";
 import { mockExamConfigs, getQuestionsForExam } from "@/data/mockPractice";
+import { useUser } from "@/context/UserContext";
+import { useGlobalAuth } from "@/context/GlobalAuthContext";
+import { ResultShell } from "@/components/results/ResultShell";
+import { processPracticeResult } from "@/utils/resultProcessor";
 
-export default function UnifiedResultPage() {
+export default function PremiumResultPage() {
     const params = useParams();
     const router = useRouter();
-    const searchParams = useSearchParams();
     const nodeId = params?.nodeId as string;
+    const { user } = useUser();
+    const { openAuth } = useGlobalAuth();
+
+    const [sessionData, setSessionData] = useState<any>(null);
+    const [expandedQuestions, setExpandedQuestions] = useState<Set<string>>(new Set());
 
     // Load practice node and questions
     const node = useMemo(() => mockExamConfigs.find((e) => e.id === nodeId), [nodeId]);
     const questions = useMemo(() => (nodeId ? getQuestionsForExam(nodeId) : []), [nodeId]);
 
-    // In a real app, results would come from state/API
-    // For demo, generate mock results
-    const results = useMemo(() => {
-        if (!questions.length) return null;
+    // Load data from localStorage
+    useEffect(() => {
+        const stored = localStorage.getItem(`practice_session_${nodeId}`);
+        if (stored) {
+            try {
+                setSessionData(JSON.parse(stored));
+            } catch (e) {
+                console.error("Failed to parse session data", e);
+            }
+        }
+    }, [nodeId]);
 
-        // Simulate results - in production this would come from submitted answers
-        const totalQuestions = questions.length;
-        const correctAnswers = Math.floor(totalQuestions * 0.75); // 75% correct for demo
-        const incorrectAnswers = totalQuestions - correctAnswers;
-        const accuracy = Math.round((correctAnswers / totalQuestions) * 100);
+    const unifiedResult = useMemo(() => {
+        if (!node || !questions.length) return null;
+        return processPracticeResult(node, sessionData, questions);
+    }, [node, sessionData, questions]);
 
-        return {
-            totalQuestions,
-            correctAnswers,
-            incorrectAnswers,
-            accuracy,
-            timeSpent: node?.stats.timeLimitMinutes ? Math.floor(node.stats.timeLimitMinutes * 0.7 * 60) : 0,
-            maxStreak: Math.min(correctAnswers, 5),
-            weakAreas: questions.slice(0, 3).map(q => ({
-                id: q.id,
-                content: q.content
-            }))
-        };
-    }, [questions, node]);
+    const toggleQuestion = (id: string) => {
+        setExpandedQuestions(prev => {
+            const next = new Set(prev);
+            if (next.has(id)) next.delete(id);
+            else next.add(id);
+            return next;
+        });
+    };
+
+    const handleAskAI = (context?: string) => {
+        if (!user) {
+            openAuth('LOGIN', {
+                title: 'Hanachan AI Assistance',
+                description: 'Log in to get personalized explanations and study tips from Hanachan.',
+                flowType: 'PRACTICE'
+            });
+            return;
+        }
+        // In a real app, this would route to a chat or open a drawer
+        console.log("Asking AI with context:", context);
+        router.push(`/chat?message=${encodeURIComponent(`Can you explain why I was wrong with this question? ${context || ''}`)}`);
+    };
 
     // Error state
-    if (!node || !results) {
+    if (!node || !unifiedResult) {
         return (
             <div className="min-h-screen bg-background flex flex-col items-center justify-center p-8 text-center">
                 <div className="w-16 h-16 bg-destructive/10 text-destructive rounded-2xl flex items-center justify-center mb-6">
                     <AlertTriangle size={32} />
                 </div>
                 <h2 className="text-2xl font-black text-foreground font-display mb-2">Results Not Found</h2>
-                <p className="text-muted-foreground font-bold mb-6">The requested practice results could not be loaded.</p>
+                <p className="text-muted-foreground font-bold mb-6">We couldn&apos;t find your session data. Did you finish the practice?</p>
                 <Link
                     href="/practice"
                     className="px-6 py-3 bg-foreground text-background font-black font-display text-sm rounded-xl"
@@ -69,186 +93,102 @@ export default function UnifiedResultPage() {
         );
     }
 
-    const isPassed = results.accuracy >= 60;
-    const isExcellent = results.accuracy >= 80;
-
-    const formatTime = (seconds: number) => {
-        const mins = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return `${mins}:${secs.toString().padStart(2, "0")}`;
-    };
-
-    const getModeLabel = () => {
-        switch (node.mode) {
-            case 'QUIZ': return 'Quiz';
-            case 'SINGLE_EXAM': return 'Exam';
-            case 'FULL_EXAM': return 'Full Exam';
-            default: return 'Practice';
-        }
-    };
+    const wrongQuestions = questions.filter(q => {
+        const answers = sessionData?.answers || {};
+        return answers[q.id]?.selectedOptionId && answers[q.id]?.selectedOptionId !== q.correctOptionId;
+    });
 
     return (
-        <div className="min-h-screen bg-background py-12 px-6">
-            <div className="max-w-2xl mx-auto">
-                {/* Back Button */}
-                <Link
-                    href="/practice"
-                    className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-foreground mb-8"
+        <ResultShell
+            result={unifiedResult}
+            onRetry={() => router.push(`/practice/session/${nodeId}`)}
+            customActions={
+                <button
+                    onClick={() => handleAskAI()}
+                    className="px-10 py-5 bg-secondary text-white rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] flex items-center gap-3 hover:scale-105 transition-all shadow-xl shadow-secondary/20"
                 >
-                    <ArrowLeft size={16} />
-                    Back to Practice
-                </Link>
-
-                {/* Result Card */}
-                <div className="bg-card rounded-[3rem] border border-border/50 p-10 text-center relative overflow-hidden">
-                    {/* Background Glow */}
-                    <div className={`absolute top-0 right-0 w-64 h-64 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 ${isExcellent ? 'bg-primary/10' : isPassed ? 'bg-secondary/10' : 'bg-destructive/5'}`} />
-
-                    {/* Trophy Icon */}
-                    <div className={`w-24 h-24 mx-auto rounded-3xl flex items-center justify-center mb-8 ${isExcellent ? 'bg-primary/10 text-primary' :
-                        isPassed ? 'bg-secondary/10 text-secondary' :
-                            'bg-muted text-muted-foreground'
-                        }`}>
-                        <Trophy size={48} />
-                    </div>
-
-                    {/* Title */}
-                    <h1 className="text-4xl font-black text-foreground font-display tracking-tight mb-2">
-                        {isExcellent ? 'Excellent!' : isPassed ? 'Good Job!' : 'Keep Practicing!'}
-                    </h1>
-                    <p className="text-muted-foreground font-bold mb-2">{node.title}</p>
-                    <div className="flex justify-center gap-2 mb-8">
-                        <span className="px-2 py-1 bg-primary/10 text-primary rounded text-xs font-black uppercase tracking-widest">
-                            {node.tags.level}
-                        </span>
-                        <span className="px-2 py-1 bg-muted text-muted-foreground rounded text-xs font-black uppercase tracking-widest">
-                            {getModeLabel()}
-                        </span>
-                    </div>
-
-                    {/* Score Circle */}
-                    <div className="relative mb-8">
-                        <div className={`text-7xl font-black font-display tracking-tighter ${isExcellent ? 'text-primary' : isPassed ? 'text-foreground' : 'text-destructive'
-                            }`}>
-                            {results.accuracy}%
+                    <MessageSquare size={20} />
+                    Consult AI Tutor
+                </button>
+            }
+        >
+            {/* Detailed Review Section */}
+            {wrongQuestions.length > 0 && (
+                <div className="mt-20 space-y-10">
+                    <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 bg-rose-500/10 text-rose-500 rounded-xl flex items-center justify-center">
+                            <XCircle size={20} />
                         </div>
-                        <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mt-2">
-                            Accuracy
+                        <div>
+                            <h3 className="text-2xl font-black text-neutral-ink font-display">Optimization Targets</h3>
+                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-ink/20">Review your incorrect transmissions</p>
                         </div>
                     </div>
 
-                    {/* Stats Grid */}
-                    <div className="grid grid-cols-3 gap-4 mb-8">
-                        <div className="bg-muted/30 rounded-2xl p-4">
-                            <div className="flex items-center justify-center gap-2 text-2xl font-black text-primary font-display">
-                                <CheckCircle2 size={20} />
-                                {results.correctAnswers}
-                            </div>
-                            <div className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mt-1">Correct</div>
-                        </div>
-                        <div className="bg-muted/30 rounded-2xl p-4">
-                            <div className="flex items-center justify-center gap-2 text-2xl font-black text-destructive font-display">
-                                <XCircle size={20} />
-                                {results.incorrectAnswers}
-                            </div>
-                            <div className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mt-1">Incorrect</div>
-                        </div>
-                        <div className="bg-muted/30 rounded-2xl p-4">
-                            <div className="flex items-center justify-center gap-2 text-2xl font-black text-foreground font-display">
-                                <Target size={20} />
-                                {results.totalQuestions}
-                            </div>
-                            <div className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mt-1">Total</div>
-                        </div>
-                    </div>
+                    <div className="space-y-4">
+                        {wrongQuestions.map((q) => {
+                            const userAnswerId = sessionData?.answers[q.id]?.selectedOptionId;
+                            const userOption = q.options.find(o => o.id === userAnswerId);
+                            const correctOption = q.options.find(o => o.id === q.correctOptionId);
+                            const isExpanded = expandedQuestions.has(q.id);
 
-                    {/* Additional Stats */}
-                    <div className="flex justify-center gap-6 mb-8">
-                        {results.timeSpent > 0 && (
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                <Clock size={16} />
-                                <span className="font-bold">{formatTime(results.timeSpent)}</span>
-                            </div>
-                        )}
-                        {results.maxStreak > 0 && (
-                            <div className="flex items-center gap-2 text-sm text-accent">
-                                <Flame size={16} />
-                                <span className="font-bold">{results.maxStreak} streak</span>
-                            </div>
-                        )}
-                    </div>
+                            return (
+                                <div key={q.id} className="bg-neutral-white border border-neutral-gray/10 rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                                    <button
+                                        onClick={() => toggleQuestion(q.id)}
+                                        className="w-full text-left p-8 flex items-center justify-between group"
+                                    >
+                                        <div className="flex-1">
+                                            <span className="text-[9px] font-black uppercase tracking-widest text-primary-strong/40 mb-2 block">{q.type} Protocol</span>
+                                            <p className="text-xl font-black text-neutral-ink group-hover:text-primary-strong transition-colors">{q.content}</p>
+                                        </div>
+                                        <div className="flex items-center gap-6">
+                                            <div className="text-right hidden md:block">
+                                                <span className="block text-[8px] font-black uppercase text-rose-500/40">Your Response</span>
+                                                <span className="text-sm font-bold text-rose-500">{userOption?.text || 'No Answer'}</span>
+                                            </div>
+                                            {isExpanded ? <ChevronUp size={24} className="text-neutral-ink/20" /> : <ChevronDown size={24} className="text-neutral-ink/20" />}
+                                        </div>
+                                    </button>
 
-                    {/* Weak Areas */}
-                    {results.weakAreas.length > 0 && results.accuracy < 100 && (
-                        <div className="text-left mb-8 bg-muted/20 rounded-2xl p-6 border border-border/30">
-                            <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-4 flex items-center gap-2">
-                                <BookOpen size={14} />
-                                Areas to Review
-                            </h3>
-                            <div className="space-y-2">
-                                {results.weakAreas.map((item, i) => (
-                                    <div key={i} className="flex items-start gap-3 text-sm">
-                                        <span className="w-5 h-5 bg-destructive/10 text-destructive rounded flex items-center justify-center font-black text-xs shrink-0">
-                                            {i + 1}
-                                        </span>
-                                        <span className="text-foreground/80 font-jp line-clamp-1">{item.content}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
+                                    {isExpanded && (
+                                        <div className="px-8 pb-8 pt-4 border-t border-neutral-gray/5 bg-neutral-beige/10 space-y-6">
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                <div className="p-6 bg-rose-500/5 rounded-2xl border border-rose-500/10">
+                                                    <span className="text-[9px] font-black uppercase tracking-widest text-rose-500 mb-2 block">Detected Error</span>
+                                                    <p className="text-neutral-ink font-bold">{userOption?.text}</p>
+                                                </div>
+                                                <div className="p-6 bg-emerald-500/5 rounded-2xl border border-emerald-500/10">
+                                                    <span className="text-[9px] font-black uppercase tracking-widest text-emerald-500 mb-2 block">Correct Synchronity</span>
+                                                    <p className="text-neutral-ink font-bold">{correctOption?.text}</p>
+                                                </div>
+                                            </div>
 
-                    {/* Actions */}
-                    <div className="flex gap-4">
-                        <Link
-                            href="/practice"
-                            className="flex-1 py-4 bg-muted text-foreground font-black font-display text-sm uppercase tracking-widest rounded-2xl hover:bg-muted/80 transition-colors flex items-center justify-center gap-2"
-                        >
-                            <Home size={18} />
-                            Practice Hub
-                        </Link>
-                        <Link
-                            href={`/practice/session/${nodeId}`}
-                            className="flex-1 py-4 bg-foreground text-background font-black font-display text-sm uppercase tracking-widest rounded-2xl hover:opacity-90 transition-colors flex items-center justify-center gap-2"
-                        >
-                            <RotateCcw size={18} />
-                            Try Again
-                        </Link>
+                                            {q.explanation && (
+                                                <div className="p-8 bg-neutral-white border border-neutral-gray/10 rounded-2xl">
+                                                    <div className="flex items-center gap-3 mb-4">
+                                                        <Brain size={16} className="text-primary-strong" />
+                                                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-ink/40">Linguistic Analysis</span>
+                                                    </div>
+                                                    <p className="text-neutral-ink/60 font-bold leading-relaxed">{q.explanation}</p>
+                                                </div>
+                                            )}
+
+                                            <button
+                                                onClick={() => handleAskAI(`I got this question wrong: "${q.content}". The correct answer was "${q.options.find(o => o.id === q.correctOptionId)?.text}". Can you explain why and give more examples?`)}
+                                                className="w-full py-4 bg-neutral-ink text-white rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-primary-strong transition-all"
+                                            >
+                                                <Sparkles size={14} className="text-secondary" />
+                                                Explain this specific case
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
-
-                {/* Suggested Next */}
-                <div className="mt-8 bg-card rounded-2xl border border-border p-6">
-                    <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-4">
-                        Continue Learning
-                    </h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {mockExamConfigs
-                            .filter(n => n.id !== nodeId && n.tags.level === node.tags.level)
-                            .slice(0, 2)
-                            .map(n => (
-                                <Link
-                                    key={n.id}
-                                    href={`/practice/session/${n.id}`}
-                                    className="p-4 bg-muted/30 rounded-xl hover:bg-muted/50 transition-colors group"
-                                >
-                                    <div className="flex items-center justify-between mb-2">
-                                        <span className="px-2 py-0.5 bg-primary/10 text-primary rounded text-[10px] font-black uppercase tracking-widest">
-                                            {n.tags.level}
-                                        </span>
-                                        <ChevronRight size={16} className="text-muted-foreground group-hover:text-primary transition-colors" />
-                                    </div>
-                                    <h4 className="font-bold text-foreground group-hover:text-primary transition-colors">
-                                        {n.title}
-                                    </h4>
-                                    <p className="text-xs text-muted-foreground mt-1">
-                                        {n.stats.questionCount} questions
-                                    </p>
-                                </Link>
-                            ))}
-                    </div>
-                </div>
-            </div>
-        </div>
+            )}
+        </ResultShell>
     );
 }

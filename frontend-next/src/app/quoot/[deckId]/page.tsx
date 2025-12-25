@@ -9,28 +9,19 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
-    Heart,
-    Zap,
-    Flame,
-    Trophy,
-    Clock,
-    ArrowLeft,
-    Play,
-    Loader2,
-    AlertTriangle,
-    CheckCircle2,
-    XCircle,
-    RotateCcw,
-    Home,
-    Star,
-    Volume2,
-    VolumeX
+    Heart, Zap, Clock, Shield, Target, Flame,
+    RotateCcw, ArrowLeft, CheckCircle2, XCircle, Trophy,
+    ShieldAlert, ChevronRight, Home, Play, Loader2, AlertTriangle,
+    Star, Volume2, VolumeX
 } from "lucide-react";
+import { ResultShell } from "@/components/results/ResultShell";
+import { processQuootResult } from "@/utils/resultProcessor";
 import {
     getQuootDeck,
     getQuootCards,
     generateOptions,
-    shuffleArray
+    shuffleArray,
+    mockQuootDecks
 } from "@/data/mockQuoot";
 import {
     QuootDeck,
@@ -382,123 +373,24 @@ export default function QuootSessionPage() {
         );
     }
 
-    // Game Over screen
-    if (gameState.status === 'GAME_OVER') {
-        return (
-            <div className="min-h-screen bg-background flex items-center justify-center p-6">
-                <div className="max-w-lg w-full bg-card rounded-[3rem] border border-border/50 p-10 text-center relative overflow-hidden">
-                    <div className="w-24 h-24 mx-auto bg-destructive/10 rounded-3xl flex items-center justify-center mb-8">
-                        <XCircle size={48} className="text-destructive" />
-                    </div>
-
-                    <h1 className="text-4xl font-black text-foreground font-display tracking-tight mb-2">
-                        Game Over!
-                    </h1>
-                    <p className="text-muted-foreground font-bold mb-8">You ran out of lives</p>
-
-                    <div className="text-6xl font-black text-foreground font-display mb-2">
-                        {gameState.score.toLocaleString()}
-                    </div>
-                    <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-8">
-                        Points
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4 mb-8">
-                        <div className="bg-muted/30 rounded-2xl p-4">
-                            <div className="text-2xl font-black text-primary font-display">{gameState.correctCount}</div>
-                            <div className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Correct</div>
-                        </div>
-                        <div className="bg-muted/30 rounded-2xl p-4">
-                            <div className="text-2xl font-black text-accent font-display">{gameState.maxStreak}</div>
-                            <div className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Max Streak</div>
-                        </div>
-                    </div>
-
-                    <div className="flex gap-4">
-                        <button
-                            onClick={() => router.push('/quoot')}
-                            className="flex-1 py-4 bg-muted text-foreground font-black font-display text-sm uppercase tracking-widest rounded-2xl"
-                        >
-                            Exit
-                        </button>
-                        <button
-                            onClick={playAgain}
-                            className="flex-1 py-4 bg-foreground text-background font-black font-display text-sm uppercase tracking-widest rounded-2xl flex items-center justify-center gap-2"
-                        >
-                            <RotateCcw size={18} /> Retry
-                        </button>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    // Results screen
-    if (gameState.status === 'RESULTS') {
-        const accuracy = Math.round((gameState.correctCount / cards.length) * 100);
-        const isPerfect = accuracy === 100;
+    // Results / Game Over screen
+    if (gameState.status === 'RESULTS' || gameState.status === 'GAME_OVER') {
+        const unifiedResult = processQuootResult(deck, gameState, cards);
 
         return (
-            <div className="min-h-screen bg-background flex items-center justify-center p-6">
-                <div className="max-w-lg w-full bg-card rounded-[3rem] border border-border/50 p-10 text-center relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
-
-                    <div className={`w-24 h-24 mx-auto rounded-3xl flex items-center justify-center mb-8 ${isPerfect ? 'bg-primary/10 text-primary' : accuracy >= 70 ? 'bg-secondary/10 text-secondary' : 'bg-muted text-muted-foreground'
-                        }`}>
-                        <Trophy size={48} />
-                    </div>
-
-                    <h1 className="text-4xl font-black text-foreground font-display tracking-tight mb-2">
-                        {isPerfect ? 'Perfect!' : accuracy >= 70 ? 'Great Job!' : 'Keep Practicing!'}
-                    </h1>
-                    <p className="text-muted-foreground font-bold mb-8">{deck.title}</p>
-
-                    <div className="text-6xl font-black text-foreground font-display mb-2">
-                        {gameState.score.toLocaleString()}
-                    </div>
-                    <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-8">
-                        Points
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-4 mb-8">
-                        <div className="bg-muted/30 rounded-2xl p-4">
-                            <div className="text-2xl font-black text-primary font-display">{accuracy}%</div>
-                            <div className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Accuracy</div>
-                        </div>
-                        <div className="bg-muted/30 rounded-2xl p-4">
-                            <div className="text-2xl font-black text-foreground font-display">{gameState.correctCount}/{cards.length}</div>
-                            <div className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Correct</div>
-                        </div>
-                        <div className="bg-muted/30 rounded-2xl p-4">
-                            <div className="text-2xl font-black text-accent font-display">{gameState.maxStreak}</div>
-                            <div className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Streak</div>
-                        </div>
-                    </div>
-
-                    {config.mode === 'CLASSIC' && gameState.lives > 0 && (
-                        <div className="flex justify-center gap-1 mb-8">
-                            {Array.from({ length: gameState.lives }).map((_, i) => (
-                                <Heart key={i} size={24} className="text-rose-500 fill-rose-500" />
-                            ))}
-                        </div>
-                    )}
-
-                    <div className="flex gap-4">
-                        <button
-                            onClick={() => router.push('/quoot')}
-                            className="flex-1 py-4 bg-muted text-foreground font-black font-display text-sm uppercase tracking-widest rounded-2xl"
-                        >
-                            <Home size={18} className="inline mr-2" /> Exit
-                        </button>
-                        <button
-                            onClick={playAgain}
-                            className="flex-1 py-4 bg-foreground text-background font-black font-display text-sm uppercase tracking-widest rounded-2xl"
-                        >
-                            <RotateCcw size={18} className="inline mr-2" /> Play Again
-                        </button>
-                    </div>
-                </div>
-            </div>
+            <ResultShell
+                result={unifiedResult}
+                onRetry={playAgain}
+                customActions={
+                    <button
+                        onClick={() => router.push('/quoot')}
+                        className="px-10 py-5 bg-neutral-white border-2 border-neutral-gray/10 text-neutral-ink rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] flex items-center gap-3 hover:border-primary-strong/40 transition-all shadow-lg shadow-neutral-ink/5"
+                    >
+                        <Home size={20} />
+                        Exit Arena
+                    </button>
+                }
+            />
         );
     }
 
