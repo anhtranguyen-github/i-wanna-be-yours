@@ -78,11 +78,11 @@ const GrammarExplanation: React.FC<DisplayWordProps> = ({
 
   return (
     <div className="bg-slate-100 p-4 shadow-lg rounded-md text-black mb-2 w-full prose mx-auto overflow-y-auto max-h-[700px]">
-      <div className="text-lg font-bold text-gray-800">
+      <div className="text-lg font-bold text-neutral-ink">
         Clicked Word: <span className="text-blue-600">{word || "None"}</span>
       </div>
       <div className="mt-4">
-        <h3 className="text-lg font-medium text-gray-800">Word Sentence:</h3>
+        <h3 className="text-lg font-medium text-neutral-ink">Word Sentence:</h3>
         <p className="mt-2 text-gray-600">
           {sentence && sentence.length > 0
             ? sentence.map((word, index) => (

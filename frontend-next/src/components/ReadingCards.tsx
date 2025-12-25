@@ -134,7 +134,7 @@ const ReadingCards: React.FC = () => {
               </div>
             </div>
 
-            <div className="mt-8 pt-6 border-t border-border/50 flex items-center justify-between text-[10px] font-black uppercase tracking-widest font-display text-muted-foreground/40">
+            <div className="mt-8 pt-6 border-t border-border/50 flex items-center justify-between text-[10px] font-black uppercase tracking-widest font-display text-neutral-ink">
               <span className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-reading animate-pulse-slow"></span>
                 {card.p_tag.replace('_', ' ')}

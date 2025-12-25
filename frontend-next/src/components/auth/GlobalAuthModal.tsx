@@ -151,7 +151,7 @@ export default function GlobalAuthModal() {
                         </div>
 
                         <div className="mt-auto pt-12 flex items-center gap-4">
-                            <div className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 font-display">Crafting Excellence in Education</div>
+                            <div className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-ink font-display">Crafting Excellence in Education</div>
                         </div>
                     </div>
                 </div>

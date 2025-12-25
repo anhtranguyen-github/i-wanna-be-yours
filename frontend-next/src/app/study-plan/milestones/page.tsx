@@ -66,7 +66,7 @@ function MilestonesContent() {
             case 'completed': return 'bg-brand-green text-white';
             case 'in_progress': return 'bg-yellow-500 text-white';
             case 'overdue': return 'bg-red-500 text-white';
-            default: return 'bg-gray-200 text-gray-500';
+            default: return 'bg-gray-200 text-neutral-ink';
         }
     };
 
@@ -90,7 +90,7 @@ function MilestonesContent() {
             <div className="min-h-screen bg-secondary py-12">
                 <div className="container mx-auto px-6 max-w-2xl text-center">
                     <div className="bg-neutral-white p-12 rounded-[2.5rem] border border-neutral-gray/20 shadow-xl">
-                        <Target className="w-16 h-16 mx-auto mb-6 text-gray-300" />
+                        <Target className="w-16 h-16 mx-auto mb-6 text-neutral-ink" />
                         <h2 className="text-2xl font-black text-brand-dark mb-4">
                             No Study Plan Found
                         </h2>
@@ -113,7 +113,7 @@ function MilestonesContent() {
                 {/* Back Link */}
                 <Link
                     href={`/study-plan/dashboard?plan=${plan.id}`}
-                    className="inline-flex items-center gap-2 text-neutral-ink/60 hover:text-primary-strong transition-colors font-black text-xs uppercase tracking-widest mb-8"
+                    className="inline-flex items-center gap-2 text-neutral-ink hover:text-primary-strong transition-colors font-black text-xs uppercase tracking-widest mb-8"
                 >
                     <ChevronLeft size={20} />
                     Back to Dashboard
@@ -134,7 +134,7 @@ function MilestonesContent() {
                                     Milestones
                                 </h1>
                             </div>
-                            <p className="text-neutral-ink/60 text-xs font-black uppercase tracking-widest">
+                            <p className="text-neutral-ink text-xs font-black uppercase tracking-widest">
                                 {completedCount} of {plan.milestones.length} completed
                             </p>
                         </div>
@@ -143,7 +143,7 @@ function MilestonesContent() {
                             <div className="text-4xl font-black text-neutral-ink">
                                 {Math.round(plan.overall_progress_percent)}%
                             </div>
-                            <div className="text-[10px] text-neutral-ink/40 font-black uppercase tracking-widest mt-1">Overall Progress</div>
+                            <div className="text-[10px] text-neutral-ink font-black uppercase tracking-widest mt-1">Overall Progress</div>
                         </div>
                     </div>
 
@@ -171,7 +171,7 @@ function MilestonesContent() {
                                 px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all duration-300
                                 ${filter === tab.id
                                     ? 'bg-neutral-white text-primary-strong shadow-md border border-neutral-gray/10'
-                                    : 'text-neutral-ink/70 hover:text-neutral-ink'
+                                    : 'text-neutral-ink hover:text-neutral-ink'
                                 }
                             `}
                         >
@@ -184,8 +184,8 @@ function MilestonesContent() {
                 <div className="space-y-4">
                     {filteredMilestones.length === 0 ? (
                         <div className="clay-card p-12 text-center">
-                            <Circle className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                            <p className="text-gray-500">No milestones match this filter.</p>
+                            <Circle className="w-12 h-12 mx-auto mb-4 text-neutral-ink" />
+                            <p className="text-neutral-ink">No milestones match this filter.</p>
                         </div>
                     ) : (
                         filteredMilestones.map((milestone) => {
@@ -231,12 +231,12 @@ function MilestonesContent() {
                                                 )}
                                             </div>
 
-                                            <p className="text-sm text-neutral-ink/80 font-medium mb-3">
+                                            <p className="text-sm text-neutral-ink font-medium mb-3">
                                                 {milestone.description}
                                             </p>
 
                                             {/* Meta Info */}
-                                            <div className="flex flex-wrap gap-4 text-xs text-neutral-ink/60 font-bold">
+                                            <div className="flex flex-wrap gap-4 text-xs text-neutral-ink font-bold">
                                                 <div className="flex items-center gap-1">
                                                     <Calendar size={14} />
                                                     {new Date(milestone.target_start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
@@ -255,7 +255,7 @@ function MilestonesContent() {
                                             {/* Progress Bar */}
                                             <div className="mt-4">
                                                 <div className="flex justify-between text-xs mb-1">
-                                                    <span className="text-gray-500">Progress</span>
+                                                    <span className="text-neutral-ink">Progress</span>
                                                     <span className="font-bold text-brand-dark">{Math.round(milestone.progress_percent)}%</span>
                                                 </div>
                                                 <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -271,7 +271,7 @@ function MilestonesContent() {
                                         </div>
 
                                         {/* Arrow */}
-                                        <ChevronRight size={20} className="text-gray-300 group-hover:text-brand-salmon transition-colors shrink-0 mt-4" />
+                                        <ChevronRight size={20} className="text-neutral-ink group-hover:text-brand-salmon transition-colors shrink-0 mt-4" />
                                     </div>
                                 </Link>
                             );

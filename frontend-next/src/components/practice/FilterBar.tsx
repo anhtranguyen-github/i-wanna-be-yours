@@ -28,7 +28,7 @@ export default function FilterBar({
         <div className="flex flex-wrap items-center gap-4">
             {/* Level Filter */}
             <div className="relative min-w-[160px]">
-                <label className="block text-[10px] font-black text-neutral-ink/40 uppercase tracking-widest mb-2 ml-1">Cognitive Level</label>
+                <label className="block text-[10px] font-black text-neutral-ink uppercase tracking-widest mb-2 ml-1">Cognitive Level</label>
                 <select
                     value={selectedLevel}
                     onChange={(e) => onLevelChange(e.target.value as JLPTLevel | "ALL")}
@@ -44,14 +44,14 @@ export default function FilterBar({
 
             {/* Skill Filter */}
             <div className="relative min-w-[200px]">
-                <label className="block text-[10px] font-black text-neutral-ink/40 uppercase tracking-widest mb-2 ml-1">Domain Specification</label>
+                <label className="block text-[10px] font-black text-neutral-ink uppercase tracking-widest mb-2 ml-1">Domain Specification</label>
                 <select
                     value={selectedSkill}
                     onChange={(e) => onSkillChange(e.target.value as SkillType | "ALL")}
                     disabled={isSkillDisabled}
                     className={`
                         appearance-none w-full bg-neutral-white border border-neutral-gray/30 rounded-2xl px-5 py-3 pr-12 text-xs font-black cursor-pointer focus:outline-none focus:border-primary-strong focus:ring-4 focus:ring-primary/10 transition-all font-display shadow-sm
-                        ${isSkillDisabled ? "opacity-30 cursor-not-allowed text-neutral-ink/40" : "text-neutral-ink hover:border-primary-strong/50"}
+                        ${isSkillDisabled ? "opacity-30 cursor-not-allowed text-neutral-ink" : "text-neutral-ink hover:border-primary-strong/50"}
                     `}
                 >
                     <option value="ALL">All Skills</option>

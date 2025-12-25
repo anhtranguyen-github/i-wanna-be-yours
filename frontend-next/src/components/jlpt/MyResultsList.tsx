@@ -23,7 +23,7 @@ export function MyResultsList({
     if (isLoading) {
         return (
             <div className="flex items-center justify-center py-12">
-                <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+                <Loader2 className="w-8 h-8 animate-spin text-neutral-ink" />
             </div>
         );
     }
@@ -31,7 +31,7 @@ export function MyResultsList({
     if (attempts.length === 0) {
         return (
             <div className="text-center py-20 px-8 bg-muted/20 rounded-2xl border-2 border-dashed border-border">
-                <div className="w-20 h-20 mx-auto mb-6 bg-card rounded-2xl flex items-center justify-center  text-muted-foreground/30">
+                <div className="w-20 h-20 mx-auto mb-6 bg-card rounded-2xl flex items-center justify-center  text-neutral-ink">
                     <History size={40} />
                 </div>
                 <h3 className="text-xl font-black text-foreground mb-3 font-display tracking-tight">No Results Yet</h3>
@@ -96,7 +96,7 @@ export function MyResultsList({
                                     {attempt.passed ? 'PASSED' : 'FAILED'}
                                 </span>
                             </div>
-                            <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.15em] text-muted-foreground/60 font-display">
+                            <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.15em] text-neutral-ink font-display">
                                 <span className="px-2.5 py-1 bg-muted rounded  text-foreground/70">
                                     {attempt.level}
                                 </span>
@@ -124,7 +124,7 @@ export function MyResultsList({
                             />
                         </div>
 
-                        <div className="flex items-center gap-6 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 font-display">
+                        <div className="flex items-center gap-6 text-[10px] font-black uppercase tracking-widest text-neutral-ink font-display">
                             <span className="flex items-center gap-2">
                                 <CheckCircle2 size={14} className="text-primary" />
                                 <span className="text-foreground/80">{attempt.correctAnswers}/{attempt.totalQuestions}</span> Correct

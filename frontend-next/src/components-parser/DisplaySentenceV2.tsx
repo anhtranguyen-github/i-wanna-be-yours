@@ -51,7 +51,7 @@ const DisplaySentenceV2: React.FC<DisplaySentencePropsV2> = ({ sentence, url }) 
         Furigana Transliteration:
         {furiganaTranslation ? (
           <div
-            className="mt-2 text-2xl leading-relaxed text-gray-800"
+            className="mt-2 text-2xl leading-relaxed text-neutral-ink"
             dangerouslySetInnerHTML={{ __html: furiganaTranslation }}
           ></div>
         ) : (

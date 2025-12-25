@@ -12,7 +12,7 @@ export default function Attributes() {
           <h1 className="capitalize text-3xl lg:text-5xl mt-5 font-bold leading-tight">
             features of the product
           </h1>
-          <p className="mt-5 lg:mt-7 w-full lg:w-9/12 text-gray-500">
+          <p className="mt-5 lg:mt-7 w-full lg:w-9/12 text-neutral-ink">
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sunt iure
             nemo quo excepturi ex dicta asperiores exercitationem quam.
           </p>
@@ -51,7 +51,7 @@ function Card({ img, title, detail, link }: Props) {
     <div className="border p-5 flex items-center justify-center flex-col">
       <img src={img} className="h-28" alt="" />
       <h1 className="text-xl font-bold mt-5">{title}</h1>
-      <p className="text-gray-500 mt-3 lg:mt-5">{detail}</p>
+      <p className="text-neutral-ink mt-3 lg:mt-5">{detail}</p>
       <Link href={link}>Learn More</Link>
     </div>
   );

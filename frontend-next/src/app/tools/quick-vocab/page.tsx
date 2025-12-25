@@ -39,7 +39,7 @@ export default function Home() {
   return (
     <div className="container mx-auto py-16 px-6 max-w-5xl">
       <div className="text-center mb-16 space-y-4">
-        <h1 className="text-4xl font-black text-slate-900 font-display tracking-tight uppercase tracking-[0.2em] mb-4">Quick <span className="text-primary">Vocab</span></h1>
+        <h1 className="text-4xl font-black text-neutral-ink font-display tracking-tight uppercase tracking-[0.2em] mb-4">Quick <span className="text-primary">Vocab</span></h1>
         <div className="max-w-3xl mx-auto bg-primary/5 p-8 rounded-[2rem] border border-primary/10 relative overflow-hidden group">
           <div className="absolute -top-10 -right-10 w-24 h-24 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-colors" />
           <p className="text-slate-600 font-medium text-sm leading-relaxed relative z-10">
@@ -54,8 +54,8 @@ export default function Home() {
             <Flame className="w-8 h-8 fill-primary" />
           </div>
           <div>
-            <p className="text-3xl font-black text-slate-900 tracking-tight">{globalTotalClicks}</p>
-            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Score</p>
+            <p className="text-3xl font-black text-neutral-ink tracking-tight">{globalTotalClicks}</p>
+            <p className="text-[10px] font-black uppercase tracking-widest text-neutral-ink">Total Score</p>
           </div>
         </div>
         <PageTimer />
@@ -189,7 +189,7 @@ const HiraganaCard: React.FC<HiraganaCardProps> = ({
               [{reading}]
             </h5>
           )}
-          <h5 className="text-3xl font-black text-slate-900 font-jp text-center leading-tight">
+          <h5 className="text-3xl font-black text-neutral-ink font-jp text-center leading-tight">
             {kanji}
           </h5>
 
@@ -205,7 +205,7 @@ const HiraganaCard: React.FC<HiraganaCardProps> = ({
           <h5 className="text-[10px] font-black text-primary/60 uppercase tracking-widest mb-1">
             [{reading}]
           </h5>
-          <h5 className="text-xl font-black text-slate-900 font-jp mb-2">{kanji}</h5>
+          <h5 className="text-xl font-black text-neutral-ink font-jp mb-2">{kanji}</h5>
           <p className="text-xs font-medium text-slate-600 leading-relaxed overflow-hidden line-clamp-4">
             {en}
           </p>
@@ -276,7 +276,7 @@ const TabComponent = () => {
         {jlptLevels.map((level) => (
           <button
             key={level}
-            className={`px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all whitespace-nowrap ${activeJLPTTab === level ? "bg-white text-slate-900 shadow-md ring-1 ring-slate-200" : "text-slate-500 hover:text-slate-900"}`}
+            className={`px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all whitespace-nowrap ${activeJLPTTab === level ? "bg-white text-neutral-ink shadow-md ring-1 ring-slate-200" : "text-neutral-ink hover:text-neutral-ink"}`}
             onClick={() => setActiveJLPTTab(level)}
           >
             {level.replace('_', ' ')}
@@ -288,7 +288,7 @@ const TabComponent = () => {
         {vocabSets.map((set) => (
           <button
             key={set}
-            className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${activeVocabTab === set ? "bg-primary text-white shadow-lg shadow-primary/20" : "bg-slate-50 text-slate-400 hover:text-slate-900 hover:bg-slate-100"}`}
+            className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${activeVocabTab === set ? "bg-primary text-white shadow-lg shadow-primary/20" : "bg-slate-50 text-neutral-ink hover:text-neutral-ink hover:bg-slate-100"}`}
             onClick={() => setActiveVocabTab(set)}
           >
             {set}
@@ -298,7 +298,7 @@ const TabComponent = () => {
 
       <div className="w-full flex justify-end mb-8">
         <button
-          className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-primary hover:border-primary transition-all shadow-sm"
+          className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-widest text-neutral-ink hover:text-primary hover:border-primary transition-all shadow-sm"
           onClick={() => setShowReadings(!showReadings)}
         >
           {showReadings ? <EyeOff size={14} /> : <Eye size={14} />}
@@ -356,7 +356,7 @@ const KanjiTable: React.FC<KanjiTableProps> = ({ p_tag, s_tag, showReadings }) =
   if (loading) return (
     <div className="flex flex-col items-center py-40 animate-pulse">
       <div className="w-16 h-16 bg-primary/20 rounded-[2.5rem] mb-6" />
-      <div className="text-slate-400 font-black uppercase tracking-widest text-xs">Assembling Lexicon...</div>
+      <div className="text-neutral-ink font-black uppercase tracking-widest text-xs">Assembling Lexicon...</div>
     </div>
   );
 

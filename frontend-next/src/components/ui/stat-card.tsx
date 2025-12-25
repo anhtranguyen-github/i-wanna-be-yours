@@ -57,7 +57,7 @@ export function StatCard({
     };
 
     const TrendIcon = trend === 'up' ? TrendingUp : trend === 'down' ? TrendingDown : Minus;
-    const trendColor = trend === 'up' ? 'text-emerald-500' : trend === 'down' ? 'text-red-500' : 'text-slate-400';
+    const trendColor = trend === 'up' ? 'text-emerald-500' : trend === 'down' ? 'text-red-500' : 'text-neutral-ink';
 
     return (
         <div
@@ -107,7 +107,7 @@ export function StatCard({
                     {value}
                 </span>
                 {unit && (
-                    <span className="text-sm font-medium text-slate-400">{unit}</span>
+                    <span className="text-sm font-medium text-neutral-ink">{unit}</span>
                 )}
             </div>
 

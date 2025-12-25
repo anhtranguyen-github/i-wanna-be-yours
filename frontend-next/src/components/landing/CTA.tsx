@@ -20,7 +20,7 @@ export const CTA = () => {
                         <span className="text-primary">Strategic Journey.</span>
                     </h2>
 
-                    <p className="text-slate-400 font-medium text-lg leading-relaxed">
+                    <p className="text-neutral-ink font-medium text-lg leading-relaxed">
                         Join the elite circle of learners who treat language acquisition as a high-fidelity strategy. Start the deployment of your mastery today.
                     </p>
 
@@ -34,7 +34,7 @@ export const CTA = () => {
                         </Link>
                         <Link
                             href="/library"
-                            className="w-full sm:w-auto text-slate-400 hover:text-white font-black uppercase tracking-widest text-[10px] transition-colors"
+                            className="w-full sm:w-auto text-neutral-ink hover:text-white font-black uppercase tracking-widest text-[10px] transition-colors"
                         >
                             Explore Documentation
                         </Link>

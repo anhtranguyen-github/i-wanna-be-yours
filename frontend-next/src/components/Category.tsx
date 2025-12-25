@@ -256,9 +256,9 @@ function CategoryHeader({
           <h1>Series</h1>
         </div>
         {/* <div className="bg-gray-100 cursor-pointer hover:bg-gray-200 lg:ml-16 mt-3 lg:mt-0 h-16 w-16 rounded-full flex items-center justify-center">
-          <PlayIcon className="h-7 text-gray-500" />
+          <PlayIcon className="h-7 text-neutral-ink" />
         </div> */}
-        <div>{/* <PlayIcon className="h-7 text-gray-500" /> */}</div>
+        <div>{/* <PlayIcon className="h-7 text-neutral-ink" /> */}</div>
       </div>
     </div>
   );
@@ -284,10 +284,10 @@ function Series({
           {/*<Link to="/categories">*/}
           <Link href={seriesLink}>
             {/*<h1 className="text-lg font-bold">JLPT N3 100 Master Hiragana & Katakana</h1>*/}
-            <h1 className="text-lg font-bold text-gray-800 hover:text-brand-blue transition-colors">{seriesHeader}</h1>
+            <h1 className="text-lg font-bold text-neutral-ink hover:text-brand-blue transition-colors">{seriesHeader}</h1>
           </Link>
 
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-neutral-ink mt-1">
             The Japanese written language is composed of three writing systems:
             kanji, hiragana, and katakana.
           </p>
@@ -295,17 +295,17 @@ function Series({
       </div>
       <div className="flex items-center mt-3 lg:mt-0 justify-between lg:justify-end">
         <div className="flex items-center flex-col text-center">
-          <h1 className="text-sm font-bold text-gray-400 uppercase tracking-wider">Level</h1>
-          <h1 className="font-bold text-gray-700">{level}</h1>
+          <h1 className="text-sm font-bold text-neutral-ink uppercase tracking-wider">Level</h1>
+          <h1 className="font-bold text-neutral-ink">{level}</h1>
         </div>
         <div className="flex items-center flex-col lg:ml-10 text-center">
-          <h1 className="text-sm font-bold text-gray-400 uppercase tracking-wider">Courses</h1>
-          <h1 className="font-bold text-gray-700">{seriesCourses}</h1>
+          <h1 className="text-sm font-bold text-neutral-ink uppercase tracking-wider">Courses</h1>
+          <h1 className="font-bold text-neutral-ink">{seriesCourses}</h1>
         </div>
         <div className="bg-brand-blue/10 cursor-pointer hover:bg-brand-blue/20 lg:ml-10 mt-3 lg:mt-0 h-12 w-12 rounded-full flex items-center justify-center transition-colors">
           <Link href={seriesLink}>
             {/* <PlayIcon className="h-6 text-secondary" /> */}
-            {/* <PlayIcon className="h-6 text-gray-400" /> */}
+            {/* <PlayIcon className="h-6 text-neutral-ink" /> */}
             <ChevronRightIcon className="h-5 text-brand-blue" />
           </Link>
         </div>

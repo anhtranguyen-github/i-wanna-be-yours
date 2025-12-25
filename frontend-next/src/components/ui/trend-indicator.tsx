@@ -33,7 +33,7 @@ export function TrendIndicator({
             border: 'border-red-200',
         },
         stable: {
-            text: 'text-slate-500',
+            text: 'text-neutral-ink',
             bg: 'bg-slate-50',
             border: 'border-slate-200',
         },

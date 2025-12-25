@@ -17,7 +17,7 @@ export default function HowItWorks() {
           <h1 className="capitalize text-3xl lg:text-5xl mt-5 font-bold leading-tight">
             How does LTL work?
           </h1>
-          <p className="mt-5 lg:mt-7 w-full text-gray-500">
+          <p className="mt-5 lg:mt-7 w-full text-neutral-ink">
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sunt iure
             nemo quo excepturi ex dicta asperiores exercitationem quam.
           </p>
@@ -67,7 +67,7 @@ function ListItem({ num, des, title }: Props) {
       </div>
       <div className="ml-3 text-left">
         <h1 className="text-xl font-bold capitalize">{title}</h1>
-        <p className="mt-1 text-gray-500 text-sm">{des}</p>
+        <p className="mt-1 text-neutral-ink text-sm">{des}</p>
       </div>
     </div>
   );

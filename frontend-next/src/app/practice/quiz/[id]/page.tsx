@@ -137,7 +137,7 @@ export default function QuizPlayerPage() {
                     <Loader2 className="w-16 h-16 animate-spin text-primary opacity-20" />
                     <Brain className="absolute inset-0 m-auto w-6 h-6 text-primary animate-pulse" />
                 </div>
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40 font-display">Allocating Logic Blocks...</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-ink font-display">Allocating Logic Blocks...</p>
             </div>
         );
     }
@@ -181,24 +181,24 @@ export default function QuizPlayerPage() {
                         <p className="text-muted-foreground font-bold tracking-tight mb-12 italic opacity-60">{quiz.title}</p>
 
                         <div className="relative mb-8">
-                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground/30 font-display block mb-2">Sync Accuracy</span>
+                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-neutral-ink font-display block mb-2">Sync Accuracy</span>
                             <div className="text-7xl font-black text-foreground font-display tracking-tighter inline-flex items-baseline">
-                                {result.percentage}<span className="text-2xl text-muted-foreground/30 ml-2">%</span>
+                                {result.percentage}<span className="text-2xl text-neutral-ink ml-2">%</span>
                             </div>
                         </div>
 
-                        <p className="text-[11px] font-black font-display uppercase tracking-[0.3em] text-muted-foreground/40 mb-12 italic">
+                        <p className="text-[11px] font-black font-display uppercase tracking-[0.3em] text-neutral-ink mb-12 italic">
                             {result.total_score} of {result.max_score} Logic Nodes Validated
                         </p>
 
                         <div className="grid grid-cols-2 gap-6 mb-12">
                             <div className="bg-muted/30 rounded-3xl p-6 border border-border/20 ">
                                 <div className="text-3xl font-black text-primary font-display mb-1">{result.answers.filter(a => a.is_correct).length}</div>
-                                <div className="text-[9px] font-black text-muted-foreground/50 uppercase tracking-widest font-display">Valid Gates</div>
+                                <div className="text-[9px] font-black text-neutral-ink uppercase tracking-widest font-display">Valid Gates</div>
                             </div>
                             <div className="bg-muted/30 rounded-3xl p-6 border border-border/20 ">
                                 <div className="text-3xl font-black text-destructive font-display mb-1">{result.answers.filter(a => !a.is_correct).length}</div>
-                                <div className="text-[9px] font-black text-muted-foreground/50 uppercase tracking-widest font-display">Shield Failures</div>
+                                <div className="text-[9px] font-black text-neutral-ink uppercase tracking-widest font-display">Shield Failures</div>
                             </div>
                         </div>
 
@@ -262,7 +262,7 @@ export default function QuizPlayerPage() {
 
                     <div className="text-center">
                         <h2 className="text-sm font-black text-foreground font-display tracking-tight leading-none mb-1 max-w-[200px] truncate">{quiz.title}</h2>
-                        <p className="text-[9px] font-black text-muted-foreground/40 uppercase tracking-widest font-display">
+                        <p className="text-[9px] font-black text-neutral-ink uppercase tracking-widest font-display">
                             Node {currentIndex + 1} of {totalQuestions}
                         </p>
                     </div>
@@ -311,7 +311,7 @@ export default function QuizPlayerPage() {
                         {/* Passage Segment */}
                         {currentQuestion.content.passage && (
                             <div className="bg-muted/20 rounded-2xl p-10 text-xl font-jp leading-[2] tracking-tight border border-border/50 relative group/passage italic text-foreground/80">
-                                <div className="absolute top-4 right-4 text-muted-foreground/10 group-hover/passage:text-primary/20 transition-colors">
+                                <div className="absolute top-4 right-4 text-neutral-ink group-hover/passage:text-primary/20 transition-colors">
                                     <LayoutGrid size={24} />
                                 </div>
                                 {currentQuestion.content.passage}
@@ -346,7 +346,7 @@ export default function QuizPlayerPage() {
                                                 w-10 h-10 rounded-2xl flex items-center justify-center font-display font-black text-sm transition-all duration-500
                                                 ${isSelected
                                                     ? "bg-primary text-primary-foreground rotate-12"
-                                                    : "bg-muted text-muted-foreground/30 group-hover/opt:bg-primary/10 group-hover/opt:text-primary"
+                                                    : "bg-muted text-neutral-ink group-hover/opt:bg-primary/10 group-hover/opt:text-primary"
                                                 }
                                             `}>
                                                 {String.fromCharCode(65 + idx)}
@@ -370,7 +370,7 @@ export default function QuizPlayerPage() {
                         className={`
                             flex items-center gap-4 px-10 py-5 rounded-2xl font-black font-display text-[10px] uppercase tracking-[0.2em] transition-all  active:scale-90
                             ${currentIndex === 0
-                                ? "bg-muted text-muted-foreground/20 border border-border/10 cursor-not-allowed opacity-50 shadow-none"
+                                ? "bg-muted text-neutral-ink border border-border/10 cursor-not-allowed opacity-50 shadow-none"
                                 : "bg-card text-foreground hover:text-primary border border-border/50 hover:border-primary/30"}
                         `}
                     >
@@ -403,7 +403,7 @@ export default function QuizPlayerPage() {
                             disabled={submitting}
                             className={`
                                 flex items-center gap-4 px-12 py-5 rounded-2xl font-black font-display text-[10px] uppercase tracking-[0.2em] transition-all  active:scale-95
-                                ${submitting ? "bg-muted text-muted-foreground/30" : "bg-foreground text-background hover:opacity-95 shadow-[0_0_30px_rgba(var(--foreground),0.2)]"}
+                                ${submitting ? "bg-muted text-neutral-ink" : "bg-foreground text-background hover:opacity-95 shadow-[0_0_30px_rgba(var(--foreground),0.2)]"}
                             `}
                         >
                             {submitting ? (
@@ -426,7 +426,7 @@ export default function QuizPlayerPage() {
 
                 {/* State Summary Metadata */}
                 <div className="mt-10 text-center">
-                    <span className="px-6 py-2.5 bg-muted/30 rounded-full text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40 font-display border border-border/20 italic">
+                    <span className="px-6 py-2.5 bg-muted/30 rounded-full text-[10px] font-black uppercase tracking-[0.3em] text-neutral-ink font-display border border-border/20 italic">
                         {answeredCount} of {totalQuestions} Nodes Synchronized
                     </span>
                 </div>

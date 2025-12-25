@@ -238,7 +238,7 @@ export function ExamChatAssistant({
                             <Bot size={16} />
                         </div>
                         <div className="bg-white border border-slate-200 rounded-2xl p-4">
-                            <Loader2 size={16} className="animate-spin text-slate-400" />
+                            <Loader2 size={16} className="animate-spin text-neutral-ink" />
                         </div>
                     </div>
                 )}
@@ -249,8 +249,8 @@ export function ExamChatAssistant({
             {/* Quick Prompts */}
             <div className="px-4 py-2 border-t border-slate-200 bg-white">
                 <div className="flex items-center gap-2 mb-2">
-                    <Wand2 size={14} className="text-slate-400" />
-                    <span className="text-xs text-slate-500">Quick prompts:</span>
+                    <Wand2 size={14} className="text-neutral-ink" />
+                    <span className="text-xs text-neutral-ink">Quick prompts:</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
                     {QUICK_PROMPTS.map((prompt, idx) => (

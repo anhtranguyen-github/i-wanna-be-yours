@@ -91,7 +91,7 @@ export function ChatRightSidebar() {
                         {/* Empty State */}
                         {!isLoading && displayArtifacts.length === 0 && (
                             <div className="text-center py-12 px-4">
-                                <FileText size={40} className="mx-auto text-muted-foreground/30 mb-3" />
+                                <FileText size={40} className="mx-auto text-neutral-ink mb-3" />
                                 <p className="text-sm font-bold text-muted-foreground">
                                     No resources yet. Let&apos;s create some together!
                                 </p>
@@ -181,7 +181,7 @@ export function ChatRightSidebar() {
                 {activeArtifact ? (
                     <ArtifactContent artifact={activeArtifact} />
                 ) : (
-                    <div className="flex flex-col items-center justify-center h-full text-muted-foreground/50">
+                    <div className="flex flex-col items-center justify-center h-full text-neutral-ink">
                         <FileText size={64} className="mb-6 opacity-30 animate-pulse" />
                         <p className="text-lg font-bold font-display">Select a resource to view</p>
                     </div>
@@ -205,7 +205,7 @@ function ArtifactContent({ artifact }: { artifact: Artifact }) {
             return <NoteRenderer artifact={artifact} />;
         default:
             return (
-                <div className="flex flex-col items-center justify-center h-full text-slate-400">
+                <div className="flex flex-col items-center justify-center h-full text-neutral-ink">
                     <p>Viewer for <strong>{artifact.type}</strong> not implemented yet.</p>
                     <pre className="mt-4 text-xs bg-slate-100 p-4 rounded text-left overflow-auto max-w-full">
                         {JSON.stringify(artifact.data, null, 2)}

@@ -57,7 +57,7 @@ export function SMARTGoalCard({ goal, onClick, className }: SMARTGoalCardProps) 
                             <span className={cn('px-2 py-0.5 rounded-full text-xs font-semibold border', statusColors[goal.status])}>
                                 {goal.status.charAt(0).toUpperCase() + goal.status.slice(1)}
                             </span>
-                            <span className="text-xs text-slate-400 font-medium">
+                            <span className="text-xs text-neutral-ink font-medium">
                                 {goal.linked_jlpt_level}
                             </span>
                             <InfoTooltip
@@ -110,7 +110,7 @@ export function SMARTGoalCard({ goal, onClick, className }: SMARTGoalCardProps) 
             {/* Success Criteria Preview */}
             <div className="px-5 pb-3 border-t border-slate-50 pt-3">
                 <div className="flex items-center gap-2 mb-2">
-                    <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                    <p className="text-xs font-semibold text-neutral-ink uppercase tracking-wide">
                         Success Criteria
                     </p>
                     <InfoTooltip
@@ -129,7 +129,7 @@ export function SMARTGoalCard({ goal, onClick, className }: SMARTGoalCardProps) 
             {/* Footer */}
             <div className="px-5 py-3 bg-neutral-beige/50 flex items-center justify-between border-t border-neutral-gray/10">
                 <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-1.5 text-slate-500">
+                    <div className="flex items-center gap-1.5 text-neutral-ink">
                         <Clock size={14} />
                         <span className="text-xs font-medium">
                             {daysRemaining > 0 ? `${daysRemaining} days left` : 'Overdue'}
@@ -137,7 +137,7 @@ export function SMARTGoalCard({ goal, onClick, className }: SMARTGoalCardProps) 
                     </div>
                     <div className="flex items-center gap-1.5">
                         <Sparkles size={14} className="text-amber-500" />
-                        <span className="text-xs font-medium text-slate-500">
+                        <span className="text-xs font-medium text-neutral-ink">
                             AI: {goal.ai_confidence_score}% confident
                         </span>
                         <InfoTooltip
@@ -172,7 +172,7 @@ function CriterionRow({ criterion }: { criterion: SuccessCriterion }) {
                     <span className="text-xs font-medium text-slate-700 truncate">
                         {criterion.label}
                     </span>
-                    <span className="text-xs text-slate-500 flex-shrink-0">
+                    <span className="text-xs text-neutral-ink flex-shrink-0">
                         {criterion.current_value}/{criterion.target_value} {criterion.unit}
                     </span>
                 </div>

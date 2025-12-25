@@ -164,7 +164,7 @@ export default function KanjiPage() {
                 KanjiDamage
               </a>. Each card connects you to memorable stories and examples adapted for your level.
             </p>
-            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 font-display">
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-ink font-display">
               Toggle cards to track status: <span className="text-foreground">Unknown</span> • <span className="text-secondary">Seen</span> • <span className="text-accent">Known</span> • <span className="text-destructive">Hard</span>
             </p>
           </div>

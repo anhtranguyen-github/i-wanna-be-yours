@@ -13,8 +13,8 @@ export function ExamPreview({ questions }: ExamPreviewProps) {
         return (
             <div className="flex flex-col items-center justify-center p-12 text-center bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
                 <FileText size={48} className="text-slate-200 mb-4" />
-                <h3 className="text-lg font-bold text-slate-400">No questions generated yet</h3>
-                <p className="text-sm text-slate-400 max-w-xs">
+                <h3 className="text-lg font-bold text-neutral-ink">No questions generated yet</h3>
+                <p className="text-sm text-neutral-ink max-w-xs">
                     Use the AI Assistant or select questions manually to preview them here.
                 </p>
             </div>
@@ -35,10 +35,10 @@ export function ExamPreview({ questions }: ExamPreviewProps) {
                             <span className="px-2 py-1 bg-slate-100 text-slate-600 text-[10px] font-bold rounded uppercase tracking-wider">
                                 {q.tags.skill} • {q.tags.level}
                             </span>
-                            <span className="text-xs font-bold text-slate-400">Q{idx + 1}</span>
+                            <span className="text-xs font-bold text-neutral-ink">Q{idx + 1}</span>
                         </div>
 
-                        <p className="text-sm font-medium text-slate-800 mb-4 leading-relaxed">
+                        <p className="text-sm font-medium text-neutral-ink mb-4 leading-relaxed">
                             {q.content}
                         </p>
 
@@ -48,7 +48,7 @@ export function ExamPreview({ questions }: ExamPreviewProps) {
                                     key={opt.id}
                                     className={`flex items-center gap-2 p-2 rounded-lg text-xs border ${opt.id === q.correctOptionId
                                             ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
-                                            : 'bg-slate-50 border-slate-100 text-slate-500'
+                                            : 'bg-slate-50 border-slate-100 text-neutral-ink'
                                         }`}
                                 >
                                     {opt.id === q.correctOptionId ? (
@@ -62,7 +62,7 @@ export function ExamPreview({ questions }: ExamPreviewProps) {
                         </div>
 
                         {q.explanation && (
-                            <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] text-slate-500 italic">
+                            <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] text-neutral-ink italic">
                                 <strong>Explanation:</strong> {q.explanation}
                             </div>
                         )}

@@ -25,7 +25,7 @@ interface SettingsSectionProps {
 function SettingsSection({ title, children }: SettingsSectionProps) {
     return (
         <div className="mb-8">
-            <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3 px-1">
+            <h2 className="text-sm font-semibold text-neutral-ink uppercase tracking-wider mb-3 px-1">
                 {title}
             </h2>
             <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden divide-y divide-slate-100">
@@ -52,7 +52,7 @@ function SettingsItem({
     href,
     onClick,
     rightElement,
-    iconColor = 'text-slate-500'
+    iconColor = 'text-neutral-ink'
 }: SettingsItemProps) {
     const content = (
         <>
@@ -60,12 +60,12 @@ function SettingsItem({
                 <Icon size={20} />
             </div>
             <div className="flex-1 min-w-0">
-                <p className="font-medium text-slate-800">{label}</p>
+                <p className="font-medium text-neutral-ink">{label}</p>
                 {description && (
-                    <p className="text-sm text-slate-500 truncate">{description}</p>
+                    <p className="text-sm text-neutral-ink truncate">{description}</p>
                 )}
             </div>
-            {rightElement || <ChevronRight size={20} className="text-slate-400" />}
+            {rightElement || <ChevronRight size={20} className="text-neutral-ink" />}
         </>
     );
 
@@ -116,8 +116,8 @@ export default function SettingsPage() {
                             <SettingsIcon size={24} className="text-white" />
                         </div>
                         <div>
-                            <h1 className="text-2xl font-bold text-slate-800">Settings</h1>
-                            <p className="text-sm text-slate-500">Manage your account and preferences</p>
+                            <h1 className="text-2xl font-bold text-neutral-ink">Settings</h1>
+                            <p className="text-sm text-neutral-ink">Manage your account and preferences</p>
                         </div>
                     </div>
                 </div>
@@ -155,7 +155,7 @@ export default function SettingsPage() {
                                 <button className="p-1.5 rounded-full bg-white shadow-sm">
                                     <Sun size={16} className="text-amber-500" />
                                 </button>
-                                <button className="p-1.5 rounded-full text-slate-400 hover:bg-slate-200 transition-colors">
+                                <button className="p-1.5 rounded-full text-neutral-ink hover:bg-slate-200 transition-colors">
                                     <Moon size={16} />
                                 </button>
                             </div>
@@ -193,7 +193,7 @@ export default function SettingsPage() {
                 </SettingsSection>
 
                 {/* Version Info */}
-                <div className="text-center text-sm text-slate-400 mt-12">
+                <div className="text-center text-sm text-neutral-ink mt-12">
                     <p>hanachan.org v1.0.0</p>
                     <p className="mt-1">Made with 🌸 for Japanese learners</p>
                 </div>

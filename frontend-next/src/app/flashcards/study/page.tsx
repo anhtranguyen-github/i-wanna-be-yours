@@ -72,7 +72,7 @@ export default function StudyPage() {
                     <Loader2 className="w-16 h-16 animate-spin text-secondary opacity-20" />
                     <Brain className="absolute inset-0 m-auto w-6 h-6 text-secondary animate-pulse" />
                 </div>
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40 font-display">Initializing Synaptic Array...</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-ink font-display">Initializing Synaptic Array...</p>
             </div>
         );
     }
@@ -98,11 +98,11 @@ export default function StudyPage() {
                 <div className="grid grid-cols-2 gap-6 w-full max-w-sm mb-12">
                     <div className="bg-muted/30 rounded-3xl p-6 border border-border/20 ">
                         <div className="text-2xl font-black text-secondary font-display mb-1">{queue.length}</div>
-                        <div className="text-[9px] font-black text-muted-foreground/50 uppercase tracking-widest font-display">Recall Nodes</div>
+                        <div className="text-[9px] font-black text-neutral-ink uppercase tracking-widest font-display">Recall Nodes</div>
                     </div>
                     <div className="bg-muted/30 rounded-3xl p-6 border border-border/20 ">
                         <div className="text-2xl font-black text-foreground font-display mb-1">100%</div>
-                        <div className="text-[9px] font-black text-muted-foreground/50 uppercase tracking-widest font-display">Throughput</div>
+                        <div className="text-[9px] font-black text-neutral-ink uppercase tracking-widest font-display">Throughput</div>
                     </div>
                 </div>
 
@@ -120,7 +120,7 @@ export default function StudyPage() {
     if (queue.length === 0) {
         return (
             <div className="min-h-screen bg-background flex flex-col items-center justify-center p-8 text-center selection:bg-secondary/20">
-                <div className="w-32 h-32 bg-muted text-muted-foreground/30 rounded-[2.5rem] flex items-center justify-center mb-8  border border-border/20">
+                <div className="w-32 h-32 bg-muted text-neutral-ink rounded-[2.5rem] flex items-center justify-center mb-8  border border-border/20">
                     <Sparkles size={48} />
                 </div>
                 <h1 className="text-3xl font-black text-foreground font-display tracking-tight mb-4 italic">Neural Quiessence</h1>
@@ -167,7 +167,7 @@ export default function StudyPage() {
 
                 <div className="text-right">
                     <div className="text-2xl font-black text-foreground font-display leading-none mb-1 italic">{currentIndex + 1}</div>
-                    <div className="text-[9px] font-black text-muted-foreground/30 uppercase tracking-widest font-display">Node Index</div>
+                    <div className="text-[9px] font-black text-neutral-ink uppercase tracking-widest font-display">Node Index</div>
                 </div>
             </header>
 
@@ -187,7 +187,7 @@ export default function StudyPage() {
                                 <span className="px-4 py-1.5 bg-muted rounded-xl text-[9px] font-black uppercase tracking-widest text-secondary font-display  border border-secondary/10 italic">
                                     {typeLabel}
                                 </span>
-                                <span className="px-4 py-1.5 bg-muted/50 border border-border/20 rounded-xl text-[9px] font-black uppercase tracking-widest text-muted-foreground/40 font-display italic">
+                                <span className="px-4 py-1.5 bg-muted/50 border border-border/20 rounded-xl text-[9px] font-black uppercase tracking-widest text-neutral-ink font-display italic">
                                     {deckLabel}
                                 </span>
                             </div>
@@ -198,7 +198,7 @@ export default function StudyPage() {
                                 </div>
                             </div>
 
-                            <div className="mt-auto flex items-center gap-3 text-muted-foreground/20 font-black font-display uppercase tracking-[0.3em] text-[10px] italic group-hover:text-secondary/40 transition-colors">
+                            <div className="mt-auto flex items-center gap-3 text-neutral-ink font-black font-display uppercase tracking-[0.3em] text-[10px] italic group-hover:text-secondary/40 transition-colors">
                                 <RotateCcw size={16} className="group-hover:rotate-180 transition-transform duration-700" />
                                 <span>Execute Reveal</span>
                             </div>

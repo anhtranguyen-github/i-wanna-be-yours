@@ -89,7 +89,7 @@ export default function GrammarListPage() {
                     {/* Search & Filter */}
                     <div className="flex flex-col sm:flex-row gap-4 flex-1 md:max-w-2xl justify-end">
                         <div className="relative group flex-1">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/40 group-focus-within:text-primary transition-colors" size={18} />
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-ink group-focus-within:text-primary transition-colors" size={18} />
                             <input
                                 type="text"
                                 placeholder="Search patterns..."
@@ -133,7 +133,7 @@ export default function GrammarListPage() {
                     ) : filteredGrammars.length === 0 ? (
                         <div className="bg-card rounded-2xl border-2 border-dashed border-border p-20 flex flex-col items-center justify-center text-center">
                             <div className="w-24 h-24 bg-muted/50 rounded-2xl flex items-center justify-center mb-8 ">
-                                <Filter className="w-12 h-12 text-muted-foreground/20" />
+                                <Filter className="w-12 h-12 text-neutral-ink" />
                             </div>
                             <h3 className="text-2xl font-black text-foreground mb-4 font-display">No Patterns Found</h3>
                             <p className="text-muted-foreground font-bold">Try adjusting your search terms or level filter.</p>
@@ -165,8 +165,8 @@ export default function GrammarListPage() {
                                         </p>
 
                                         <div className="pt-6 border-t border-border/50 flex items-center justify-between group-hover:border-primary/20 transition-colors">
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 font-display group-hover:text-primary transition-colors">View Pattern</span>
-                                            <ArrowRight size={18} className="text-muted-foreground/30 group-hover:text-primary group-hover:translate-x-2 transition-all" />
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-neutral-ink font-display group-hover:text-primary transition-colors">View Pattern</span>
+                                            <ArrowRight size={18} className="text-neutral-ink group-hover:text-primary group-hover:translate-x-2 transition-all" />
                                         </div>
                                     </div>
                                 </Link>

@@ -67,8 +67,8 @@ const GrammarExplanationSimple: React.FC<GrammarExplanationSimpleProps> = ({
   return (
     <div className="bg-slate-100 p-4 shadow-lg rounded-md text-black mb-4 w-full prose mx-auto">
       <div className="mt-4">
-        <h2 className="text-xl font-medium text-gray-800">Grammar explanation</h2>
-        <h3 className="text-lg font-medium text-gray-800">Sentence:</h3>
+        <h2 className="text-xl font-medium text-neutral-ink">Grammar explanation</h2>
+        <h3 className="text-lg font-medium text-neutral-ink">Sentence:</h3>
         <p className="mt-2 text-gray-600">{sentence || "No sentence provided."}</p>
       </div>
 

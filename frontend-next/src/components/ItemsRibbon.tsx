@@ -19,7 +19,7 @@ function ItemsRibbon() {
             <div className="h-7 w-7 p-1 rounded-full flex items-center justify-center bg-white">
               <AdjustmentsVerticalIcon className="h-4 text-blue-900" />
             </div>
-            <div className="ml-2 text-gray-500">
+            <div className="ml-2 text-neutral-ink">
               Sort by:{" "}
               <select className="text-blue-900 outline-none cursor-pointer bg-transparent font-medium">
                 <option value="1">Default</option>

@@ -67,7 +67,7 @@ export default function ResourceDetailPage() {
         return (
             <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 text-center">
                 <div className="w-24 h-24 bg-card rounded-2xl flex items-center justify-center mb-10 ">
-                    <FileText size={48} className="text-muted-foreground/20" />
+                    <FileText size={48} className="text-neutral-ink" />
                 </div>
                 <h2 className="text-3xl font-black text-foreground mb-4 font-display">Resource Not Found</h2>
                 <p className="text-muted-foreground font-bold mb-10 max-w-md leading-relaxed">{error || "The requested resource could not be found."}</p>
@@ -107,11 +107,11 @@ export default function ResourceDetailPage() {
                                     <span className="capitalize">{resource.type}</span>
                                 </span>
                                 <span className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest font-display">
-                                    <HardDrive size={16} className="text-muted-foreground/40" />
+                                    <HardDrive size={16} className="text-neutral-ink" />
                                     {formatFileSize(resource.fileSize)}
                                 </span>
                                 <span className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest font-display">
-                                    <Calendar size={16} className="text-muted-foreground/40" />
+                                    <Calendar size={16} className="text-neutral-ink" />
                                     {resource.createdAt ? new Date(resource.createdAt).toLocaleDateString() : 'N/A'}
                                 </span>
                             </div>
@@ -127,7 +127,7 @@ export default function ResourceDetailPage() {
                             </button>
                             <button
                                 onClick={handleDelete}
-                                className="p-3.5 hover:bg-destructive/5 text-muted-foreground/40 hover:text-destructive rounded-xl transition-all "
+                                className="p-3.5 hover:bg-destructive/5 text-neutral-ink hover:text-destructive rounded-xl transition-all "
                                 title="Delete Resource"
                             >
                                 <Trash2 size={24} />
@@ -149,7 +149,7 @@ export default function ResourceDetailPage() {
                     ) : (
                         <div className="bg-card rounded-2xl p-20 text-center border border-border  flex flex-col items-center">
                             <div className="bg-muted/50 p-10 rounded-2xl  mb-8 transform group- transition-transform duration-700">
-                                <FileText size={80} className="text-muted-foreground/20" />
+                                <FileText size={80} className="text-neutral-ink" />
                             </div>
                             <h3 className="text-2xl font-black text-foreground mb-4 font-display">Document Preview</h3>
                             <p className="text-muted-foreground font-bold max-w-sm mx-auto mb-10 leading-relaxed text-sm">
@@ -171,7 +171,7 @@ export default function ResourceDetailPage() {
                 {resource.tags && resource.tags.length > 0 && (
                     <div className="p-8 md:p-12 pt-4 border-t border-border/50">
                         <div className="flex items-start gap-4">
-                            <Tag size={20} className="text-muted-foreground/30 mt-1" />
+                            <Tag size={20} className="text-neutral-ink mt-1" />
                             <div className="flex flex-wrap gap-2.5">
                                 {resource.tags.map((tag, idx) => (
                                     <span

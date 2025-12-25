@@ -31,7 +31,7 @@ export function WelcomeCard({ isGuest = false, onSuggestionClick }: WelcomeCardP
                 <h1 className="text-2xl font-display font-bold text-brand-dark mb-2">
                     Welcome to Hanachan
                 </h1>
-                <p className="text-slate-500 mb-8">
+                <p className="text-neutral-ink mb-8">
                     Your AI-powered Japanese learning companion
                 </p>
 

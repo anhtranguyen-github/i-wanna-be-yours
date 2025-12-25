@@ -35,7 +35,7 @@ const DashboardCardsWithHeader = ({
             <h2 className="mb-4 text-4xl font-extrabold" style={{ color: 'hsl(var(--primary))' }}>
               {headline.title || ""}
             </h2>
-            <p className="text-xl font-medium text-gray-500">
+            <p className="text-xl font-medium text-neutral-ink">
               {headline.subtitle || ""}
             </p>
           </div>
@@ -56,7 +56,7 @@ const DashboardCardsWithHeader = ({
                   </h3>
                 </Link>
                 {card.description && (
-                  <p className="text-sm text-gray-500 leading-relaxed line-clamp-2">{card.description}</p>
+                  <p className="text-sm text-neutral-ink leading-relaxed line-clamp-2">{card.description}</p>
                 )}
               </div>
 

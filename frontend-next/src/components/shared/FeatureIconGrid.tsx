@@ -143,7 +143,7 @@ export function FeatureIconGrid({
                     <div>
                         <p className="font-bold text-brand-dark">{feature.name}</p>
                         {showDescriptions && feature.description && (
-                            <p className="text-sm text-slate-500 leading-snug">{feature.description}</p>
+                            <p className="text-sm text-neutral-ink leading-snug">{feature.description}</p>
                         )}
                     </div>
                 </div>

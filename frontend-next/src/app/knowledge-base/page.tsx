@@ -51,7 +51,7 @@ const routes = [
         title: "All",
         description: "Browse all knowledge base items.",
         href: "/knowledge-base/all",
-        icon: <List className="w-8 h-8 text-gray-500" />,
+        icon: <List className="w-8 h-8 text-neutral-ink" />,
         color: "bg-gray-100"
     },
 ];
@@ -69,7 +69,7 @@ export default function KnowledgeBasePage() {
                     placeholder="Search for grammar, kanji, or topics..."
                     className="w-full pl-12 pr-4 py-4 rounded-full border-2 border-brand-indigo/20 focus:outline-none focus:border-brand-indigo focus:ring-4 focus:ring-brand-indigo/10 transition-all font-medium text-brand-dark"
                 />
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-ink w-5 h-5" />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -80,7 +80,7 @@ export default function KnowledgeBasePage() {
                                 {route.icon}
                             </div>
                             <h2 className="text-2xl font-display font-bold text-brand-dark mb-3">{route.title}</h2>
-                            <p className="text-gray-500 font-medium leading-relaxed">{route.description}</p>
+                            <p className="text-neutral-ink font-medium leading-relaxed">{route.description}</p>
 
                             {/* Decorative blur */}
                             <div className={`absolute -bottom-10 -right-10 w-24 h-24 ${route.color} rounded-full blur-3xl opacity-20`} />

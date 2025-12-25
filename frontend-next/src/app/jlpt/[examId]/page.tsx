@@ -285,7 +285,7 @@ export default function ExamSessionPage() {
                         </button>
                         <div className="space-y-0.5">
                             <h1 className="text-xl font-black text-foreground font-display tracking-tight leading-none">{examConfig.title}</h1>
-                            <p className="text-[10px] font-black text-muted-foreground/50 uppercase tracking-widest font-display">
+                            <p className="text-[10px] font-black text-neutral-ink uppercase tracking-widest font-display">
                                 {examConfig.level} <span className="mx-1">•</span> {examConfig.mode.replace("_", " ")}
                             </p>
                         </div>
@@ -308,14 +308,14 @@ export default function ExamSessionPage() {
                         <div className="hidden md:flex items-center gap-1.5 p-1.5 bg-muted rounded-2xl border border-border/50">
                             <button
                                 onClick={() => setDisplayMode("FOCUS")}
-                                className={`p-2.5 rounded-xl transition-all duration-500 ${displayMode === "FOCUS" ? "bg-card text-primary " : "text-muted-foreground/40 hover:text-foreground"}`}
+                                className={`p-2.5 rounded-xl transition-all duration-500 ${displayMode === "FOCUS" ? "bg-card text-primary " : "text-neutral-ink hover:text-foreground"}`}
                                 title="Focus Mode"
                             >
                                 <LayoutGrid size={20} />
                             </button>
                             <button
                                 onClick={() => setDisplayMode("SCROLL")}
-                                className={`p-2.5 rounded-xl transition-all duration-500 ${displayMode === "SCROLL" ? "bg-card text-primary " : "text-muted-foreground/40 hover:text-foreground"}`}
+                                className={`p-2.5 rounded-xl transition-all duration-500 ${displayMode === "SCROLL" ? "bg-card text-primary " : "text-neutral-ink hover:text-foreground"}`}
                                 title="Scroll Mode"
                             >
                                 <AlignJustify size={20} />
@@ -359,7 +359,7 @@ export default function ExamSessionPage() {
                         <div className="bg-neutral-white rounded-2xl p-8 border border-neutral-gray/30 shadow-md space-y-6">
                             <div className="flex items-end justify-between">
                                 <h3 className="text-4xl font-black text-foreground font-display leading-none">
-                                    {currentIndex + 1}<span className="text-muted-foreground/20 italic mx-1">/</span><span className="text-xl text-muted-foreground/40">{questions.length}</span>
+                                    {currentIndex + 1}<span className="text-neutral-ink italic mx-1">/</span><span className="text-xl text-neutral-ink">{questions.length}</span>
                                 </h3>
                                 <div className="text-right">
                                     <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest font-display">Active Question</p>
@@ -394,7 +394,7 @@ export default function ExamSessionPage() {
                                         const status = getQuestionStatus(q.id);
                                         const isCurrent = index === currentIndex;
 
-                                        let style = "bg-neutral-beige text-neutral-ink/30 hover:bg-neutral-gray/20 font-black";
+                                        let style = "bg-neutral-beige text-neutral-ink hover:bg-neutral-gray/20 font-black";
                                         if (status === "ANSWERED") style = "bg-primary/20 text-primary-strong hover:bg-primary/30 font-black shadow-sm";
                                         if (status === "FLAGGED") style = "bg-primary text-white font-black shadow-lg shadow-primary/20";
                                         if (isCurrent) style = "bg-primary-strong text-white scale-110 ring-4 ring-primary/20 font-black shadow-xl";
@@ -429,15 +429,15 @@ export default function ExamSessionPage() {
                             <div className="flex flex-wrap gap-4 justify-center">
                                 <div className="flex items-center gap-2">
                                     <div className="w-2.5 h-2.5 rounded-full bg-muted/50" />
-                                    <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40 font-display">Idle</span>
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-neutral-ink font-display">Idle</span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <div className="w-2.5 h-2.5 rounded-full bg-primary/20" />
-                                    <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40 font-display">Passed</span>
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-neutral-ink font-display">Passed</span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <div className="w-2.5 h-2.5 rounded-full bg-secondary" />
-                                    <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40 font-display">Flagged</span>
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-neutral-ink font-display">Flagged</span>
                                 </div>
                             </div>
                         </div>
@@ -563,7 +563,7 @@ function FocusModeView({
                     <div className="space-y-1">
                         <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] font-display">Sequence</p>
                         <p className="text-xl font-black text-foreground font-display">
-                            Question {questionIndex + 1} <span className="text-muted-foreground/20 italic mx-1">/</span> <span className="text-muted-foreground/40">{totalQuestions}</span>
+                            Question {questionIndex + 1} <span className="text-neutral-ink italic mx-1">/</span> <span className="text-neutral-ink">{totalQuestions}</span>
                         </p>
                     </div>
 
@@ -639,7 +639,7 @@ function FocusModeView({
                                 <span
                                     className={`
                                         w-10 h-10 rounded-2xl flex items-center justify-center font-black text-sm shrink-0 font-display transition-all duration-500
-                                        ${isSelected && !isSubmitted ? "bg-primary text-white rotate-12" : "bg-muted text-muted-foreground/40 group-hover/opt:bg-primary/10 group-hover/opt:text-primary"}
+                                        ${isSelected && !isSubmitted ? "bg-primary text-white rotate-12" : "bg-muted text-neutral-ink group-hover/opt:bg-primary/10 group-hover/opt:text-primary"}
                                         ${isSubmitted && isCorrect ? "bg-white text-emerald-500" : ""}
                                         ${isSubmitted && isSelected && !isCorrect ? "bg-white text-destructive" : ""}
                                     `}
@@ -804,7 +804,7 @@ function ScrollModeView({
                                     >
                                         <span className={`
                                             w-10 h-10 rounded-2xl flex items-center justify-center font-black text-sm shrink-0 font-display transition-all duration-500
-                                            ${isSelected && !isSubmitted ? "bg-primary text-white rotate-12" : "bg-muted text-muted-foreground/40 group-hover/opt:bg-primary/10 group-hover/opt:text-primary"}
+                                            ${isSelected && !isSubmitted ? "bg-primary text-white rotate-12" : "bg-muted text-neutral-ink group-hover/opt:bg-primary/10 group-hover/opt:text-primary"}
                                             ${isSubmitted && isCorrect ? "bg-white text-emerald-500" : ""}
                                             ${isSubmitted && isSelected && !isCorrect ? "bg-white text-destructive" : ""}
                                         `}>

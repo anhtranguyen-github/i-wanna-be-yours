@@ -128,10 +128,10 @@ const HomePage = () => {
     <div className="bg-[#F8FAFC] min-h-screen py-16 px-6">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <h1 className="text-4xl font-black text-slate-900 font-display tracking-tight uppercase tracking-[0.2em] mb-4">
+          <h1 className="text-4xl font-black text-neutral-ink font-display tracking-tight uppercase tracking-[0.2em] mb-4">
             Grammar <span className="text-primary">Graph</span>
           </h1>
-          <p className="text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed">
+          <p className="text-neutral-ink font-medium max-w-2xl mx-auto leading-relaxed">
             Neural Parsing Engine for Multilingual Syntactic Structural Analysis
           </p>
         </div>
@@ -140,7 +140,7 @@ const HomePage = () => {
         <div className="max-w-2xl mx-auto mb-12">
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="w-full flex justify-between items-center px-8 py-4 bg-white border border-slate-100 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 hover:text-slate-600 hover:border-primary/20 transition-all shadow-sm"
+            className="w-full flex justify-between items-center px-8 py-4 bg-white border border-slate-100 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] text-neutral-ink hover:text-slate-600 hover:border-primary/20 transition-all shadow-sm"
           >
             <span>Intelligence Methodology & Safety</span>
             {isOpen ? (
@@ -155,7 +155,7 @@ const HomePage = () => {
               <p className="text-slate-600 text-sm font-medium">
                 Utilizing <span className="text-primary font-black uppercase tracking-wider">GPT-4o Omnimodel</span> for real-time syntactic deconstruction.
               </p>
-              <p className="text-slate-400 text-[11px] italic">
+              <p className="text-neutral-ink text-[11px] italic">
                 Synthetic Intelligence may exhibit structural hallucinations. Verify complex linguistic patterns with native intuition.
               </p>
             </div>
@@ -168,7 +168,7 @@ const HomePage = () => {
             <form onSubmit={handleSubmit} className="space-y-8">
               <div className="space-y-4">
                 <label
-                  className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-2"
+                  className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-ink ml-2"
                   htmlFor="sentence"
                 >
                   Syntactic Input
@@ -178,7 +178,7 @@ const HomePage = () => {
                   <input
                     type="text"
                     id="sentence"
-                    className="relative w-full p-6 rounded-2xl bg-white border border-slate-100 text-lg font-jp focus:outline-none focus:border-primary/30 transition-all shadow-inner text-slate-800"
+                    className="relative w-full p-6 rounded-2xl bg-white border border-slate-100 text-lg font-jp focus:outline-none focus:border-primary/30 transition-all shadow-inner text-neutral-ink"
                     placeholder="Enter sentence for deep analysis..."
                     value={sentence}
                     onChange={(e) => setSentence(e.target.value)}
@@ -189,7 +189,7 @@ const HomePage = () => {
               </div>
 
               <div className="space-y-4">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-2">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-ink ml-2">
                   Target Lexicon
                 </label>
                 <div className="flex flex-wrap gap-3">
@@ -198,7 +198,7 @@ const HomePage = () => {
                       key={lang}
                       type="button"
                       onClick={() => setLanguage(lang)}
-                      className={`px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-[0.15em] transition-all ${language === lang ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+                      className={`px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-[0.15em] transition-all ${language === lang ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-slate-50 text-neutral-ink hover:bg-slate-100'}`}
                     >
                       {lang}
                     </button>
@@ -238,11 +238,11 @@ const HomePage = () => {
               <div className="bg-slate-900 text-white p-6 rounded-3xl shadow-2xl space-y-2 border border-slate-800">
                 <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 mb-4">Telemetry Details</h2>
                 <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-[11px]">
-                  <span className="text-slate-500">Processing Model:</span>
+                  <span className="text-neutral-ink">Processing Model:</span>
                   <span className="font-bold">{metadata.model}</span>
-                  <span className="text-slate-500">Compute Tokens:</span>
+                  <span className="text-neutral-ink">Compute Tokens:</span>
                   <span className="font-bold">{metadata.tokensUsed}</span>
-                  <span className="text-slate-500">Temporal Stamp:</span>
+                  <span className="text-neutral-ink">Temporal Stamp:</span>
                   <span className="font-bold truncate max-w-[100px]">{metadata.callTimestamp}</span>
                 </div>
               </div>
@@ -254,7 +254,7 @@ const HomePage = () => {
             {loading && (
               <div className="absolute inset-0 bg-white/60 backdrop-blur-sm z-20 flex flex-col items-center justify-center rounded-[3rem]">
                 <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-6" />
-                <p className="font-black text-[10px] uppercase tracking-[0.2em] text-slate-500">Mapping Syntactic Vectors</p>
+                <p className="font-black text-[10px] uppercase tracking-[0.2em] text-neutral-ink">Mapping Syntactic Vectors</p>
               </div>
             )}
             {!loading && (

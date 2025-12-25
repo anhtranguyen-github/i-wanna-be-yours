@@ -60,7 +60,7 @@ export function PACTDailyCard({
             <div className="p-8 bg-gradient-to-br from-primary/10 to-neutral-beige/50 border-b border-neutral-gray/10">
                 <div className="flex items-center gap-2 mb-2">
                     <Target size={18} className="text-primary" />
-                    <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                    <span className="text-xs font-semibold text-neutral-ink uppercase tracking-wide">
                         Daily Purpose
                     </span>
                     <InfoTooltip
@@ -79,7 +79,7 @@ export function PACTDailyCard({
                             style={{ width: `${pact.purpose_alignment_score}%` }}
                         />
                     </div>
-                    <span className="text-[10px] font-black text-neutral-ink/80 uppercase tracking-widest font-display">
+                    <span className="text-[10px] font-black text-neutral-ink uppercase tracking-widest font-display opacity-90">
                         {pact.purpose_alignment_score}% aligned
                     </span>
                 </div>
@@ -106,13 +106,13 @@ export function PACTDailyCard({
                         </div>
                         <div>
                             <p className="text-3xl font-black text-neutral-ink font-display">{pact.streak_current}</p>
-                            <p className="text-[10px] text-neutral-ink/70 font-black uppercase tracking-widest">Day Streak</p>
+                            <p className="text-[10px] text-neutral-ink font-black uppercase tracking-widest">Day Streak</p>
                         </div>
                     </div>
 
                     {/* Streak Progress */}
                     <div className="pl-4 border-l border-slate-100">
-                        <p className="text-xs text-neutral-ink/70 font-black mb-1">
+                        <p className="text-xs text-neutral-ink font-black mb-1 opacity-80">
                             Goal: {pact.streak_target} days
                         </p>
                         <div className="w-20 h-1.5 bg-slate-100 rounded-full overflow-hidden">
@@ -175,7 +175,7 @@ export function PACTDailyCard({
             <div className="p-5">
                 <div className="flex items-center gap-2 mb-3">
                     <Zap size={16} className="text-amber-500" />
-                    <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                    <p className="text-xs font-semibold text-neutral-ink uppercase tracking-wide">
                         Today&apos;s Actions
                     </p>
                     <InfoTooltip
@@ -254,7 +254,7 @@ function ActionItem({ action, onToggle }: ActionItemProps) {
             <div className="flex-1 min-w-0">
                 <p className={cn(
                     'text-sm font-medium',
-                    action.completed_today ? 'text-slate-500 line-through' : 'text-slate-900'
+                    action.completed_today ? 'text-neutral-ink line-through' : 'text-neutral-ink'
                 )}>
                     {action.description}
                 </p>
@@ -262,7 +262,7 @@ function ActionItem({ action, onToggle }: ActionItemProps) {
                     <span className={cn('px-1.5 py-0.5 rounded text-[10px] font-semibold', actionTypeColors[action.action_type])}>
                         {action.action_type.toUpperCase()}
                     </span>
-                    <span className="text-[10px] text-slate-400 flex items-center gap-1">
+                    <span className="text-[10px] text-neutral-ink flex items-center gap-1">
                         <Clock size={10} />
                         {action.target_minutes}m
                     </span>
@@ -272,7 +272,7 @@ function ActionItem({ action, onToggle }: ActionItemProps) {
 
             <div className="text-right flex-shrink-0">
                 <p className="text-xs font-semibold text-slate-700">{action.completion_rate}%</p>
-                <p className="text-[10px] text-slate-400">rate</p>
+                <p className="text-[10px] text-neutral-ink">rate</p>
             </div>
         </div>
     );

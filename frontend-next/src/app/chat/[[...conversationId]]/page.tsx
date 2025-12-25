@@ -13,7 +13,7 @@ const ChatMainArea = dynamic(
     () => import('@/components/chat/ChatMainArea').then(mod => mod.ChatMainArea),
     {
         ssr: false,
-        loading: () => <div className="flex-1 flex items-center justify-center h-full text-slate-400">Loading Chat Area...</div>
+        loading: () => <div className="flex-1 flex items-center justify-center h-full text-neutral-ink">Loading Chat Area...</div>
     }
 );
 

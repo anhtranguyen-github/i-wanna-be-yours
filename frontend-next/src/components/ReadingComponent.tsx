@@ -158,7 +158,7 @@ const ReadingComponent: React.FC<ReadingComponentProps> = ({ data }) => {
               </div>
             </div>
             <div className="bg-muted/20 p-8 rounded-2xl border border-border/50">
-              <h2 className="text-xs font-black text-muted-foreground/50 uppercase tracking-[0.2em] font-display mb-6">Translation</h2>
+              <h2 className="text-xs font-black text-neutral-ink uppercase tracking-[0.2em] font-display mb-6">Translation</h2>
               <div className="space-y-4">
                 {data.englishTranslation.map((paragraph, index) => (
                   <p key={index} className="text-lg font-bold text-muted-foreground leading-relaxed">{paragraph}</p>

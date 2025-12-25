@@ -11,7 +11,7 @@ export const Navbar = () => {
                     <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary group-hover:rotate-12 transition-transform">
                         <Sparkles size={20} className="fill-primary" />
                     </div>
-                    <span className="text-2xl font-black font-display text-slate-900 tracking-tight uppercase tracking-widest text-lg">Hanachan</span>
+                    <span className="text-2xl font-black font-display text-neutral-ink tracking-tight uppercase tracking-widest text-lg">Hanachan</span>
                 </div>
 
                 {/* Desktop Navigation */}
@@ -25,7 +25,7 @@ export const Navbar = () => {
                 <div className="flex items-center gap-4">
                     <Link
                         href="/chat"
-                        className="hidden sm:flex text-slate-500 font-black uppercase tracking-widest text-[10px] hover:text-slate-900 transition-colors"
+                        className="hidden sm:flex text-neutral-ink font-black uppercase tracking-widest text-[10px] hover:text-neutral-ink transition-colors"
                     >
                         Sign In
                     </Link>
@@ -44,7 +44,7 @@ export const Navbar = () => {
 const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
     <Link
         href={href}
-        className="text-[10px] uppercase font-black tracking-[0.2em] text-slate-400 hover:text-primary transition-colors"
+        className="text-[10px] uppercase font-black tracking-[0.2em] text-neutral-ink hover:text-primary transition-colors"
     >
         {children}
     </Link>

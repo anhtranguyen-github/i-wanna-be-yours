@@ -36,7 +36,7 @@ export function InfoTooltip({
                         tabIndex={0}
                         className={cn(
                             'inline-flex items-center justify-center rounded-full cursor-pointer',
-                            'text-slate-400 hover:text-blue-500 hover:bg-blue-50',
+                            'text-neutral-ink hover:text-blue-500 hover:bg-blue-50',
                             'transition-colors duration-200 p-0.5',
                             'focus:outline-none focus:ring-2 focus:ring-blue-500/20',
                             className

@@ -155,7 +155,7 @@ export default function LearningDashboardPage() {
             <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
                 <div className="text-center">
                     <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-                    <p className="text-gray-600 dark:text-gray-400">Loading your progress...</p>
+                    <p className="text-neutral-ink dark:text-neutral-ink">Loading your progress...</p>
                 </div>
             </div>
         );
@@ -185,8 +185,8 @@ export default function LearningDashboardPage() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                         </svg>
                     </div>
-                    <h2 className="text-xl font-bold text-slate-800 mb-2">Failed to load progress data</h2>
-                    <p className="text-slate-500 mb-6">{error}</p>
+                    <h2 className="text-xl font-bold text-neutral-ink mb-2">Failed to load progress data</h2>
+                    <p className="text-neutral-ink mb-6">{error}</p>
                     <button
                         onClick={() => window.location.reload()}
                         className="px-6 py-3 bg-brand-green text-white font-semibold rounded-xl hover:bg-brand-green/90 transition-all"
@@ -464,10 +464,10 @@ export default function LearningDashboardPage() {
                     <div className="lg:col-span-1">
                         <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 h-full">
                             <div className="flex items-center justify-between mb-4">
-                                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                                <h3 className="text-lg font-semibold text-neutral-ink dark:text-white">
                                     Achievements
                                 </h3>
-                                <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
+                                <div className="flex items-center gap-1 text-sm text-neutral-ink dark:text-neutral-ink">
                                     <TrophyIcon className="w-4 h-4 text-yellow-500" />
                                     <span>{isGuest ? "0/12" : `${progressData?.achievements_count || 0}/${progressData?.total_achievements_available || 0}`}</span>
                                 </div>
@@ -485,8 +485,8 @@ export default function LearningDashboardPage() {
                                             <div key={i} className="flex items-center gap-3 p-4 rounded-xl border border-dashed border-gray-200 grayscale">
                                                 <span className="text-3xl">{mock.icon}</span>
                                                 <div className="flex-1 min-w-0">
-                                                    <p className="font-semibold text-gray-900 truncate">{mock.name}</p>
-                                                    <p className="text-xs text-gray-500 truncate">{mock.desc}</p>
+                                                    <p className="font-semibold text-neutral-ink truncate">{mock.name}</p>
+                                                    <p className="text-xs text-neutral-ink truncate">{mock.desc}</p>
                                                 </div>
                                             </div>
                                         ))}
@@ -561,7 +561,7 @@ export default function LearningDashboardPage() {
                             ))}
                         </div>
                     ) : (
-                        <p className="text-gray-500 dark:text-gray-400 text-center py-8">
+                        <p className="text-neutral-ink dark:text-neutral-ink text-center py-8">
                             No recent activity. Start learning to see your progress here!
                         </p>
                     )}

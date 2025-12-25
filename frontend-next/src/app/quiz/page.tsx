@@ -4,7 +4,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { GraduationCap, ArrowLeft, Sparkles, Plus, Search, Loader2, AlertCircle, Filter, Zap } from "lucide-react";
-import { ModeSelector, FilterBar, PracticeCard } from "@/components/practice";
+import { FilterBar, PracticeCard } from "@/components/practice";
 import { getQuizzes, QuizListItem } from "@/services/quizService";
 import { useUser } from "@/context/UserContext";
 import { PracticeMode, JLPTLevel, SkillType, FilterState } from "@/types/practice";
@@ -61,18 +61,7 @@ export default function QuizListPage() {
         });
     }, [quizzes, searchTerm]);
 
-    // Handlers
-    const handleModeChange = (mode: PracticeMode) => {
-        if (mode === 'FULL_EXAM') {
-            router.push('/jlpt');
-            return;
-        }
-        setFilters((prev) => ({
-            ...prev,
-            mode,
-            skill: mode === "FULL_EXAM" ? "ALL" : prev.skill,
-        }));
-    };
+
 
     const handleLevelChange = (level: JLPTLevel | "ALL") => {
         setFilters((prev) => ({ ...prev, level }));
@@ -108,7 +97,7 @@ export default function QuizListPage() {
                                 <h1 className="text-5xl font-black tracking-tighter text-neutral-ink font-display leading-[0.9]">
                                     Quiz <span className="text-primary-strong">Nexus</span>
                                 </h1>
-                                <p className="text-[10px] font-black text-neutral-ink/40 uppercase tracking-[0.3em] font-display mt-2">
+                                <p className="text-[10px] font-black text-neutral-ink uppercase tracking-[0.3em] font-display mt-2">
                                     RAPID COGNITIVE EVALUATION
                                 </p>
                             </div>
@@ -139,8 +128,7 @@ export default function QuizListPage() {
                 {/* Sub-Header / Search & Filters */}
                 <div className="space-y-12 bg-neutral-white/50 p-8 md:p-12 rounded-[3.5rem] border border-neutral-gray/20 shadow-inner">
                     <div className="flex flex-col lg:flex-row gap-8 items-end justify-between">
-                        <div className="w-full lg:w-auto space-y-8">
-                            <ModeSelector selectedMode={filters.mode} onModeChange={handleModeChange} />
+                        <div className="w-full lg:w-auto">
                             <FilterBar
                                 selectedLevel={filters.level}
                                 selectedSkill={filters.skill}
@@ -152,7 +140,7 @@ export default function QuizListPage() {
 
                         {/* Integrated Search */}
                         <div className="w-full lg:max-w-md relative group">
-                            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-neutral-ink/20 group-focus-within:text-primary-strong transition-colors" size={20} />
+                            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-neutral-ink group-focus-within:text-primary-strong transition-colors" size={20} />
                             <input
                                 type="text"
                                 placeholder="Search cognitive nodes..."
@@ -169,7 +157,7 @@ export default function QuizListPage() {
                     {loading ? (
                         <div className="flex flex-col items-center justify-center py-32 space-y-6">
                             <Loader2 className="w-12 h-12 animate-spin text-primary-strong" />
-                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-ink/40 animate-pulse">Synchronizing Neural Paths...</p>
+                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-ink animate-pulse">Synchronizing Neural Paths...</p>
                         </div>
                     ) : error ? (
                         <div className="flex flex-col items-center justify-center py-32 text-center bg-neutral-white rounded-[3rem] border border-neutral-gray/20 shadow-xl">
@@ -184,9 +172,9 @@ export default function QuizListPage() {
                         </div>
                     ) : filteredQuizzes.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-32 text-center bg-neutral-white/30 rounded-[3rem] border-2 border-dashed border-neutral-gray/20">
-                            <Filter className="w-16 h-16 text-neutral-ink/10 mb-6" />
+                            <Filter className="w-16 h-16 text-neutral-ink mb-6" />
                             <h3 className="text-2xl font-black text-neutral-ink font-display tracking-tight mb-2">Zero Matches Identified</h3>
-                            <p className="text-sm font-bold text-neutral-ink/40 max-w-xs mx-auto">
+                            <p className="text-sm font-bold text-neutral-ink max-w-xs mx-auto opacity-70">
                                 Adjust your domain specifications or cognitive level to find available paths.
                             </p>
                         </div>

@@ -131,7 +131,7 @@ export default function ExamResultPage() {
         return (
             <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 text-center">
                 <div className="w-24 h-24 bg-muted/50 rounded-2xl flex items-center justify-center mb-8 ">
-                    <HelpCircle size={44} className="text-muted-foreground/20" />
+                    <HelpCircle size={44} className="text-neutral-ink" />
                 </div>
                 <h2 className="text-2xl font-black text-foreground mb-4 font-display">Results Not Found</h2>
                 <Link
@@ -194,7 +194,7 @@ export default function ExamResultPage() {
                         </Link>
                         <div className="text-right space-y-0.5">
                             <h1 className="text-xl font-black text-foreground font-display tracking-tight leading-none">{examConfig.title}</h1>
-                            <p className="text-[10px] font-black text-muted-foreground/40 uppercase tracking-widest font-display">
+                            <p className="text-[10px] font-black text-neutral-ink uppercase tracking-widest font-display">
                                 {examConfig.level} <span className="mx-1">•</span> Summary
                             </p>
                         </div>
@@ -298,7 +298,7 @@ export default function ExamResultPage() {
                         </div>
                         <div className="space-y-1">
                             <h3 className="text-2xl font-black text-foreground font-display leading-none">Diagnostic Analysis</h3>
-                            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 font-display">Performance by skill category</p>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-neutral-ink font-display">Performance by skill category</p>
                         </div>
                     </div>
 
@@ -310,7 +310,7 @@ export default function ExamResultPage() {
                                         <span className="text-2xl grayscale group-hover:grayscale-0 transition-all duration-500 scale-110">{skillIcons[skill.skill]}</span>
                                         <span className="text-xs font-black uppercase tracking-widest text-foreground font-display">{skillLabels[skill.skill]}</span>
                                     </div>
-                                    <p className="text-xs font-black font-display text-muted-foreground/60">
+                                    <p className="text-xs font-black font-display text-neutral-ink">
                                         <span className={getScoreColor(skill.percentage)}>{skill.correct} / {skill.total}</span>
                                         <span className="ml-2 italic opacity-50">({skill.percentage}%)</span>
                                     </p>
@@ -400,7 +400,7 @@ export default function ExamResultPage() {
                     </div>
 
                     {!user && (
-                        <div className="mt-10 pt-8 border-t border-border/50 flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 font-display">
+                        <div className="mt-10 pt-8 border-t border-border/50 flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] text-neutral-ink font-display">
                             <CheckCircle2 size={16} className="text-primary" />
                             Guest Session: Secure your lifelong Hanachan profile to store diagnostic data.
                         </div>

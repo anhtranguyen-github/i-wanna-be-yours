@@ -138,7 +138,7 @@ const WordDetailsSidebar: React.FC<WordDetailsSidebarProps> = ({
       {clickedWordDetails ? (
         <div className="animate-in fade-in slide-in-from-right-4 duration-500">
           <div className="flex items-center justify-between mb-8">
-            <h3 className="text-4xl font-black text-slate-900 font-display">
+            <h3 className="text-4xl font-black text-neutral-ink font-display">
               {clickedWordDetails.dictionary}
             </h3>
             <button
@@ -166,23 +166,23 @@ const WordDetailsSidebar: React.FC<WordDetailsSidebarProps> = ({
 
             <div className="grid grid-cols-2 gap-4">
               <section className="bg-slate-50/50 p-4 rounded-2xl border border-slate-100/50">
-                <h4 className="text-[9px] font-black uppercase tracking-[0.1em] text-slate-400 mb-2">Phonetic</h4>
+                <h4 className="text-[9px] font-black uppercase tracking-[0.1em] text-neutral-ink mb-2">Phonetic</h4>
                 <p className="text-sm font-bold text-slate-600">{clickedWordDetails.furigana}</p>
               </section>
               <section className="bg-slate-50/50 p-4 rounded-2xl border border-slate-100/50">
-                <h4 className="text-[9px] font-black uppercase tracking-[0.1em] text-slate-400 mb-2">Lexical Index</h4>
+                <h4 className="text-[9px] font-black uppercase tracking-[0.1em] text-neutral-ink mb-2">Lexical Index</h4>
                 <p className="text-sm font-bold text-slate-600 uppercase">{clickedWordDetails.status}</p>
               </section>
             </div>
 
             <section className="pt-4">
-              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4">External Intelligence</h4>
+              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-ink mb-4">External Intelligence</h4>
               <div className="flex gap-2">
                 <a
                   href={`https://www.japandict.com/?s=${encodeURIComponent(clickedWordDetails.original)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 text-center py-2.5 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-[0.1em] text-slate-500 hover:border-primary/30 hover:text-primary transition-all shadow-sm"
+                  className="flex-1 text-center py-2.5 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-[0.1em] text-neutral-ink hover:border-primary/30 hover:text-primary transition-all shadow-sm"
                 >
                   JapanDict
                 </a>
@@ -190,7 +190,7 @@ const WordDetailsSidebar: React.FC<WordDetailsSidebarProps> = ({
                   href={`https://jisho.org/search/${encodeURIComponent(clickedWordDetails.dictionary)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 text-center py-2.5 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-[0.1em] text-slate-500 hover:border-primary/30 hover:text-primary transition-all shadow-sm"
+                  className="flex-1 text-center py-2.5 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-[0.1em] text-neutral-ink hover:border-primary/30 hover:text-primary transition-all shadow-sm"
                 >
                   Jisho
                 </a>
@@ -200,7 +200,7 @@ const WordDetailsSidebar: React.FC<WordDetailsSidebarProps> = ({
             <hr className="my-8 border-slate-50" />
 
             <section>
-              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4">State Management</h4>
+              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-ink mb-4">State Management</h4>
               <div className="flex flex-col gap-2">
                 <button
                   onClick={() => handleUpdateStatus("known")}

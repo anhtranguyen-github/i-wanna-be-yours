@@ -7,10 +7,10 @@ export const FeatureGrid = () => {
             <div className="max-w-7xl mx-auto px-6">
                 <div className="text-center mb-20 space-y-4">
                     <h2 className="text-sm font-black text-primary uppercase tracking-[0.3em]">The Ecosystem</h2>
-                    <p className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight font-display">
+                    <p className="text-4xl md:text-5xl font-black text-neutral-ink tracking-tight font-display">
                         Linguistic <span className="text-primary">Command</span> Control.
                     </p>
-                    <p className="text-slate-500 font-medium max-w-2xl mx-auto">
+                    <p className="text-neutral-ink font-medium max-w-2xl mx-auto">
                         A unified platform replacing fragmented tools with a single, high-fidelity intelligence system.
                     </p>
                 </div>
@@ -25,8 +25,8 @@ export const FeatureGrid = () => {
                             <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-primary shadow-lg mb-6">
                                 <LineChart size={28} />
                             </div>
-                            <h3 className="text-3xl font-black text-slate-900 mb-4 tracking-tight">Strategic Management</h3>
-                            <p className="text-slate-500 font-medium max-w-md leading-relaxed">
+                            <h3 className="text-3xl font-black text-neutral-ink mb-4 tracking-tight">Strategic Management</h3>
+                            <p className="text-neutral-ink font-medium max-w-md leading-relaxed">
                                 Define long-term OKRs, set tactical SMART goals, and track daily PACT commitments. Your learning isn&apos;t just practice—it&apos;s a planned operation.
                             </p>
 
@@ -61,8 +61,8 @@ export const FeatureGrid = () => {
                             <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 mb-6">
                                 <Layers size={24} />
                             </div>
-                            <h3 className="text-xl font-black text-slate-900 mb-2 tracking-tight">Resource Vault</h3>
-                            <p className="text-slate-500 text-sm font-medium leading-relaxed">
+                            <h3 className="text-xl font-black text-neutral-ink mb-2 tracking-tight">Resource Vault</h3>
+                            <p className="text-neutral-ink text-sm font-medium leading-relaxed">
                                 A curated library of podcasts, stories, and mnemonics, all integrated into your review cycle.
                             </p>
                         </div>
@@ -77,7 +77,7 @@ export const FeatureGrid = () => {
                                 <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-emerald-600 mb-6 shadow-sm">
                                     <Zap size={24} />
                                 </div>
-                                <h3 className="text-2xl font-black text-slate-900 mb-2 tracking-tight">High-Entropy Practice</h3>
+                                <h3 className="text-2xl font-black text-neutral-ink mb-2 tracking-tight">High-Entropy Practice</h3>
                                 <p className="text-slate-600 text-sm font-medium leading-relaxed">
                                     Rapid-fire Kanji and Vocabulary tools designed for maximum retention in minimum time.
                                 </p>

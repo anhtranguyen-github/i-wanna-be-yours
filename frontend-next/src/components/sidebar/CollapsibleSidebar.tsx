@@ -126,7 +126,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     {isExpanded && isHistoryOpen && (
                         <div className="px-4 pt-1 pb-3 flex-shrink-0">
                             <div className="relative group">
-                                <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-ink/60 group-focus-within:text-primary-strong transition-colors" />
+                                <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-ink group-focus-within:text-primary-strong transition-colors" />
                                 <input
                                     type="text"
                                     placeholder={isGuest ? "Search demo chats..." : "Search..."}
@@ -159,7 +159,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                                                 <p className={`text-sm font-black truncate font-display tracking-tight mb-1`}>
                                                     {chat.title}
                                                 </p>
-                                                <div className="flex items-center gap-2 opacity-40 group-hover:opacity-60 transition-opacity">
+                                                <div className="flex items-center gap-2 opacity-90 group-hover:opacity-100 transition-opacity">
                                                     <CalendarDays size={10} />
                                                     <p className="text-[10px] font-black uppercase tracking-widest font-display">
                                                         {new Date(chat.updated_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
@@ -173,8 +173,8 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                                     ))
                                 ) : (
                                     <div className="py-12 text-center space-y-3">
-                                        <MessageCircle size={32} className="mx-auto text-muted-foreground/10" />
-                                        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/30 font-display">No conversations</p>
+                                        <MessageCircle size={32} className="mx-auto text-neutral-ink" />
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-neutral-ink font-display">No conversations</p>
                                     </div>
                                 )}
 
@@ -223,7 +223,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     {isExpanded && isResourcesOpen && (
                         <div className="px-4 pt-1 pb-3 flex-shrink-0">
                             <div className="relative group">
-                                <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-ink/60 group-focus-within:text-primary-strong transition-colors" />
+                                <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-ink group-focus-within:text-primary-strong transition-colors" />
                                 <input
                                     type="text"
                                     placeholder="Search resources..."
@@ -291,8 +291,8 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                                     ))
                                 ) : (
                                     <div className="py-12 text-center space-y-3">
-                                        <FolderOpen size={32} className="mx-auto text-muted-foreground/10" />
-                                        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/30 font-display">No resources found</p>
+                                        <FolderOpen size={32} className="mx-auto text-neutral-ink" />
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-neutral-ink font-display">No resources found</p>
                                     </div>
                                 )}
                             </div>

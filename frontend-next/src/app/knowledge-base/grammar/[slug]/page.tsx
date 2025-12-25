@@ -53,7 +53,7 @@ export default async function GrammarPoint({ params }: GrammarPointProps) {
         <GrammarBreadcrumb decodedTitle={decodedTitle} />
 
         <div className="bg-gradient-to-br from-blue-50 to-gray-100 shadow-lg rounded-xl p-2 md:p-2 mt-4">
-          {/* <h1 className="text-2xl md:text-3xl font-bold text-gray-600 mb-4">
+          {/* <h1 className="text-2xl md:text-3xl font-bold text-neutral-ink mb-4">
             Japanese JLPT Grammar Point
             <br />
             <span className="text-blue-600">{decodedTitle}</span>
@@ -72,7 +72,7 @@ export default async function GrammarPoint({ params }: GrammarPointProps) {
               </div>
             </>
           ) : (
-            <p className="text-center text-gray-500">
+            <p className="text-center text-neutral-ink">
               Grammar details not found.
             </p>
           )}
@@ -111,7 +111,7 @@ const GrammarExplanations: React.FC<GrammarExplanationsProps> = ({
 }) => {
   return (
     <div className="bg-white shadow-md rounded-lg p-2 mb-6">
-      <h1 className="text-xl md:text-2xl font-bold text-gray-600 mb-4">
+      <h1 className="text-xl md:text-2xl font-bold text-neutral-ink mb-4">
         Japanese JLPT Grammar Point
         <br />
         <span className="text-blue-600">{grammarDetails.title}</span>
@@ -124,22 +124,22 @@ const GrammarExplanations: React.FC<GrammarExplanationsProps> = ({
       <div className="space-y-4">
         {/* Short Explanation */}
         <section>
-          <p className="italic text-gray-700">
+          <p className="italic text-neutral-ink">
             {grammarDetails.short_explanation}
           </p>
         </section>
 
         {/* Formation */}
         <section>
-          <p className="text-sm md:text-base font-semibold text-gray-800">
+          <p className="text-sm md:text-base font-semibold text-neutral-ink">
             Formation
           </p>
-          <p className="text-gray-700 mt-1">{grammarDetails.formation}</p>
+          <p className="text-neutral-ink mt-1">{grammarDetails.formation}</p>
         </section>
 
         {/* Examples */}
         <section>
-          <p className="text-sm md:text-base font-semibold text-gray-800 mb-2">
+          <p className="text-sm md:text-base font-semibold text-neutral-ink mb-2">
             Examples
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -153,11 +153,11 @@ const GrammarExplanations: React.FC<GrammarExplanationsProps> = ({
                   ariaLabel={`Play audio for example ${index + 1}`}
                 />
                 <div>
-                  <p className="text-base text-gray-800">{example.jp}</p>
-                  <p className="text-xs italic text-gray-600">
+                  <p className="text-base text-neutral-ink">{example.jp}</p>
+                  <p className="text-xs italic text-neutral-ink">
                     {example.romaji}
                   </p>
-                  <p className="text-sm text-gray-700 mt-0.5">{example.en}</p>
+                  <p className="text-sm text-neutral-ink mt-0.5">{example.en}</p>
                 </div>
               </div>
             ))}
@@ -166,10 +166,10 @@ const GrammarExplanations: React.FC<GrammarExplanationsProps> = ({
 
         {/* Long Explanation */}
         <section>
-          <p className="text-sm md:text-base font-semibold text-gray-800">
+          <p className="text-sm md:text-base font-semibold text-neutral-ink">
             Long Explanation
           </p>
-          <p className="text-gray-700 mt-1">
+          <p className="text-neutral-ink mt-1">
             {grammarDetails.long_explanation}
           </p>
         </section>
@@ -235,7 +235,7 @@ const GrammarExplanations: React.FC<GrammarExplanationsProps> = ({
 //         <GrammarBreadcrumb decodedTitle={decodedTitle} />
 
 //         <div className="bg-gray-100 shadow-lg rounded-lg p-2">
-//           <h1 className="text-4xl font-bold mb-8 text-gray-900">
+//           <h1 className="text-4xl font-bold mb-8 text-neutral-ink">
 //             Japanese JLPT Grammar Point
 //             <br />
 //             {decodedTitle}
@@ -243,26 +243,26 @@ const GrammarExplanations: React.FC<GrammarExplanationsProps> = ({
 
 //           {grammarDetails && (
 //             <div className="bg-gray-200 border border-gray-300 rounded-lg p-2">
-//               <h2 className="text-3xl font-semibold mb-10 text-gray-800">
+//               <h2 className="text-3xl font-semibold mb-10 text-neutral-ink">
 //                 {grammarDetails.title}
 //               </h2>
 //               <div className="space-y-8">
 //                 <div>
-//                   <p className="text-xl font-semibold text-gray-800">Short explanation:</p>
-//                   <div className="text-lg text-gray-700 mt-2">
+//                   <p className="text-xl font-semibold text-neutral-ink">Short explanation:</p>
+//                   <div className="text-lg text-neutral-ink mt-2">
 //                     {grammarDetails.short_explanation}
 //                   </div>
 //                 </div>
 
 //                 <div>
-//                   <p className="text-xl font-semibold text-gray-800">Formation:</p>
-//                   <div className="text-lg text-gray-700 mt-2">
+//                   <p className="text-xl font-semibold text-neutral-ink">Formation:</p>
+//                   <div className="text-lg text-neutral-ink mt-2">
 //                     {grammarDetails.formation}
 //                   </div>
 //                 </div>
 
 //                 <div>
-//                   <p className="text-xl font-semibold text-gray-800 mb-2">Examples:</p>
+//                   <p className="text-xl font-semibold text-neutral-ink mb-2">Examples:</p>
 //                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
 //                     {grammarDetails.examples.map((example: any, index: number) => (
 //                       <div
@@ -275,13 +275,13 @@ const GrammarExplanations: React.FC<GrammarExplanationsProps> = ({
 //                             ariaLabel={`Play audio for example ${index + 1}`}
 //                           />
 //                           <div className="flex flex-col">
-//                             <div className="text-xl text-gray-800 mb-2">
+//                             <div className="text-xl text-neutral-ink mb-2">
 //                               {example.jp}
 //                             </div>
-//                             <div className="text-xs italic text-gray-600 mb-2">
+//                             <div className="text-xs italic text-neutral-ink mb-2">
 //                               {example.romaji}
 //                             </div>
-//                             <div className="text-sm text-gray-700">
+//                             <div className="text-sm text-neutral-ink">
 //                               {example.en}
 //                             </div>
 //                           </div>
@@ -292,8 +292,8 @@ const GrammarExplanations: React.FC<GrammarExplanationsProps> = ({
 //                 </div>
 
 //                 <div>
-//                   <p className="text-xl font-semibold text-gray-800">Long explanation:</p>
-//                   <div className="text-lg text-gray-700 mt-2">
+//                   <p className="text-xl font-semibold text-neutral-ink">Long explanation:</p>
+//                   <div className="text-lg text-neutral-ink mt-2">
 //                     {grammarDetails.long_explanation}
 //                   </div>
 //                 </div>
@@ -304,7 +304,7 @@ const GrammarExplanations: React.FC<GrammarExplanationsProps> = ({
 
 //         {/* Include the MarkdownContent component */}
 //         <div className="mt-5 mb-5">
-//           <p className="text-xl font-semibold text-gray-800">
+//           <p className="text-xl font-semibold text-neutral-ink">
 //             Detailed Grammar notes:
 //           </p>
 //           <MarkdownContent lang="jap" slug={params.slug} />

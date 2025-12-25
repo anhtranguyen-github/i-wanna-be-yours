@@ -20,12 +20,12 @@ export const Hero = () => {
                             The New Era of Japanese Mastery
                         </div>
 
-                        <h1 className="text-6xl md:text-8xl font-black text-slate-900 tracking-tight leading-[0.95] font-display">
+                        <h1 className="text-6xl md:text-8xl font-black text-neutral-ink tracking-tight leading-[0.95] font-display">
                             STRATEGIC <br />
                             <span className="text-primary">INTELLIGENCE.</span>
                         </h1>
 
-                        <p className="text-xl text-slate-500 font-medium leading-relaxed max-w-xl">
+                        <p className="text-xl text-neutral-ink font-medium leading-relaxed max-w-xl">
                             The ultimate OS for linguistic acquisition. From AI-powered semantic analysis to structured strategic planning, Hanachan is your command center for Japanese mastery.
                         </p>
 
@@ -39,7 +39,7 @@ export const Hero = () => {
                             </Link>
                             <Link
                                 href="/tools"
-                                className="w-full sm:w-auto px-10 py-5 bg-white border border-slate-100 text-slate-900 rounded-2xl font-black uppercase tracking-widest text-xs transition-all hover:bg-slate-50 shadow-xl shadow-primary/5 flex items-center justify-center gap-3"
+                                className="w-full sm:w-auto px-10 py-5 bg-white border border-slate-100 text-neutral-ink rounded-2xl font-black uppercase tracking-widest text-xs transition-all hover:bg-slate-50 shadow-xl shadow-primary/5 flex items-center justify-center gap-3"
                             >
                                 <Zap size={18} className="text-primary" />
                                 Explore Lab
@@ -48,18 +48,18 @@ export const Hero = () => {
 
                         <div className="flex items-center gap-8 pt-8 border-t border-slate-100">
                             <div>
-                                <p className="text-2xl font-black text-slate-900 leading-none">N5-N1</p>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">Full Coverage</p>
+                                <p className="text-2xl font-black text-neutral-ink leading-none">N5-N1</p>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-neutral-ink mt-1">Full Coverage</p>
                             </div>
                             <div className="h-8 w-px bg-slate-100" />
                             <div>
-                                <p className="text-2xl font-black text-slate-900 leading-none">AI Native</p>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">Deep Analysis</p>
+                                <p className="text-2xl font-black text-neutral-ink leading-none">AI Native</p>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-neutral-ink mt-1">Deep Analysis</p>
                             </div>
                             <div className="h-8 w-px bg-slate-100" />
                             <div>
-                                <p className="text-2xl font-black text-slate-900 leading-none">24/7</p>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">Strategic Support</p>
+                                <p className="text-2xl font-black text-neutral-ink leading-none">24/7</p>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-neutral-ink mt-1">Strategic Support</p>
                             </div>
                         </div>
                     </div>
@@ -85,8 +85,8 @@ export const Hero = () => {
                                     <Target size={20} />
                                 </div>
                                 <div>
-                                    <p className="text-xs font-black text-slate-900 uppercase tracking-widest">OKR Tracking</p>
-                                    <p className="text-[10px] text-slate-500 font-medium">Progress: 84%</p>
+                                    <p className="text-xs font-black text-neutral-ink uppercase tracking-widest">OKR Tracking</p>
+                                    <p className="text-[10px] text-neutral-ink font-medium">Progress: 84%</p>
                                 </div>
                             </div>
                         </div>
@@ -97,8 +97,8 @@ export const Hero = () => {
                                     <Zap size={20} />
                                 </div>
                                 <div>
-                                    <p className="text-xs font-black text-slate-900 uppercase tracking-widest">PACT Active</p>
-                                    <p className="text-[10px] text-slate-500 font-medium">Streak: 12 days</p>
+                                    <p className="text-xs font-black text-neutral-ink uppercase tracking-widest">PACT Active</p>
+                                    <p className="text-[10px] text-neutral-ink font-medium">Streak: 12 days</p>
                                 </div>
                             </div>
                         </div>

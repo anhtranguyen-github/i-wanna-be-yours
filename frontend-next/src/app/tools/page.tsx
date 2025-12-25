@@ -83,7 +83,7 @@ export default function ToolsPage() {
                                     {route.icon}
                                 </div>
                                 <h2 className="text-xl font-black text-neutral-ink mb-2 font-display">{route.title}</h2>
-                                <p className="text-sm text-neutral-ink/70 leading-relaxed font-bold">{route.description}</p>
+                                <p className="text-sm text-neutral-ink leading-relaxed font-bold">{route.description}</p>
 
                                 <div className="mt-auto pt-8 flex items-center gap-3 text-primary-strong font-black uppercase tracking-[0.2em] text-[10px] font-display opacity-0 group-hover:opacity-100 transition-all translate-y-3 group-hover:translate-y-0">
                                     Launch Tool

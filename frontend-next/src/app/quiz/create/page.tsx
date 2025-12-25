@@ -216,7 +216,7 @@ export default function CreateQuizPage() {
                                 </Link>
                                 <div>
                                     <h1 className="text-xl font-black text-brand-dark">Create Personal Quiz</h1>
-                                    <p className="text-sm text-gray-500">Build your own custom quiz</p>
+                                    <p className="text-sm text-neutral-ink">Build your own custom quiz</p>
                                 </div>
                             </div>
 
@@ -270,7 +270,7 @@ export default function CreateQuizPage() {
 
                                 <div className="space-y-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-600 mb-1">
+                                        <label className="block text-sm font-medium text-neutral-ink mb-1">
                                             Title *
                                         </label>
                                         <input
@@ -283,7 +283,7 @@ export default function CreateQuizPage() {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-600 mb-1">
+                                        <label className="block text-sm font-medium text-neutral-ink mb-1">
                                             Description
                                         </label>
                                         <textarea
@@ -297,7 +297,7 @@ export default function CreateQuizPage() {
 
                                     <div className="grid grid-cols-2 gap-3">
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-600 mb-1">
+                                            <label className="block text-sm font-medium text-neutral-ink mb-1">
                                                 JLPT Level
                                             </label>
                                             <select
@@ -312,7 +312,7 @@ export default function CreateQuizPage() {
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-600 mb-1">
+                                            <label className="block text-sm font-medium text-neutral-ink mb-1">
                                                 Category
                                             </label>
                                             <select
@@ -328,7 +328,7 @@ export default function CreateQuizPage() {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-600 mb-1">
+                                        <label className="block text-sm font-medium text-neutral-ink mb-1">
                                             Time Limit (minutes)
                                         </label>
                                         <input
@@ -349,8 +349,8 @@ export default function CreateQuizPage() {
                                             className="w-5 h-5 rounded text-blue-500 focus:ring-blue-500"
                                         />
                                         <div>
-                                            <div className="font-medium text-gray-700">Make Public</div>
-                                            <div className="text-xs text-gray-500">Others can take this quiz</div>
+                                            <div className="font-medium text-neutral-ink">Make Public</div>
+                                            <div className="text-xs text-neutral-ink">Others can take this quiz</div>
                                         </div>
                                     </label>
                                 </div>
@@ -369,7 +369,7 @@ export default function CreateQuizPage() {
                                 </div>
 
                                 {questions.length === 0 ? (
-                                    <div className="text-center py-8 text-gray-400">
+                                    <div className="text-center py-8 text-neutral-ink">
                                         <HelpCircle className="w-12 h-12 mx-auto mb-3 opacity-50" />
                                         <p className="text-sm">No questions yet</p>
                                         <button
@@ -446,7 +446,7 @@ export default function CreateQuizPage() {
                                     <div className="space-y-5">
                                         {/* Question Type */}
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-600 mb-2">
+                                            <label className="block text-sm font-medium text-neutral-ink mb-2">
                                                 Question Type
                                             </label>
                                             <select
@@ -462,7 +462,7 @@ export default function CreateQuizPage() {
 
                                         {/* Prompt */}
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-600 mb-2">
+                                            <label className="block text-sm font-medium text-neutral-ink mb-2">
                                                 Question Prompt *
                                             </label>
                                             <textarea
@@ -476,7 +476,7 @@ export default function CreateQuizPage() {
 
                                         {/* Options */}
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-600 mb-2">
+                                            <label className="block text-sm font-medium text-neutral-ink mb-2">
                                                 Answer Options * (click to mark correct)
                                             </label>
                                             <div className="space-y-3">
@@ -488,7 +488,7 @@ export default function CreateQuizPage() {
                                                             w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0 transition-all
                                                             ${questions[activeQuestionIndex].correct_answer === option && option
                                                                     ? 'bg-green-500 text-white'
-                                                                    : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                                                                    : 'bg-gray-100 text-neutral-ink hover:bg-gray-200'
                                                                 }
                                                         `}
                                                         >
@@ -510,14 +510,14 @@ export default function CreateQuizPage() {
                                                     </div>
                                                 ))}
                                             </div>
-                                            <p className="text-xs text-gray-400 mt-2">
+                                            <p className="text-xs text-neutral-ink mt-2">
                                                 Click the letter button to mark the correct answer
                                             </p>
                                         </div>
 
                                         {/* Points */}
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-600 mb-2">
+                                            <label className="block text-sm font-medium text-neutral-ink mb-2">
                                                 Points
                                             </label>
                                             <input
@@ -533,14 +533,14 @@ export default function CreateQuizPage() {
                                 </div>
                             ) : (
                                 <div className="clay-card p-12 text-center">
-                                    <BookOpen className="w-16 h-16 mx-auto mb-6 text-gray-300" />
-                                    <h3 className="text-xl font-bold text-gray-400 mb-2">
+                                    <BookOpen className="w-16 h-16 mx-auto mb-6 text-neutral-ink" />
+                                    <h3 className="text-xl font-bold text-neutral-ink mb-2">
                                         {questions.length === 0
                                             ? 'Start by adding questions'
                                             : 'Select a question to edit'
                                         }
                                     </h3>
-                                    <p className="text-gray-400 mb-6">
+                                    <p className="text-neutral-ink mb-6">
                                         {questions.length === 0
                                             ? 'Click the + button to add your first question'
                                             : 'Click on a question in the list to edit it'

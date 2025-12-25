@@ -66,10 +66,10 @@ export default function FlashcardsMenu() {
 
                         {/* Tabs */}
                         <div className="flex p-1.5 bg-neutral-beige rounded-2xl border border-neutral-gray/20">
-                            <button onClick={() => { setActiveTab('public'); clearFilters(); }} className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300 font-display ${activeTab === 'public' ? 'bg-neutral-white text-primary-strong shadow-md border border-neutral-gray/10' : 'text-neutral-ink/40 hover:text-neutral-ink'}`}>
+                            <button onClick={() => { setActiveTab('public'); clearFilters(); }} className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300 font-display ${activeTab === 'public' ? 'bg-neutral-white text-primary-strong shadow-md border border-neutral-gray/10' : 'text-neutral-ink hover:text-neutral-ink'}`}>
                                 Public Library
                             </button>
-                            <button onClick={() => { setActiveTab('personal'); clearFilters(); }} className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300 font-display ${activeTab === 'personal' ? 'bg-neutral-white text-primary-strong shadow-md border border-neutral-gray/10' : 'text-neutral-ink/40 hover:text-neutral-ink'}`}>
+                            <button onClick={() => { setActiveTab('personal'); clearFilters(); }} className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300 font-display ${activeTab === 'personal' ? 'bg-neutral-white text-primary-strong shadow-md border border-neutral-gray/10' : 'text-neutral-ink hover:text-neutral-ink'}`}>
                                 My Collection
                             </button>
                         </div>
@@ -89,7 +89,7 @@ export default function FlashcardsMenu() {
                         </div>
                         <button
                             onClick={() => setShowAllFilters(!showAllFilters)}
-                            className={`px-6 py-3.5 rounded-xl font-black text-xs uppercase tracking-widest font-display flex items-center gap-2 transition-all shadow-sm ${showAllFilters || selectedTags.length > 0 ? 'bg-primary-strong text-white shadow-primary/20' : 'bg-neutral-white text-neutral-ink/60 border border-neutral-gray/30 hover:border-primary/40'}`}
+                            className={`px-6 py-3.5 rounded-xl font-black text-xs uppercase tracking-widest font-display flex items-center gap-2 transition-all shadow-sm ${showAllFilters || selectedTags.length > 0 ? 'bg-primary-strong text-white shadow-primary/20' : 'bg-neutral-white text-neutral-ink border border-neutral-gray/30 hover:border-primary/40'}`}
                         >
                             <Filter size={16} />
                             Filter
@@ -146,7 +146,7 @@ function FilterSection({ label, tags, selected, toggle }: any) {
             <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-3">{label}</h4>
             <div className="flex flex-wrap gap-2">
                 {tags.map((tag: any) => (
-                    <button key={tag.id} onClick={() => toggle(tag.id)} className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all font-display ${selected.includes(tag.id) ? 'bg-primary-strong text-white shadow-md' : 'bg-neutral-white text-neutral-ink/60 border border-neutral-gray/20 hover:text-primary'}`}>
+                    <button key={tag.id} onClick={() => toggle(tag.id)} className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all font-display ${selected.includes(tag.id) ? 'bg-primary-strong text-white shadow-md' : 'bg-neutral-white text-neutral-ink border border-neutral-gray/20 hover:text-primary'}`}>
                         {tag.label}
                     </button>
                 ))}

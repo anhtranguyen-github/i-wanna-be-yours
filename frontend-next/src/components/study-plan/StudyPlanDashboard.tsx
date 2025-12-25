@@ -333,7 +333,7 @@ export function StudyPlanDashboard() {
                             <div className="flex items-center gap-2">
                                 <h1 className="text-2xl font-black text-neutral-ink tracking-tight font-display uppercase tracking-widest text-xs">Strategy Command</h1>
                             </div>
-                            <p className="text-[10px] text-neutral-ink/60 font-black flex items-center gap-2 uppercase tracking-widest font-display">
+                            <p className="text-[10px] text-neutral-ink font-black flex items-center gap-2 uppercase tracking-widest font-display">
                                 <span className={`w-2.5 h-2.5 rounded-full bg-primary-strong animate-pulse`} />
                                 Mission: JLPT {plan.target_level} {levelInfo.name}
                             </p>
@@ -352,7 +352,7 @@ export function StudyPlanDashboard() {
                                 onClick={() => setActiveTab(tab.id as DashboardTab)}
                                 className={`
                                     flex items-center gap-2 px-5 py-2.5 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all whitespace-nowrap font-display
-                                    ${activeTab === tab.id ? 'bg-neutral-white text-primary-strong shadow-md border border-neutral-gray/10' : 'text-neutral-ink/70 hover:text-neutral-ink'}
+                                    ${activeTab === tab.id ? 'bg-neutral-white text-primary-strong shadow-md border border-neutral-gray/10' : 'text-neutral-ink hover:text-neutral-ink'}
                                 `}
                             >
                                 <tab.icon size={16} />
@@ -436,7 +436,7 @@ export function StudyPlanDashboard() {
                                             </button>
                                             <div className="flex-1 min-w-0">
                                                 <h3 className={`text-2xl font-black tracking-tight ${task.status === 'completed' ? 'text-neutral-gray line-through' : 'text-neutral-ink font-display'}`}>{task.title}</h3>
-                                                <p className="text-neutral-ink font-bold text-sm leading-relaxed mt-1 opacity-80">{task.description}</p>
+                                                <p className="text-neutral-ink font-bold text-sm leading-relaxed mt-1">{task.description}</p>
                                             </div>
                                         </div>
                                     ))}
@@ -476,18 +476,18 @@ function NoPlanView({ user, openAuth }: { user: any, openAuth: any }) {
     return (
         <div className="min-h-screen bg-[#F8FAFC] py-12 px-6">
             <div className="max-w-4xl mx-auto space-y-12 text-center">
-                <h1 className="text-4xl font-black text-slate-900 font-display tracking-tight">Strategic Intelligence</h1>
-                <p className="text-xl text-neutral-ink/80 font-medium font-display">You don&apos;t have an active study plan yet. Let&apos;s build your roadmap.</p>
+                <h1 className="text-4xl font-black text-neutral-ink font-display tracking-tight">Strategic Intelligence</h1>
+                <p className="text-xl text-neutral-ink font-medium font-display">You don&apos;t have an active study plan yet. Let&apos;s build your roadmap.</p>
                 <div className="grid md:grid-cols-2 gap-8 mt-12">
                     <div className="clay-card p-10 bg-white border border-slate-100 shadow-xl shadow-primary/5 group hover:border-primary transition-all">
                         <Target size={48} className="text-primary mx-auto mb-6 group-hover:scale-110 transition-transform" />
-                        <h2 className="text-2xl font-black text-slate-900 mb-4 font-display uppercase tracking-widest text-xs">New Plan</h2>
+                        <h2 className="text-2xl font-black text-neutral-ink mb-4 font-display uppercase tracking-widest text-xs">New Plan</h2>
                         <Link href="/study-plan/setup" className="btnPrimary w-full py-4 text-center block bg-primary text-white font-black rounded-2xl shadow-lg shadow-primary/20">Create Study Plan</Link>
                     </div>
                     <div className="clay-card p-10 bg-slate-900 text-white shadow-2xl group hover:shadow-primary/10 transition-all">
                         <Lock size={48} className="text-primary mx-auto mb-6 group-hover:scale-110 transition-transform" />
                         <h2 className="text-2xl font-black mb-4 font-display uppercase tracking-widest text-xs">Sync Data</h2>
-                        <button onClick={() => openAuth('REGISTER')} className="w-full py-4 bg-white text-slate-900 rounded-2xl font-black shadow-lg">Log In</button>
+                        <button onClick={() => openAuth('REGISTER')} className="w-full py-4 bg-white text-neutral-ink rounded-2xl font-black shadow-lg">Log In</button>
                     </div>
                 </div>
             </div>

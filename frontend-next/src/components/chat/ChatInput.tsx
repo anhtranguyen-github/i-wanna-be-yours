@@ -93,12 +93,12 @@ export function ChatInput({
                                 {file.file?.type.startsWith('image/') ? (
                                     <span className="text-xs">🖼️</span>
                                 ) : (
-                                    <FileText size={16} className="text-slate-400" />
+                                    <FileText size={16} className="text-neutral-ink" />
                                 )}
                             </div>
                             <div className="flex-1 min-w-0">
                                 <p className="text-xs font-medium text-slate-700 truncate">{file.title}</p>
-                                <p className="text-[10px] text-slate-500">
+                                <p className="text-[10px] text-neutral-ink">
                                     {file.file ? `${(file.file.size / 1024).toFixed(1)} KB` : 'Resource'}
                                 </p>
                             </div>
@@ -109,7 +109,7 @@ export function ChatInput({
                             ) : (
                                 <button
                                     onClick={() => onRemoveAttachment?.(file.id)}
-                                    className="w-6 h-6 flex items-center justify-center rounded-full hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors"
+                                    className="w-6 h-6 flex items-center justify-center rounded-full hover:bg-red-50 text-neutral-ink hover:text-red-500 transition-colors"
                                 >
                                     <X size={14} />
                                 </button>
@@ -133,7 +133,7 @@ export function ChatInput({
                 {/* Attachment button */}
                 <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="p-2.5 text-slate-400 hover:text-brand-green transition-colors"
+                    className="p-2.5 text-neutral-ink hover:text-brand-green transition-colors"
                     title="Attach file"
                 >
                     <Paperclip size={20} />
@@ -147,13 +147,13 @@ export function ChatInput({
                     onKeyDown={handleKeyDown}
                     placeholder={placeholder}
                     rows={1}
-                    className="flex-1 bg-transparent py-3 text-brand-dark placeholder:text-slate-400 resize-none focus:outline-none text-sm max-h-[200px]"
+                    className="flex-1 bg-transparent py-3 text-brand-dark placeholder:text-neutral-ink resize-none focus:outline-none text-sm max-h-[200px]"
                 />
 
                 {/* Action buttons */}
                 <div className="flex items-center gap-1 pr-2 pb-1.5">
                     <button
-                        className="p-2 text-slate-400 hover:text-brand-green transition-colors"
+                        className="p-2 text-neutral-ink hover:text-brand-green transition-colors"
                         title="Voice input"
                     >
                         <Mic size={20} />
@@ -174,28 +174,28 @@ export function ChatInput({
                 <div className="flex items-center gap-2">
                     <button
                         onClick={() => onQuickAction?.('flashcard')}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-brand-green hover:bg-brand-green/5 border border-transparent hover:border-brand-green/20 transition-all"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-neutral-ink hover:text-brand-green hover:bg-brand-green/5 border border-transparent hover:border-brand-green/20 transition-all"
                     >
                         <FileText size={14} />
                         Flashcards
                     </button>
                     <button
                         onClick={() => onQuickAction?.('quiz')}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-purple-600 hover:bg-purple-50 border border-transparent hover:border-purple-200 transition-all"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-neutral-ink hover:text-purple-600 hover:bg-purple-50 border border-transparent hover:border-purple-200 transition-all"
                     >
                         <CheckSquare size={14} />
                         Quiz
                     </button>
                     <button
                         onClick={() => onQuickAction?.('summary')}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-amber-600 hover:bg-amber-50 border border-transparent hover:border-amber-200 transition-all"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-neutral-ink hover:text-amber-600 hover:bg-amber-50 border border-transparent hover:border-amber-200 transition-all"
                     >
                         <Sparkles size={14} />
                         Summary
                     </button>
                 </div>
 
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-neutral-ink">
                     Hanachan makes mistakes. Verify info.
                 </p>
             </div>

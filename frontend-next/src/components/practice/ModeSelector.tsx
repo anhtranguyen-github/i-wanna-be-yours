@@ -26,7 +26,7 @@ export default function ModeSelector({ selectedMode, onModeChange }: ModeSelecto
                         flex-1 flex items-center justify-center gap-3 px-6 py-4 rounded-2xl transition-all duration-300 font-display font-black text-[10px] uppercase tracking-widest
                         ${selectedMode === mode.value
                             ? "bg-neutral-white text-primary-strong shadow-md border border-neutral-gray/10 ring-1 ring-primary-strong/5"
-                            : "text-neutral-ink/50 hover:text-neutral-ink"
+                            : "text-neutral-ink hover:text-neutral-ink"
                         }
                     `}
                 >

@@ -77,7 +77,7 @@ interface UnifiedGptComponentProps {
     return (
       <div className="bg-slate-100 p-6 shadow-md rounded-lg text-black w-full  mx-auto my-6 overflow-auto">
         <div className="mb-4">
-          <h2 className="text-lg font-semibold text-gray-800 mb-2">{getTaskName()} Text:</h2>
+          <h2 className="text-lg font-semibold text-neutral-ink mb-2">{getTaskName()} Text:</h2>
           <p className="text-base text-gray-700 bg-gray-100 p-4 rounded-md max-h-32 overflow-y-auto">
             {japaneseText || <span className="italic text-gray-500">No text provided</span>}
           </p>

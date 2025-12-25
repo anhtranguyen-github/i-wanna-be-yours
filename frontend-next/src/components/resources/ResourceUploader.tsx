@@ -66,7 +66,7 @@ export function ResourceUploader({ onClose, onUploadComplete }: ResourceUploader
             <div className="relative bg-card rounded-2xl  border border-border w-full max-w-lg p-10 m-4 animate-in fade-in zoom-in duration-300">
                 <div className="flex justify-between items-center mb-8">
                     <h3 className="text-2xl font-black text-foreground font-display">Upload Resource</h3>
-                    <button onClick={onClose} className="text-muted-foreground/40 hover:text-foreground hover:bg-muted p-2 rounded-xl transition-all">
+                    <button onClick={onClose} className="text-neutral-ink hover:text-foreground hover:bg-muted p-2 rounded-xl transition-all">
                         <X size={24} />
                     </button>
                 </div>

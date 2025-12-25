@@ -32,7 +32,7 @@ const BlogCards = ({ cards, header }: BlogCardsProps) => {
               <p className="mb-4 text-4xl font-bold" style={{ color: 'hsl(var(--text-default))' }}>
                 {header.title}
               </p>
-              <p className="text-2xl font-light text-gray-500">
+              <p className="text-2xl font-light text-neutral-ink">
                 {header.subtitle}
               </p>
             </div>
@@ -58,7 +58,7 @@ const BlogCards = ({ cards, header }: BlogCardsProps) => {
                       {card.name}
                     </h3>
                   </Link>
-                  <p className="mb-4 text-sm text-gray-500 line-clamp-3 flex-grow">
+                  <p className="mb-4 text-sm text-neutral-ink line-clamp-3 flex-grow">
                     {card.description}
                   </p>
                   <div className="flex items-center pt-4 border-t border-gray-100 mt-auto">
@@ -71,8 +71,8 @@ const BlogCards = ({ cards, header }: BlogCardsProps) => {
                     </Link>
                     {/* <Link href={card.link}>Read more</Link> */}
                     <div className="flex flex-col justify-between ml-4 text-xs">
-                      <p className="font-bold text-gray-700">hanachan</p>
-                      {/* <p className="text-gray-400 dark:text-gray-300">
+                      <p className="font-bold text-neutral-ink">hanachan</p>
+                      {/* <p className="text-neutral-ink dark:text-neutral-ink">
                         20 mars 2029 - 6 min read
                       </p> */}
                     </div>

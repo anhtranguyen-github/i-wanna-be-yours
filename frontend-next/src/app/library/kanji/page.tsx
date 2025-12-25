@@ -108,13 +108,13 @@ export default function KanjiListPage() {
 
                     {/* Search */}
                     <div className="relative flex-1 w-full group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within:text-kanji transition-colors" />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-ink group-focus-within:text-kanji transition-colors" />
                         <input
                             type="text"
                             placeholder="Search kanji, meaning, or reading..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full bg-muted/30 border border-border rounded-xl pl-12 pr-4 py-3 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-4 focus:ring-kanji/10 focus:border-kanji/50 transition-all font-bold text-sm"
+                            className="w-full bg-muted/30 border border-border rounded-xl pl-12 pr-4 py-3 text-foreground placeholder:text-neutral-ink focus:outline-none focus:ring-4 focus:ring-kanji/10 focus:border-kanji/50 transition-all font-bold text-sm"
                         />
                     </div>
                 </div>
@@ -128,7 +128,7 @@ export default function KanjiListPage() {
                 ) : filteredKanji.length === 0 ? (
                     <div className="text-center py-32 bg-card rounded-2xl border-2 border-dashed border-border flex flex-col items-center">
                         <div className="w-24 h-24 bg-muted/50 rounded-2xl flex items-center justify-center mb-8 ">
-                            <BookOpen className="w-12 h-12 text-muted-foreground/20" />
+                            <BookOpen className="w-12 h-12 text-neutral-ink" />
                         </div>
                         <h3 className="text-2xl font-black text-foreground mb-3 font-display">No Kanji Found</h3>
                         <p className="text-muted-foreground font-bold">Try adjusting your search or level.</p>
@@ -161,7 +161,7 @@ export default function KanjiListPage() {
                                     {/* Reading */}
                                     {item.reading && (
                                         <div className="space-y-1">
-                                            <span className="text-[10px] font-black text-muted-foreground/40 block uppercase tracking-widest font-display">Reading</span>
+                                            <span className="text-[10px] font-black text-neutral-ink block uppercase tracking-widest font-display">Reading</span>
                                             <span className="text-foreground font-jp text-2xl font-bold">{item.reading}</span>
                                         </div>
                                     )}

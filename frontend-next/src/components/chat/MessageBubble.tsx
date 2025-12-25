@@ -45,7 +45,7 @@ function ArtifactIconSmall({ type }: { type: string }) {
         case 'note':
             return <FileText size={18} className="text-blue-500" />;
         default:
-            return <Sparkles size={18} className="text-slate-400" />;
+            return <Sparkles size={18} className="text-neutral-ink" />;
     }
 }
 
@@ -81,7 +81,7 @@ function MessageBubbleComponent({ message, onOpenArtifact }: MessageBubbleProps)
                 {/* Artifact Cards */}
                 {message.artifacts && message.artifacts.length > 0 && (
                     <div className="mt-3 space-y-2 w-full max-w-sm">
-                        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Generated Content</p>
+                        <p className="text-xs font-bold text-neutral-ink uppercase tracking-wider ml-1">Generated Content</p>
                         {message.artifacts.map((artifact) => (
                             <button
                                 key={artifact.id}
@@ -93,7 +93,7 @@ function MessageBubbleComponent({ message, onOpenArtifact }: MessageBubbleProps)
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <h4 className="text-sm font-bold text-brand-dark truncate">{artifact.title}</h4>
-                                    <p className="text-xs text-slate-500 capitalize">{artifact.type.replace('_', ' ')}</p>
+                                    <p className="text-xs text-neutral-ink capitalize">{artifact.type.replace('_', ' ')}</p>
                                 </div>
                                 <div className="text-brand-green opacity-0 group-hover:opacity-100 transition-opacity text-xs font-bold">
                                     OPEN
@@ -106,16 +106,16 @@ function MessageBubbleComponent({ message, onOpenArtifact }: MessageBubbleProps)
                 {/* Actions */}
                 {!isUser && (
                     <div className="flex items-center gap-1 mt-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button className="p-1 rounded hover:bg-slate-100 text-slate-400" title="Copy">
+                        <button className="p-1 rounded hover:bg-slate-100 text-neutral-ink" title="Copy">
                             <Copy size={14} />
                         </button>
-                        <button className="p-1 rounded hover:bg-slate-100 text-slate-400" title="Good response">
+                        <button className="p-1 rounded hover:bg-slate-100 text-neutral-ink" title="Good response">
                             <ThumbsUp size={14} />
                         </button>
-                        <button className="p-1 rounded hover:bg-slate-100 text-slate-400" title="Bad response">
+                        <button className="p-1 rounded hover:bg-slate-100 text-neutral-ink" title="Bad response">
                             <ThumbsDown size={14} />
                         </button>
-                        <button className="p-1 rounded hover:bg-slate-100 text-slate-400" title="Regenerate">
+                        <button className="p-1 rounded hover:bg-slate-100 text-neutral-ink" title="Regenerate">
                             <RefreshCw size={14} />
                         </button>
                     </div>

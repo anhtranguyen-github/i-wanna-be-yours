@@ -209,7 +209,7 @@ export default function GrammarDetailPage() {
                                                     {ex.jp}
                                                 </p>
                                                 <div className="space-y-1">
-                                                    <p className="text-[11px] font-black text-muted-foreground/40 uppercase tracking-widest font-display italic leading-relaxed">
+                                                    <p className="text-[11px] font-black text-neutral-ink uppercase tracking-widest font-display italic leading-relaxed">
                                                         {ex.romaji}
                                                     </p>
                                                     <p className="text-base font-bold text-muted-foreground leading-relaxed">
@@ -246,7 +246,7 @@ export default function GrammarDetailPage() {
                                 <div className="h-2 bg-muted rounded-full overflow-hidden">
                                     <div className="h-full bg-primary w-1/3 rounded-full"></div>
                                 </div>
-                                <p className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-widest mt-4 font-display">Beginner 33%</p>
+                                <p className="text-[10px] font-black text-neutral-ink uppercase tracking-widest mt-4 font-display">Beginner 33%</p>
                             </div>
                         </div>
                     </div>

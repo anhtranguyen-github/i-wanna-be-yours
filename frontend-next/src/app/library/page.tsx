@@ -79,7 +79,7 @@ export default function LibraryPage() {
                                     {route.icon}
                                 </div>
                                 <h2 className="text-xl font-black text-neutral-ink mb-3 font-display">{route.title}</h2>
-                                <p className="text-sm text-neutral-ink/70 leading-relaxed font-bold">{route.description}</p>
+                                <p className="text-sm text-neutral-ink leading-relaxed font-bold">{route.description}</p>
                             </div>
                         </Link>
                     ))}

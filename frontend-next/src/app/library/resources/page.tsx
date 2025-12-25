@@ -160,20 +160,20 @@ export default function ResourcesListPage() {
                     <>
                         {/* Search and Grid for Logged-in Users */}
                         <div className="relative mb-12 group">
-                            <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-muted-foreground/50 group-focus-within:text-primary transition-colors" size={24} />
+                            <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-neutral-ink group-focus-within:text-primary transition-colors" size={24} />
                             <input
                                 type="text"
                                 placeholder="Search your library..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-16 pr-6 py-6 bg-card border-none rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/10 transition-all  font-bold text-foreground placeholder:text-muted-foreground/30"
+                                className="w-full pl-16 pr-6 py-6 bg-card border-none rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/10 transition-all  font-bold text-foreground placeholder:text-neutral-ink"
                             />
                         </div>
 
                         {filteredResources.length === 0 ? (
                             <div className="text-center py-32 bg-card rounded-2xl border-2 border-dashed border-border flex flex-col items-center">
                                 <div className="w-24 h-24 bg-muted/50 rounded-2xl flex items-center justify-center mb-8 ">
-                                    <Search className="text-muted-foreground/20" size={40} />
+                                    <Search className="text-neutral-ink" size={40} />
                                 </div>
                                 <h3 className="text-3xl font-black text-foreground mb-4 font-display">Build Your Vault</h3>
                                 <p className="text-muted-foreground font-bold mb-10 max-w-sm leading-relaxed">Upload your first PDF, image, or audio file to begin your AI-powered learning journey.</p>
@@ -216,14 +216,14 @@ export default function ResourcesListPage() {
                                                 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                                     <button
                                                         onClick={(e) => handleDownload(e, resource.id)}
-                                                        className="p-2.5 text-muted-foreground/40 hover:text-primary hover:bg-primary/5 rounded-xl transition-all"
+                                                        className="p-2.5 text-neutral-ink hover:text-primary hover:bg-primary/5 rounded-xl transition-all"
                                                         title="Download"
                                                     >
                                                         <Download size={20} />
                                                     </button>
                                                     <button
                                                         onClick={(e) => handleDelete(e, resource.id)}
-                                                        className="p-2.5 text-muted-foreground/40 hover:text-destructive hover:bg-destructive/5 rounded-xl transition-all"
+                                                        className="p-2.5 text-neutral-ink hover:text-destructive hover:bg-destructive/5 rounded-xl transition-all"
                                                         title="Delete"
                                                     >
                                                         <Trash2 size={20} />

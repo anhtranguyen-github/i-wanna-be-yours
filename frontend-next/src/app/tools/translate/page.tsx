@@ -16,21 +16,21 @@ const TranslatePage = () => {
     <div className="min-h-screen bg-[#F8FAFC] py-16 px-6">
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-black text-slate-900 font-display tracking-tight uppercase tracking-[0.2em] mb-4">
+          <h1 className="text-4xl font-black text-neutral-ink font-display tracking-tight uppercase tracking-[0.2em] mb-4">
             Text <span className="text-primary">Translate</span>
           </h1>
-          <p className="text-slate-500 font-medium">Linguistic Bridge for Japanese & Korean</p>
+          <p className="text-neutral-ink font-medium">Linguistic Bridge for Japanese & Korean</p>
         </div>
 
         <div className="clay-card bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-primary/5 space-y-8">
           <div className="space-y-4">
-            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-2">Source Polyglot</label>
+            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-ink ml-2">Source Polyglot</label>
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-br from-primary/20 to-emerald-100 rounded-[2rem] blur opacity-25 group-focus-within:opacity-50 transition duration-500"></div>
               <textarea
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                className="relative w-full h-48 p-8 rounded-[2rem] bg-white border border-slate-100 text-lg font-jp focus:outline-none focus:ring-0 focus:border-primary/30 transition-all shadow-inner text-slate-800"
+                className="relative w-full h-48 p-8 rounded-[2rem] bg-white border border-slate-100 text-lg font-jp focus:outline-none focus:ring-0 focus:border-primary/30 transition-all shadow-inner text-neutral-ink"
                 placeholder="Enter text to translate..."
               />
             </div>
@@ -54,7 +54,7 @@ const TranslatePage = () => {
               </div>
               <div>
                 <p className="text-xs font-bold text-slate-700 mb-1">Lexical Accuracy Disclaimer</p>
-                <p className="text-[11px] text-slate-500 leading-relaxed">
+                <p className="text-[11px] text-neutral-ink leading-relaxed">
                   Translations are processed via neural networks and may contain structural nuances. Do not use for high-stakes medical or legal documentation.
                 </p>
               </div>

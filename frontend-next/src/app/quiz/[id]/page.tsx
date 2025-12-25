@@ -176,13 +176,13 @@ export default function QuizPlayerPage() {
                             {result.percentage >= 80 ? "Great Job!" : result.percentage >= 50 ? "Good Effort!" : "Keep Practicing!"}
                         </h1>
 
-                        <p className="text-slate-500 mb-6">{quiz.title}</p>
+                        <p className="text-neutral-ink mb-6">{quiz.title}</p>
 
                         {/* Score */}
                         <div className="text-6xl font-black text-brand-dark mb-2">
                             {result.percentage}%
                         </div>
-                        <p className="text-slate-500 mb-8">
+                        <p className="text-neutral-ink mb-8">
                             {result.total_score} / {result.max_score} points
                         </p>
 
@@ -192,13 +192,13 @@ export default function QuizPlayerPage() {
                                 <div className="text-2xl font-bold text-green-600">
                                     {result.answers.filter(a => a.is_correct).length}
                                 </div>
-                                <div className="text-sm text-slate-500">Correct</div>
+                                <div className="text-sm text-neutral-ink">Correct</div>
                             </div>
                             <div className="bg-slate-50 rounded-xl p-4">
                                 <div className="text-2xl font-bold text-red-500">
                                     {result.answers.filter(a => !a.is_correct).length}
                                 </div>
-                                <div className="text-sm text-slate-500">Incorrect</div>
+                                <div className="text-sm text-neutral-ink">Incorrect</div>
                             </div>
                         </div>
 
@@ -271,7 +271,7 @@ export default function QuizPlayerPage() {
                     <div className="flex items-center justify-between">
                         <Link
                             href="/quiz"
-                            className="flex items-center gap-2 text-slate-500 hover:text-brand-dark transition-colors"
+                            className="flex items-center gap-2 text-neutral-ink hover:text-brand-dark transition-colors"
                         >
                             <ArrowLeft size={20} />
                             <span className="text-sm font-medium">Exit</span>
@@ -279,7 +279,7 @@ export default function QuizPlayerPage() {
 
                         <div className="text-center">
                             <h2 className="font-bold text-brand-dark text-sm line-clamp-1">{quiz.title}</h2>
-                            <p className="text-xs text-slate-400">
+                            <p className="text-xs text-neutral-ink">
                                 Question {currentIndex + 1} of {totalQuestions}
                             </p>
                         </div>
@@ -335,7 +335,7 @@ export default function QuizPlayerPage() {
                                         >
                                             <span className={`inline-block w-7 h-7 rounded-full mr-3 text-center leading-7 text-sm font-bold ${isSelected
                                                 ? "bg-blue-500 text-white"
-                                                : "bg-slate-100 text-slate-500"
+                                                : "bg-slate-100 text-neutral-ink"
                                                 }`}>
                                                 {String.fromCharCode(65 + idx)}
                                             </span>
@@ -353,7 +353,7 @@ export default function QuizPlayerPage() {
                     <button
                         onClick={handlePrev}
                         disabled={currentIndex === 0}
-                        className="flex items-center gap-2 px-4 py-2 text-slate-500 hover:text-brand-dark disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                        className="flex items-center gap-2 px-4 py-2 text-neutral-ink hover:text-brand-dark disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                     >
                         <ChevronLeft size={20} />
                         Previous
@@ -400,7 +400,7 @@ export default function QuizPlayerPage() {
                 </div>
 
                 {/* Answer summary */}
-                <div className="mt-8 text-center text-sm text-slate-400">
+                <div className="mt-8 text-center text-sm text-neutral-ink">
                     {answeredCount} of {totalQuestions} questions answered
                 </div>
             </div>

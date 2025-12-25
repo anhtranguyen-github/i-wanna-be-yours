@@ -36,14 +36,14 @@ export default function PracticeCard({ config, onStart }: PracticeCardProps) {
                         {config.title}
                     </h3>
                 </div>
-                <div className="w-12 h-12 bg-neutral-beige/50 rounded-2xl flex items-center justify-center text-neutral-ink/40 group-hover:text-primary-strong group-hover:bg-neutral-white border border-neutral-gray/10 transition-all shadow-inner">
+                <div className="w-12 h-12 bg-neutral-beige/50 rounded-2xl flex items-center justify-center text-neutral-ink group-hover:bg-neutral-white border border-neutral-gray/20 transition-all shadow-inner">
                     <FileText size={24} />
                 </div>
             </div>
 
             {/* Description */}
             {config.description && (
-                <p className="text-sm text-neutral-ink/60 font-medium mb-6 line-clamp-2 relative z-10 leading-relaxed">
+                <p className="text-sm text-neutral-ink font-medium mb-6 line-clamp-2 relative z-10 leading-relaxed opacity-90">
                     {config.description}
                 </p>
             )}
@@ -53,7 +53,7 @@ export default function PracticeCard({ config, onStart }: PracticeCardProps) {
                 {skillList.slice(0, 3).map((skill) => (
                     <span
                         key={skill}
-                        className={`px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest ${skillColors[skill] || "bg-neutral-beige text-neutral-ink/50"}`}
+                        className={`px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest ${skillColors[skill] || "bg-neutral-beige text-neutral-ink"}`}
                     >
                         {skill.toLowerCase()}
                     </span>
@@ -61,7 +61,7 @@ export default function PracticeCard({ config, onStart }: PracticeCardProps) {
             </div>
 
             {/* Meta */}
-            <div className="flex items-center gap-5 text-[10px] font-black uppercase tracking-[0.15em] text-neutral-ink/40 mb-8 mt-auto relative z-10">
+            <div className="flex items-center gap-5 text-[10px] font-black uppercase tracking-[0.15em] text-neutral-ink mb-8 mt-auto relative z-10 opacity-70">
                 <span className="flex items-center gap-2">
                     <FileText size={14} className="text-primary-strong" />
                     {config.questionCount} Questions

@@ -164,10 +164,10 @@ const JapaneseTextParser: React.FC<JapaneseTextParserProps> = ({
                   className={`inline-flex items-center justify-center py-1 px-1 rounded transition-transform duration-300 cursor-pointer ${/^[a-zA-Z0-9'"=?!,.。、「」『』〜・（）［］〈〉《》―‥…;&:%@$#()\[\]{}\-_/\\]+$/.test(word.original)
                     ? ""
                     : word.status === "known"
-                      ? "bg-transparent border border-gray-300 hover:border-gray-500 text-gray-800"
+                      ? "bg-transparent border border-gray-300 hover:border-gray-500 text-neutral-ink"
                       : word.status === "unknown"
-                        ? "bg-orange-200 hover:bg-orange-300 text-gray-800"
-                        : "bg-blue-200 hover:bg-blue-300 text-gray-800"
+                        ? "bg-orange-200 hover:bg-orange-300 text-neutral-ink"
+                        : "bg-blue-200 hover:bg-blue-300 text-neutral-ink"
                     } hover:scale-105`}
                 >
                   {word.original}

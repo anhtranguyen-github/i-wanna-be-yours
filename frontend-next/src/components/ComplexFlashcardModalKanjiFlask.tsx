@@ -284,17 +284,17 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
   // if (!isOpen)
   //   return (
   //     <div className=" p-2 bg-white dark:bg-gray-800 rounded-lg shadow transition-shadow duration-300 ease-in-out hover:shadow-xl">
-  //       <div className="text-sm md:text-md lg:text-lg font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-widest">
+  //       <div className="text-sm md:text-md lg:text-lg font-semibold text-neutral-ink dark:text-neutral-ink uppercase tracking-widest">
   //         Level: {p_tag}
   //       </div>
   //       <p>Kanji with one reading {s_tag}</p>
-  //       <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+  //       <p className="mt-1 text-sm text-neutral-ink dark:text-neutral-ink">
   //         Explore the kanji readings interactively.
   //       </p>
   //       <button
   //         type="button"
   //         onClick={openModal}
-  //         className="mt-2 inline-flex items-center justify-center rounded-md bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-500 dark:focus:ring-gray-600 text-gray-800 dark:text-gray-300 text-sm px-3 py-1.5 transition-colors duration-150"
+  //         className="mt-2 inline-flex items-center justify-center rounded-md bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-500 dark:focus:ring-gray-600 text-neutral-ink dark:text-neutral-ink text-sm px-3 py-1.5 transition-colors duration-150"
   //       >
   //         Open flashcard
   //       </button>
@@ -386,7 +386,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                     <div className="flex justify-between items-center mb-4 z-10">
                       <button
                         onClick={() => setIsOpen(false)}
-                        className="text-sm font-bold text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+                        className="text-sm font-bold text-neutral-ink hover:text-neutral-ink dark:text-neutral-ink dark:hover:text-neutral-ink transition-colors"
                       >
                         Close Deck
                       </button>
@@ -395,7 +395,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                         {/* Settings Button */}
                         <button
                           onClick={toggleSettings}
-                          className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1"
+                          className="text-neutral-ink hover:text-neutral-ink dark:hover:text-neutral-ink p-1"
                         >
                           <FontAwesomeIcon icon={faGear} className="w-5 h-5" />
                         </button>
@@ -405,22 +405,22 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                     {/* Settings Panel */}
                     {showSettings && (
                       <div className="absolute top-16 right-8 z-20 w-72 bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-slate-100 p-6 animate-in fade-in slide-in-from-top-5">
-                        <h3 className="font-black text-slate-900 text-xs uppercase tracking-widest mb-4 border-b pb-3 border-slate-50 italic">Registry Calibration</h3>
+                        <h3 className="font-black text-neutral-ink text-xs uppercase tracking-widest mb-4 border-b pb-3 border-slate-50 italic">Registry Calibration</h3>
 
                         <div className="space-y-6">
                           {/* Mode Toggle */}
                           <div className="flex flex-col gap-2">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Operation Mode</label>
+                            <label className="text-[10px] font-black text-neutral-ink uppercase tracking-widest">Operation Mode</label>
                             <div className="flex bg-slate-50 rounded-2xl p-1.5 border border-slate-100">
                               <button
                                 onClick={() => setSettings(s => ({ ...s, mode: 'basic' }))}
-                                className={`flex-1 text-[10px] font-black uppercase tracking-widest py-2 rounded-xl transition-all ${settings.mode === 'basic' ? 'bg-white shadow-sm text-primary' : 'text-slate-400 hover:text-slate-600'}`}
+                                className={`flex-1 text-[10px] font-black uppercase tracking-widest py-2 rounded-xl transition-all ${settings.mode === 'basic' ? 'bg-white shadow-sm text-primary' : 'text-neutral-ink hover:text-slate-600'}`}
                               >
                                 Static
                               </button>
                               <button
                                 onClick={() => setSettings(s => ({ ...s, mode: 'learn' }))}
-                                className={`flex-1 text-[10px] font-black uppercase tracking-widest py-2 rounded-xl transition-all ${settings.mode === 'learn' ? 'bg-primary text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                                className={`flex-1 text-[10px] font-black uppercase tracking-widest py-2 rounded-xl transition-all ${settings.mode === 'learn' ? 'bg-primary text-white shadow-sm' : 'text-neutral-ink hover:text-slate-600'}`}
                               >
                                 Neural
                               </button>
@@ -429,7 +429,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
 
                           {/* Shuffle Toggle */}
                           <div className="flex items-center justify-between">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Randomize Order</label>
+                            <label className="text-[10px] font-black uppercase tracking-widest text-neutral-ink">Randomize Order</label>
                             <button
                               onClick={() => setSettings(s => ({ ...s, shuffle: !s.shuffle }))}
                               className={`w-12 h-6 rounded-full relative transition-all ${settings.shuffle ? 'bg-primary' : 'bg-slate-100 border border-slate-200'}`}
@@ -440,17 +440,17 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
 
                           {/* Default Side Toggle */}
                           <div className="flex flex-col gap-2">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Initiation Side</label>
+                            <label className="text-[10px] font-black text-neutral-ink uppercase tracking-widest">Initiation Side</label>
                             <div className="flex bg-slate-50 rounded-2xl p-1.5 border border-slate-100">
                               <button
                                 onClick={() => setSettings(s => ({ ...s, defaultSide: 'front' }))}
-                                className={`flex-1 text-[10px] font-black uppercase tracking-widest py-2 rounded-xl transition-all ${settings.defaultSide === 'front' ? 'bg-white shadow-sm text-primary' : 'text-slate-400 hover:text-slate-600'}`}
+                                className={`flex-1 text-[10px] font-black uppercase tracking-widest py-2 rounded-xl transition-all ${settings.defaultSide === 'front' ? 'bg-white shadow-sm text-primary' : 'text-neutral-ink hover:text-slate-600'}`}
                               >
                                 Front
                               </button>
                               <button
                                 onClick={() => setSettings(s => ({ ...s, defaultSide: 'back' }))}
-                                className={`flex-1 text-[10px] font-black uppercase tracking-widest py-2 rounded-xl transition-all ${settings.defaultSide === 'back' ? 'bg-white shadow-sm text-primary' : 'text-slate-400 hover:text-slate-600'}`}
+                                className={`flex-1 text-[10px] font-black uppercase tracking-widest py-2 rounded-xl transition-all ${settings.defaultSide === 'back' ? 'bg-white shadow-sm text-primary' : 'text-neutral-ink hover:text-slate-600'}`}
                               >
                                 Rear
                               </button>
@@ -483,12 +483,12 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                           <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
                           <div className="text-center relative z-10">
                             <div className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em] mb-12 font-display italic">Spectral Signature</div>
-                            <span className="text-7xl sm:text-8xl md:text-9xl font-black text-slate-900 block mb-12 font-jp tracking-tighter italic">
+                            <span className="text-7xl sm:text-8xl md:text-9xl font-black text-neutral-ink block mb-12 font-jp tracking-tighter italic">
                               {currentQuestion.kanji}
                             </span>
                             <button
                               onClick={(e) => { e.stopPropagation(); playKanjiAudio(); }}
-                              className="w-16 h-16 rounded-3xl bg-slate-50 border border-slate-100 text-slate-400 hover:text-primary hover:border-primary/20 hover:bg-white flex items-center justify-center transition-all active:scale-90 shadow-sm mx-auto"
+                              className="w-16 h-16 rounded-3xl bg-slate-50 border border-slate-100 text-neutral-ink hover:text-primary hover:border-primary/20 hover:bg-white flex items-center justify-center transition-all active:scale-90 shadow-sm mx-auto"
                             >
                               <FontAwesomeIcon
                                 icon={faPlayCircle}
@@ -513,7 +513,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                             <div className="flex items-center space-x-6">
                               <button
                                 onClick={(e) => { e.stopPropagation(); playKanjiAudio(); }}
-                                className="w-16 h-16 rounded-2xl bg-white border border-slate-100 text-slate-400 hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all active:scale-90 shadow-sm"
+                                className="w-16 h-16 rounded-2xl bg-white border border-slate-100 text-neutral-ink hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all active:scale-90 shadow-sm"
                               >
                                 <FontAwesomeIcon
                                   icon={faPlayCircle}
@@ -521,10 +521,10 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                                 />
                               </button>
                               <div className="flex-1 min-w-0">
-                                <div className="text-2xl sm:text-3xl font-black text-slate-900 truncate tracking-tight italic font-jp">
+                                <div className="text-2xl sm:text-3xl font-black text-neutral-ink truncate tracking-tight italic font-jp">
                                   {currentQuestion.reading}
                                 </div>
-                                <div className="text-sm font-bold text-slate-500 mt-1 truncate italic">
+                                <div className="text-sm font-bold text-neutral-ink mt-1 truncate italic">
                                   {currentQuestion.translation}
                                 </div>
                               </div>
@@ -535,7 +535,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                           <div className="flex-1 min-h-0 overflow-y-auto p-8 sm:p-10 custom-scrollbar relative z-10">
                             <div className="space-y-10">
                               <div className="flex justify-center">
-                                <span className="text-8xl sm:text-9xl font-black text-slate-900 font-jp tracking-tighter italic">
+                                <span className="text-8xl sm:text-9xl font-black text-neutral-ink font-jp tracking-tighter italic">
                                   {currentQuestion.kanji}
                                 </span>
                               </div>
@@ -544,8 +544,8 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                                 <div className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em] font-display">Compound Pattern</div>
                                 <div className="p-8 bg-slate-50 border border-slate-100 rounded-[2rem] shadow-sm flex items-center justify-between group/comp">
                                   <div className="flex-1">
-                                    <div className="text-3xl font-jp font-black text-slate-900 mb-2 tracking-tighter italic">{currentQuestion.exampleWord}</div>
-                                    <div className="text-base font-bold text-slate-500 italic">{currentQuestion.exampleReading}</div>
+                                    <div className="text-3xl font-jp font-black text-neutral-ink mb-2 tracking-tighter italic">{currentQuestion.exampleWord}</div>
+                                    <div className="text-base font-bold text-neutral-ink italic">{currentQuestion.exampleReading}</div>
                                   </div>
                                   <button
                                     onClick={(e) => { e.stopPropagation(); handlePlayAudio(); }}
@@ -568,7 +568,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                           <div className="flex justify-center gap-4 w-full">
                             <button
                               onClick={(e) => { e.stopPropagation(); handlePreviousQuestion(); }}
-                              className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
+                              className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-neutral-ink dark:text-neutral-ink hover:bg-gray-300 dark:hover:bg-gray-600"
                             >
                               <FontAwesomeIcon icon={faArrowLeft} /> Prev
                             </button>
@@ -591,7 +591,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
 
                             <button
                               onClick={(e) => { e.stopPropagation(); handleNextQuestion(); }}
-                              className="px-4 py-2 rounded-xl bg-slate-50 border border-slate-100 text-slate-400 hover:text-primary hover:border-primary/20 transition-all font-display font-black text-[10px] uppercase tracking-widest italic"
+                              className="px-4 py-2 rounded-xl bg-slate-50 border border-slate-100 text-neutral-ink hover:text-primary hover:border-primary/20 transition-all font-display font-black text-[10px] uppercase tracking-widest italic"
                             >
                               <FontAwesomeIcon icon={faArrowRight} /> Next
                             </button>
@@ -637,7 +637,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                       )}
 
                       {/* Card counter */}
-                      <div className="text-xs sm:text-sm text-gray-400 text-center">
+                      <div className="text-xs sm:text-sm text-neutral-ink text-center">
                         {currentQuestionIndex + 1} / {displayQuestions?.length || 0}
                       </div>
                     </div>

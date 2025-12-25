@@ -269,7 +269,7 @@ export default function JLPTPracticePage() {
 
                         {/* Grid Header */}
                         <div className="flex items-center justify-between border-b border-border/50 pb-6">
-                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 font-display">
+                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-ink font-display">
                                 Showing <span className="text-foreground tracking-tight">{allExams.length}</span> nodes available
                             </p>
                         </div>
@@ -283,7 +283,7 @@ export default function JLPTPracticePage() {
                             </div>
                         ) : (
                             <div className="text-center py-32 bg-muted/20 rounded-[3rem] border-2 border-dashed border-border/50">
-                                <div className="w-24 h-24 mx-auto mb-8 bg-card rounded-[2rem] flex items-center justify-center  text-muted-foreground/30 ring-8 ring-muted/50">
+                                <div className="w-24 h-24 mx-auto mb-8 bg-card rounded-[2rem] flex items-center justify-center  text-neutral-ink ring-8 ring-muted/50">
                                     <GraduationCap size={48} />
                                 </div>
                                 <h3 className="text-2xl font-black text-foreground mb-3 font-display tracking-tight">Zero Matches Found</h3>

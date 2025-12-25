@@ -59,7 +59,7 @@ export function HybridLandingModal({ isOpen, onClose }: HybridLandingModalProps)
                 {/* Close Button - Fixed position */}
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 z-20 p-2.5 rounded-full bg-white/90 hover:bg-white text-slate-500 hover:text-slate-700 transition-colors shadow-lg border border-slate-200"
+                    className="absolute top-4 right-4 z-20 p-2.5 rounded-full bg-white/90 hover:bg-white text-neutral-ink hover:text-slate-700 transition-colors shadow-lg border border-slate-200"
                     aria-label="Close modal"
                 >
                     <X size={20} />
@@ -94,12 +94,12 @@ export function HybridLandingModal({ isOpen, onClose }: HybridLandingModalProps)
 
                             {/* Sub-headlines */}
                             <div className="mt-4 space-y-1">
-                                <p className="text-lg sm:text-xl font-bold text-gray-400">日本語理解への道</p>
-                                <p className="text-lg sm:text-xl font-bold text-gray-400">한국어 이해를 위한 길입니다</p>
+                                <p className="text-lg sm:text-xl font-bold text-neutral-ink">日本語理解への道</p>
+                                <p className="text-lg sm:text-xl font-bold text-neutral-ink">한국어 이해를 위한 길입니다</p>
                             </div>
 
                             {/* Description */}
-                            <p className="mt-5 text-lg text-gray-600 font-medium max-w-xl mx-auto">
+                            <p className="mt-5 text-lg text-neutral-ink font-medium max-w-xl mx-auto">
                                 Prepare for JLPT/TOPIK with hanachan.org. Free, Open-Source, and Self-Hostable.
                             </p>
 
@@ -136,7 +136,7 @@ export function HybridLandingModal({ isOpen, onClose }: HybridLandingModalProps)
                             <h2 className="text-2xl font-display font-bold text-brand-dark mb-2 text-center">
                                 Deep Dive into Learning
                             </h2>
-                            <p className="text-gray-600 text-center mb-8">
+                            <p className="text-neutral-ink text-center mb-8">
                                 Explore our advanced tools for effective immersion.
                             </p>
 
@@ -149,7 +149,7 @@ export function HybridLandingModal({ isOpen, onClose }: HybridLandingModalProps)
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <h3 className="font-bold text-brand-dark">Master Japanese Texts</h3>
-                                        <p className="text-sm text-gray-500 truncate">Instant tokenization & dictionary lookups</p>
+                                        <p className="text-sm text-neutral-ink truncate">Instant tokenization & dictionary lookups</p>
                                     </div>
                                     <CTAButton variant="primary" href="/tools/text-parser" className="!py-2 !px-4 !text-sm flex-shrink-0">
                                         Try
@@ -163,7 +163,7 @@ export function HybridLandingModal({ isOpen, onClose }: HybridLandingModalProps)
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <h3 className="font-bold text-brand-dark">YouTube Immersion</h3>
-                                        <p className="text-sm text-gray-500 truncate">Parse subtitles & save words</p>
+                                        <p className="text-sm text-neutral-ink truncate">Parse subtitles & save words</p>
                                     </div>
                                     <CTAButton variant="primary" href="/tools/text-parser/youtube" className="!py-2 !px-4 !text-sm flex-shrink-0">
                                         Try
@@ -177,7 +177,7 @@ export function HybridLandingModal({ isOpen, onClose }: HybridLandingModalProps)
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <h3 className="font-bold text-brand-dark">Visual Grammar Graphs</h3>
-                                        <p className="text-sm text-gray-500 truncate">AI-powered sentence visualization</p>
+                                        <p className="text-sm text-neutral-ink truncate">AI-powered sentence visualization</p>
                                     </div>
                                     <CTAButton variant="primary" href="/tools/grammar-graph" className="!py-2 !px-4 !text-sm flex-shrink-0">
                                         Try
@@ -220,7 +220,7 @@ export function HybridLandingModal({ isOpen, onClose }: HybridLandingModalProps)
                                 <span className="text-2xl">🌸</span>
                                 <span className="font-display font-bold">hanachan.org</span>
                             </div>
-                            <div className="flex items-center gap-4 text-slate-400">
+                            <div className="flex items-center gap-4 text-neutral-ink">
                                 <a href="https://github.com/tristcoil/hanachan.org" className="hover:text-white transition-colors">
                                     <Github size={20} />
                                 </a>
@@ -231,7 +231,7 @@ export function HybridLandingModal({ isOpen, onClose }: HybridLandingModalProps)
                                     <Mail size={20} />
                                 </a>
                             </div>
-                            <p className="text-sm text-slate-500">
+                            <p className="text-sm text-neutral-ink">
                                 © 2024 hanachan. Free & Open Source.
                             </p>
                         </div>

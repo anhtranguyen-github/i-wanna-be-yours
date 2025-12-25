@@ -106,7 +106,7 @@ function VideoSection({ title, videos, onDelete, icon, defaultOpen = true }: Vid
             {icon}
           </div>
           {title}
-          <span className="text-xs font-black text-muted-foreground/40 uppercase tracking-widest ml-2">({videos.length})</span>
+          <span className="text-xs font-black text-neutral-ink uppercase tracking-widest ml-2">({videos.length})</span>
         </span>
         <ChevronDown className={`w-6 h-6 text-muted-foreground transition-transform duration-500 ${isOpen ? "rotate-180" : ""}`} />
       </button>
@@ -248,34 +248,34 @@ export default function PodcastsPage() {
             <h2 className="text-2xl font-black text-foreground mb-8 font-display">Add Custom YouTube Video</h2>
             <form onSubmit={handleSubmit} className="space-y-8">
               <div className="space-y-3">
-                <label className="block text-[10px] font-black text-muted-foreground/50 uppercase tracking-[0.2em] font-display ml-4">YouTube URL</label>
+                <label className="block text-[10px] font-black text-neutral-ink uppercase tracking-[0.2em] font-display ml-4">YouTube URL</label>
                 <input
                   type="text"
                   value={newVideo.url}
                   onChange={(e) => setNewVideo({ ...newVideo, url: e.target.value })}
-                  className="w-full p-6 bg-muted/30 border-none rounded-2xl focus:ring-4 focus:ring-primary/10 font-bold placeholder:text-muted-foreground/30 "
+                  className="w-full p-6 bg-muted/30 border-none rounded-2xl focus:ring-4 focus:ring-primary/10 font-bold placeholder:text-neutral-ink "
                   placeholder="https://www.youtube.com/watch?v=..."
                   required
                 />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-3">
-                  <label className="block text-[10px] font-black text-muted-foreground/50 uppercase tracking-[0.2em] font-display ml-4">Title (optional)</label>
+                  <label className="block text-[10px] font-black text-neutral-ink uppercase tracking-[0.2em] font-display ml-4">Title (optional)</label>
                   <input
                     type="text"
                     value={newVideo.customTitle}
                     onChange={(e) => setNewVideo({ ...newVideo, customTitle: e.target.value })}
-                    className="w-full p-6 bg-muted/30 border-none rounded-2xl focus:ring-4 focus:ring-primary/10 font-bold placeholder:text-muted-foreground/30 "
+                    className="w-full p-6 bg-muted/30 border-none rounded-2xl focus:ring-4 focus:ring-primary/10 font-bold placeholder:text-neutral-ink "
                     placeholder="Custom title"
                   />
                 </div>
                 <div className="space-y-3">
-                  <label className="block text-[10px] font-black text-muted-foreground/50 uppercase tracking-[0.2em] font-display ml-4">Description (optional)</label>
+                  <label className="block text-[10px] font-black text-neutral-ink uppercase tracking-[0.2em] font-display ml-4">Description (optional)</label>
                   <input
                     type="text"
                     value={newVideo.customDescription}
                     onChange={(e) => setNewVideo({ ...newVideo, customDescription: e.target.value })}
-                    className="w-full p-6 bg-muted/30 border-none rounded-2xl focus:ring-4 focus:ring-primary/10 font-bold placeholder:text-muted-foreground/30 "
+                    className="w-full p-6 bg-muted/30 border-none rounded-2xl focus:ring-4 focus:ring-primary/10 font-bold placeholder:text-neutral-ink "
                     placeholder="Short description"
                   />
                 </div>
@@ -304,7 +304,7 @@ export default function PodcastsPage() {
 
         {/* Recommended Channels */}
         <div className="bg-card p-8 rounded-2xl border border-border ">
-          <h2 className="text-[10px] font-black text-muted-foreground/50 uppercase tracking-[0.2em] mb-6 font-display ml-2">Recommended YouTube Channels</h2>
+          <h2 className="text-[10px] font-black text-neutral-ink uppercase tracking-[0.2em] mb-6 font-display ml-2">Recommended YouTube Channels</h2>
           <div className="flex flex-wrap gap-3">
             {youtubeChannels.map((channel) => (
               <a

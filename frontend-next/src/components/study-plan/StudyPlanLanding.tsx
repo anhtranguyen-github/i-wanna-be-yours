@@ -97,7 +97,7 @@ export function StudyPlanLanding({ user, hasPlan, plan }: StudyPlanLandingProps)
                                     <feature.icon size={28} />
                                 </div>
                                 <h3 className="font-black text-neutral-ink mb-3 font-display uppercase tracking-[0.2em] text-[10px]">{feature.title}</h3>
-                                <p className="text-sm text-neutral-ink/70 font-bold leading-relaxed">{feature.desc}</p>
+                                <p className="text-sm text-neutral-ink font-bold leading-relaxed">{feature.desc}</p>
                             </div>
                         ))}
                     </div>
@@ -109,15 +109,15 @@ export function StudyPlanLanding({ user, hasPlan, plan }: StudyPlanLandingProps)
                 <div className="container mx-auto px-6 max-w-5xl">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl font-black text-neutral-ink mb-4 font-display tracking-tight uppercase tracking-widest">Level Pathfinders</h2>
-                        <p className="text-neutral-ink/60 font-bold">Browse curated study plan templates designed by JLPT experts.</p>
+                        <p className="text-neutral-ink font-bold">Browse curated study plan templates designed by JLPT experts.</p>
                     </div>
 
                     <div className="flex flex-wrap gap-3 justify-center mb-16">
-                        <button onClick={() => setSelectedLevel(null)} className={`px-8 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all duration-300 font-display ${selectedLevel === null ? 'bg-primary-strong text-white shadow-xl shadow-primary/30 scale-105' : 'bg-neutral-white text-neutral-ink/40 hover:text-neutral-ink border border-neutral-gray/30 shadow-sm'}`}>
+                        <button onClick={() => setSelectedLevel(null)} className={`px-8 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all duration-300 font-display ${selectedLevel === null ? 'bg-primary-strong text-white shadow-xl shadow-primary/30 scale-105' : 'bg-neutral-white text-neutral-ink hover:text-neutral-ink border border-neutral-gray/30 shadow-sm'}`}>
                             All Levels
                         </button>
                         {JLPT_LEVELS.map(level => (
-                            <button key={level} onClick={() => setSelectedLevel(level)} className={`px-8 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all duration-300 font-display ${selectedLevel === level ? 'bg-primary-strong text-white shadow-xl shadow-primary/30 scale-105' : 'bg-neutral-white text-neutral-ink/40 hover:text-neutral-ink border border-neutral-gray/30 shadow-sm'}`}>
+                            <button key={level} onClick={() => setSelectedLevel(level)} className={`px-8 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all duration-300 font-display ${selectedLevel === level ? 'bg-primary-strong text-white shadow-xl shadow-primary/30 scale-105' : 'bg-neutral-white text-neutral-ink hover:text-neutral-ink border border-neutral-gray/30 shadow-sm'}`}>
                                 {level}
                             </button>
                         ))}
@@ -143,7 +143,7 @@ export function StudyPlanLanding({ user, hasPlan, plan }: StudyPlanLandingProps)
                                             </div>
                                             <div>
                                                 <h3 className="font-black text-neutral-ink font-display uppercase tracking-[0.2em] text-[10px]">{levelInfo.name}</h3>
-                                                <p className="text-sm text-neutral-ink/60 font-bold">{levelInfo.description}</p>
+                                                <p className="text-sm text-neutral-ink font-bold">{levelInfo.description}</p>
                                             </div>
                                         </div>
 
@@ -153,11 +153,11 @@ export function StudyPlanLanding({ user, hasPlan, plan }: StudyPlanLandingProps)
                                                     <div className="absolute top-0 right-0 w-24 h-24 bg-primary/2 rounded-full blur-2xl group-hover:bg-primary/5 transition-colors" />
                                                     <div className="flex items-start justify-between mb-6 relative z-10">
                                                         <span className="px-4 py-1.5 rounded-xl text-white text-[10px] font-black uppercase tracking-widest shadow-md" style={{ backgroundColor: levelInfo.color }}>{template.target_level}</span>
-                                                        <span className="flex items-center gap-2 text-neutral-ink/40 text-[10px] font-black uppercase tracking-widest"><Clock size={14} />{template.duration_weeks}W</span>
+                                                        <span className="flex items-center gap-2 text-neutral-ink text-[10px] font-black uppercase tracking-widest"><Clock size={14} />{template.duration_weeks}W</span>
                                                     </div>
                                                     <h4 className="text-xl font-black text-neutral-ink mb-3 font-display group-hover:text-primary-strong transition-colors relative z-10">{template.title}</h4>
-                                                    <p className="text-sm text-neutral-ink/60 font-medium mb-8 line-clamp-2 leading-relaxed relative z-10">{template.description}</p>
-                                                    <div className="grid grid-cols-2 gap-4 text-[9px] font-black uppercase tracking-widest text-neutral-ink/40 pt-6 border-t border-neutral-gray/10 relative z-10">
+                                                    <p className="text-sm text-neutral-ink font-medium mb-8 line-clamp-2 leading-relaxed relative z-10">{template.description}</p>
+                                                    <div className="grid grid-cols-2 gap-4 text-[9px] font-black uppercase tracking-widest text-neutral-ink pt-6 border-t border-neutral-gray/10 relative z-10">
                                                         <span className="flex items-center gap-2"><CheckCircle2 size={14} className="text-primary-strong/40" />{template.milestone_count} Points</span>
                                                         <span className="flex items-center gap-2"><BookOpen size={14} className="text-primary-strong/40" />{template.daily_minutes_recommended}m / Day</span>
                                                     </div>

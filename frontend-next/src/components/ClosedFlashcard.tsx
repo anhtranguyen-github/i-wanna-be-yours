@@ -44,7 +44,7 @@ const ClosedFlashcard: React.FC<ClosedFlashcardProps> = ({
 
         <div className="flex-grow min-w-0">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-1">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
+            <h3 className="text-lg font-bold text-neutral-ink dark:text-white leading-tight">
               {title}
             </h3>
             {/* Level Badge */}
@@ -55,13 +55,13 @@ const ClosedFlashcard: React.FC<ClosedFlashcardProps> = ({
               </span>
             )}
           </div>
-          {subtitle && <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{subtitle}</p>}
+          {subtitle && <p className="text-sm font-medium text-neutral-ink dark:text-neutral-ink">{subtitle}</p>}
         </div>
       </div>
 
       {/* Body: Description, Divider, Tags */}
       <div className="px-6 py-2 flex-grow">
-        <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 leading-relaxed line-clamp-3">
+        <p className="text-neutral-ink dark:text-neutral-ink text-sm mb-4 leading-relaxed line-clamp-3">
           {description}
         </p>
 
@@ -70,7 +70,7 @@ const ClosedFlashcard: React.FC<ClosedFlashcardProps> = ({
         {/* Metadata Tags */}
         <div className="flex flex-wrap gap-2 mb-4">
           {otherTags.map(tag => (
-            <span key={tag.id} className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-50 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 border border-gray-100 dark:border-gray-700">
+            <span key={tag.id} className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-50 dark:bg-gray-700/50 text-neutral-ink dark:text-neutral-ink border border-gray-100 dark:border-gray-700">
               {tag.label}
             </span>
           ))}
@@ -87,7 +87,7 @@ const ClosedFlashcard: React.FC<ClosedFlashcardProps> = ({
           <ChevronRightIcon className="w-5 h-5" />
         </button>
 
-        <div className="flex justify-between items-center text-sm font-medium text-gray-500 dark:text-gray-400 px-1">
+        <div className="flex justify-between items-center text-sm font-medium text-neutral-ink dark:text-neutral-ink px-1">
           {detailLink ? (
             <a href={detailLink} className="hover:text-brand-salmon transition-colors">
               View Details
@@ -158,10 +158,10 @@ export default ClosedFlashcard;
 //       <div className="flex flex-col space-y-4">
 //         {/* Title and Badge */}
 //         <div className="flex items-center space-x-3">
-//           <h3 className="truncate text-base font-medium text-gray-900 dark:text-gray-100">
+//           <h3 className="truncate text-base font-medium text-neutral-ink dark:text-neutral-ink">
 //             {p_tag}
 //           </h3>
-//           <h4 className="truncate text-base font-sm text-gray-900 dark:text-gray-100">
+//           <h4 className="truncate text-base font-sm text-neutral-ink dark:text-neutral-ink">
 //             {s_tag}
 //           </h4>
 //           <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${badgeColor}`}>
@@ -169,7 +169,7 @@ export default ClosedFlashcard;
 //           </span>
 //         </div>
 //         {/* Description */}
-//         <p className="text-sm text-gray-500 dark:text-gray-400">
+//         <p className="text-sm text-neutral-ink dark:text-neutral-ink">
 //           {description}
 //         </p>
 //         {/* Open Flashcard Button */}

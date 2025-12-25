@@ -52,7 +52,7 @@ export default async function GrammarPoint({ params }: GrammarPointProps) {
         <GrammarBreadcrumb decodedTitle={decodedTitle} />
 
         <div className="bg-gray-100 shadow-lg rounded-lg p-8">
-          <h1 className="text-4xl font-bold mb-8 text-gray-900">
+          <h1 className="text-4xl font-bold mb-8 text-neutral-ink">
             Japanese JLPT Grammar Point
             <br />
             {decodedTitle}
@@ -60,26 +60,26 @@ export default async function GrammarPoint({ params }: GrammarPointProps) {
 
           {grammarDetails && (
             <div className="bg-gray-200 border border-gray-300 rounded-lg p-8">
-              <h2 className="text-3xl font-semibold mb-10 text-gray-800">
+              <h2 className="text-3xl font-semibold mb-10 text-neutral-ink">
                 {grammarDetails.title}
               </h2>
               <div className="space-y-8">
                 <div>
-                  <p className="text-xl font-semibold text-gray-800">Short explanation:</p>
-                  <div className="text-lg text-gray-700 mt-2">
+                  <p className="text-xl font-semibold text-neutral-ink">Short explanation:</p>
+                  <div className="text-lg text-neutral-ink mt-2">
                     {grammarDetails.short_explanation}
                   </div>
                 </div>
 
                 <div>
-                  <p className="text-xl font-semibold text-gray-800">Formation:</p>
-                  <div className="text-lg text-gray-700 mt-2">
+                  <p className="text-xl font-semibold text-neutral-ink">Formation:</p>
+                  <div className="text-lg text-neutral-ink mt-2">
                     {grammarDetails.formation}
                   </div>
                 </div>
 
                 <div>
-                  <p className="text-xl font-semibold text-gray-800 mb-2">Examples:</p>
+                  <p className="text-xl font-semibold text-neutral-ink mb-2">Examples:</p>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {grammarDetails.examples.map((example: any, index: number) => (
                       <div
@@ -92,13 +92,13 @@ export default async function GrammarPoint({ params }: GrammarPointProps) {
                             ariaLabel={`Play audio for example ${index + 1}`}
                           />
                           <div className="flex flex-col">
-                            <div className="text-xl text-gray-800 mb-2">
+                            <div className="text-xl text-neutral-ink mb-2">
                               {example.jp}
                             </div>
-                            <div className="text-xs italic text-gray-600 mb-2">
+                            <div className="text-xs italic text-neutral-ink mb-2">
                               {example.romaji}
                             </div>
-                            <div className="text-sm text-gray-700">
+                            <div className="text-sm text-neutral-ink">
                               {example.en}
                             </div>
                           </div>
@@ -109,8 +109,8 @@ export default async function GrammarPoint({ params }: GrammarPointProps) {
                 </div>
 
                 <div>
-                  <p className="text-xl font-semibold text-gray-800">Long explanation:</p>
-                  <div className="text-lg text-gray-700 mt-2">
+                  <p className="text-xl font-semibold text-neutral-ink">Long explanation:</p>
+                  <div className="text-lg text-neutral-ink mt-2">
                     {grammarDetails.long_explanation}
                   </div>
                 </div>
@@ -121,7 +121,7 @@ export default async function GrammarPoint({ params }: GrammarPointProps) {
 
         {/* Include the MarkdownContent component */}
         <div className="mt-5 mb-5">
-          <p className="text-xl font-semibold text-gray-800">
+          <p className="text-xl font-semibold text-neutral-ink">
             Detailed Grammar notes:
           </p>
           <MarkdownContent lang="jap" slug={params.slug} />
@@ -202,7 +202,7 @@ export default async function GrammarPoint({ params }: GrammarPointProps) {
 
 
 //         <div className="bg-gray-100 shadow-lg rounded-lg p-8">
-//           <h1 className="text-4xl font-bold mb-8 text-gray-900">
+//           <h1 className="text-4xl font-bold mb-8 text-neutral-ink">
 //             Japanese JLPT Grammar Point
 //             <br />
 //             {decodedTitle}
@@ -210,26 +210,26 @@ export default async function GrammarPoint({ params }: GrammarPointProps) {
 
 //           {grammarDetails && (
 //             <div className="bg-gray-200 border border-gray-300 rounded-lg p-8">
-//               <h2 className="text-3xl font-semibold mb-10 text-gray-800">
+//               <h2 className="text-3xl font-semibold mb-10 text-neutral-ink">
 //                 {grammarDetails.title}
 //               </h2>
 //               <div className="space-y-8">
 //                 <div>
-//                   <p className="text-xl font-semibold text-gray-800">Short explanation:</p>
-//                   <div className="text-lg text-gray-700 mt-2">
+//                   <p className="text-xl font-semibold text-neutral-ink">Short explanation:</p>
+//                   <div className="text-lg text-neutral-ink mt-2">
 //                     {grammarDetails.short_explanation}
 //                   </div>
 //                 </div>
 
 //                 <div>
-//                   <p className="text-xl font-semibold text-gray-800">Formation:</p>
-//                   <div className="text-lg text-gray-700 mt-2">
+//                   <p className="text-xl font-semibold text-neutral-ink">Formation:</p>
+//                   <div className="text-lg text-neutral-ink mt-2">
 //                     {grammarDetails.formation}
 //                   </div>
 //                 </div>
 
 //                 <div>
-//                   <p className="text-xl font-semibold text-gray-800 mb-2">Examples:</p>
+//                   <p className="text-xl font-semibold text-neutral-ink mb-2">Examples:</p>
 //                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 //                     {grammarDetails.examples.map((example: any, index: number) => (
 //                       <div
@@ -239,13 +239,13 @@ export default async function GrammarPoint({ params }: GrammarPointProps) {
 //                         <div className="flex items-start space-x-4">
 //                           <PlayAudioButton audioSrc={example.grammar_audio} />
 //                           <div className="flex flex-col">
-//                             <div className="text-xl text-gray-800 mb-2">
+//                             <div className="text-xl text-neutral-ink mb-2">
 //                               {example.jp}
 //                             </div>
-//                             <div className="text-xs italic text-gray-600 mb-2">
+//                             <div className="text-xs italic text-neutral-ink mb-2">
 //                               {example.romaji}
 //                             </div>
-//                             <div className="text-sm text-gray-700">
+//                             <div className="text-sm text-neutral-ink">
 //                               {example.en}
 //                             </div>
 //                           </div>
@@ -256,8 +256,8 @@ export default async function GrammarPoint({ params }: GrammarPointProps) {
 //                 </div>
 
 //                 <div>
-//                   <p className="text-xl font-semibold text-gray-800">Long explanation:</p>
-//                   <div className="text-lg text-gray-700 mt-2">
+//                   <p className="text-xl font-semibold text-neutral-ink">Long explanation:</p>
+//                   <div className="text-lg text-neutral-ink mt-2">
 //                     {grammarDetails.long_explanation}
 //                   </div>
 //                 </div>
@@ -268,7 +268,7 @@ export default async function GrammarPoint({ params }: GrammarPointProps) {
 
 //         {/* Include the MarkdownContent component */}
 //         <div className="mt-5 mb-5">
-//           <p className="text-xl font-semibold text-gray-800">
+//           <p className="text-xl font-semibold text-neutral-ink">
 //             Detailed Grammar notes:
 //           </p>
 //           <MarkdownContent lang='jap' slug={params.slug} />

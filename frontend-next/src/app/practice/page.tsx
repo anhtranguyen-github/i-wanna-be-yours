@@ -88,7 +88,7 @@ export default function PracticePage() {
                             <Lock className="w-10 h-10 text-neutral-gray" />
                         </div>
                         <h3 className="text-2xl font-black text-neutral-ink mb-3 font-display">Sign in to track progress</h3>
-                        <p className="text-neutral-ink/70 mb-8 max-w-md mx-auto font-bold">
+                        <p className="text-neutral-ink mb-8 max-w-md mx-auto font-bold">
                             Create an account to save your practice history, track streaks, and unlock achievements.
                         </p>
                         <button
@@ -130,7 +130,7 @@ function PracticeCard({ category }: { category: PracticeCategory }) {
                 )}
             </div>
             <h3 className="text-xl font-black text-neutral-ink mb-3 font-display">{category.title}</h3>
-            <p className="text-sm text-neutral-ink/70 mb-6 flex-1 font-bold leading-relaxed">{category.description}</p>
+            <p className="text-sm text-neutral-ink mb-6 flex-1 font-bold leading-relaxed">{category.description}</p>
             {!isComingSoon && (
                 <div className="flex items-center gap-3 text-xs font-black text-primary-strong uppercase tracking-[0.2em] font-display">
                     <span>Explore</span>

@@ -92,7 +92,7 @@ export default function ExamResultPage() {
         return (
             <div className="min-h-screen flex items-center justify-center bg-background">
                 <div className="text-center animate-in fade-in zoom-in-95 duration-700 p-12 bg-card rounded-[3rem] border border-border/50 ">
-                    <HelpCircle size={64} className="mx-auto mb-6 text-muted-foreground/30 animate-pulse" />
+                    <HelpCircle size={64} className="mx-auto mb-6 text-neutral-ink animate-pulse" />
                     <h2 className="text-3xl font-black text-foreground font-display tracking-tight mb-4 leading-none">Protocol Not Found</h2>
                     <p className="text-muted-foreground font-bold mb-8 italic">Synchronize your path and try again.</p>
                     <Link
@@ -183,8 +183,8 @@ export default function ExamResultPage() {
                                 />
                             </svg>
                             <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                <span className="text-6xl font-black text-foreground font-display tracking-tighter leading-none">{mockResults.scorePercentage}<span className="text-2xl text-muted-foreground/40 ml-1">%</span></span>
-                                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/30 mt-2 font-display">Sync Accuracy</span>
+                                <span className="text-6xl font-black text-foreground font-display tracking-tighter leading-none">{mockResults.scorePercentage}<span className="text-2xl text-neutral-ink ml-1">%</span></span>
+                                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-ink mt-2 font-display">Sync Accuracy</span>
                             </div>
                         </div>
 
@@ -219,17 +219,17 @@ export default function ExamResultPage() {
                                 <div className="bg-muted/30 rounded-3xl p-5 border border-border/20  group/stat hover:bg-muted/50 transition-all">
                                     <CheckCircle2 size={20} className="text-primary mb-2 opacity-50 group-hover:opacity-100 transition-opacity" />
                                     <p className="text-2xl font-black text-foreground font-display leading-none mb-1">{mockResults.correctAnswers.toString().padStart(2, '0')}</p>
-                                    <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 font-display">Correct</p>
+                                    <p className="text-[9px] font-black uppercase tracking-widest text-neutral-ink font-display">Correct</p>
                                 </div>
                                 <div className="bg-muted/30 rounded-3xl p-5 border border-border/20  group/stat hover:bg-muted/50 transition-all">
                                     <XCircle size={20} className="text-destructive mb-2 opacity-50 group-hover:opacity-100 transition-opacity" />
                                     <p className="text-2xl font-black text-foreground font-display leading-none mb-1">{mockResults.incorrectAnswers.toString().padStart(2, '0')}</p>
-                                    <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 font-display">Failed</p>
+                                    <p className="text-[9px] font-black uppercase tracking-widest text-neutral-ink font-display">Failed</p>
                                 </div>
                                 <div className="bg-muted/30 rounded-3xl p-5 border border-border/20  group/stat hover:bg-muted/50 transition-all">
                                     <Clock size={20} className="text-secondary mb-2 opacity-50 group-hover:opacity-100 transition-opacity" />
                                     <p className="text-2xl font-black text-foreground font-display leading-none mb-1">{formatTime(mockResults.timeTakenSeconds).split(" ")[0]}</p>
-                                    <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 font-display">Duration</p>
+                                    <p className="text-[9px] font-black uppercase tracking-widest text-neutral-ink font-display">Duration</p>
                                 </div>
                             </div>
                         </div>
@@ -246,7 +246,7 @@ export default function ExamResultPage() {
                             </div>
                             <div>
                                 <h3 className="text-xl font-black text-foreground font-display tracking-tight leading-none mb-1">Neural Breakdown</h3>
-                                <p className="text-xs font-bold text-muted-foreground/60">Performance by cryptographic skill area</p>
+                                <p className="text-xs font-bold text-neutral-ink">Performance by cryptographic skill area</p>
                             </div>
                         </div>
 
@@ -255,13 +255,13 @@ export default function ExamResultPage() {
                                 <div key={skill.skill} className="group/skill">
                                     <div className="flex items-center justify-between mb-3 px-1">
                                         <div className="flex items-center gap-3">
-                                            <span className="p-2 bg-muted rounded-xl text-muted-foreground/40  group-hover/skill:text-primary transition-colors">
+                                            <span className="p-2 bg-muted rounded-xl text-neutral-ink  group-hover/skill:text-primary transition-colors">
                                                 {skillIcons[skill.skill]}
                                             </span>
                                             <span className="text-sm font-black uppercase tracking-widest text-foreground font-display">{skillLabels[skill.skill]}</span>
                                         </div>
                                         <div className="text-right">
-                                            <span className="text-[10px] font-black font-display text-muted-foreground/30 uppercase tracking-widest mr-2">Status</span>
+                                            <span className="text-[10px] font-black font-display text-neutral-ink uppercase tracking-widest mr-2">Status</span>
                                             <span className={`text-sm font-black font-display ${skill.percentage >= 70 ? 'text-primary' : 'text-secondary'}`}>
                                                 {skill.correct} / {skill.total}
                                             </span>
@@ -291,7 +291,7 @@ export default function ExamResultPage() {
                             </div>
                             <div>
                                 <h3 className="text-xl font-black text-foreground font-display tracking-tight leading-none mb-1">Optimization</h3>
-                                <p className="text-xs font-bold text-muted-foreground/60">Systemic improvement paths</p>
+                                <p className="text-xs font-bold text-neutral-ink">Systemic improvement paths</p>
                             </div>
                         </div>
 
@@ -313,7 +313,7 @@ export default function ExamResultPage() {
                                         <Award size={32} />
                                     </div>
                                     <p className="text-sm font-black text-foreground font-display italic">Neural Architecture Optimal.</p>
-                                    <p className="text-[10px] font-black uppercase text-muted-foreground/50 tracking-widest mt-2">Proceed to next tier protocols.</p>
+                                    <p className="text-[10px] font-black uppercase text-neutral-ink tracking-widest mt-2">Proceed to next tier protocols.</p>
                                 </li>
                             )}
                         </ul>
