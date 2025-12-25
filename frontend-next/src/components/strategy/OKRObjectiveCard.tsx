@@ -30,15 +30,15 @@ export function OKRObjectiveCard({ okr, onClick, className }: OKRObjectiveCardPr
         <>
             <div
                 className={cn(
-                    'rounded-2xl bg-white border border-slate-100',
-                    'shadow-sm hover:shadow-lg transition-all duration-300',
+                    'rounded-2xl bg-neutral-white border border-neutral-gray/20',
+                    'shadow-sm hover:shadow-2xl transition-all duration-500 shadow-md font-display',
                     'overflow-hidden',
                     className
                 )}
             >
                 {/* Header - Opens SMART Detail Modal */}
                 <div
-                    className="p-5 cursor-zoom-in group/header transition-colors hover:bg-slate-50/50"
+                    className="p-6 cursor-zoom-in group/header transition-all hover:bg-neutral-beige/30"
                     onClick={onClick}
                     role="button"
                     tabIndex={0}
@@ -67,7 +67,7 @@ export function OKRObjectiveCard({ okr, onClick, className }: OKRObjectiveCardPr
                                     iconSize={12}
                                 />
                             </div>
-                            <h3 className="font-bold text-lg text-slate-900 group-hover:text-primary transition-colors">
+                            <h3 className="font-black text-xl text-neutral-ink group-hover:text-primary-strong transition-colors font-display">
                                 {okr.objective}
                             </h3>
                             {okr.description && (
@@ -77,8 +77,8 @@ export function OKRObjectiveCard({ okr, onClick, className }: OKRObjectiveCardPr
 
                         <div className="flex flex-col items-end gap-2">
                             <div className="text-right">
-                                <p className="text-3xl font-black text-slate-900">{okr.progress}%</p>
-                                <p className="text-xs text-slate-500">Complete</p>
+                                <p className="text-3xl font-black text-neutral-ink font-display">{okr.progress}%</p>
+                                <p className="text-[10px] text-neutral-ink/40 font-black uppercase tracking-widest">Complete</p>
                             </div>
                             <ChevronRight
                                 size={16}
@@ -102,8 +102,8 @@ export function OKRObjectiveCard({ okr, onClick, className }: OKRObjectiveCardPr
                 </div>
 
                 {/* Key Results */}
-                <div className="border-t border-slate-100">
-                    <div className="px-5 py-3 bg-slate-50 flex items-center justify-between">
+                <div className="border-t border-neutral-gray/10">
+                    <div className="px-6 py-4 bg-neutral-beige/50 flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
                                 Key Results

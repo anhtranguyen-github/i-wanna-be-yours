@@ -39,9 +39,9 @@ export function SMARTGoalCard({ goal, onClick, className }: SMARTGoalCardProps) 
     return (
         <div
             className={cn(
-                'relative rounded-2xl bg-white border border-slate-100',
-                'shadow-sm hover:shadow-lg transition-all duration-300',
-                'cursor-pointer group overflow-hidden',
+                'relative rounded-2xl bg-neutral-white border border-neutral-gray/20 font-display',
+                'shadow-sm hover:shadow-2xl transition-all duration-500',
+                'cursor-pointer group overflow-hidden shadow-md',
                 className
             )}
             onClick={onClick}
@@ -66,7 +66,7 @@ export function SMARTGoalCard({ goal, onClick, className }: SMARTGoalCardProps) 
                                 iconSize={12}
                             />
                         </div>
-                        <h3 className="font-bold text-lg text-slate-900 truncate group-hover:text-primary transition-colors">
+                        <h3 className="font-black text-xl text-neutral-ink truncate group-hover:text-primary-strong transition-colors font-display">
                             {goal.title}
                         </h3>
                     </div>
@@ -127,7 +127,7 @@ export function SMARTGoalCard({ goal, onClick, className }: SMARTGoalCardProps) 
             </div>
 
             {/* Footer */}
-            <div className="px-5 py-3 bg-slate-50 flex items-center justify-between">
+            <div className="px-5 py-3 bg-neutral-beige/50 flex items-center justify-between border-t border-neutral-gray/10">
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-1.5 text-slate-500">
                         <Clock size={14} />
