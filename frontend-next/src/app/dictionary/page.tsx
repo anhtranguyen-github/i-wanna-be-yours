@@ -5,9 +5,21 @@ import { Search, BookOpen, X, Sparkles, Book, ArrowRight, Volume2, ChevronDown, 
 import { dictionaryService, DictionaryEntry, ExampleSentence } from '@/services/dictionaryService';
 import { TabNavigator, DictionaryTab } from '@/components/dictionary/TabNavigator';
 
+import { SearchNexus } from "@/components/shared/SearchNexus";
+import { SearchNexusState, FilterGroup } from "@/types/search";
+import { InformativeLoginCard } from "@/components/shared/InformativeLoginCard";
+import { useUser } from "@/context/UserContext";
+import { motion, AnimatePresence } from "framer-motion";
+
 export default function DictionaryPage() {
-    const [query, setQuery] = useState('');
-    const [searchMode, setSearchMode] = useState<'JP-EN' | 'EN-JP'>('JP-EN');
+    const { user } = useUser();
+    const [searchState, setSearchState] = useState<SearchNexusState>({
+        query: "",
+        activeFilters: {
+            mode: ['JP-EN']
+        },
+        activeTab: 'PUBLIC'
+    });
     const [activeTab, setActiveTab] = useState<DictionaryTab>('vocab');
     const [isLoading, setIsLoading] = useState(false);
     const [parseResult, setParseResult] = useState<any>(null);
@@ -16,13 +28,14 @@ export default function DictionaryPage() {
     const [vocabDetails, setVocabDetails] = useState<DictionaryEntry | null>(null);
     const [kanjiDetails, setDictionaryKanjiDetails] = useState<DictionaryEntry | null>(null);
     const [associatedExamples, setAssociatedExamples] = useState<ExampleSentence[]>([]);
+    const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
     useEffect(() => {
-        if (!query.trim()) { setParseResult(null); return; }
+        if (!searchState.query.trim()) { setParseResult(null); return; }
         const debounce = setTimeout(async () => {
             setIsLoading(true);
             try {
-                const result = await dictionaryService.search(query);
+                const result = await dictionaryService.search(searchState.query);
                 setParseResult(result);
                 if (result.tokens.length > 0) setSelectedVocabId(result.tokens[0].id);
                 if (result.kanji.length > 0) setSelectedKanjiId(result.kanji[0].id);
@@ -31,7 +44,7 @@ export default function DictionaryPage() {
             finally { setIsLoading(false); }
         }, 600);
         return () => clearTimeout(debounce);
-    }, [query, searchMode]);
+    }, [searchState.query, searchState.activeFilters.mode]);
 
     useEffect(() => {
         const fetchVocab = async () => {
@@ -59,24 +72,109 @@ export default function DictionaryPage() {
         fetchKanji();
     }, [selectedKanjiId, parseResult]);
 
-    const renderEmptyState = () => (
-        <div className="flex flex-col items-center justify-center py-20 px-8 text-center max-w-2xl mx-auto">
-            <div className="w-20 h-20 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-6">
-                <Book size={40} />
-            </div>
-            <h2 className="text-2xl font-bold text-foreground mb-3">Japanese Dictionary</h2>
-            <p className="text-muted-foreground mb-8">Enter any Japanese word or sentence to see its breakdown, readings, and meanings.</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full text-left">
-                {[
-                    { title: 'Vocab Analysis', desc: 'Detailed readings and meanings for common words.', icon: Sparkles },
-                    { title: 'Kanji Breakdown', desc: 'Identify every kanji character in your input.', icon: ArrowRight },
-                ].map((item, i) => (
-                    <div key={i} className="bg-neutral-white p-6 rounded-2xl border border-neutral-gray/20 shadow-sm">
-                        <item.icon size={20} className="text-primary mb-2" />
-                        <h3 className="font-bold text-foreground mb-1">{item.title}</h3>
-                        <p className="text-sm text-muted-foreground">{item.desc}</p>
+    const filterGroups: FilterGroup[] = [
+        {
+            id: 'mode',
+            label: 'Search Vector',
+            type: 'SINGLE',
+            options: [
+                { id: 'JP-EN', label: 'Japanese → English' },
+                { id: 'EN-JP', label: 'English → Japanese' }
+            ]
+        }
+    ];
+
+    const handleSearchChange = (newState: SearchNexusState) => {
+        setSearchState(newState);
+        if (newState.activeTab === 'PUBLIC') setShowLoginPrompt(false);
+    };
+
+    const renderDiscoveryHub = () => (
+        <div className="max-w-6xl mx-auto py-12 px-8 space-y-16">
+            {/* Visual Intro */}
+            <header className="text-center space-y-4">
+                <motion.div
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="w-20 h-20 bg-primary/10 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-inner"
+                >
+                    <BookOpen size={40} className="text-primary-strong" />
+                </motion.div>
+                <h2 className="text-5xl font-black text-neutral-ink font-display tracking-tight">The Discovery Hub</h2>
+                <p className="text-neutral-ink/60 font-bold max-w-xl mx-auto leading-relaxed">
+                    Uncover the hidden patterns of Japanese. Explore trending phrases, master the kanji of the day, and build your cognitive vault.
+                </p>
+            </header>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Module 1: Daily Kanji */}
+                <motion.div
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.1 }}
+                    className="lg:col-span-1 bg-neutral-white/50 backdrop-blur-sm border border-neutral-gray/10 rounded-[2.5rem] p-10 flex flex-col items-center justify-center text-center shadow-xl relative overflow-hidden group"
+                >
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-primary/10 transition-colors" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-ink/20 mb-8">Kanji Reconnaissance</span>
+                    <div className="text-9xl font-jp text-neutral-ink mb-8 group-hover:scale-110 transition-transform cursor-default">
+                        花
                     </div>
-                ))}
+                    <div>
+                        <h4 className="text-2xl font-black text-neutral-ink mb-1">Flower</h4>
+                        <p className="text-sm font-bold text-neutral-ink/40">Onyomi: カ (ka)</p>
+                        <p className="text-sm font-bold text-neutral-ink/40">Kunyomi: はな (hana)</p>
+                    </div>
+                </motion.div>
+
+                {/* Module 2: Trending & Phrases */}
+                <motion.div
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                    className="lg:col-span-2 space-y-8"
+                >
+                    <div className="bg-neutral-white p-10 rounded-[2.5rem] border border-neutral-gray/10 shadow-xl space-y-8">
+                        <div className="flex items-center justify-between border-b border-neutral-gray/10 pb-6">
+                            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-ink/30">Trending Synapses</h4>
+                            <Sparkles size={16} className="text-secondary" />
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {[
+                                { ja: 'よろしくお願いします', en: 'Pleased to meet you', tag: 'Social' },
+                                { ja: 'お疲れ様でした', en: 'Good work today', tag: 'Work' },
+                                { ja: '失礼します', en: 'Excuse me', tag: 'Etiquette' },
+                                { ja: 'いただきます', en: 'Let\'s eat', tag: 'CULTURE' }
+                            ].map((phrase, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => setSearchState({ ...searchState, query: phrase.ja })}
+                                    className="p-6 bg-neutral-beige/30 rounded-2xl border border-neutral-gray/10 text-left hover:bg-white hover:shadow-lg hover:border-primary-strong/30 transition-all group"
+                                >
+                                    <div className="flex justify-between items-start mb-2">
+                                        <span className="text-xl font-bold text-neutral-ink group-hover:text-primary-strong transition-colors">{phrase.ja}</span>
+                                        <span className="text-[9px] font-black uppercase tracking-widest text-neutral-ink/20">{phrase.tag}</span>
+                                    </div>
+                                    <p className="text-sm text-neutral-ink/40 font-bold">{phrase.en}</p>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="bg-gradient-to-br from-primary-strong to-primary p-10 rounded-[2.5rem] text-white shadow-xl shadow-primary/20 flex items-center justify-between">
+                        <div className="space-y-2">
+                            <h4 className="text-2xl font-black font-display tracking-tight">Active Learning Stats</h4>
+                            <p className="text-white/70 font-bold text-sm">Join 12,540 researchers exploring the nexus today.</p>
+                        </div>
+                        <div className="hidden md:block">
+                            <div className="flex -space-x-3">
+                                {[1, 2, 3, 4].map(i => (
+                                    <div key={i} className="w-12 h-12 rounded-full border-4 border-primary bg-neutral-beige shadow-lg" />
+                                ))}
+                                <div className="w-12 h-12 rounded-full border-4 border-primary bg-white text-primary flex items-center justify-center text-xs font-black">+</div>
+                            </div>
+                        </div>
+                    </div>
+                </motion.div>
             </div>
         </div>
     );
@@ -84,85 +182,95 @@ export default function DictionaryPage() {
     const renderSearchResults = () => {
         if (isLoading) {
             return (
-                <div className="flex flex-col items-center justify-center p-20">
-                    <Loader2 className="w-10 h-10 animate-spin text-primary mb-4" />
-                    <p className="text-muted-foreground">Analyzing...</p>
+                <div className="flex flex-col items-center justify-center p-40">
+                    <Loader2 className="w-20 h-20 animate-spin text-primary-strong opacity-20" />
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-ink/30 mt-8">Synthesizing Search Data...</p>
                 </div>
             );
         }
 
         return (
-            <div className="flex gap-6 p-6 max-w-[1400px] mx-auto">
+            <div className="flex flex-col lg:flex-row gap-8 p-8 max-w-[1600px] mx-auto overflow-hidden h-[calc(100vh-250px)]">
                 {/* Sidebar */}
-                <div className="w-[300px] flex-shrink-0 space-y-4">
-                    <div className="bg-neutral-white rounded-2xl border border-neutral-gray/30 overflow-hidden shadow-sm">
-                        <div className="p-4 border-b border-neutral-gray/20 bg-neutral-beige">
-                            <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wide">
-                                {activeTab === 'vocab' ? 'Search Results' : activeTab === 'kanji' ? 'Kanji List' : 'Navigation'}
-                            </h3>
-                        </div>
-                        <div className="p-2 space-y-1">
-                            {activeTab === 'vocab' && parseResult?.tokens?.map((token: any) => (
-                                <button key={token.id} onClick={() => setSelectedVocabId(token.id)} className={`w-full text-left p-4 rounded-xl transition-all duration-300 ${selectedVocabId === token.id ? 'bg-primary-strong text-white shadow-md' : 'text-neutral-ink hover:bg-secondary'}`}>
-                                    <div className="font-bold text-lg">{token.head}</div>
-                                    <div className="text-xs text-muted-foreground">{token.reading}</div>
-                                    <div className="text-xs text-muted-foreground truncate">{token.meaning}</div>
-                                </button>
-                            ))}
-                            {activeTab === 'kanji' && parseResult?.kanji?.map((k: any) => (
-                                <button key={k.id} onClick={() => setSelectedKanjiId(k.id)} className={`w-full text-left p-3 rounded-xl transition-colors ${selectedKanjiId === k.id ? 'bg-primary/10 text-foreground border border-primary/20' : 'text-muted-foreground hover:bg-muted'}`}>
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-2xl">{k.head}</span>
-                                        <span className="text-xs text-muted-foreground">{k.reading}</span>
-                                    </div>
-                                    <div className="text-xs text-muted-foreground">{k.meaning}</div>
-                                </button>
-                            ))}
-                        </div>
+                <div className="lg:w-[400px] flex-shrink-0 flex flex-col h-full bg-neutral-white/50 backdrop-blur-sm rounded-[2.5rem] border border-neutral-gray/10 shadow-xl overflow-hidden">
+                    <div className="p-8 border-b border-neutral-gray/10 bg-neutral-beige/20 flex items-center justify-between">
+                        <h3 className="text-[10px] font-black text-neutral-ink/40 uppercase tracking-[0.3em]">
+                            Foundational Matches
+                        </h3>
+                        <span className="px-3 py-1 bg-white border border-neutral-gray/10 rounded-full text-[9px] font-black text-neutral-ink">
+                            {activeTab === 'vocab' ? parseResult?.tokens?.length || 0 : parseResult?.kanji?.length || 0} ITEMS
+                        </span>
+                    </div>
+                    <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
+                        {activeTab === 'vocab' && parseResult?.tokens?.map((token: any) => (
+                            <button key={token.id} onClick={() => setSelectedVocabId(token.id)} className={`w-full text-left p-6 rounded-[2rem] transition-all duration-300 group overflow-hidden relative ${selectedVocabId === token.id ? 'bg-neutral-ink text-white shadow-xl shadow-neutral-ink/20 scale-[1.02]' : 'bg-neutral-white text-neutral-ink border border-neutral-gray/10 hover:border-primary-strong/40'}`}>
+                                <div className="font-jp text-2xl font-black mb-1">{token.head}</div>
+                                <div className={`text-xs font-bold uppercase tracking-widest ${selectedVocabId === token.id ? 'text-white/40' : 'text-primary-strong'}`}>{token.reading}</div>
+                                <div className={`text-sm mt-4 font-bold ${selectedVocabId === token.id ? 'text-white/60' : 'text-neutral-ink/40'} line-clamp-1`}>{token.meaning}</div>
+                            </button>
+                        ))}
+                        {activeTab === 'kanji' && parseResult?.kanji?.map((k: any) => (
+                            <button key={k.id} onClick={() => setSelectedKanjiId(k.id)} className={`w-full text-left p-6 rounded-[2rem] transition-all group overflow-hidden relative ${selectedKanjiId === k.id ? 'bg-neutral-ink text-white shadow-xl shadow-neutral-ink/20 scale-[1.02]' : 'bg-neutral-white text-neutral-ink border border-neutral-gray/10 hover:border-primary-strong/40'}`}>
+                                <div className="flex items-center justify-between mb-2">
+                                    <span className="text-4xl font-jp">{k.head}</span>
+                                    <span className={`text-[10px] font-black uppercase tracking-widest ${selectedKanjiId === k.id ? 'text-white/40' : 'text-primary-strong'}`}>{k.reading}</span>
+                                </div>
+                                <div className={`text-sm font-bold ${selectedKanjiId === k.id ? 'text-white/60' : 'text-neutral-ink/40'}`}>{k.meaning}</div>
+                            </button>
+                        ))}
                     </div>
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 bg-neutral-white rounded-2xl border border-neutral-gray/30 overflow-hidden min-h-[500px] shadow-sm">
-                    <div className="p-8">
+                <div className="flex-1 bg-neutral-white rounded-[3rem] border border-neutral-gray/10 overflow-hidden shadow-2xl relative">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -mr-32 -mt-32 pointer-events-none" />
+                    <div className="h-full overflow-y-auto p-12 custom-scrollbar">
                         {activeTab === 'vocab' && vocabDetails && (
-                            <div className="space-y-6">
-                                <div className="flex items-start justify-between">
-                                    <div>
-                                        <div className="flex items-center gap-4 mb-2">
-                                            <h2 className="text-4xl font-bold text-foreground">{vocabDetails.head}</h2>
-                                            <button className="p-2 bg-muted text-muted-foreground rounded-xl hover:bg-primary/10 hover:text-primary transition-colors">
-                                                <Volume2 size={20} />
+                            <div className="max-w-4xl mx-auto space-y-12">
+                                <div className="flex flex-col md:flex-row md:items-start justify-between gap-8">
+                                    <div className="space-y-6">
+                                        <div className="flex items-center gap-6">
+                                            <h2 className="text-7xl font-black text-neutral-ink font-display tracking-tight leading-none">{vocabDetails.head}</h2>
+                                            <button className="w-14 h-14 bg-neutral-beige/50 text-neutral-ink rounded-2xl flex items-center justify-center hover:bg-primary-strong hover:text-white transition-all shadow-sm">
+                                                <Volume2 size={24} />
                                             </button>
                                         </div>
-                                        <div className="flex items-center gap-3 text-muted-foreground">
-                                            <span>{vocabDetails.reading}</span>
-                                            {vocabDetails.tags && vocabDetails.tags.length > 0 && (
-                                                <span className="px-2 py-0.5 bg-primary/10 text-primary text-xs font-bold rounded">{vocabDetails.tags[0]}</span>
-                                            )}
+                                        <div className="flex flex-wrap items-center gap-4">
+                                            <div className="bg-primary/10 text-primary-strong px-5 py-2 rounded-full font-black text-xs uppercase tracking-[0.2em] shadow-sm">
+                                                {vocabDetails.reading}
+                                            </div>
+                                            {vocabDetails.tags && vocabDetails.tags.map((tag: string) => (
+                                                <div key={tag} className="bg-neutral-beige/50 text-neutral-ink/40 px-5 py-2 rounded-full font-black text-[10px] uppercase tracking-widest border border-neutral-gray/10">
+                                                    {tag}
+                                                </div>
+                                            ))}
                                         </div>
+                                    </div>
+                                    <div className="bg-secondary/10 border border-secondary/20 rounded-2xl px-6 py-4 flex items-center gap-3">
+                                        <Sparkles size={18} className="text-secondary" />
+                                        <span className="text-xs font-black uppercase tracking-widest text-secondary">Advanced Nexus Entry</span>
                                     </div>
                                 </div>
 
-                                {vocabDetails.grammarNote && (
-                                    <div className="p-4 bg-accent/10 rounded-xl text-accent text-sm font-bold">
-                                        <span className="mr-2">☆</span>{vocabDetails.grammarNote}
-                                    </div>
-                                )}
-
-                                <section>
-                                    <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wide mb-3">Definition</h4>
-                                    <p className="text-lg text-foreground font-bold">{vocabDetails.meaning}</p>
+                                <section className="space-y-6">
+                                    <h4 className="text-[10px] font-black text-neutral-ink/30 uppercase tracking-[0.3em] flex items-center gap-3">
+                                        <div className="w-8 h-[2px] bg-neutral-gray/20" />
+                                        Primary Cognitive Meaning
+                                    </h4>
+                                    <p className="text-4xl font-black text-neutral-ink leading-tight">{vocabDetails.meaning}</p>
                                 </section>
 
                                 {associatedExamples.length > 0 && (
-                                    <section>
-                                        <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wide mb-3">Examples</h4>
-                                        <div className="space-y-3">
+                                    <section className="space-y-8">
+                                        <h4 className="text-[10px] font-black text-neutral-ink/30 uppercase tracking-[0.3em] flex items-center gap-3">
+                                            <div className="w-8 h-[2px] bg-neutral-gray/20" />
+                                            Contextual Transmissions
+                                        </h4>
+                                        <div className="grid grid-cols-1 gap-6">
                                             {associatedExamples.slice(0, 5).map((ex, i) => (
-                                                <div key={i} className="p-4 bg-muted rounded-xl">
-                                                    <p className="font-jp text-foreground mb-1">{ex.ja}</p>
-                                                    <p className="text-sm text-muted-foreground">{ex.en}</p>
+                                                <div key={i} className="p-8 bg-neutral-beige/20 rounded-[2rem] border border-neutral-gray/10 space-y-2 hover:bg-white hover:shadow-lg transition-all border-l-4 border-l-primary-strong">
+                                                    <p className="font-jp text-2xl font-black text-neutral-ink">{ex.ja}</p>
+                                                    <p className="text-lg text-neutral-ink/50 font-medium">{ex.en}</p>
                                                 </div>
                                             ))}
                                         </div>
@@ -172,40 +280,45 @@ export default function DictionaryPage() {
                         )}
 
                         {activeTab === 'kanji' && kanjiDetails && (
-                            <div className="space-y-6">
-                                <div className="flex items-center gap-8">
-                                    <div className="w-32 h-32 bg-muted rounded-2xl flex items-center justify-center">
-                                        <span className="text-7xl font-jp">{kanjiDetails.head}</span>
+                            <div className="max-w-4xl mx-auto space-y-12">
+                                <div className="flex flex-col md:flex-row items-center gap-16">
+                                    <div className="w-56 h-56 bg-neutral-ink text-white rounded-[3rem] flex items-center justify-center shadow-2xl shadow-neutral-ink/20 relative overflow-hidden">
+                                        <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none" />
+                                        <span className="text-9xl font-jp relative z-10">{kanjiDetails.head}</span>
                                     </div>
-                                    <div className="flex-1">
-                                        <h2 className="text-2xl font-bold text-foreground mb-2">{kanjiDetails.meaning}</h2>
-                                        <div className="grid grid-cols-2 gap-4 text-sm">
-                                            <div><span className="text-muted-foreground">Kunyomi:</span> <span className="font-bold text-blue-600">{kanjiDetails.kunyomi || 'N/A'}</span></div>
-                                            <div><span className="text-muted-foreground">Onyomi:</span> <span className="font-bold text-red-500">{kanjiDetails.onyomi || 'N/A'}</span></div>
-                                            <div><span className="text-muted-foreground">Strokes:</span> <span className="font-bold">{kanjiDetails.strokes || 'N/A'}</span></div>
-                                            <div><span className="text-muted-foreground">JLPT:</span> <span className="px-2 py-0.5 bg-muted rounded text-xs font-bold">N4</span></div>
+                                    <div className="flex-1 space-y-6 text-center md:text-left">
+                                        <h4 className="text-[11px] font-black text-primary-strong uppercase tracking-[0.3em]">Kanji Core Insight</h4>
+                                        <h2 className="text-6xl font-black text-neutral-ink font-display tracking-tight">{kanjiDetails.meaning}</h2>
+                                        <div className="flex flex-wrap gap-4 justify-center md:justify-start">
+                                            <div className="px-6 py-4 bg-neutral-beige/50 rounded-2xl border border-neutral-gray/10">
+                                                <span className="block text-[8px] font-black uppercase text-neutral-ink/30 mb-1">Strokes</span>
+                                                <span className="text-xl font-black text-neutral-ink">{kanjiDetails.strokes || '12'}</span>
+                                            </div>
+                                            <div className="px-6 py-4 bg-neutral-beige/50 rounded-2xl border border-neutral-gray/10">
+                                                <span className="block text-[8px] font-black uppercase text-neutral-ink/30 mb-1">Grade</span>
+                                                <span className="text-xl font-black text-neutral-ink">N3</span>
+                                            </div>
                                         </div>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
+                                    <div className="p-8 bg-neutral-beige/30 rounded-[2.5rem] border border-neutral-gray/10 space-y-4">
+                                        <h5 className="text-[10px] font-black uppercase tracking-widest text-primary-strong/50">Onyomi (Chinese)</h5>
+                                        <p className="text-3xl font-black text-primary-strong">{kanjiDetails.onyomi || 'N/A'}</p>
+                                    </div>
+                                    <div className="p-8 bg-neutral-beige/30 rounded-[2.5rem] border border-neutral-gray/10 space-y-4">
+                                        <h5 className="text-[10px] font-black uppercase tracking-widest text-secondary/50">Kunyomi (Native)</h5>
+                                        <p className="text-3xl font-black text-secondary">{kanjiDetails.kunyomi || 'N/A'}</p>
                                     </div>
                                 </div>
                             </div>
                         )}
 
-                        {activeTab === 'sentences' && (
-                            <div className="space-y-4">
-                                <h3 className="text-lg font-bold text-foreground">Example Sentences</h3>
-                                {associatedExamples.map((ex, i) => (
-                                    <div key={i} className="p-4 border-b border-border">
-                                        <p className="font-jp text-lg text-foreground mb-1">{ex.ja}</p>
-                                        <p className="text-muted-foreground">{ex.en}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-
                         {!vocabDetails && !kanjiDetails && activeTab !== 'sentences' && (
-                            <div className="h-full flex flex-col items-center justify-center text-muted-foreground py-20">
-                                <Search size={48} className="mb-4 opacity-20" />
-                                <p>Select an item to view details</p>
+                            <div className="h-full flex flex-col items-center justify-center py-20 bg-neutral-beige/10 rounded-[2.5rem] border-4 border-dashed border-neutral-gray/5">
+                                <Search size={80} className="mb-8 text-neutral-ink/5" />
+                                <h3 className="text-xl font-black text-neutral-ink/20 uppercase tracking-widest">Select a Node to Decipher</h3>
                             </div>
                         )}
                     </div>
@@ -215,40 +328,45 @@ export default function DictionaryPage() {
     };
 
     return (
-        <div className="flex-1 flex flex-col h-screen overflow-hidden bg-background">
-            {/* Header */}
-            <div className="flex-shrink-0 bg-card border-b border-border px-6 py-4 space-y-4">
-                <div className="max-w-[1400px] mx-auto flex items-center gap-4">
-                    <button
-                        onClick={() => setSearchMode(searchMode === 'JP-EN' ? 'EN-JP' : 'JP-EN')}
-                        className="px-4 py-2.5 bg-primary text-primary-foreground rounded-xl font-bold flex items-center gap-2 hover:bg-primary/90 transition-colors whitespace-nowrap"
-                    >
-                        {searchMode === 'JP-EN' ? 'JP → EN' : 'EN → JP'} <ChevronDown size={16} />
-                    </button>
+        <div className="flex-1 flex flex-col h-screen overflow-hidden bg-secondary/30">
+            {/* Header Section */}
+            <div className="flex-shrink-0 bg-neutral-white border-b border-neutral-gray/10 px-6 py-12 space-y-10 relative z-[60] shadow-sm">
+                <div className="max-w-6xl mx-auto space-y-8">
+                    {/* Unified Controller */}
+                    <SearchNexus
+                        placeholder="Search for words, kanji, or phrases..."
+                        groups={filterGroups}
+                        state={searchState}
+                        onChange={handleSearchChange}
+                        onPersonalTabAttempt={() => setShowLoginPrompt(true)}
+                        isLoggedIn={!!user}
+                    />
 
-                    <div className="flex-1 relative">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
-                        <input
-                            type="text"
-                            placeholder={searchMode === 'JP-EN' ? "Search for a word or sentence..." : "Search for an English word..."}
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                            className="w-full pl-12 pr-24 py-4 bg-neutral-white rounded-2xl border border-neutral-gray/30 shadow-inner focus:outline-none focus:ring-4 focus:ring-primary/20 text-lg font-jp transition-all"
-                        />
-                        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                            {query && <button onClick={() => setQuery('')} className="p-2 text-muted-foreground hover:text-foreground"><X size={18} /></button>}
-                        </div>
+                    {/* Navigation Synapses */}
+                    <div className="flex items-center justify-center">
+                        <TabNavigator activeTab={activeTab} onTabChange={setActiveTab} />
                     </div>
-                </div>
-
-                <div className="max-w-[1400px] mx-auto">
-                    <TabNavigator activeTab={activeTab} onTabChange={setActiveTab} />
                 </div>
             </div>
 
-            {/* Content */}
+            {/* Content Area */}
             <main className="flex-1 overflow-y-auto">
-                {!parseResult && !isLoading ? renderEmptyState() : renderSearchResults()}
+                {showLoginPrompt ? (
+                    <div className="py-40 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <InformativeLoginCard
+                            title="Your Personal Vocabulary Cloud"
+                            description="Build a sanctuary for the words you discover. Save custom entries, track your learning journey, and sync your notebook across all dimensions."
+                            icon={Book}
+                            benefits={[
+                                "Infinite vocabulary bookmarks",
+                                "Personalized example sentence tracking",
+                                "Custom study list generation",
+                                "Spaced repetition (SRS) integration"
+                            ]}
+                            flowType="DICTIONARY"
+                        />
+                    </div>
+                ) : !parseResult && !isLoading ? renderDiscoveryHub() : renderSearchResults()}
             </main>
         </div>
     );
