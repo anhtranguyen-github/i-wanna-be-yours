@@ -1,24 +1,20 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter, useParams, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 /**
- * Legacy Quoot Route - Redirects to /quoot/[deckId]
+ * Legacy Quoot Hub Route - Redirects to /quoot
  */
-export default function LegacyQuootRedirect() {
+export default function LegacyQuootHubRedirect() {
     const router = useRouter();
-    const params = useParams();
     const searchParams = useSearchParams();
-    const deckId = params?.deckId as string | undefined;
     const mode = searchParams.get('mode');
 
     useEffect(() => {
-        const targetUrl = deckId
-            ? `/quoot/${deckId}${mode ? `?mode=${mode}` : ''}`
-            : "/quoot";
+        const targetUrl = mode ? `/quoot?mode=${mode}` : "/quoot";
         router.replace(targetUrl);
-    }, [router, deckId, mode]);
+    }, [router, mode]);
 
     return (
         <div className="min-h-screen bg-background flex items-center justify-center">
