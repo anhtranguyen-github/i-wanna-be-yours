@@ -59,15 +59,15 @@ const routes = [
 
 export default function ToolsPage() {
     return (
-        <div className="min-h-screen bg-background pb-24">
-            <header className="bg-card border-b border-border px-6 py-8">
+        <div className="min-h-screen bg-secondary pb-24">
+            <header className="bg-neutral-white border-b border-neutral-gray/30 px-6 py-8 shadow-sm">
                 <div className="max-w-6xl mx-auto flex items-center gap-4">
-                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                        <WrenchIcon className="w-6 h-6 text-primary" />
+                    <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center shadow-inner">
+                        <WrenchIcon className="w-6 h-6 text-primary-strong" />
                     </div>
                     <div>
-                        <h1 className="text-3xl font-bold text-foreground font-display">
-                            Linguistic <span className="text-primary">Laboratory</span>
+                        <h1 className="text-3xl font-black text-neutral-ink font-display">
+                            Linguistic <span className="text-primary-strong">Laboratory</span>
                         </h1>
                         <p className="text-muted-foreground mt-1">High-performance utilities for Japanese acquisition</p>
                     </div>
@@ -78,16 +78,16 @@ export default function ToolsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {routes.map((route) => (
                         <Link key={route.href} href={route.href}>
-                            <div className="bg-card rounded-2xl border border-border p-6 hover:border-primary/40 transition-all group h-full flex flex-col items-center text-center cursor-pointer">
-                                <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110 duration-300 ${route.color}`}>
+                            <div className="bg-neutral-white rounded-2xl border border-neutral-gray/20 p-8 hover:border-primary/40 transition-all group h-full flex flex-col items-center text-center cursor-pointer shadow-sm hover:shadow-xl">
+                                <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110 duration-500 shadow-inner ${route.color}`}>
                                     {route.icon}
                                 </div>
-                                <h2 className="text-lg font-bold text-foreground mb-2">{route.title}</h2>
-                                <p className="text-sm text-muted-foreground leading-relaxed">{route.description}</p>
+                                <h2 className="text-xl font-black text-neutral-ink mb-2 font-display">{route.title}</h2>
+                                <p className="text-sm text-neutral-ink/70 leading-relaxed font-bold">{route.description}</p>
 
-                                <div className="mt-auto pt-6 flex items-center gap-2 text-primary font-bold uppercase tracking-widest text-[10px] opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
+                                <div className="mt-auto pt-8 flex items-center gap-3 text-primary-strong font-black uppercase tracking-[0.2em] text-[10px] font-display opacity-0 group-hover:opacity-100 transition-all translate-y-3 group-hover:translate-y-0">
                                     Launch Tool
-                                    <ArrowRightLeft size={12} className="rotate-45" />
+                                    <ArrowRightLeft size={16} className="rotate-45" />
                                 </div>
                             </div>
                         </Link>

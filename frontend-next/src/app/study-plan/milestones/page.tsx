@@ -79,19 +79,17 @@ function MilestonesContent() {
         }
     };
 
-    if (userLoading || loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-50">
-                <Loader2 className="w-10 h-10 animate-spin text-brand-salmon" />
-            </div>
-        );
-    }
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-secondary">
+            <Loader2 className="w-10 h-10 animate-spin text-primary-strong" />
+        </div>
+    );
 
     if (!plan) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 to-brand-cream/30 py-12">
+            <div className="min-h-screen bg-secondary py-12">
                 <div className="container mx-auto px-6 max-w-2xl text-center">
-                    <div className="clay-card p-12">
+                    <div className="bg-neutral-white p-12 rounded-[2.5rem] border border-neutral-gray/20 shadow-xl">
                         <Target className="w-16 h-16 mx-auto mb-6 text-gray-300" />
                         <h2 className="text-2xl font-black text-brand-dark mb-4">
                             No Study Plan Found
@@ -109,57 +107,57 @@ function MilestonesContent() {
     const completedCount = plan.milestones.filter(m => m.status === 'completed').length;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-brand-cream/30 py-8">
+        <div className="min-h-screen bg-secondary py-8 font-display">
             <div className="container mx-auto px-6 max-w-4xl">
 
                 {/* Back Link */}
                 <Link
                     href={`/study-plan/dashboard?plan=${plan.id}`}
-                    className="inline-flex items-center gap-2 text-gray-500 hover:text-brand-dark transition-colors font-bold mb-6"
+                    className="inline-flex items-center gap-2 text-neutral-ink/60 hover:text-primary-strong transition-colors font-black text-xs uppercase tracking-widest mb-8"
                 >
                     <ChevronLeft size={20} />
                     Back to Dashboard
                 </Link>
 
                 {/* Header */}
-                <div className="clay-card p-6 mb-8">
+                <div className="bg-neutral-white p-8 rounded-[2.5rem] border border-neutral-gray/20 shadow-lg mb-8">
                     <div className="flex items-center justify-between">
                         <div>
-                            <div className="flex items-center gap-3 mb-2">
+                            <div className="flex items-center gap-4 mb-3">
                                 <div
-                                    className="px-3 py-1 rounded-lg text-white font-bold text-sm"
+                                    className="px-4 py-1.5 rounded-xl text-white font-black text-[10px] uppercase tracking-widest shadow-md"
                                     style={{ backgroundColor: levelInfo.color }}
                                 >
                                     {plan.target_level}
                                 </div>
-                                <h1 className="text-xl font-black text-brand-dark">
+                                <h1 className="text-2xl font-black text-neutral-ink tracking-tight uppercase tracking-widest text-xs">
                                     Milestones
                                 </h1>
                             </div>
-                            <p className="text-gray-500 text-sm">
+                            <p className="text-neutral-ink/60 text-xs font-black uppercase tracking-widest">
                                 {completedCount} of {plan.milestones.length} completed
                             </p>
                         </div>
 
                         <div className="text-right">
-                            <div className="text-2xl font-black text-brand-dark">
+                            <div className="text-4xl font-black text-neutral-ink">
                                 {Math.round(plan.overall_progress_percent)}%
                             </div>
-                            <div className="text-xs text-gray-500">Overall Progress</div>
+                            <div className="text-[10px] text-neutral-ink/40 font-black uppercase tracking-widest mt-1">Overall Progress</div>
                         </div>
                     </div>
 
                     {/* Progress Bar */}
-                    <div className="mt-4 h-3 bg-gray-200 rounded-full overflow-hidden">
+                    <div className="mt-8 h-4 bg-neutral-beige rounded-full overflow-hidden shadow-inner">
                         <div
-                            className="h-full bg-gradient-to-r from-brand-salmon to-brand-sky rounded-full transition-all"
+                            className="h-full bg-primary-strong rounded-full transition-all shadow-lg"
                             style={{ width: `${plan.overall_progress_percent}%` }}
                         />
                     </div>
                 </div>
 
                 {/* Filter Tabs */}
-                <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+                <div className="flex bg-neutral-beige p-1.5 rounded-2xl gap-1 mb-10 overflow-x-auto border border-neutral-gray/20">
                     {[
                         { id: 'all', label: 'All' },
                         { id: 'in_progress', label: 'In Progress' },
@@ -170,10 +168,10 @@ function MilestonesContent() {
                             key={tab.id}
                             onClick={() => setFilter(tab.id as typeof filter)}
                             className={`
-                                px-4 py-2 rounded-xl font-bold text-sm whitespace-nowrap transition-all
+                                px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all duration-300
                                 ${filter === tab.id
-                                    ? 'bg-brand-dark text-white'
-                                    : 'bg-white text-gray-600 hover:bg-gray-100'
+                                    ? 'bg-neutral-white text-primary-strong shadow-md border border-neutral-gray/10'
+                                    : 'text-neutral-ink/70 hover:text-neutral-ink'
                                 }
                             `}
                         >
@@ -198,19 +196,19 @@ function MilestonesContent() {
                                     key={milestone.id}
                                     href={`/study-plan/milestones/${milestone.id}`}
                                     className={`
-                                        clay-card p-6 block transition-all group 
-                                        ${isCurrent ? 'ring-2 ring-brand-salmon' : ''}
+                                        bg-neutral-white p-8 rounded-[2rem] border transition-all duration-500 group shadow-md hover:shadow-2xl relative overflow-hidden
+                                        ${isCurrent ? 'border-primary-strong/50 ring-4 ring-primary-strong/5' : 'border-neutral-gray/20'}
                                     `}
                                 >
                                     <div className="flex items-start gap-4">
                                         {/* Status Icon */}
                                         <div className={`
-                                            w-12 h-12 rounded-xl flex items-center justify-center shrink-0 font-bold
+                                            w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 font-black text-lg shadow-inner
                                             ${milestone.status === 'completed'
-                                                ? 'bg-brand-green text-white'
+                                                ? 'bg-primary-leaf text-white'
                                                 : milestone.status === 'in_progress'
-                                                    ? 'bg-yellow-500 text-white'
-                                                    : 'bg-gray-200 text-gray-500'
+                                                    ? 'bg-accent text-white'
+                                                    : 'bg-neutral-beige text-neutral-gray'
                                             }
                                         `}>
                                             {milestone.status === 'completed' ? (
@@ -223,22 +221,22 @@ function MilestonesContent() {
                                         {/* Content */}
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center gap-2 mb-1">
-                                                <h3 className="font-black text-brand-dark group-hover:text-brand-salmon transition-colors">
+                                                <h3 className="text-xl font-black text-neutral-ink group-hover:text-primary-strong transition-colors font-display tracking-tight">
                                                     {milestone.title}
                                                 </h3>
                                                 {isCurrent && (
-                                                    <span className="px-2 py-0.5 bg-brand-salmon/10 text-brand-salmon text-xs font-bold rounded">
+                                                    <span className="px-3 py-1 bg-primary-strong/10 text-primary-strong text-[10px] font-black uppercase tracking-widest rounded-lg border border-primary-strong/20">
                                                         Current
                                                     </span>
                                                 )}
                                             </div>
 
-                                            <p className="text-sm text-gray-500 mb-3">
+                                            <p className="text-sm text-neutral-ink/80 font-medium mb-3">
                                                 {milestone.description}
                                             </p>
 
                                             {/* Meta Info */}
-                                            <div className="flex flex-wrap gap-4 text-xs text-gray-400">
+                                            <div className="flex flex-wrap gap-4 text-xs text-neutral-ink/60 font-bold">
                                                 <div className="flex items-center gap-1">
                                                     <Calendar size={14} />
                                                     {new Date(milestone.target_start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}

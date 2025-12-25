@@ -49,9 +49,9 @@ export default function FlashcardsMenu() {
     const clearFilters = () => { setSelectedTags([]); setSearchTerm(""); };
 
     return (
-        <div className="min-h-screen bg-background pb-24">
+        <div className="min-h-screen bg-secondary pb-24">
             {/* Header */}
-            <header className="bg-card border-b border-border px-6 py-8 sticky top-0 z-50">
+            <header className="bg-neutral-white border-b border-neutral-gray/30 px-6 py-8 sticky top-0 z-50 shadow-sm">
                 <div className="max-w-6xl mx-auto">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
                         <div className="flex items-center gap-4">
@@ -65,11 +65,11 @@ export default function FlashcardsMenu() {
                         </div>
 
                         {/* Tabs */}
-                        <div className="flex p-1 bg-muted rounded-xl">
-                            <button onClick={() => { setActiveTab('public'); clearFilters(); }} className={`px-5 py-2 rounded-lg text-sm font-bold transition-colors ${activeTab === 'public' ? 'bg-card text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
+                        <div className="flex p-1.5 bg-neutral-beige rounded-2xl border border-neutral-gray/20">
+                            <button onClick={() => { setActiveTab('public'); clearFilters(); }} className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300 font-display ${activeTab === 'public' ? 'bg-neutral-white text-primary-strong shadow-md border border-neutral-gray/10' : 'text-neutral-ink/40 hover:text-neutral-ink'}`}>
                                 Public Library
                             </button>
-                            <button onClick={() => { setActiveTab('personal'); clearFilters(); }} className={`px-5 py-2 rounded-lg text-sm font-bold transition-colors ${activeTab === 'personal' ? 'bg-card text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
+                            <button onClick={() => { setActiveTab('personal'); clearFilters(); }} className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300 font-display ${activeTab === 'personal' ? 'bg-neutral-white text-primary-strong shadow-md border border-neutral-gray/10' : 'text-neutral-ink/40 hover:text-neutral-ink'}`}>
                                 My Collection
                             </button>
                         </div>
@@ -84,16 +84,16 @@ export default function FlashcardsMenu() {
                                 placeholder="Search decks..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-11 pr-4 py-3 bg-muted rounded-xl border-none focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                className="w-full pl-11 pr-4 py-3.5 bg-neutral-white rounded-xl border border-neutral-gray/30 shadow-inner focus:outline-none focus:ring-4 focus:ring-primary/20 text-sm font-bold"
                             />
                         </div>
                         <button
                             onClick={() => setShowAllFilters(!showAllFilters)}
-                            className={`px-5 py-3 rounded-xl font-bold text-sm flex items-center gap-2 transition-colors ${showAllFilters || selectedTags.length > 0 ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:text-foreground'}`}
+                            className={`px-6 py-3.5 rounded-xl font-black text-xs uppercase tracking-widest font-display flex items-center gap-2 transition-all shadow-sm ${showAllFilters || selectedTags.length > 0 ? 'bg-primary-strong text-white shadow-primary/20' : 'bg-neutral-white text-neutral-ink/60 border border-neutral-gray/30 hover:border-primary/40'}`}
                         >
                             <Filter size={16} />
                             Filter
-                            {selectedTags.length > 0 && <span className="w-5 h-5 bg-background/20 rounded-full flex items-center justify-center text-xs">{selectedTags.length}</span>}
+                            {selectedTags.length > 0 && <span className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center text-[10px]">{selectedTags.length}</span>}
                         </button>
                     </div>
 
@@ -146,7 +146,7 @@ function FilterSection({ label, tags, selected, toggle }: any) {
             <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-3">{label}</h4>
             <div className="flex flex-wrap gap-2">
                 {tags.map((tag: any) => (
-                    <button key={tag.id} onClick={() => toggle(tag.id)} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${selected.includes(tag.id) ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground border border-border hover:text-foreground'}`}>
+                    <button key={tag.id} onClick={() => toggle(tag.id)} className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all font-display ${selected.includes(tag.id) ? 'bg-primary-strong text-white shadow-md' : 'bg-neutral-white text-neutral-ink/60 border border-neutral-gray/20 hover:text-primary'}`}>
                         {tag.label}
                     </button>
                 ))}
@@ -179,7 +179,7 @@ function DeckCard({ deck }: { deck: DeckDefinition }) {
             <p className="text-sm text-muted-foreground mb-6 flex-grow line-clamp-2">{deck.description}</p>
 
             {deck.actionLink ? (
-                <Link href={deck.actionLink} className="block w-full text-center py-3 bg-foreground text-background rounded-xl font-bold text-sm hover:bg-foreground/90 transition-colors">
+                <Link href={deck.actionLink} className="block w-full text-center py-4 bg-primary-strong text-white rounded-2xl font-black text-[10px] uppercase tracking-widest font-display hover:opacity-90 transition-all shadow-lg shadow-primary/20 active:scale-95">
                     Open Deck
                 </Link>
             ) : deck.component ? (

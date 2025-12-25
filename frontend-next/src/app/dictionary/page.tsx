@@ -71,7 +71,7 @@ export default function DictionaryPage() {
                     { title: 'Vocab Analysis', desc: 'Detailed readings and meanings for common words.', icon: Sparkles },
                     { title: 'Kanji Breakdown', desc: 'Identify every kanji character in your input.', icon: ArrowRight },
                 ].map((item, i) => (
-                    <div key={i} className="bg-card p-5 rounded-2xl border border-border">
+                    <div key={i} className="bg-neutral-white p-6 rounded-2xl border border-neutral-gray/20 shadow-sm">
                         <item.icon size={20} className="text-primary mb-2" />
                         <h3 className="font-bold text-foreground mb-1">{item.title}</h3>
                         <p className="text-sm text-muted-foreground">{item.desc}</p>
@@ -94,16 +94,16 @@ export default function DictionaryPage() {
         return (
             <div className="flex gap-6 p-6 max-w-[1400px] mx-auto">
                 {/* Sidebar */}
-                <div className="w-[280px] flex-shrink-0 space-y-4">
-                    <div className="bg-card rounded-2xl border border-border overflow-hidden">
-                        <div className="p-4 border-b border-border bg-muted">
+                <div className="w-[300px] flex-shrink-0 space-y-4">
+                    <div className="bg-neutral-white rounded-2xl border border-neutral-gray/30 overflow-hidden shadow-sm">
+                        <div className="p-4 border-b border-neutral-gray/20 bg-neutral-beige">
                             <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wide">
                                 {activeTab === 'vocab' ? 'Search Results' : activeTab === 'kanji' ? 'Kanji List' : 'Navigation'}
                             </h3>
                         </div>
-                        <div className="p-2">
+                        <div className="p-2 space-y-1">
                             {activeTab === 'vocab' && parseResult?.tokens?.map((token: any) => (
-                                <button key={token.id} onClick={() => setSelectedVocabId(token.id)} className={`w-full text-left p-3 rounded-xl transition-colors ${selectedVocabId === token.id ? 'bg-primary/10 text-foreground border border-primary/20' : 'text-muted-foreground hover:bg-muted'}`}>
+                                <button key={token.id} onClick={() => setSelectedVocabId(token.id)} className={`w-full text-left p-4 rounded-xl transition-all duration-300 ${selectedVocabId === token.id ? 'bg-primary-strong text-white shadow-md' : 'text-neutral-ink hover:bg-secondary'}`}>
                                     <div className="font-bold text-lg">{token.head}</div>
                                     <div className="text-xs text-muted-foreground">{token.reading}</div>
                                     <div className="text-xs text-muted-foreground truncate">{token.meaning}</div>
@@ -123,7 +123,7 @@ export default function DictionaryPage() {
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 bg-card rounded-2xl border border-border overflow-hidden min-h-[500px]">
+                <div className="flex-1 bg-neutral-white rounded-2xl border border-neutral-gray/30 overflow-hidden min-h-[500px] shadow-sm">
                     <div className="p-8">
                         {activeTab === 'vocab' && vocabDetails && (
                             <div className="space-y-6">
@@ -233,7 +233,7 @@ export default function DictionaryPage() {
                             placeholder={searchMode === 'JP-EN' ? "Search for a word or sentence..." : "Search for an English word..."}
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
-                            className="w-full pl-12 pr-24 py-3 bg-muted rounded-xl border-none focus:outline-none focus:ring-2 focus:ring-primary/20 text-lg font-jp"
+                            className="w-full pl-12 pr-24 py-4 bg-neutral-white rounded-2xl border border-neutral-gray/30 shadow-inner focus:outline-none focus:ring-4 focus:ring-primary/20 text-lg font-jp transition-all"
                         />
                         <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
                             {query && <button onClick={() => setQuery('')} className="p-2 text-muted-foreground hover:text-foreground"><X size={18} /></button>}

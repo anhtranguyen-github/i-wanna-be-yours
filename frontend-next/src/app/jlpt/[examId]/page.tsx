@@ -271,9 +271,9 @@ export default function ExamSessionPage() {
 
     const currentQuestion = questions[currentIndex];
     return (
-        <div className="min-h-screen bg-background flex flex-col">
+        <div className="min-h-screen bg-secondary flex flex-col">
             {/* ===== TOP BAR ===== */}
-            <header className="bg-card border-b border-border px-6 py-4 sticky top-0 z-50 ">
+            <header className="bg-neutral-white border-b border-neutral-gray/30 px-6 py-4 sticky top-0 z-50 shadow-sm">
                 <div className="flex items-center justify-between max-w-screen-2xl mx-auto">
                     {/* Left: Title & Mode */}
                     <div className="flex items-center gap-6">
@@ -351,12 +351,12 @@ export default function ExamSessionPage() {
                         fixed lg:sticky lg:top-[5.5rem] lg:h-[calc(100vh-5.5rem)] inset-y-0 lg:inset-y-auto left-0 lg:left-auto z-40 w-80 
                         transform transition-all duration-500 lg:transform-none select-none
                         ${isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-                        bg-background lg:bg-transparent border-r border-border lg:border-none
+                        bg-neutral-beige lg:bg-transparent border-r border-neutral-gray lg:border-none
                     `}
                 >
                     <div className="px-6 py-8 h-full flex flex-col gap-10">
                         {/* Stats Summary */}
-                        <div className="bg-card rounded-2xl p-8 border border-border  space-y-6">
+                        <div className="bg-neutral-white rounded-2xl p-8 border border-neutral-gray/30 shadow-md space-y-6">
                             <div className="flex items-end justify-between">
                                 <h3 className="text-4xl font-black text-foreground font-display leading-none">
                                     {currentIndex + 1}<span className="text-muted-foreground/20 italic mx-1">/</span><span className="text-xl text-muted-foreground/40">{questions.length}</span>
@@ -386,7 +386,7 @@ export default function ExamSessionPage() {
                         </div>
 
                         {/* Navigation Grid */}
-                        <div className="flex-1 bg-card rounded-2xl p-8 border border-border  flex flex-col overflow-hidden">
+                        <div className="flex-1 bg-neutral-white rounded-2xl p-8 border border-neutral-gray/30 shadow-md flex flex-col overflow-hidden">
                             <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] font-display mb-6">Question Map</h3>
                             <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
                                 <div className="grid grid-cols-4 gap-3">
@@ -394,10 +394,10 @@ export default function ExamSessionPage() {
                                         const status = getQuestionStatus(q.id);
                                         const isCurrent = index === currentIndex;
 
-                                        let style = "bg-muted/50 text-muted-foreground/40 hover:bg-muted font-black";
-                                        if (status === "ANSWERED") style = "bg-primary/10 text-primary hover:bg-primary/20 font-black";
-                                        if (status === "FLAGGED") style = "bg-secondary text-white font-black";
-                                        if (isCurrent) style = "bg-foreground text-background scale-110  ring-4 ring-foreground/10 font-black";
+                                        let style = "bg-neutral-beige text-neutral-ink/30 hover:bg-neutral-gray/20 font-black";
+                                        if (status === "ANSWERED") style = "bg-primary/20 text-primary-strong hover:bg-primary/30 font-black shadow-sm";
+                                        if (status === "FLAGGED") style = "bg-primary text-white font-black shadow-lg shadow-primary/20";
+                                        if (isCurrent) style = "bg-primary-strong text-white scale-110 ring-4 ring-primary/20 font-black shadow-xl";
 
                                         if (isSubmitted) {
                                             const userAnswer = answers[q.id]?.selectedOptionId;
