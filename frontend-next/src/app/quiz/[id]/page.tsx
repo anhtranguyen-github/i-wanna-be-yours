@@ -6,15 +6,13 @@ import { useRouter, useParams } from "next/navigation";
 export default function QuizRedirect() {
     const router = useRouter();
     const params = useParams();
-    const id = params?.id;
+    const id = params?.id as string | undefined;
 
     useEffect(() => {
-        if (id) {
-            router.replace(`/practice/quiz/${id}`);
-        } else {
-            router.replace("/practice");
-        }
-    }, [router, id]);
+        // Redirect to the new practice quiz route
+        const targetUrl = id ? `/practice/quiz/${id}` : "/practice";
+        router.replace(targetUrl);
+    }, [id]); // Only depend on id, router is stable
 
     return (
         <div className="min-h-screen bg-background flex items-center justify-center">
