@@ -3,19 +3,23 @@
 import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { useUser } from "@/context/UserContext";
-import { Layers, Search, BookOpen, User as UserIcon, Filter, Brain, Compass, Loader2 } from "lucide-react";
+import { Layers, Search, BookOpen, User as UserIcon, Brain, Compass, Loader2 } from "lucide-react";
 import { getPersonalDecks, DeckDefinition, getTagsByType, getTagById, searchDecks } from "./decks-data";
-import { LoginPromptCard } from "@/components/auth";
 import { fetchAllDecks } from "@/services/deckService";
+import { SearchNexus } from "@/components/shared/SearchNexus";
+import { SearchNexusState } from "@/types/search";
+import { InformativeLoginCard } from "@/components/shared/InformativeLoginCard";
 
 export default function FlashcardsMenu() {
     const { user } = useUser();
-    const [activeTab, setActiveTab] = useState<'public' | 'personal'>('public');
-    const [searchTerm, setSearchTerm] = useState("");
-    const [selectedTags, setSelectedTags] = useState<string[]>([]);
-    const [showAllFilters, setShowAllFilters] = useState(false);
     const [publicDecks, setPublicDecks] = useState<DeckDefinition[]>([]);
     const [loading, setLoading] = useState(false);
+    const [searchState, setSearchState] = useState<SearchNexusState>({
+        query: "",
+        activeFilters: {},
+        activeTab: 'PUBLIC'
+    });
+    const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
     useEffect(() => {
         setLoading(true);
@@ -33,124 +37,127 @@ export default function FlashcardsMenu() {
     }, []);
 
     const personalDecks = useMemo(() => getPersonalDecks(), []);
-    const currentList = activeTab === 'public' ? publicDecks : personalDecks;
+    const currentList = searchState.activeTab === 'PUBLIC' ? publicDecks : personalDecks;
 
     const filteredDecks = useMemo(() => {
         let result = currentList;
-        if (selectedTags.length > 0) result = result.filter(deck => selectedTags.some(tagId => deck.tags.includes(tagId)));
-        if (searchTerm.trim()) result = searchDecks(result, searchTerm);
+
+        // Filter by specific types
+        const selectedTagIds = Object.values(searchState.activeFilters).flat();
+        if (selectedTagIds.length > 0) {
+            result = result.filter(deck =>
+                selectedTagIds.some(tagId => deck.tags.includes(tagId))
+            );
+        }
+
+        // Search by query
+        if (searchState.query.trim()) {
+            result = searchDecks(result, searchState.query);
+        }
+
         return result;
-    }, [currentList, selectedTags, searchTerm]);
+    }, [currentList, searchState]);
 
-    const toggleTag = (tagId: string) => {
-        setSelectedTags(prev => prev.includes(tagId) ? prev.filter(t => t !== tagId) : [...prev, tagId]);
+    const filterGroups = useMemo(() => [
+        {
+            id: 'category',
+            label: 'Categories',
+            type: 'MULTI' as const,
+            options: getTagsByType('category').filter(t => t.id !== 'personal').map(t => ({ id: t.id, label: t.label }))
+        },
+        {
+            id: 'level',
+            label: 'JLPT Level',
+            type: 'MULTI' as const,
+            options: getTagsByType('level').map(t => ({ id: t.id, label: t.label }))
+        },
+        {
+            id: 'skill',
+            label: 'Skill',
+            type: 'MULTI' as const,
+            options: getTagsByType('skill').map(t => ({ id: t.id, label: t.label }))
+        }
+    ], []);
+
+    const handleSearchChange = (newState: SearchNexusState) => {
+        setSearchState(newState);
+        if (newState.activeTab === 'PUBLIC') setShowLoginPrompt(false);
     };
-
-    const clearFilters = () => { setSelectedTags([]); setSearchTerm(""); };
 
     return (
         <div className="min-h-screen bg-secondary pb-24">
             {/* Header */}
-            <header className="bg-neutral-white border-b border-neutral-gray/30 px-6 py-8 sticky top-0 z-50 shadow-sm">
-                <div className="max-w-6xl mx-auto">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
-                        <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-secondary rounded-xl flex items-center justify-center">
-                                <Brain size={24} className="text-secondary-foreground" />
-                            </div>
-                            <div>
-                                <h1 className="text-2xl font-bold text-foreground font-display">Flashcards</h1>
-                                <p className="text-sm text-muted-foreground">Spaced repetition for mastery</p>
-                            </div>
+            <header className="bg-neutral-white/80 backdrop-blur-md border-b border-neutral-gray/20 px-6 py-12 sticky top-0 z-50">
+                <div className="max-w-6xl mx-auto space-y-8">
+                    <div className="flex items-center gap-6">
+                        <div className="w-16 h-16 bg-primary/10 rounded-[1.5rem] flex items-center justify-center shadow-inner">
+                            <Brain size={32} className="text-primary-strong" />
                         </div>
-
-                        {/* Tabs */}
-                        <div className="flex p-1.5 bg-neutral-beige rounded-2xl border border-neutral-gray/20">
-                            <button onClick={() => { setActiveTab('public'); clearFilters(); }} className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300 font-display ${activeTab === 'public' ? 'bg-neutral-white text-primary-strong shadow-md border border-neutral-gray/10' : 'text-neutral-ink hover:text-neutral-ink'}`}>
-                                Public Library
-                            </button>
-                            <button onClick={() => { setActiveTab('personal'); clearFilters(); }} className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300 font-display ${activeTab === 'personal' ? 'bg-neutral-white text-primary-strong shadow-md border border-neutral-gray/10' : 'text-neutral-ink hover:text-neutral-ink'}`}>
-                                My Collection
-                            </button>
+                        <div>
+                            <h1 className="text-4xl font-black text-neutral-ink font-display tracking-tight">Flashcards</h1>
+                            <p className="text-neutral-ink/50 font-bold uppercase tracking-widest text-[10px] mt-1">Spaced Repetition Mastery</p>
                         </div>
                     </div>
 
-                    {/* Search and Filters */}
-                    <div className="flex flex-col md:flex-row gap-3">
-                        <div className="flex-1 relative">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
-                            <input
-                                type="text"
-                                placeholder="Search decks..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-11 pr-4 py-3.5 bg-neutral-white rounded-xl border border-neutral-gray/30 shadow-inner focus:outline-none focus:ring-4 focus:ring-primary/20 text-sm font-bold"
-                            />
-                        </div>
-                        <button
-                            onClick={() => setShowAllFilters(!showAllFilters)}
-                            className={`px-6 py-3.5 rounded-xl font-black text-xs uppercase tracking-widest font-display flex items-center gap-2 transition-all shadow-sm ${showAllFilters || selectedTags.length > 0 ? 'bg-primary-strong text-white shadow-primary/20' : 'bg-neutral-white text-neutral-ink border border-neutral-gray/30 hover:border-primary/40'}`}
-                        >
-                            <Filter size={16} />
-                            Filter
-                            {selectedTags.length > 0 && <span className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center text-[10px]">{selectedTags.length}</span>}
-                        </button>
-                    </div>
-
-                    {/* Filter Panel */}
-                    {showAllFilters && activeTab === 'public' && (
-                        <div className="mt-6 bg-muted rounded-2xl p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <FilterSection label="Categories" tags={getTagsByType('category').filter(t => t.id !== 'personal')} selected={selectedTags} toggle={toggleTag} />
-                            <FilterSection label="JLPT Level" tags={getTagsByType('level')} selected={selectedTags} toggle={toggleTag} />
-                            <FilterSection label="Skill" tags={getTagsByType('skill')} selected={selectedTags} toggle={toggleTag} />
-                        </div>
-                    )}
+                    <SearchNexus
+                        placeholder="Search for kanji, grammar, or vocabulary decks..."
+                        groups={filterGroups}
+                        state={searchState}
+                        onChange={handleSearchChange}
+                        onPersonalTabAttempt={() => setShowLoginPrompt(true)}
+                        isLoggedIn={!!user}
+                    />
                 </div>
             </header>
 
-            <main className="max-w-6xl mx-auto px-6 py-8">
-                {activeTab === 'personal' && !user && (
-                    <div className="py-12">
-                        <LoginPromptCard title="Sign in for Personal Decks" message="Create an account to build and manage your own flashcard decks." icon={<UserIcon size={40} className="text-muted-foreground" />} />
+            <main className="max-w-6xl mx-auto px-6 py-12">
+                {showLoginPrompt ? (
+                    <div className="py-20 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <InformativeLoginCard
+                            title="Your Personal Study Vault"
+                            description="Unlock a sanctuary for your Japanese journey. Save decks, track your SRS mastery, and sync status across all your devices."
+                            icon={Layers}
+                            benefits={[
+                                "Spaced Repetition tracking (SRS)",
+                                "Custom card creation & editing",
+                                "Mastery heatmaps & statistics",
+                                "Cross-device synchronization"
+                            ]}
+                            flowType="FLASHCARDS"
+                        />
                     </div>
-                )}
-
-                {loading ? (
-                    <div className="flex flex-col items-center justify-center py-20">
-                        <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
-                        <p className="text-muted-foreground">Loading decks...</p>
+                ) : loading ? (
+                    <div className="flex flex-col items-center justify-center py-40">
+                        <div className="relative">
+                            <Loader2 className="w-16 h-16 animate-spin text-primary-strong opacity-20" />
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <Brain size={24} className="text-primary-strong animate-pulse" />
+                            </div>
+                        </div>
+                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-ink/30 mt-8">Synthesizing Decks...</p>
                     </div>
-                ) : (activeTab === 'public' || (activeTab === 'personal' && user)) && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {filteredDecks.length > 0 ? (
                             filteredDecks.map((deck) => <DeckCard key={deck.id} deck={deck} />)
                         ) : (
-                            <div className="col-span-full py-20 text-center">
-                                <div className="w-16 h-16 bg-muted rounded-2xl flex items-center justify-center mx-auto mb-4">
-                                    <Compass size={32} className="text-muted-foreground" />
+                            <div className="col-span-full py-40 text-center bg-neutral-white/50 rounded-[3rem] border border-dashed border-neutral-gray/20">
+                                <div className="w-20 h-20 bg-neutral-beige/50 rounded-3xl flex items-center justify-center mx-auto mb-8">
+                                    <Search size={32} className="text-neutral-ink/20" />
                                 </div>
-                                <h3 className="text-lg font-bold text-foreground mb-2">No decks found</h3>
-                                <button onClick={clearFilters} className="text-sm text-primary hover:underline font-bold">Clear filters</button>
+                                <h3 className="text-xl font-black text-neutral-ink mb-2">No matching decks found</h3>
+                                <p className="text-neutral-ink/40 font-bold mb-8">Try adjusting your cognitive parameters.</p>
+                                <button
+                                    onClick={() => setSearchState({ ...searchState, query: "", activeFilters: {} })}
+                                    className="text-xs font-black text-primary-strong uppercase tracking-widest hover:underline"
+                                >
+                                    Reset Filters
+                                </button>
                             </div>
                         )}
                     </div>
                 )}
             </main>
-        </div>
-    );
-}
-
-function FilterSection({ label, tags, selected, toggle }: any) {
-    return (
-        <div>
-            <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-3">{label}</h4>
-            <div className="flex flex-wrap gap-2">
-                {tags.map((tag: any) => (
-                    <button key={tag.id} onClick={() => toggle(tag.id)} className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all font-display ${selected.includes(tag.id) ? 'bg-primary-strong text-white shadow-md' : 'bg-neutral-white text-neutral-ink border border-neutral-gray/20 hover:text-primary'}`}>
-                        {tag.label}
-                    </button>
-                ))}
-            </div>
         </div>
     );
 }
