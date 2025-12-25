@@ -28,13 +28,13 @@ export default function ExamSessionPage() {
     const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
 
     useEffect(() => {
-        if (examConfig?.timerMode !== "UNLIMITED" && examConfig?.timeLimitMinutes) {
-            setTimeRemaining(examConfig.timeLimitMinutes * 60);
+        if (examConfig?.tags.timerMode !== "UNLIMITED" && examConfig?.stats.timeLimitMinutes) {
+            setTimeRemaining(examConfig.stats.timeLimitMinutes * 60);
         }
     }, [examConfig]);
 
     useEffect(() => {
-        if (isSubmitted || !timeRemaining || examConfig?.timerMode === "UNLIMITED") return;
+        if (isSubmitted || !timeRemaining || examConfig?.tags.timerMode === "UNLIMITED") return;
         const interval = setInterval(() => {
             setTimeRemaining((prev) => {
                 if (prev <= 1) { clearInterval(interval); handleSubmit(); return 0; }
@@ -42,7 +42,7 @@ export default function ExamSessionPage() {
             });
         }, 1000);
         return () => clearInterval(interval);
-    }, [isSubmitted, examConfig?.timerMode]);
+    }, [isSubmitted, examConfig?.tags.timerMode]);
 
     const formatTime = (seconds: number) => {
         const mins = Math.floor(seconds / 60);
@@ -111,12 +111,12 @@ export default function ExamSessionPage() {
                         <div>
                             <h1 className="text-lg font-bold text-foreground font-display">{examConfig.title}</h1>
                             <div className="flex items-center gap-2">
-                                <span className="px-2 py-0.5 bg-primary/10 text-primary rounded text-xs font-bold">{examConfig.level}</span>
+                                <span className="px-2 py-0.5 bg-primary/10 text-primary rounded text-xs font-bold">{examConfig.tags.level}</span>
                             </div>
                         </div>
                     </div>
 
-                    {examConfig.timerMode !== "UNLIMITED" && (
+                    {examConfig.tags.timerMode !== "UNLIMITED" && (
                         <div className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-lg ${isTimeLow ? "bg-destructive/10 text-destructive" : "bg-muted text-foreground"}`}>
                             <Clock size={18} />
                             <span>{formatTime(timeRemaining)}</span>
@@ -178,7 +178,7 @@ export default function ExamSessionPage() {
                                     if (status === "FLAGGED") colorClass = "bg-secondary text-secondary-foreground";
                                     if (isCurrent) colorClass = "bg-foreground text-background";
                                     if (isSubmitted) {
-                                        const userAnswer = answers[q.id]?.selectedOptionId;
+                                        const userAnswer = answers[q.id]?.selectedOptionId as any;
                                         const isCorrect = userAnswer === q.correctOptionId;
                                         if (userAnswer) colorClass = isCorrect ? "bg-primary text-primary-foreground" : "bg-destructive text-destructive-foreground";
                                     }
@@ -210,7 +210,7 @@ export default function ExamSessionPage() {
                             question={currentQuestion}
                             questionIndex={currentIndex}
                             totalQuestions={questions.length}
-                            selectedOptionId={answers[currentQuestion.id]?.selectedOptionId || null}
+                            selectedOptionId={(answers[currentQuestion.id]?.selectedOptionId as any) || null}
                             isFlagged={flagged.has(currentQuestion.id)}
                             isSubmitted={isSubmitted}
                             onSelectAnswer={(optionId) => handleSelectAnswer(currentQuestion.id, optionId)}
@@ -332,7 +332,7 @@ function ScrollModeView({ questions, answers, flagged, isSubmitted, onSelectAnsw
     return (
         <div className="max-w-3xl mx-auto space-y-8 pb-32">
             {questions.map((question, idx) => {
-                const selectedOptionId = answers[question.id]?.selectedOptionId || null;
+                const selectedOptionId = (answers[question.id]?.selectedOptionId as any) || null;
                 const isFlagged = flagged.has(question.id);
 
                 return (
@@ -342,8 +342,8 @@ function ScrollModeView({ questions, answers, flagged, isSubmitted, onSelectAnsw
                             <div className="flex items-center gap-3">
                                 <span className="w-8 h-8 bg-muted rounded-lg flex items-center justify-center font-bold text-sm">{idx + 1}</span>
                                 {isSubmitted && (
-                                    <span className={`px-2 py-1 rounded text-xs font-bold ${answers[question.id]?.selectedOptionId === question.correctOptionId ? "bg-primary/10 text-primary" : "bg-destructive/10 text-destructive"}`}>
-                                        {answers[question.id]?.selectedOptionId === question.correctOptionId ? "Correct" : "Incorrect"}
+                                    <span className={`px-2 py-1 rounded text-xs font-bold ${(answers[question.id]?.selectedOptionId as any) === question.correctOptionId ? "bg-primary/10 text-primary" : "bg-destructive/10 text-destructive"}`}>
+                                        {(answers[question.id]?.selectedOptionId as any) === question.correctOptionId ? "Correct" : "Incorrect"}
                                     </span>
                                 )}
                             </div>

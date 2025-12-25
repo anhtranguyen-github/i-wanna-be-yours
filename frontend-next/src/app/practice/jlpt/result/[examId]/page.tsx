@@ -58,7 +58,7 @@ export default function ExamResultPage() {
         };
 
         questions.forEach((q, idx) => {
-            const skill = q.tags.skill;
+            const skill = q.tags.skills[0];
             skillCounts[skill].total++;
             if (idx % 3 !== 0) {
                 skillCounts[skill].correct++;
@@ -143,7 +143,7 @@ export default function ExamResultPage() {
                     <div className="text-right">
                         <h1 className="text-lg font-black text-foreground font-display tracking-tight leading-none mb-1">{examConfig.title}</h1>
                         <div className="flex items-center justify-end gap-3 opacity-60">
-                            <span className="text-[9px] font-black text-primary uppercase tracking-widest font-display">{examConfig.level}</span>
+                            <span className="text-[9px] font-black text-primary uppercase tracking-widest font-display">{examConfig.tags.level}</span>
                             <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest font-display whitespace-nowrap">Synthesis Outcome</span>
                         </div>
                     </div>
@@ -198,7 +198,7 @@ export default function ExamResultPage() {
                                         </div>
                                         <div>
                                             <h2 className="text-4xl font-black text-foreground font-display tracking-tighter italic">Synthesis <span className="text-primary">Valid!</span></h2>
-                                            <p className="text-muted-foreground font-bold tracking-tight">Your neural patterns align with {examConfig.level} protocols.</p>
+                                            <p className="text-muted-foreground font-bold tracking-tight">Your neural patterns align with {examConfig.tags.level} protocols.</p>
                                         </div>
                                     </div>
                                 ) : (
