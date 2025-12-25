@@ -13,37 +13,106 @@ import {
 } from "lucide-react";
 import { FilterState, PracticeNode, PracticeMode, JLPTLevel, SkillType } from "@/types/practice";
 import * as practiceService from "@/services/practiceService";
-import AdvancedFilterBar from "@/components/practice/AdvancedFilterBar";
 import PracticeListCard from "@/components/practice/PracticeListCard";
 import PracticeCard from "@/components/practice/PracticeCard";
+import { SearchNexus } from "@/components/shared/SearchNexus";
+import { SearchNexusState, FilterGroup } from "@/types/search";
+import { InformativeLoginCard } from "@/components/shared/InformativeLoginCard";
+import { useUser } from "@/context/UserContext";
 
 export default function PracticeHubPage() {
     const router = useRouter();
+    const { user } = useUser();
 
     // State
     const [nodes, setNodes] = useState<PracticeNode[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [viewMode, setViewMode] = useState<'LIST' | 'GRID'>('LIST');
-    const [searchQuery, setSearchQuery] = useState("");
-    const [filters, setFilters] = useState<FilterState>({
-        mode: 'ALL',
-        level: 'ALL',
-        skill: 'ALL',
-        timing: 'ALL',
-        origin: 'ALL',
-        status: 'ALL'
+    const [searchState, setSearchState] = useState<SearchNexusState>({
+        query: "",
+        activeFilters: {
+            mode: ['ALL'],
+            level: ['ALL'],
+            skill: ['ALL'],
+            timing: ['ALL'],
+            origin: ['ALL'],
+            status: ['ALL']
+        },
+        activeTab: 'PUBLIC'
     });
+    const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+
+    // Filter Groups Configuration
+    const filterGroups: FilterGroup[] = [
+        {
+            id: 'mode',
+            label: 'Protocol Mode',
+            type: 'SINGLE',
+            options: [
+                { id: 'ALL', label: 'All Modes' },
+                { id: 'FULL_EXAM', label: 'Simulation' },
+                { id: 'QUIZ', label: 'Daily Burst' },
+                { id: 'SINGLE_EXAM', label: 'Skill Forge' }
+            ]
+        },
+        {
+            id: 'level',
+            label: 'Level Sector',
+            type: 'SINGLE',
+            options: [
+                { id: 'ALL', label: 'Global' },
+                { id: 'N5', label: 'JLPT N5' },
+                { id: 'N4', label: 'JLPT N4' },
+                { id: 'N3', label: 'JLPT N3' },
+                { id: 'N2', label: 'JLPT N2' },
+                { id: 'N1', label: 'JLPT N1' }
+            ]
+        },
+        {
+            id: 'skill',
+            label: 'Domain',
+            type: 'SINGLE',
+            options: [
+                { id: 'ALL', label: 'All Domains' },
+                { id: 'VOCABULARY', label: 'Vocabulary' },
+                { id: 'GRAMMAR', label: 'Grammar' },
+                { id: 'READING', label: 'Reading' },
+                { id: 'LISTENING', label: 'Listening' }
+            ]
+        },
+        {
+            id: 'status',
+            label: 'Memory Status',
+            type: 'SINGLE',
+            options: [
+                { id: 'ALL', label: 'Entire Nexus' },
+                { id: 'NEVER_ATTEMPTED', label: 'Untouched' },
+                { id: 'IN_PROGRESS', label: 'Active' },
+                { id: 'COMPLETED', label: 'Finalized' }
+            ]
+        }
+    ];
 
     // Fetch Data
     const fetchNodes = useCallback(async () => {
         setIsLoading(true);
         try {
-            const { nodes: fetchedNodes } = await practiceService.getNodes(filters);
+            // Map searchState back to FilterState for service
+            const apiFilters: FilterState = {
+                mode: (searchState.activeFilters.mode?.[0] || 'ALL') as any,
+                level: (searchState.activeFilters.level?.[0] || 'ALL') as any,
+                skill: (searchState.activeFilters.skill?.[0] || 'ALL') as any,
+                timing: (searchState.activeFilters.timing?.[0] || 'ALL') as any,
+                origin: (searchState.activeFilters.origin?.[0] || 'ALL') as any,
+                status: (searchState.activeFilters.status?.[0] || 'ALL') as any,
+            };
+
+            const { nodes: fetchedNodes } = await practiceService.getNodes(apiFilters);
 
             // Front-end search filtering
             const filtered = fetchedNodes.filter(node =>
-                node.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                node.description.toLowerCase().includes(searchQuery.toLowerCase())
+                node.title.toLowerCase().includes(searchState.query.toLowerCase()) ||
+                node.description.toLowerCase().includes(searchState.query.toLowerCase())
             );
 
             setNodes(filtered);
@@ -52,15 +121,19 @@ export default function PracticeHubPage() {
         } finally {
             setIsLoading(false);
         }
-    }, [filters, searchQuery]);
+    }, [searchState]);
 
     useEffect(() => {
         fetchNodes();
     }, [fetchNodes]);
 
     const handleStartNode = (id: string) => {
-        // Unified route - no more JLPT vs Quiz distinction
         router.push(`/practice/session/${id}`);
+    };
+
+    const handleSearchChange = (newState: SearchNexusState) => {
+        setSearchState(newState);
+        if (newState.activeTab === 'PUBLIC') setShowLoginPrompt(false);
     };
 
     return (
@@ -124,17 +197,34 @@ export default function PracticeHubPage() {
 
             {/* Filter Hub */}
             <div className="max-w-7xl mx-auto px-8 -mt-8 relative z-20">
-                <AdvancedFilterBar
-                    filters={filters}
-                    onFilterChange={setFilters}
-                    searchQuery={searchQuery}
-                    onSearchChange={setSearchQuery}
+                <SearchNexus
+                    placeholder="Search for grammar patterns, vocabulary sets, or listening exercises..."
+                    groups={filterGroups}
+                    state={searchState}
+                    onChange={handleSearchChange}
+                    onPersonalTabAttempt={() => setShowLoginPrompt(true)}
+                    isLoggedIn={!!user}
                 />
             </div>
 
             {/* Content Area */}
             <main className="max-w-7xl mx-auto px-8 mt-12">
-                {isLoading ? (
+                {showLoginPrompt ? (
+                    <div className="py-20 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <InformativeLoginCard
+                            title="Personal Practice Dashboard"
+                            description="Take control of your learning. Log in to create custom practice sets, track your mastery over 1000s of nodes, and resume active protocols."
+                            icon={BrainCircuit}
+                            benefits={[
+                                "Advanced performance analytics",
+                                "Custom practice-set creation",
+                                "History of all completed protocols",
+                                "Priority access to new AI nodes"
+                            ]}
+                            flowType="PRACTICE"
+                        />
+                    </div>
+                ) : isLoading ? (
                     <div className="grid grid-cols-1 gap-4">
                         {[1, 2, 3, 4, 5].map(i => (
                             <div key={i} className="h-32 bg-neutral-white/50 border border-neutral-gray/10 rounded-[1.5rem] animate-pulse" />
@@ -161,8 +251,18 @@ export default function PracticeHubPage() {
                         </p>
                         <button
                             onClick={() => {
-                                setFilters({ mode: 'ALL', level: 'ALL', skill: 'ALL', timing: 'ALL', origin: 'ALL', status: 'ALL' });
-                                setSearchQuery("");
+                                setSearchState({
+                                    query: "",
+                                    activeFilters: {
+                                        mode: ['ALL'],
+                                        level: ['ALL'],
+                                        skill: ['ALL'],
+                                        timing: ['ALL'],
+                                        origin: ['ALL'],
+                                        status: ['ALL']
+                                    },
+                                    activeTab: 'PUBLIC'
+                                });
                             }}
                             className="mt-8 px-8 py-4 bg-neutral-ink text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-primary-strong transition-all"
                         >
