@@ -86,13 +86,13 @@ export default function UnifiedSessionPage() {
         if (index >= 0 && index < questions.length) setCurrentIndex(index);
     };
 
-    const handleSubmit = useCallback(() => { 
-        setIsSubmitted(true); 
-        setShowSubmitConfirm(false); 
+    const handleSubmit = useCallback(() => {
+        setIsSubmitted(true);
+        setShowSubmitConfirm(false);
     }, []);
 
-    const handleViewResults = () => { 
-        router.push(`/practice/result/${nodeId}`); 
+    const handleViewResults = () => {
+        router.push(`/practice/result/${nodeId}`);
     };
 
     const answeredCount = Object.values(answers).filter((a) => a.selectedOptionId).length;
@@ -119,8 +119,8 @@ export default function UnifiedSessionPage() {
                 </div>
                 <h2 className="text-2xl font-black text-foreground font-display mb-2">Practice Not Found</h2>
                 <p className="text-muted-foreground font-bold mb-6">The requested practice session could not be loaded.</p>
-                <Link 
-                    href="/practice" 
+                <Link
+                    href="/practice"
                     className="px-6 py-3 bg-foreground text-background font-black font-display text-sm rounded-xl hover:bg-foreground/90 transition-colors"
                 >
                     Back to Practice
@@ -148,8 +148,8 @@ export default function UnifiedSessionPage() {
             <header className="bg-card border-b border-border px-6 py-4 sticky top-0 z-50">
                 <div className="flex items-center justify-between max-w-[1920px] mx-auto gap-6">
                     <div className="flex items-center gap-4">
-                        <button 
-                            onClick={() => setIsSidebarOpen(!isSidebarOpen)} 
+                        <button
+                            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                             className="lg:hidden w-10 h-10 bg-muted hover:bg-muted/80 rounded-xl flex items-center justify-center transition-colors"
                         >
                             {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
@@ -178,14 +178,14 @@ export default function UnifiedSessionPage() {
                     <div className="flex items-center gap-3">
                         {/* Display Mode Toggle */}
                         <div className="hidden sm:flex items-center gap-1 p-1 bg-muted rounded-xl">
-                            <button 
-                                onClick={() => setDisplayMode("FOCUS")} 
+                            <button
+                                onClick={() => setDisplayMode("FOCUS")}
                                 className={`px-3 py-2 rounded-lg text-sm font-bold transition-colors ${displayMode === "FOCUS" ? "bg-card text-foreground" : "text-muted-foreground hover:text-foreground"}`}
                             >
                                 <Target size={16} />
                             </button>
-                            <button 
-                                onClick={() => setDisplayMode("SCROLL")} 
+                            <button
+                                onClick={() => setDisplayMode("SCROLL")}
                                 className={`px-3 py-2 rounded-lg text-sm font-bold transition-colors ${displayMode === "SCROLL" ? "bg-card text-foreground" : "text-muted-foreground hover:text-foreground"}`}
                             >
                                 <AlignJustify size={16} />
@@ -194,16 +194,16 @@ export default function UnifiedSessionPage() {
 
                         {/* Submit / View Results */}
                         {!isSubmitted ? (
-                            <button 
-                                onClick={() => setShowSubmitConfirm(true)} 
+                            <button
+                                onClick={() => setShowSubmitConfirm(true)}
                                 className="flex items-center gap-2 px-5 py-2.5 bg-foreground text-background font-black font-display text-sm rounded-xl hover:bg-foreground/90 transition-colors"
                             >
                                 <Send size={16} />
                                 <span className="hidden sm:inline">Submit</span>
                             </button>
                         ) : (
-                            <button 
-                                onClick={handleViewResults} 
+                            <button
+                                onClick={handleViewResults}
                                 className="flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground font-black font-display text-sm rounded-xl hover:bg-primary/90 transition-colors"
                             >
                                 <CheckCircle2 size={16} />
@@ -215,10 +215,10 @@ export default function UnifiedSessionPage() {
             </header>
 
             {/* Main Content */}
-            <div className="flex-1 flex overflow-hidden">
+            <div className="flex-1 flex">
                 {/* Sidebar - Question Navigator */}
-                <aside className={`fixed lg:static inset-y-0 left-0 z-40 w-72 bg-card border-r border-border transform transition-transform lg:transform-none ${isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"} pt-20 lg:pt-0`}>
-                    <div className="p-6 h-full flex flex-col">
+                <aside className={`fixed lg:sticky inset-y-0 left-0 lg:inset-auto lg:top-[73px] lg:h-[calc(100vh-73px)] z-40 w-72 bg-card border-r border-border transform transition-transform lg:transform-none ${isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"} pt-20 lg:pt-0 shrink-0`}>
+                    <div className="p-6 h-full flex flex-col overflow-hidden">
                         <div className="mb-6 pb-6 border-b border-border">
                             <div className="flex items-center justify-between mb-4">
                                 <span className="text-sm font-bold text-muted-foreground">Progress</span>
@@ -249,9 +249,9 @@ export default function UnifiedSessionPage() {
                                         if (userAnswer) colorClass = isCorrect ? "bg-primary text-primary-foreground" : "bg-destructive text-destructive-foreground";
                                     }
                                     return (
-                                        <button 
-                                            key={q.id} 
-                                            onClick={() => goToQuestion(index)} 
+                                        <button
+                                            key={q.id}
+                                            onClick={() => goToQuestion(index)}
                                             className={`aspect-square rounded-lg font-bold text-xs border transition-colors ${colorClass}`}
                                         >
                                             {index + 1}
@@ -262,7 +262,7 @@ export default function UnifiedSessionPage() {
                         </div>
 
                         {/* Legend */}
-                        <div className="pt-4 border-t border-border">
+                        <div className="pt-4 border-t border-border shrink-0">
                             <div className="grid grid-cols-2 gap-2 text-xs">
                                 <div className="flex items-center gap-2"><div className="w-3 h-3 bg-muted rounded" /><span className="text-muted-foreground">Unanswered</span></div>
                                 <div className="flex items-center gap-2"><div className="w-3 h-3 bg-primary/10 border border-primary/30 rounded" /><span className="text-muted-foreground">Answered</span></div>
@@ -313,14 +313,14 @@ export default function UnifiedSessionPage() {
                             )}
                         </p>
                         <div className="flex gap-3">
-                            <button 
-                                onClick={() => setShowSubmitConfirm(false)} 
+                            <button
+                                onClick={() => setShowSubmitConfirm(false)}
                                 className="flex-1 py-3 bg-muted rounded-xl font-black text-foreground hover:bg-muted/80 transition-colors"
                             >
                                 Cancel
                             </button>
-                            <button 
-                                onClick={handleSubmit} 
+                            <button
+                                onClick={handleSubmit}
                                 className="flex-1 py-3 bg-foreground text-background rounded-xl font-black hover:bg-foreground/90 transition-colors"
                             >
                                 Submit
@@ -349,9 +349,9 @@ function FocusModeView({ question, questionIndex, totalQuestions, selectedOption
                     <span className="w-10 h-10 bg-primary/10 text-primary rounded-xl flex items-center justify-center font-black">{questionIndex + 1}</span>
                     <span className="text-sm text-muted-foreground font-bold">of {totalQuestions} questions</span>
                 </div>
-                <button 
-                    onClick={onToggleFlag} 
-                    disabled={isSubmitted} 
+                <button
+                    onClick={onToggleFlag}
+                    disabled={isSubmitted}
                     className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-colors ${isFlagged ? "bg-secondary text-secondary-foreground" : "bg-muted text-muted-foreground hover:text-foreground"} ${isSubmitted ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
                     <Flag size={16} className={isFlagged ? "fill-current" : ""} />
@@ -382,10 +382,10 @@ function FocusModeView({ question, questionIndex, totalQuestions, selectedOption
                     if (isSubmitted && isSelected && !isCorrect) optionClass = "bg-destructive text-destructive-foreground border-destructive";
 
                     return (
-                        <button 
-                            key={option.id} 
-                            onClick={() => onSelectAnswer(option.id)} 
-                            disabled={isSubmitted} 
+                        <button
+                            key={option.id}
+                            onClick={() => onSelectAnswer(option.id)}
+                            disabled={isSubmitted}
                             className={`w-full text-left p-5 rounded-xl border-2 transition-colors flex items-center gap-4 ${optionClass} ${isSubmitted ? "cursor-default" : "cursor-pointer"}`}
                         >
                             <span className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center font-black text-sm shrink-0">
@@ -412,16 +412,16 @@ function FocusModeView({ question, questionIndex, totalQuestions, selectedOption
 
             {/* Navigation */}
             <div className="flex items-center justify-between pt-6 border-t border-border">
-                <button 
-                    onClick={onPrevious} 
-                    disabled={questionIndex === 0} 
+                <button
+                    onClick={onPrevious}
+                    disabled={questionIndex === 0}
                     className={`flex items-center gap-2 px-5 py-3 rounded-xl font-black transition-colors ${questionIndex === 0 ? "bg-muted text-muted-foreground cursor-not-allowed" : "bg-card border border-border text-foreground hover:border-primary/50"}`}
                 >
                     <ChevronLeft size={18} /> Previous
                 </button>
-                <button 
-                    onClick={onNext} 
-                    disabled={questionIndex === totalQuestions - 1} 
+                <button
+                    onClick={onNext}
+                    disabled={questionIndex === totalQuestions - 1}
                     className={`flex items-center gap-2 px-5 py-3 rounded-xl font-black transition-colors ${questionIndex === totalQuestions - 1 ? "bg-muted text-muted-foreground cursor-not-allowed" : "bg-foreground text-background hover:bg-foreground/90"}`}
                 >
                     Next <ChevronRight size={18} />
@@ -457,9 +457,9 @@ function ScrollModeView({ questions, answers, flagged, isSubmitted, onSelectAnsw
                                     </span>
                                 )}
                             </div>
-                            <button 
-                                onClick={() => onToggleFlag(question.id)} 
-                                disabled={isSubmitted} 
+                            <button
+                                onClick={() => onToggleFlag(question.id)}
+                                disabled={isSubmitted}
                                 className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-black transition-colors ${isFlagged ? "bg-secondary text-secondary-foreground" : "bg-muted text-muted-foreground"} ${isSubmitted ? "opacity-50" : ""}`}
                             >
                                 <Flag size={12} className={isFlagged ? "fill-current" : ""} />
@@ -488,10 +488,10 @@ function ScrollModeView({ questions, answers, flagged, isSubmitted, onSelectAnsw
                                 if (isSubmitted && isSelected && !isCorrect) optionClass = "bg-destructive text-destructive-foreground border-destructive";
 
                                 return (
-                                    <button 
-                                        key={option.id} 
-                                        onClick={() => onSelectAnswer(question.id, option.id)} 
-                                        disabled={isSubmitted} 
+                                    <button
+                                        key={option.id}
+                                        onClick={() => onSelectAnswer(question.id, option.id)}
+                                        disabled={isSubmitted}
                                         className={`w-full text-left p-4 rounded-xl border-2 transition-colors flex items-center gap-3 ${optionClass}`}
                                     >
                                         <span className="w-7 h-7 bg-card rounded-lg flex items-center justify-center font-black text-xs shrink-0">
