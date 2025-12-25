@@ -408,7 +408,7 @@ export default function LearningDashboardPage() {
                                 <QuickAction
                                     label="Quiz"
                                     icon={<ChartBarIcon className="w-full h-full" />}
-                                    href="/quiz"
+                                    href="/practice"
                                     color="hsl(var(--grammar))"
                                 />
                                 <QuickAction
