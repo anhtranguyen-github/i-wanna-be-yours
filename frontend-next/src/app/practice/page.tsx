@@ -59,12 +59,8 @@ export default function PracticeHubPage() {
     }, [fetchNodes]);
 
     const handleStartNode = (id: string) => {
-        const node = nodes.find(n => n.id === id);
-        if (node?.mode === 'QUIZ') {
-            router.push(`/practice/quiz/${id}`);
-        } else {
-            router.push(`/practice/jlpt/session/${id}`);
-        }
+        // Unified route - no more JLPT vs Quiz distinction
+        router.push(`/practice/session/${id}`);
     };
 
     return (
