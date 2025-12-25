@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useSWRConfig } from 'swr';
 import {
     useChatLayout,
@@ -19,17 +19,18 @@ import { useChatStream, useConversation, useArtifactsMutate } from '@/hooks';
 import { ResourcePreviewModal } from '@/components/resources/ResourcePreviewModal';
 import { aiTutorService } from '@/services/aiTutorService';
 import { Artifact, ArtifactType } from '@/types/artifact';
+import { HanachanStatus } from './HanachanStatus';
+import { InformativeLoginCard } from '@/components/shared/InformativeLoginCard';
+import {
+    Layers,
+    CheckSquare,
+    GraduationCap,
+    FileText,
+    Sparkles
+} from 'lucide-react';
 
 // Internal ArtifactIcon component
 function ArtifactIcon({ type }: { type: ArtifactType }) {
-    const {
-        Layers,
-        CheckSquare,
-        GraduationCap,
-        FileText,
-        Sparkles
-    } = require('lucide-react');
-
     switch (type) {
         case 'flashcard':
         case 'flashcard_deck':
@@ -53,7 +54,9 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
     const { user } = useUser();
     const { openAuth } = useGlobalAuth();
     const router = useRouter();
+    const searchParams = useSearchParams();
     const isGuest = !user;
+    const initialMessageProcessed = useRef(false);
 
     // Use split contexts
     const {
@@ -90,7 +93,6 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
 
     // Sync history and conversation state to local state
     useEffect(() => {
-        // Handle new chat scenario
         if (!conversationIdProp) {
             setMessages(prev => prev.length === 0 ? prev : []);
             setSessionId(null);
@@ -98,196 +100,153 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
             return;
         }
 
-        // Sync context to prop
-        setEffectiveConversationId(conversationIdProp);
-
-        // Sync history messages
-        if (historyMessages) {
-            const mappedMessages: ChatMessage[] = historyMessages.map(m => ({
-                ...m,
-                timestamp: m.timestamp ? new Date(m.timestamp) : new Date()
-            } as ChatMessage));
-
-            setMessages(prev => {
-                // Heuristic to avoid redundant updates: same length and same last message ID
-                if (prev.length === mappedMessages.length &&
-                    (prev.length === 0 || prev[prev.length - 1].id === mappedMessages[mappedMessages.length - 1].id)) {
-                    return prev;
-                }
-                return mappedMessages;
-            });
-
-            if (conversation?.sessionId) {
-                setSessionId(conversation.sessionId);
-            }
+        if (historyMessages && historyMessages.length > 0) {
+            setMessages(historyMessages);
+            setEffectiveConversationId(conversationIdProp);
         }
-    }, [conversationIdProp, historyMessages, conversation, setSessionId, setEffectiveConversationId]);
+    }, [conversationIdProp, historyMessages, setEffectiveConversationId, setSessionId]);
 
-    // Stream handler
-    const { streamState, sendMessage: streamMessage, cancelStream } = useChatStream({
+    const { streamState, sendMessage } = useChatStream({
+        conversationId: effectiveConversationId || undefined,
+        sessionId: sessionId || undefined,
+        onNewMessages: (newMessages) => {
+            setMessages(newMessages);
+        },
         onConversationCreated: (id) => {
             setEffectiveConversationId(id);
-            // Shallow update URL
+            // Replace URL without reload
             router.replace(`/chat/${id}`, { scroll: false });
         },
-        onArtifactsReceived: (artifacts, convoId) => {
-            // Artifacts are now handled via SWR in the sidebar
-            // Mutate with the ID provided by the stream (handles new chat case)
-            mutateArtifacts(convoId);
+        onArtifactCreated: (artifact) => {
+            mutateArtifacts();
+            // Optional: openArtifact(artifact.id);
         },
-        onMessageComplete: (msg) => {
-            setMessages(prev => [...prev, msg]);
+        onStreamEnd: () => {
+            mutateArtifacts();
         }
     });
 
-    // File handling logic
+    // Handle initial message from query param
     useEffect(() => {
-        if (stagedResourceToProcess) {
-            const { id: backendId, title } = stagedResourceToProcess;
-            setAttachedFiles(prev => {
-                if (prev.some(af => af.backendId === backendId)) return prev;
-                return [...prev, {
-                    id: Math.random().toString(36).substr(2, 9),
-                    title: title,
-                    uploading: false,
-                    backendId: backendId
-                }];
-            });
-            consumeStagedResource();
-        }
-    }, [stagedResourceToProcess, consumeStagedResource]);
+        const initialMessage = searchParams.get('message');
+        if (initialMessage && !initialMessageProcessed.current && !streamState.isStreaming && messages.length === 0 && !historyLoading) {
+            initialMessageProcessed.current = true;
+            setInputValue(initialMessage);
 
-    const handleFileSelect = async (files: File[]) => {
-        const uniqueFiles = files.filter(file =>
-            !attachedFiles.some(af => af.file?.name === file.name && af.file?.size === file.size)
-        );
-        if (uniqueFiles.length === 0) return;
-
-        const newAttachments = uniqueFiles.map(file => ({
-            id: Math.random().toString(36).substr(2, 9),
-            file,
-            title: file.name,
-            uploading: true
-        }));
-
-        setAttachedFiles(prev => [...prev, ...newAttachments]);
-
-        for (const attachment of newAttachments) {
-            try {
-                const response = await aiTutorService.uploadFile(attachment.file!);
-                setAttachedFiles(prev => prev.map(f =>
-                    f.id === attachment.id ? { ...f, uploading: false, backendId: response.id } : f
-                ));
-            } catch (error) {
-                console.error("Upload failed", error);
-                setAttachedFiles(prev => prev.map(f =>
-                    f.id === attachment.id ? { ...f, uploading: false, error: true } : f
-                ));
+            if (user) {
+                handleSend(initialMessage);
             }
         }
-    };
+    }, [searchParams, user, messages.length, streamState.isStreaming, historyLoading]);
 
-    const handleSend = async () => {
-        if ((!inputValue.trim() && attachedFiles.length === 0) || streamState.isStreaming) return;
+    const handleSend = async (overrideInput?: string) => {
+        const text = overrideInput !== undefined ? overrideInput : inputValue;
+        if (!text.trim() || streamState.isStreaming) return;
 
-        // Gate for guests starting NEW conversations
-        if (isGuest && !effectiveConversationId) {
-            openAuth('REGISTER', {
-                flowType: 'CHAT',
-                title: "Start Learning with Hanachan",
-                description: "Create a free account to chat with Hanachan and save your progress."
-            });
-            return;
-        }
-
-        const validAttachments = attachedFiles.filter(f => !f.error && f.backendId);
-        const resourceIds = validAttachments.map(f => f.backendId as string);
-
-        const currentInput = inputValue;
-
-        // Optimistic update
-        const userMessage: ChatMessage = {
-            id: Date.now().toString(),
-            role: 'user',
-            content: currentInput,
-            timestamp: new Date()
-        };
-
-        setMessages(prev => [...prev, userMessage]);
         setInputValue('');
         setAttachedFiles([]);
 
-        await streamMessage(
-            currentInput,
-            effectiveConversationId,
-            sessionId || `session-${Date.now()}`,
-            resourceIds
-        );
+        try {
+            await sendMessage(text, attachedFiles);
+        } catch (error) {
+            console.error("Failed to send message:", error);
+        }
     };
 
-    const handleQuickAction = async (type: ArtifactType) => {
-        const prompts: Record<string, string> = {
-            flashcard: "Create flashcards for the current topic.",
-            quiz: "Generate a quiz based on our discussion.",
-            summary: "Summarize our conversation so far."
-        };
-
-        setInputValue(prompts[type] || "");
+    const handleFileUpload = (files: FileList) => {
+        const newFiles = Array.from(files).map(file => ({
+            id: Math.random().toString(36).substr(2, 9),
+            file,
+            preview: file.type.startsWith('image/') ? URL.createObjectURL(file) : undefined
+        }));
+        setAttachedFiles(prev => [...prev, ...newFiles]);
     };
 
-    // Combine history and current stream
-    const allMessages = [...messages];
-    if (streamState.isStreaming && streamState.currentText) {
-        allMessages.push({
-            id: 'streaming',
-            role: 'assistant',
-            content: streamState.currentText,
-            timestamp: new Date()
-        });
-    }
+    const removeFile = (id: string) => {
+        setAttachedFiles(prev => prev.filter(f => f.id !== id));
+    };
+
+    const chatStatus = useMemo(() => {
+        if (streamState.isStreaming) return 'TYPING';
+        if (historyLoading) return 'THINKING';
+        return 'READY';
+    }, [streamState.isStreaming, historyLoading]);
 
     return (
-        <div className="flex flex-col h-full bg-white relative">
-            <div className="flex-1 overflow-hidden flex flex-col pt-4">
-                {allMessages.length === 0 && !historyLoading ? (
-                    <WelcomeCard onSuggestionClick={(text) => {
-                        setInputValue(text);
-                    }} />
+        <div className="flex-1 flex flex-col h-full bg-[#fafafa] relative overflow-hidden group/chat">
+            {/* Atmosphere Background */}
+            <div className="absolute inset-0 pointer-events-none">
+                <div className="absolute top-0 right-0 w-[40vw] h-[40vw] bg-primary/5 rounded-full blur-[100px] -mr-[10vw] -mt-[10vw] opacity-40" />
+                <div className="absolute bottom-0 left-0 w-[30vw] h-[30vw] bg-secondary/10 rounded-full blur-[80px] -ml-[5vw] -mb-[5vw] opacity-30" />
+            </div>
+
+            {/* Header / Sub-nav Area */}
+            <div className="px-6 py-3 bg-white/40 backdrop-blur-xl border-b border-neutral-gray/10 flex items-center justify-between sticky top-0 z-20">
+                <div className="flex items-center gap-4">
+                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-neutral-ink/30 font-display">
+                        Neural Channel 1.0
+                    </span>
+                </div>
+
+                <HanachanStatus status={chatStatus} />
+
+                <div className="hidden md:flex items-center gap-4">
+                    <div className="text-[9px] font-black uppercase tracking-widest text-neutral-ink/40">
+                        Protocol: Sakura-V1
+                    </div>
+                </div>
+            </div>
+
+            {/* Content Area */}
+            <div className="flex-1 relative overflow-hidden flex flex-col z-10">
+                {messages.length === 0 && !historyLoading ? (
+                    <div className="flex-1 flex flex-col items-center justify-center p-8 max-w-4xl mx-auto w-full">
+                        <WelcomeCard
+                            onSuggestionClick={(s) => handleSend(s)}
+                            isGuest={isGuest}
+                        />
+                        {isGuest && (
+                            <div className="mt-8 w-full max-w-lg">
+                                <InformativeLoginCard
+                                    title="Synchronize Your Journey"
+                                    description="Log in to preserve your neural history and unlock advanced Hanachan analysis across all modules."
+                                />
+                            </div>
+                        )}
+                    </div>
                 ) : (
                     <VirtualizedMessageList
-                        messages={allMessages}
-                        isLoading={streamState.isStreaming}
-                        onOpenArtifact={openArtifact}
+                        messages={messages}
+                        isStreaming={streamState.isStreaming}
                     />
                 )}
             </div>
 
-            <ChatInput
-                value={inputValue}
-                onChange={setInputValue}
-                onSend={handleSend}
-                onFileSelect={handleFileSelect}
-                attachedFiles={attachedFiles}
-                onRemoveAttachment={(id) => setAttachedFiles(prev => prev.filter(f => f.id !== id))}
-                onQuickAction={handleQuickAction}
-                isLoading={streamState.isStreaming}
-                disabled={historyLoading}
-            />
+            {/* Footer / Input Area */}
+            <div className="relative z-20">
+                <ChatInput
+                    value={inputValue}
+                    onChange={setInputValue}
+                    onSend={() => handleSend()}
+                    onFileUpload={handleFileUpload}
+                    attachedFiles={attachedFiles}
+                    onRemoveFile={removeFile}
+                    isStreaming={streamState.isStreaming}
+                    placeholder={isGuest ? "Ask Hanachan anything..." : "Synchronize your thoughts..."}
+                />
+            </div>
 
-            <ResourcePreviewModal
-                resource={previewResource}
-                isOpen={!!previewResource}
-                onClose={closeResourcePreview}
-                onAddToChat={() => {
-                    if (previewResource) {
-                        stageResource({
-                            id: previewResource.id,
-                            title: previewResource.title,
-                            type: previewResource.type
-                        });
-                    }
-                }}
-            />
+            {/* Resource Modal */}
+            {stagedResourceToProcess && (
+                <ResourcePreviewModal
+                    resource={stagedResourceToProcess}
+                    onClose={closeResourcePreview}
+                    onProcess={(res) => {
+                        consumeStagedResource();
+                        handleSend(`Please analyze this ${res.type}: ${res.title}`);
+                    }}
+                />
+            )}
         </div>
     );
 }
