@@ -87,13 +87,13 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
     // --- RENDER HELPERS ---
 
     const renderChatModeContent = () => (
-        <div className="flex flex-col h-full overflow-hidden bg-background">
+        <div className="flex flex-col h-full overflow-hidden bg-transparent">
             {/* Top Section: New Chat Button Only */}
             <div className="flex-shrink-0 flex flex-col pt-4 px-4 pb-3 gap-3 bg-background z-10 relative">
                 <Link
                     href="/chat"
                     className={`
-                        flex items-center justify-center gap-2 w-full py-4 px-4 bg-primary text-primary-foreground font-black rounded-2xl hover:opacity-90 transition-all duration-300  hover: active:scale-95 font-display uppercase tracking-widest text-[10px]
+                        flex items-center justify-center gap-2 w-full py-4 px-4 bg-primary-strong text-white font-black rounded-2xl hover:opacity-90 transition-all duration-300  hover: active:scale-95 font-display uppercase tracking-widest text-[10px]
                         ${!isExpanded ? 'p-0 h-14 w-14 mx-auto' : ''}
                     `}
                     title={!isExpanded ? "New Chat" : undefined}
@@ -112,7 +112,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     {isExpanded && (
                         <button
                             onClick={() => setIsHistoryOpen(!isHistoryOpen)}
-                            className="flex items-center justify-between px-5 py-4 text-[10px] font-display font-black text-muted-foreground/50 uppercase tracking-[0.2em] hover:bg-muted/30 transition-colors w-full flex-shrink-0"
+                            className="flex items-center justify-between px-5 py-5 text-[10px] font-display font-black text-neutral-ink/80 uppercase tracking-[0.2em] hover:bg-neutral-beige transition-colors w-full flex-shrink-0"
                         >
                             <span className="flex items-center gap-3">
                                 <History size={16} />
@@ -126,13 +126,13 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     {isExpanded && isHistoryOpen && (
                         <div className="px-4 pt-1 pb-3 flex-shrink-0">
                             <div className="relative group">
-                                <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/30 group-focus-within:text-primary transition-colors" />
+                                <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-ink/60 group-focus-within:text-primary-strong transition-colors" />
                                 <input
                                     type="text"
                                     placeholder={isGuest ? "Search demo chats..." : "Search..."}
                                     value={chatSearch}
                                     onChange={(e) => setChatSearch(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-2.5 text-xs bg-muted/20 border border-border/50 rounded-xl focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-bold"
+                                    className="w-full pl-10 pr-4 py-3 text-xs bg-neutral-white border border-neutral-gray/30 rounded-xl focus:outline-none focus:border-primary-strong focus:ring-4 focus:ring-primary/10 transition-all font-bold shadow-inner"
                                 />
                             </div>
                         </div>
@@ -150,8 +150,8 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                                             className={`
                                                 group block p-4 rounded-xl border transition-all duration-300 relative overflow-hidden
                                                 ${pathname === `/chat/${chat._id}`
-                                                    ? 'bg-card border-primary/20  text-primary'
-                                                    : 'border-transparent hover:bg-card hover:border-border/50 text-muted-foreground hover:text-foreground'
+                                                    ? 'bg-neutral-white border-primary-strong/30 text-primary-strong shadow-md ring-1 ring-primary-strong/5'
+                                                    : 'border-transparent hover:bg-neutral-white hover:border-neutral-gray/30 text-neutral-ink hover:text-neutral-ink'
                                                 }
                                             `}
                                         >
@@ -178,27 +178,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                                     </div>
                                 )}
 
-                                {isGuest && (
-                                    <div className="pt-4 mt-4 border-t border-border/50">
-                                        <button
-                                            onClick={() => openAuth('REGISTER', { title: "Chat History", description: "Sign up to save unlimited chat history and access it from any device." })}
-                                            className="w-full block p-5 rounded-2xl bg-card border border-border  hover: hover:border-primary/30 transition-all group text-left relative overflow-hidden"
-                                        >
-                                            <div className="absolute -top-10 -right-10 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors" />
-                                            <div className="relative z-10">
-                                                <div className="flex items-center gap-3 mb-2">
-                                                    <div className="p-2 bg-primary/10 rounded-xl text-primary ">
-                                                        <Crown size={14} className="fill-current" />
-                                                    </div>
-                                                    <span className="text-xs font-black text-foreground group-hover:text-primary transition-colors font-display uppercase tracking-widest">Save History</span>
-                                                </div>
-                                                <p className="text-[10px] text-muted-foreground font-bold leading-relaxed opacity-80">
-                                                    Don't lose your learning journey. Create a free account now.
-                                                </p>
-                                            </div>
-                                        </button>
-                                    </div>
-                                )}
+
                             </div>
                         )}
 
@@ -229,7 +209,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     {isExpanded && (
                         <button
                             onClick={() => setIsResourcesOpen(!isResourcesOpen)}
-                            className="flex items-center justify-between px-5 py-4 text-[10px] font-display font-black text-muted-foreground/50 uppercase tracking-[0.2em] hover:bg-muted/30 transition-colors w-full flex-shrink-0"
+                            className="flex items-center justify-between px-5 py-5 text-[10px] font-display font-black text-neutral-ink/80 uppercase tracking-[0.2em] hover:bg-neutral-beige transition-colors w-full flex-shrink-0"
                         >
                             <span className="flex items-center gap-3">
                                 <FolderOpen size={16} />
@@ -243,13 +223,13 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     {isExpanded && isResourcesOpen && (
                         <div className="px-4 pt-1 pb-3 flex-shrink-0">
                             <div className="relative group">
-                                <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/30 group-focus-within:text-primary transition-colors" />
+                                <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-ink/60 group-focus-within:text-primary-strong transition-colors" />
                                 <input
                                     type="text"
                                     placeholder="Search resources..."
                                     value={resourceSearch}
                                     onChange={(e) => setResourceSearch(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-2.5 text-xs bg-muted/20 border border-border/50 rounded-xl focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-bold"
+                                    className="w-full pl-10 pr-4 py-3 text-xs bg-neutral-white border border-neutral-gray/30 rounded-xl focus:outline-none focus:border-primary-strong focus:ring-4 focus:ring-primary/10 transition-all font-bold shadow-inner"
                                 />
                             </div>
                         </div>
@@ -399,7 +379,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
 
 
     const renderStandardModeContent = () => (
-        <div className="flex flex-col h-full overflow-hidden bg-background">
+        <div className="flex flex-col h-full overflow-hidden bg-transparent">
             {/* Standard Vertical Navigation */}
             <div className="flex-1 overflow-y-auto min-h-0 px-3 py-4 space-y-2">
                 {NAV_CONFIG.map((item) => {
@@ -473,11 +453,11 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
 
     return (
         <aside
-            className={`fixed left-0 top-0 bottom-0 z-40 flex flex-col bg-background border-r border-border transition-all duration-500 ease-spring  ${className}`}
+            className={`fixed left-0 top-0 bottom-0 z-40 flex flex-col bg-secondary border-r border-neutral-gray transition-all duration-500 ease-spring  ${className}`}
             style={{ width }}
         >
             {/* Header */}
-            <div className={`flex-shrink-0 flex items-center ${isExpanded ? 'justify-between px-6' : 'justify-center'} border-b border-border h-[80px] bg-background`}>
+            <div className={`flex-shrink-0 flex items-center ${isExpanded ? 'justify-between px-6' : 'justify-center'} border-b border-neutral-gray h-[80px] bg-transparent`}>
                 {isExpanded ? (
                     <>
                         <Link href="/" className="flex items-center gap-3 animate-in fade-in slide-in-from-left-4 duration-500">
