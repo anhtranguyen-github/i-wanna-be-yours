@@ -55,7 +55,7 @@ export default function UnifiedChatPage() {
     // Show loading while checking auth
     if (loading) {
         return (
-            <div className="flex flex-1 h-full items-center justify-center bg-background">
+            <div className="flex flex-1 h-full items-center justify-center bg-secondary">
                 <div className="flex flex-col items-center gap-4 text-muted-foreground">
                     <div className="relative">
                         <Loader2 className="w-10 h-10 animate-spin text-primary" />
@@ -73,9 +73,9 @@ export default function UnifiedChatPage() {
     // Actually, letting ChatMainArea handle the 'no ID' case is fine.
 
     return (
-        <div className="flex flex-1 h-full bg-background overflow-hidden">
+        <div className="flex flex-1 h-full bg-secondary overflow-hidden">
             {/* Main Chat Area */}
-            <main className="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-background">
+            <main className="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-neutral-white shadow-xl z-10 relative">
                 <ChatMainArea conversationId={conversationId} />
             </main>
 
@@ -92,7 +92,7 @@ function ChatRightSidebarWrapper() {
 
     return (
         <aside
-            className="flex-shrink-0 h-full bg-background border-l border-border transition-all duration-500 ease-spring z-20"
+            className="flex-shrink-0 h-full bg-neutral-beige border-l border-neutral-gray transition-all duration-500 ease-spring z-20"
             style={{ width: SIDEBAR_WIDTHS.right[rightSidebar] }}
         >
             <ChatRightSidebar />

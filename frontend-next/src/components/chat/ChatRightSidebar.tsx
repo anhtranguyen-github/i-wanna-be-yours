@@ -40,7 +40,7 @@ export function ChatRightSidebar() {
     // COLLAPSED STATE
     if (rightSidebar === 'collapsed') {
         return (
-            <div className="flex flex-col items-center py-4 h-full border-l border-border bg-sidebar ">
+            <div className="flex flex-col items-center py-4 h-full border-l border-neutral-gray/20 bg-secondary shadow-inner">
                 <button
                     onClick={() => setRightSidebar('minimized')}
                     className="p-2.5 rounded-2xl hover:bg-muted text-muted-foreground transition-all active:scale-95"
@@ -57,8 +57,8 @@ export function ChatRightSidebar() {
         return (
             <div className="flex flex-col h-full border-l border-border bg-sidebar ">
                 {/* Header */}
-                <div className="flex items-center justify-between p-4 border-b border-border bg-card/50  ">
-                    <h3 className="font-display font-black text-foreground tracking-tight">Resources</h3>
+                <div className="flex items-center justify-between p-5 border-b border-neutral-gray/30 bg-neutral-beige">
+                    <h3 className="font-display font-black text-neutral-ink tracking-widest text-xs uppercase">Resources</h3>
                     <div className="flex gap-1">
                         <button
                             onClick={() => setRightSidebar('collapsed')}
@@ -103,7 +103,7 @@ export function ChatRightSidebar() {
                             <button
                                 key={artifact.id}
                                 onClick={() => openArtifact(artifact)}
-                                className="w-full flex items-center gap-4 p-4 rounded-2xl bg-card border border-border hover:border-primary/30  hover: transition-all group text-left relative overflow-hidden"
+                                className="w-full flex items-center gap-4 p-4 rounded-2xl bg-neutral-white border border-neutral-gray/20 hover:border-primary/40 shadow-sm hover:shadow-xl transition-all group text-left relative overflow-hidden"
                             >
                                 <div className="w-12 h-12 rounded-xl bg-muted/50 border border-border flex items-center justify-center group-hover:border-primary/20 transition-colors ">
                                     <ArtifactIcon type={artifact.type} />
@@ -130,9 +130,9 @@ export function ChatRightSidebar() {
 
     // EXPANDED STATE (Artifact Window)
     return (
-        <div className="flex flex-col h-full border-l border-border bg-background  relative z-20">
+        <div className="flex flex-col h-full border-l border-neutral-gray/30 bg-neutral-white relative z-20 shadow-[-10px_0_30px_rgba(0,0,0,0.05)]">
             {/* Window Header */}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-border bg-card  ">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-neutral-gray/20 bg-neutral-beige shadow-sm">
                 <div className="flex items-center gap-4">
                     <button
                         onClick={() => setRightSidebar('minimized')}
@@ -155,7 +155,7 @@ export function ChatRightSidebar() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <button className="flex items-center gap-2 px-5 py-2 rounded-2xl bg-primary text-primary-foreground text-xs font-black uppercase tracking-widest hover:opacity-90  transition-all active:scale-95 font-display">
+                    <button className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-primary-strong text-white text-[10px] font-black uppercase tracking-widest hover:opacity-90 transition-all active:scale-95 font-display shadow-lg shadow-primary/20">
                         <Save size={18} />
                         Save
                     </button>
