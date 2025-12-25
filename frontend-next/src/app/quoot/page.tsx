@@ -1,10 +1,6 @@
 "use client";
 
-/**
- * Quoot - Fast-Paced Flashcard Game Hub
- * (Quizizz + Kahoot Hybrid)
- */
-
+import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -19,10 +15,15 @@ import {
     Heart,
     Sparkles,
     ChevronRight,
-    Star
+    Star,
+    Search
 } from "lucide-react";
 import { mockQuootDecks } from "@/data/mockQuoot";
 import { QuootDeck, QuootMode, QUOOT_MODE_CONFIG } from "@/types/quoot";
+import { SearchNexus } from "@/components/shared/SearchNexus";
+import { SearchNexusState, FilterGroup } from "@/types/search";
+import { InformativeLoginCard } from "@/components/shared/InformativeLoginCard";
+import { useUser } from "@/context/UserContext";
 
 // =============================================================================
 // MODE CARDS
@@ -78,16 +79,20 @@ function ModeCard({ mode, title, description, icon, color, stats, onClick }: {
     return (
         <button
             onClick={onClick}
-            className="group bg-card rounded-2xl border border-border p-6 text-left hover:border-primary/40 transition-all hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]"
+            className="group bg-neutral-white p-8 rounded-[2rem] border border-neutral-gray/10 text-left hover:border-primary-strong/40 transition-all hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] shadow-sm relative overflow-hidden"
         >
-            <div className={`w-14 h-14 ${color} rounded-2xl flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform`}>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
+            <div className={`w-16 h-16 ${color} rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-${color.replace('bg-', '')}/20 group-hover:scale-110 transition-transform`}>
                 {icon}
             </div>
-            <h3 className="text-lg font-black text-foreground font-display mb-1">{title}</h3>
-            <p className="text-sm text-muted-foreground font-bold mb-3">{description}</p>
-            <span className="text-[10px] font-black uppercase tracking-widest text-primary/70 font-display">
-                {stats}
-            </span>
+            <h3 className="text-xl font-black text-neutral-ink font-display mb-2">{title}</h3>
+            <p className="text-sm text-neutral-ink/60 font-bold mb-6 leading-relaxed">{description}</p>
+            <div className="flex items-center justify-between">
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary-strong bg-primary/10 px-3 py-1.5 rounded-lg">
+                    {stats}
+                </span>
+                <ChevronRight className="text-neutral-ink/20 group-hover:text-primary-strong group-hover:translate-x-1 transition-all" size={20} />
+            </div>
         </button>
     );
 }
@@ -96,29 +101,32 @@ function DeckCard({ deck, onClick }: { deck: QuootDeck; onClick: () => void }) {
     return (
         <button
             onClick={onClick}
-            className="group bg-card rounded-2xl border border-border p-5 text-left hover:border-primary/40 transition-all hover:shadow-lg"
+            className="group bg-neutral-white rounded-[2rem] border border-neutral-gray/10 p-6 text-left hover:border-primary-strong/40 transition-all hover:shadow-xl shadow-sm relative overflow-hidden"
         >
-            <div className="flex items-start justify-between mb-3">
-                <div className={`w-12 h-12 ${deck.coverColor || 'bg-primary'} rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform`}>
+            <div className="flex items-start justify-between mb-4">
+                <div className={`w-14 h-14 ${deck.coverColor || 'bg-primary/20'} rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition-transform shadow-inner`}>
                     {deck.coverEmoji || '📚'}
                 </div>
                 {deck.level && (
-                    <span className="px-2 py-1 bg-muted text-muted-foreground rounded text-[10px] font-black uppercase tracking-widest">
+                    <span className="px-3 py-1.5 bg-neutral-beige/50 text-neutral-ink/60 border border-neutral-gray/10 rounded-xl text-[9px] font-black uppercase tracking-widest">
                         {deck.level}
                     </span>
                 )}
             </div>
-            <h4 className="text-base font-black text-foreground font-display mb-1 group-hover:text-primary transition-colors">
+            <h4 className="text-lg font-black text-neutral-ink font-display mb-2 group-hover:text-primary-strong transition-colors line-clamp-1">
                 {deck.title}
             </h4>
-            <p className="text-xs text-muted-foreground font-bold mb-3 line-clamp-2">
+            <p className="text-xs text-neutral-ink/50 font-bold mb-6 line-clamp-2 leading-relaxed">
                 {deck.description}
             </p>
-            <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                <span>{deck.cardCount} cards</span>
+            <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-[0.15em] text-neutral-ink/30 border-t border-neutral-gray/10 pt-4">
+                <span className="flex items-center gap-1.5">
+                    <Layers size={14} className="text-neutral-ink/20" />
+                    {deck.cardCount} Cards
+                </span>
                 {deck.avgScore && (
-                    <span className="flex items-center gap-1">
-                        <Star size={12} className="text-amber-500" />
+                    <span className="flex items-center gap-1.5 text-secondary">
+                        <Star size={14} fill="currentColor" />
                         {deck.avgScore}%
                     </span>
                 )}
@@ -133,9 +141,68 @@ function DeckCard({ deck, onClick }: { deck: QuootDeck; onClick: () => void }) {
 
 export default function GamePage() {
     const router = useRouter();
+    const { user } = useUser();
+
+    const [searchState, setSearchState] = useState<SearchNexusState>({
+        query: "",
+        activeFilters: {},
+        activeTab: 'PUBLIC'
+    });
+    const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+
+    const filterGroups: FilterGroup[] = [
+        {
+            id: 'category',
+            label: 'Genre',
+            type: 'MULTI',
+            options: [
+                { id: 'ANIME', label: 'Anime & Manga' },
+                { id: 'GENERAL', label: 'Everyday' },
+                { id: 'JLPT', label: 'JLPT Prep' },
+                { id: 'MEDIA', label: 'J-Pop & News' }
+            ]
+        },
+        {
+            id: 'level',
+            label: 'Level',
+            type: 'SINGLE',
+            options: [
+                { id: 'N5', label: 'N5' },
+                { id: 'N4', label: 'N4' },
+                { id: 'N3', label: 'N3' },
+                { id: 'N2', label: 'N2' },
+                { id: 'N1', label: 'N1' }
+            ]
+        }
+    ];
+
+    const filteredDecks = useMemo(() => {
+        let result = mockQuootDecks;
+
+        // Filter by tags/level
+        const selectedLevels = searchState.activeFilters.level || [];
+        if (selectedLevels.length > 0) {
+            result = result.filter(d => d.level && selectedLevels.includes(d.level));
+        }
+
+        // Search
+        if (searchState.query) {
+            const q = searchState.query.toLowerCase();
+            result = result.filter(d =>
+                d.title.toLowerCase().includes(q) ||
+                d.description.toLowerCase().includes(q)
+            );
+        }
+
+        return result;
+    }, [searchState]);
+
+    const handleSearchChange = (newState: SearchNexusState) => {
+        setSearchState(newState);
+        if (newState.activeTab === 'PUBLIC') setShowLoginPrompt(false);
+    };
 
     const handleModeSelect = (mode: QuootMode) => {
-        // For now, go to deck selection with mode in URL
         router.push(`/quoot?mode=${mode}`);
     };
 
@@ -144,138 +211,123 @@ export default function GamePage() {
     };
 
     return (
-        <div className="min-h-screen bg-background pb-24">
+        <div className="min-h-screen bg-secondary/30 pb-24">
             {/* Header */}
-            <header className="bg-gradient-to-r from-primary/5 via-secondary/5 to-accent/5 border-b border-border px-6 py-10">
-                <div className="max-w-6xl mx-auto">
-                    <div className="flex items-center gap-4 mb-4">
-                        <div className="w-14 h-14 bg-primary rounded-2xl flex items-center justify-center">
-                            <Gamepad2 size={28} className="text-primary-foreground" />
-                        </div>
-                        <div>
-                            <h1 className="text-4xl font-black text-foreground font-display tracking-tight">
-                                Quoot
-                            </h1>
-                            <p className="text-muted-foreground font-bold">Fast-paced flashcard battles</p>
-                        </div>
+            <header className="bg-neutral-white border-b border-neutral-gray/10 px-8 py-16 text-center relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/sakura.png')] opacity-[0.03] pointer-events-none" />
+                <div className="max-w-4xl mx-auto space-y-6 relative z-10">
+                    <div className="w-24 h-24 bg-primary-strong rounded-[2.5rem] flex items-center justify-center mx-auto shadow-2xl shadow-primary/30 animate-bounce-slow relative">
+                        <div className="absolute inset-0 bg-white/20 rounded-full animate-ping opacity-20" />
+                        <Gamepad2 size={48} className="text-white" />
                     </div>
-                    <p className="text-sm text-muted-foreground max-w-xl">
-                        Master Japanese vocabulary through competitive gameplay. Answer quickly, build streaks, and climb the leaderboard!
-                    </p>
+                    <div>
+                        <h1 className="text-7xl font-black text-neutral-ink font-display tracking-tight mb-4">
+                            Hanachan Quoot
+                        </h1>
+                        <p className="text-2xl text-neutral-ink/50 font-bold max-w-2xl mx-auto leading-relaxed">
+                            Competitive flashcard battles. Master Japanese through fast-paced gameplay and climb the global ranks.
+                        </p>
+                    </div>
                 </div>
             </header>
 
-            <main className="max-w-6xl mx-auto px-6 py-8">
-                {/* Game Modes */}
-                <section className="mb-12">
-                    <h2 className="text-xl font-black text-foreground font-display tracking-tight mb-6 flex items-center gap-3">
-                        <Target size={20} className="text-primary" />
-                        Select Mode
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {gameModes.map((mode) => (
-                            <ModeCard
-                                key={mode.mode}
-                                {...mode}
-                                onClick={() => handleModeSelect(mode.mode)}
-                            />
-                        ))}
-                    </div>
-                </section>
+            {/* Nexus Controller */}
+            <div className="max-w-7xl mx-auto px-8 -mt-10 relative z-50">
+                <SearchNexus
+                    placeholder="Search for anime decks, JLPT drills, or song lyrics..."
+                    groups={filterGroups}
+                    state={searchState}
+                    onChange={handleSearchChange}
+                    onPersonalTabAttempt={() => setShowLoginPrompt(true)}
+                    isLoggedIn={!!user}
+                />
+            </div>
 
-                {/* Deck Selection */}
-                <section className="mb-12">
-                    <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-xl font-black text-foreground font-display tracking-tight flex items-center gap-3">
-                            <Layers size={20} className="text-secondary" />
-                            Quick Play - Choose a Deck
-                        </h2>
-                        <Link
-                            href="/quoot"
-                            className="text-[10px] font-black uppercase tracking-widest text-primary hover:text-primary/80 flex items-center gap-1"
-                        >
-                            View All <ChevronRight size={14} />
-                        </Link>
+            <main className="max-w-7xl mx-auto px-8 py-16">
+                {showLoginPrompt ? (
+                    <div className="py-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <InformativeLoginCard
+                            title="Your Personal Arcade"
+                            description="Save your favorite decks, track your high scores, and host custom challenge rooms for your friends."
+                            icon={Flame}
+                            benefits={[
+                                "Personal high-score leaderboard",
+                                "Custom deck creation suite",
+                                "Match history & performance analysis",
+                                "Exclusive seasonal game emojis"
+                            ]}
+                            flowType="FLASHCARDS"
+                        />
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                        {mockQuootDecks.slice(0, 6).map((deck) => (
-                            <DeckCard
-                                key={deck.id}
-                                deck={deck}
-                                onClick={() => handleDeckSelect(deck.id)}
-                            />
-                        ))}
-                    </div>
-                </section>
-
-                {/* Other Games */}
-                <section className="mb-12">
-                    <h2 className="text-xl font-black text-foreground font-display tracking-tight mb-6 flex items-center gap-3">
-                        <Sparkles size={20} className="text-accent" />
-                        More Games
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <Link href="/flashcards">
-                            <div className="bg-card rounded-2xl border border-border p-6 hover:border-primary/40 transition-all hover:shadow-lg flex items-center gap-5 group">
-                                <div className="w-14 h-14 bg-blue-500 rounded-2xl flex items-center justify-center text-white group-hover:scale-110 transition-transform">
-                                    <Layers size={24} />
+                ) : (
+                    <>
+                        {/* Game Modes */}
+                        <section className="mb-24">
+                            <div className="flex items-center gap-4 mb-12 border-b border-neutral-gray/10 pb-8">
+                                <div className="w-12 h-12 bg-secondary/20 rounded-2xl flex items-center justify-center shadow-inner">
+                                    <Target size={24} className="text-secondary" />
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-black text-foreground font-display group-hover:text-primary transition-colors">
-                                        Flashcards
-                                    </h3>
-                                    <p className="text-sm text-muted-foreground font-bold">
-                                        SRS study mode for deep learning
-                                    </p>
+                                    <h2 className="text-3xl font-black text-neutral-ink font-display">Execution Modes</h2>
+                                    <p className="text-xs font-black uppercase tracking-[0.3em] text-neutral-ink/20">Select your strategic protocol</p>
                                 </div>
                             </div>
-                        </Link>
-                        <Link href="/game/songify-vocabulary">
-                            <div className="bg-card rounded-2xl border border-border p-6 hover:border-primary/40 transition-all hover:shadow-lg flex items-center gap-5 group">
-                                <div className="w-14 h-14 bg-pink-500 rounded-2xl flex items-center justify-center text-white group-hover:scale-110 transition-transform">
-                                    <Music size={24} />
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+                                {gameModes.map((mode) => (
+                                    <ModeCard
+                                        key={mode.mode}
+                                        {...mode}
+                                        onClick={() => handleModeSelect(mode.mode)}
+                                    />
+                                ))}
+                            </div>
+                        </section>
+
+                        {/* Deck Selection */}
+                        <section>
+                            <div className="flex items-center justify-between mb-12 border-b border-neutral-gray/10 pb-8">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center shadow-inner">
+                                        <Layers size={24} className="text-primary-strong" />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-3xl font-black text-neutral-ink font-display">Curated Deck Library</h2>
+                                        <p className="text-xs font-black uppercase tracking-[0.3em] text-neutral-ink/20">Initialize cognitive transmission</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h3 className="text-lg font-black text-foreground font-display group-hover:text-primary transition-colors">
-                                        Songify
-                                    </h3>
-                                    <p className="text-sm text-muted-foreground font-bold">
-                                        Learn vocabulary through music
-                                    </p>
+                                <div className="text-[11px] font-black uppercase tracking-[0.3em] text-neutral-ink/20 bg-neutral-beige/50 px-4 py-2 rounded-full border border-neutral-gray/10">
+                                    {filteredDecks.length} NODES AVAILABLE
                                 </div>
                             </div>
-                        </Link>
-                    </div>
-                </section>
 
-                {/* Daily Challenge Banner */}
-                <section>
-                    <div className="bg-gradient-to-r from-purple-500/10 via-primary/10 to-accent/10 rounded-[2rem] border border-border p-8 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
-
-                        <div className="flex items-center gap-5 relative z-10">
-                            <div className="w-16 h-16 bg-purple-500 rounded-2xl flex items-center justify-center text-white">
-                                <Trophy size={32} />
-                            </div>
-                            <div>
-                                <h2 className="text-2xl font-black text-foreground font-display tracking-tight">
-                                    Daily Challenge
-                                </h2>
-                                <p className="text-muted-foreground font-bold">
-                                    Complete today&apos;s deck to earn bonus XP!
-                                </p>
-                            </div>
-                        </div>
-
-                        <button
-                            onClick={() => handleDeckSelect(mockQuootDecks[0]?.id || 'n5-vocab-essentials')}
-                            className="px-8 py-4 bg-foreground text-background font-black font-display text-sm uppercase tracking-widest rounded-2xl hover:opacity-90 transition-all active:scale-[0.98] relative z-10 flex items-center gap-2"
-                        >
-                            <Flame size={18} />
-                            Play Now
-                        </button>
-                    </div>
-                </section>
+                            {filteredDecks.length > 0 ? (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                                    {filteredDecks.map((deck) => (
+                                        <DeckCard
+                                            key={deck.id}
+                                            deck={deck}
+                                            onClick={() => handleDeckSelect(deck.id)}
+                                        />
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="py-40 text-center bg-neutral-white/40 rounded-[3.5rem] border-2 border-dashed border-neutral-gray/20">
+                                    <div className="w-24 h-24 bg-neutral-beige/50 rounded-[2rem] flex items-center justify-center mx-auto mb-8 text-neutral-ink/10 shadow-inner">
+                                        <Search size={40} />
+                                    </div>
+                                    <h3 className="text-3xl font-black text-neutral-ink mb-3">No Decks Detected</h3>
+                                    <p className="text-neutral-ink/40 font-bold mb-10 text-lg">Try adjusting your cognitive parameters.</p>
+                                    <button
+                                        onClick={() => setSearchState({ ...searchState, query: "", activeFilters: {} })}
+                                        className="px-8 py-4 bg-neutral-ink text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-primary-strong transition-all shadow-xl shadow-neutral-ink/10 active:scale-95"
+                                    >
+                                        Reset Parameters
+                                    </button>
+                                </div>
+                            )}
+                        </section>
+                    </>
+                )}
             </main>
         </div>
     );
