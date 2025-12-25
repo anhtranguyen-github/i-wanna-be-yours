@@ -112,7 +112,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     {isExpanded && (
                         <button
                             onClick={() => setIsHistoryOpen(!isHistoryOpen)}
-                            className="flex items-center justify-between px-5 py-5 text-[10px] font-display font-black text-neutral-ink/80 uppercase tracking-[0.2em] hover:bg-neutral-beige transition-colors w-full flex-shrink-0"
+                            className="flex items-center justify-between px-5 py-5 text-[10px] font-display font-black text-neutral-ink uppercase tracking-[0.2em] hover:bg-neutral-beige transition-colors w-full flex-shrink-0"
                         >
                             <span className="flex items-center gap-3">
                                 <History size={16} />
@@ -209,7 +209,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     {isExpanded && (
                         <button
                             onClick={() => setIsResourcesOpen(!isResourcesOpen)}
-                            className="flex items-center justify-between px-5 py-5 text-[10px] font-display font-black text-neutral-ink/80 uppercase tracking-[0.2em] hover:bg-neutral-beige transition-colors w-full flex-shrink-0"
+                            className="flex items-center justify-between px-5 py-5 text-[10px] font-display font-black text-neutral-ink uppercase tracking-[0.2em] hover:bg-neutral-beige transition-colors w-full flex-shrink-0"
                         >
                             <span className="flex items-center gap-3">
                                 <FolderOpen size={16} />
@@ -326,8 +326,8 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                             className={`
                                 flex items-center justify-center rounded-xl transition-all duration-300 group p-3 relative
                                 ${activeSectionId === item.id
-                                    ? 'bg-primary text-primary-foreground '
-                                    : 'bg-card border border-border/50 text-muted-foreground hover:text-foreground hover: hover:border-primary/20'
+                                    ? 'bg-primary text-neutral-ink shadow-md'
+                                    : 'bg-card border border-neutral-gray/20 text-neutral-ink hover:bg-neutral-beige transition-all'
                                 }
                             `}
                             title={item.label}
@@ -347,8 +347,8 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                             key={item.id}
                             href={item.href}
                             className={`p-2.5 rounded-xl transition-all active:scale-95 ${activeSectionId === item.id
-                                ? 'bg-primary/10 text-primary'
-                                : 'hover:bg-card hover: text-muted-foreground hover:text-primary'
+                                ? 'bg-primary/20 text-neutral-ink'
+                                : 'hover:bg-neutral-beige text-neutral-ink'
                                 }`}
                             title={item.label}
                         >
@@ -358,7 +358,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     {user ? (
                         <button
                             onClick={() => logout()}
-                            className="p-2.5 rounded-xl hover:bg-destructive/10 hover:text-destructive text-muted-foreground transition-all active:scale-95"
+                            className="p-2.5 rounded-xl hover:bg-destructive/10 hover:text-destructive text-neutral-ink transition-all active:scale-95"
                             title="Logout"
                         >
                             <LogOut size={isExpanded ? 18 : 22} />
@@ -366,7 +366,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     ) : (
                         <button
                             onClick={() => openAuth('LOGIN')}
-                            className="p-2.5 rounded-xl hover:bg-primary/10 hover:text-primary text-muted-foreground transition-all active:scale-95"
+                            className="p-2.5 rounded-xl hover:bg-primary/10 hover:text-primary text-neutral-ink transition-all active:scale-95"
                             title="Login"
                         >
                             <LogOut size={isExpanded ? 18 : 22} className="rotate-180" />
@@ -391,8 +391,8 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                             className={`
                                 flex items-center gap-4 p-4 rounded-xl transition-all duration-300 group relative overflow-hidden
                                 ${isActive
-                                    ? 'bg-primary text-primary-foreground '
-                                    : 'bg-card border border-border/50 text-muted-foreground hover:text-foreground hover: hover:border-primary/20'
+                                    ? 'bg-primary text-neutral-ink shadow-md ring-1 ring-primary-strong/10'
+                                    : 'bg-neutral-white border border-neutral-gray/20 text-neutral-ink hover:bg-neutral-beige transition-all shadow-sm'
                                 }
                             `}
                             title={!isExpanded ? item.label : undefined}
@@ -421,8 +421,8 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                             key={item.id}
                             href={item.href}
                             className={`p-3 rounded-xl transition-all active:scale-95 ${activeSectionId === item.id
-                                ? 'bg-primary/10 text-primary'
-                                : 'hover:bg-card hover: text-muted-foreground hover:text-primary'
+                                ? 'bg-primary/20 text-neutral-ink shadow-sm'
+                                : 'hover:bg-neutral-beige text-neutral-ink transition-all'
                                 }`}
                             title={item.label}
                         >
@@ -432,7 +432,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     {user ? (
                         <button
                             onClick={() => logout()}
-                            className="p-3 rounded-xl hover:bg-destructive/10 hover:text-destructive text-muted-foreground transition-all active:scale-95"
+                            className="p-3 rounded-xl hover:bg-destructive/10 hover:text-destructive text-neutral-ink transition-all active:scale-95"
                             title="Logout"
                         >
                             <LogOut size={22} />
@@ -440,7 +440,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     ) : (
                         <button
                             onClick={() => openAuth('LOGIN')}
-                            className="p-3 rounded-xl hover:bg-primary/10 hover:text-primary text-muted-foreground transition-all active:scale-95"
+                            className="p-3 rounded-xl hover:bg-primary/10 hover:text-primary text-neutral-ink transition-all active:scale-95"
                             title="Login"
                         >
                             <LogOut size={22} className="rotate-180" />
@@ -462,7 +462,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     <>
                         <Link href="/" className="flex items-center gap-3 animate-in fade-in slide-in-from-left-4 duration-500">
                             <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center text-xl  border border-secondary/20">🌸</div>
-                            <span className="font-display font-black text-2xl text-foreground tracking-tight">hanachan</span>
+                            <span className="font-display font-black text-2xl text-neutral-ink tracking-tight">hanachan</span>
                         </Link>
                         <button
                             onClick={toggle}
