@@ -67,9 +67,9 @@ const config: Config = {
 				},
 				muted: {
 					DEFAULT: '#EFE6D8', // N-02
-					foreground: '#B8B8B8' // N-03
+					foreground: '#4A4A4A' // N-04 Ink Gray
 				},
-				border: '#B8B8B8', // N-03
+				border: '#4A4A4A', // N-04 Ink Gray
 			},
 			gridTemplateColumns: {
 				listItem: '35px 1fr',
