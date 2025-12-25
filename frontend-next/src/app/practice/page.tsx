@@ -1,145 +1,180 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
-import { GraduationCap, BookCheck, ArrowRight, Lock, Flame, LayoutGrid, Target as TargetIcon, History } from "lucide-react";
-import { useUser } from "@/context/UserContext";
-import { useGlobalAuth } from "@/context/GlobalAuthContext";
+import React, { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import {
+    LayoutGrid,
+    StretchHorizontal,
+    ArrowLeft,
+    Zap,
+    Activity,
+    BrainCircuit,
+    SearchX
+} from "lucide-react";
+import { FilterState, PracticeNode, PracticeMode, JLPTLevel, SkillType } from "@/types/practice";
+import * as practiceService from "@/services/practiceService";
+import AdvancedFilterBar from "@/components/practice/AdvancedFilterBar";
+import PracticeListCard from "@/components/practice/PracticeListCard";
+import PracticeCard from "@/components/practice/PracticeCard";
 
-interface PracticeCategory {
-    id: string;
-    title: string;
-    description: string;
-    icon: React.ReactNode;
-    href: string;
-    color: string;
-    bgColor: string;
-    comingSoon?: boolean;
-}
+export default function PracticeHubPage() {
+    const router = useRouter();
 
-const practiceCategories: PracticeCategory[] = [
-    {
-        id: "jlpt-practice",
-        title: "JLPT Simulator",
-        description: "Adaptive simulations and skill-specific drills for all levels.",
-        icon: <GraduationCap size={24} />,
-        href: "/practice/jlpt",
-        color: "text-primary",
-        bgColor: "bg-primary/10",
-    },
-    {
-        id: "quizzes",
-        title: "Quick Quizzes",
-        description: "Rapid practice across grammar, vocabulary, and kanji.",
-        icon: <BookCheck size={24} />,
-        href: "/practice/quiz",
-        color: "text-foreground",
-        bgColor: "bg-muted",
-    },
-];
+    // State
+    const [nodes, setNodes] = useState<PracticeNode[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [viewMode, setViewMode] = useState<'LIST' | 'GRID'>('LIST');
+    const [searchQuery, setSearchQuery] = useState("");
+    const [filters, setFilters] = useState<FilterState>({
+        mode: 'ALL',
+        level: 'ALL',
+        skill: 'ALL',
+        timing: 'ALL',
+        origin: 'ALL',
+        status: 'ALL'
+    });
 
-export default function PracticePage() {
-    const { user } = useUser();
-    const { openAuth } = useGlobalAuth();
+    // Fetch Data
+    const fetchNodes = useCallback(async () => {
+        setIsLoading(true);
+        try {
+            const { nodes: fetchedNodes } = await practiceService.getNodes(filters);
+
+            // Front-end search filtering
+            const filtered = fetchedNodes.filter(node =>
+                node.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                node.description.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+
+            setNodes(filtered);
+        } catch (error) {
+            console.error("Failed to load practice nexus:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    }, [filters, searchQuery]);
+
+    useEffect(() => {
+        fetchNodes();
+    }, [fetchNodes]);
+
+    const handleStartNode = (id: string) => {
+        const node = nodes.find(n => n.id === id);
+        if (node?.mode === 'QUIZ') {
+            router.push(`/practice/quiz/${id}`);
+        } else {
+            router.push(`/practice/jlpt/session/${id}`);
+        }
+    };
 
     return (
-        <div className="min-h-screen bg-secondary pb-24">
-            {/* Header */}
-            <header className="bg-neutral-white border-b border-neutral-gray/30 px-6 py-8 sticky top-0 z-50 shadow-sm">
-                <div className="max-w-6xl mx-auto flex items-center gap-4">
-                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                        <GraduationCap size={24} className="text-primary" />
-                    </div>
-                    <div>
-                        <h1 className="text-2xl font-bold text-foreground font-display">Practice</h1>
-                        <p className="text-sm text-muted-foreground">Reinforce your Japanese skills</p>
-                    </div>
-                </div>
-            </header>
+        <div className="min-h-screen bg-secondary/30 pb-20">
+            {/* Header Section */}
+            <div className="bg-neutral-white border-b border-neutral-gray/10 px-8 py-10 shadow-sm relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-[100px] -mr-48 -mt-48 transition-all duration-1000" />
 
-            <main className="max-w-6xl mx-auto px-6 py-8">
-                {/* Stats */}
-                {user && (
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-                        <StatCard label="Streak" value="0" icon={<Flame className="text-accent" size={20} />} />
-                        <StatCard label="Cards" value="0" icon={<LayoutGrid className="text-primary-strong" size={20} />} />
-                        <StatCard label="Accuracy" value="--%" icon={<TargetIcon className="text-neutral-ink" size={20} />} />
-                        <StatCard label="Time" value="0m" icon={<History className="text-neutral-gray" size={20} />} />
-                    </div>
-                )}
+                <div className="max-w-7xl mx-auto relative z-10">
+                    <button
+                        onClick={() => router.push('/dashboard')}
+                        className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-neutral-ink hover:text-primary-strong transition-all mb-8 group"
+                    >
+                        <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+                        Back to Command Center
+                    </button>
 
-                {/* Section Title */}
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="w-1 h-5 bg-primary rounded-full" />
-                    <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wide">Categories</h2>
-                </div>
-
-                {/* Practice Categories */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                    {practiceCategories.map((category) => (
-                        <PracticeCard key={category.id} category={category} />
-                    ))}
-                </div>
-
-                {/* Guest Prompt */}
-                {!user && (
-                    <div className="bg-neutral-white rounded-2xl border border-neutral-gray/20 p-12 text-center shadow-lg">
-                        <div className="w-20 h-20 bg-neutral-beige rounded-2xl flex items-center justify-center mx-auto mb-6">
-                            <Lock className="w-10 h-10 text-neutral-gray" />
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-3">
+                                <div className="p-3 bg-primary-strong text-white rounded-2xl shadow-lg shadow-primary/20">
+                                    <BrainCircuit size={32} />
+                                </div>
+                                <h1 className="text-5xl font-black text-neutral-ink font-display tracking-tight">Practice Nexus</h1>
+                            </div>
+                            <p className="text-lg text-neutral-ink/70 font-medium max-w-2xl leading-relaxed">
+                                Unified training environment. Select your objective, specify your cognitive parameters, and initiate the protocol.
+                            </p>
+                            <div className="flex items-center gap-6 mt-4">
+                                <div className="flex items-center gap-2 text-primary-strong font-black text-xs uppercase tracking-widest">
+                                    <Zap size={16} />
+                                    Active Nodes: {nodes.length}
+                                </div>
+                                <div className="flex items-center gap-2 text-secondary font-black text-xs uppercase tracking-widest">
+                                    <Activity size={16} />
+                                    Proficiency: Advanced
+                                </div>
+                            </div>
                         </div>
-                        <h3 className="text-2xl font-black text-neutral-ink mb-3 font-display">Sign in to track progress</h3>
-                        <p className="text-neutral-ink mb-8 max-w-md mx-auto font-bold">
-                            Create an account to save your practice history, track streaks, and unlock achievements.
+
+                        {/* View Switcher */}
+                        <div className="flex items-center p-1.5 bg-neutral-beige rounded-2xl border border-neutral-gray/10 shadow-inner">
+                            <button
+                                onClick={() => setViewMode('LIST')}
+                                className={`p-3 rounded-xl transition-all ${viewMode === 'LIST' ? "bg-neutral-white text-primary-strong shadow-md scale-105" : "text-neutral-ink/40 hover:text-neutral-ink"}`}
+                                title="List View"
+                            >
+                                <StretchHorizontal size={20} />
+                            </button>
+                            <button
+                                onClick={() => setViewMode('GRID')}
+                                className={`p-3 rounded-xl transition-all ${viewMode === 'GRID' ? "bg-neutral-white text-primary-strong shadow-md scale-105" : "text-neutral-ink/40 hover:text-neutral-ink"}`}
+                                title="Grid View"
+                            >
+                                <LayoutGrid size={20} />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Filter Hub */}
+            <div className="max-w-7xl mx-auto px-8 -mt-8 relative z-20">
+                <AdvancedFilterBar
+                    filters={filters}
+                    onFilterChange={setFilters}
+                    searchQuery={searchQuery}
+                    onSearchChange={setSearchQuery}
+                />
+            </div>
+
+            {/* Content Area */}
+            <main className="max-w-7xl mx-auto px-8 mt-12">
+                {isLoading ? (
+                    <div className="grid grid-cols-1 gap-4">
+                        {[1, 2, 3, 4, 5].map(i => (
+                            <div key={i} className="h-32 bg-neutral-white/50 border border-neutral-gray/10 rounded-[1.5rem] animate-pulse" />
+                        ))}
+                    </div>
+                ) : nodes.length > 0 ? (
+                    <div className={viewMode === 'LIST' ? "flex flex-col gap-4" : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"}>
+                        {nodes.map(node => (
+                            viewMode === 'LIST' ? (
+                                <PracticeListCard key={node.id} node={node} onStart={handleStartNode} />
+                            ) : (
+                                <PracticeCard key={node.id} config={node as any} onStart={handleStartNode} />
+                            )
+                        ))}
+                    </div>
+                ) : (
+                    <div className="flex flex-col items-center justify-center py-32 text-center bg-neutral-white/30 rounded-[3rem] border-2 border-dashed border-neutral-gray/20">
+                        <div className="p-8 bg-neutral-beige/50 rounded-full mb-8">
+                            <SearchX size={64} className="text-neutral-ink/20" />
+                        </div>
+                        <h3 className="text-3xl font-black text-neutral-ink font-display mb-4">No Nodes Detected</h3>
+                        <p className="text-neutral-ink/60 font-bold max-w-sm">
+                            Your current parameters yielded zero matches in the Nexus. Try relaxing your filters or synthesis criteria.
                         </p>
                         <button
-                            onClick={() => openAuth('REGISTER', { flowType: 'PRACTICE', title: 'Join Hanachan', description: 'Sign up to save your progress.' })}
-                            className="px-10 py-4 bg-primary-strong text-white font-black rounded-2xl hover:opacity-90 transition-all font-display uppercase tracking-widest text-xs shadow-lg shadow-primary/20"
+                            onClick={() => {
+                                setFilters({ mode: 'ALL', level: 'ALL', skill: 'ALL', timing: 'ALL', origin: 'ALL', status: 'ALL' });
+                                setSearchQuery("");
+                            }}
+                            className="mt-8 px-8 py-4 bg-neutral-ink text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-primary-strong transition-all"
                         >
-                            Sign Up Now
+                            Reset Parameters
                         </button>
                     </div>
                 )}
             </main>
         </div>
     );
-}
-
-function StatCard({ label, value, icon }: { label: string; value: string; icon: React.ReactNode }) {
-    return (
-        <div className="bg-neutral-white rounded-2xl border border-neutral-gray/20 p-5 flex items-center gap-4 shadow-sm">
-            <div className="w-12 h-12 bg-neutral-beige rounded-xl flex items-center justify-center">{icon}</div>
-            <div>
-                <div className="text-2xl font-black text-neutral-ink font-display">{value}</div>
-                <div className="text-[10px] text-neutral-gray font-black uppercase tracking-widest font-display">{label}</div>
-            </div>
-        </div>
-    );
-}
-
-function PracticeCard({ category }: { category: PracticeCategory }) {
-    const isComingSoon = category.comingSoon;
-
-    const content = (
-        <div className={`bg-neutral-white rounded-2xl border border-neutral-gray/30 p-8 transition-all duration-300 flex flex-col h-full shadow-sm ${isComingSoon ? 'opacity-50' : 'hover:shadow-xl hover:border-primary/40 cursor-pointer'}`}>
-            <div className="flex items-start justify-between mb-6">
-                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-inner ${category.bgColor} ${category.color}`}>
-                    {category.icon}
-                </div>
-                {isComingSoon && (
-                    <span className="px-3 py-1 bg-neutral-beige rounded-lg text-[10px] font-black uppercase tracking-widest text-neutral-gray font-display">Soon</span>
-                )}
-            </div>
-            <h3 className="text-xl font-black text-neutral-ink mb-3 font-display">{category.title}</h3>
-            <p className="text-sm text-neutral-ink mb-6 flex-1 font-bold leading-relaxed">{category.description}</p>
-            {!isComingSoon && (
-                <div className="flex items-center gap-3 text-xs font-black text-primary-strong uppercase tracking-[0.2em] font-display">
-                    <span>Explore</span>
-                    <ArrowRight size={18} />
-                </div>
-            )}
-        </div>
-    );
-
-    if (isComingSoon) return <div>{content}</div>;
-    return <Link href={category.href}>{content}</Link>;
 }

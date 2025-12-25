@@ -17,7 +17,7 @@ const skillColors: Record<string, string> = {
 };
 
 export default function PracticeCard({ config, onStart }: PracticeCardProps) {
-    const skillList = config.skills || [];
+    const skillList = config.tags?.skills || (config as any).skills || [];
 
     return (
         <div
@@ -30,7 +30,7 @@ export default function PracticeCard({ config, onStart }: PracticeCardProps) {
             <div className="flex items-start justify-between mb-6 relative z-10">
                 <div className="flex-1">
                     <span className="inline-block px-3 py-1 bg-neutral-beige text-neutral-ink font-black rounded-lg text-[10px] uppercase tracking-widest mb-3 border border-neutral-gray/10">
-                        {config.level}
+                        {config.tags?.level || (config as any).level}
                     </span>
                     <h3 className="text-xl font-black text-neutral-ink font-display group-hover:text-primary-strong transition-colors tracking-tight leading-tight">
                         {config.title}
@@ -64,12 +64,12 @@ export default function PracticeCard({ config, onStart }: PracticeCardProps) {
             <div className="flex items-center gap-5 text-[10px] font-black uppercase tracking-[0.15em] text-neutral-ink mb-8 mt-auto relative z-10 opacity-70">
                 <span className="flex items-center gap-2">
                     <FileText size={14} className="text-primary-strong" />
-                    {config.questionCount} Questions
+                    {config.stats?.questionCount || (config as any).questionCount} Questions
                 </span>
-                {config.timeLimitMinutes && (
+                {(config.stats?.timeLimitMinutes || (config as any).timeLimitMinutes) && (
                     <span className="flex items-center gap-2">
                         <Clock size={14} className="text-primary-sky" />
-                        {config.timeLimitMinutes} Minutes
+                        {config.stats?.timeLimitMinutes || (config as any).timeLimitMinutes} Minutes
                     </span>
                 )}
             </div>
