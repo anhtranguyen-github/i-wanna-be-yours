@@ -50,8 +50,12 @@ export interface PracticeNode {
     id: string;
     title: string;
     description: string;
+    // Unified Backend structure
     mode: Exclude<PracticeMode, 'ALL'>;
-    tags: PracticeTags;
+    level: JLPTLevel;
+    skills: SkillType[];
+    isPublic: boolean;
+    tags?: PracticeTags;
     stats: PracticeStats;
 
     // Personalization (for logged-in users)

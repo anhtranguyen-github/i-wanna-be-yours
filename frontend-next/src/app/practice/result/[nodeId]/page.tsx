@@ -65,7 +65,7 @@ export default function PremiumResultPage() {
     }, [nodeId]);
 
     const unifiedResult = useMemo(() => {
-        if (!node || !unifiedResult || !questions.length) return null;
+        if (!node || !questions.length || !sessionData) return null;
         return processPracticeResult(node, sessionData, questions);
     }, [node, sessionData, questions]);
 

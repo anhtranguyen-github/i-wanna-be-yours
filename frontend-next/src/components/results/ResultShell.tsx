@@ -104,7 +104,7 @@ export function ResultShell({ result, onRetry, customActions, children }: Result
                             )}
                             {customActions}
                             <Link
-                                href="/practice"
+                                href="/activity"
                                 className="px-10 py-5 bg-primary-strong text-white rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] flex items-center gap-3 hover:scale-105 transition-all  shadow-primary/20"
                             >
                                 Next Objective

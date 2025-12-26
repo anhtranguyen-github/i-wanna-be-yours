@@ -173,10 +173,10 @@ export default function UnifiedSessionPage() {
                         : 'The requested practice session could not be loaded. Please try again or choose a different practice.'}
                 </p>
                 <Link
-                    href="/practice"
+                    href="/activity"
                     className="px-6 py-3 bg-foreground text-background font-black font-display text-sm rounded-xl hover:bg-foreground/90 transition-colors"
                 >
-                    Back to Practice Hub
+                    Back to Activity Hub
                 </Link>
             </div>
         );
