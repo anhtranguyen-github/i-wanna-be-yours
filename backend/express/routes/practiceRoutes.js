@@ -192,6 +192,8 @@ router.post('/nodes', verifyJWT, async (req, res) => {
 // Note: I'm only showing the changed parts for brevity in my thought, 
 // but I'll write the full file.
 
+const { calculatePracticeResult } = require('../utils/resultCalculator');
+
 router.post('/nodes/:id/submit', verifyJWT, async (req, res) => {
     try {
         const { id } = req.params;
@@ -233,16 +235,39 @@ router.post('/nodes/:id/submit', verifyJWT, async (req, res) => {
         });
 
         await attempt.save();
-
         await PracticeNode.findByIdAndUpdate(id, { $inc: { 'stats.attemptCount': 1 } });
+
+        // Generate the unified result that the frontend will display
+        const unifiedResult = calculatePracticeResult(node, attempt);
 
         res.status(200).json({
             attemptId: attempt._id.toString(),
-            score, maxScore, percentage, correctCount, incorrectCount, unansweredCount, status,
-            answers: scoredAnswers
+            result: unifiedResult
         });
     } catch (err) {
         console.error('Submit Attempt Error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+/**
+ * GET /practice/attempts/:id
+ * Fetch a specific attempt with full unified result
+ */
+router.get('/attempts/:id', verifyJWT, async (req, res) => {
+    try {
+        const userId = req.user.id || req.user.userId;
+        const attempt = await PracticeAttempt.findById(req.params.id)
+            .populate('nodeId')
+            .lean();
+
+        if (!attempt) return res.status(404).json({ error: 'Attempt not found' });
+        if (attempt.userId.toString() !== userId) return res.status(403).json({ error: 'Forbidden' });
+
+        const unifiedResult = calculatePracticeResult(attempt.nodeId, attempt);
+        res.status(200).json(unifiedResult);
+    } catch (err) {
+        console.error('Get Attempt Detail Error:', err);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

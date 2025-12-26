@@ -129,4 +129,72 @@ router.post('/arenas', verifyJWT, async (req, res) => {
     }
 });
 
+const { QuootAttempt } = require('../models/QuootAttempt');
+const { calculateQuootResult } = require('../utils/resultCalculator');
+
+/**
+ * POST /quoot/arenas/:id/submit
+ */
+router.post('/arenas/:id/submit', verifyJWT, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user.id || req.user.userId;
+        const { score, correctCount, maxStreak, totalCards } = req.body;
+
+        const arena = await QuootArena.findById(id).lean();
+        if (!arena) return res.status(404).json({ error: 'Arena not found' });
+
+        const accuracy = Math.round((correctCount / totalCards) * 100);
+
+        const attempt = new QuootAttempt({
+            arenaId: id,
+            userId,
+            score,
+            correctCount,
+            totalCards,
+            maxStreak,
+            accuracy
+        });
+
+        await attempt.save();
+
+        // Calculate unified result for frontend
+        const unifiedResult = calculateQuootResult(arena, {
+            score,
+            correctCount,
+            maxStreak,
+            totalCards
+        });
+
+        res.status(200).json({
+            attemptId: attempt._id.toString(),
+            result: unifiedResult
+        });
+    } catch (err) {
+        console.error('Submit Quoot Attempt Error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+/**
+ * GET /quoot/attempts/:id
+ */
+router.get('/attempts/:id', verifyJWT, async (req, res) => {
+    try {
+        const userId = req.user.id || req.user.userId;
+        const attempt = await QuootAttempt.findById(req.params.id)
+            .populate('arenaId')
+            .lean();
+
+        if (!attempt) return res.status(404).json({ error: 'Attempt not found' });
+        if (attempt.userId.toString() !== userId) return res.status(403).json({ error: 'Forbidden' });
+
+        const unifiedResult = calculateQuootResult(attempt.arenaId, attempt);
+        res.status(200).json(unifiedResult);
+    } catch (err) {
+        console.error('Get Quoot Attempt Detail Error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 module.exports = router;
