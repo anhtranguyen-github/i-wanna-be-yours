@@ -8,11 +8,8 @@
 import Link from "next/link";
 import {
     Gamepad2,
-    Music,
     Layers,
     Zap,
-    Heart,
-    Puzzle,
     ChevronRight,
     Sparkles
 } from "lucide-react";
@@ -42,28 +39,6 @@ const games = [
         color: 'bg-gradient-to-br from-blue-500 to-indigo-600',
         stats: 'Spaced repetition • Custom decks',
         isActive: true,
-        isNew: false
-    },
-    {
-        id: 'songify',
-        title: 'Songify',
-        description: 'Learn Japanese vocabulary through music and lyrics. Coming soon!',
-        href: '/game/songify-vocabulary',
-        icon: <Music className="w-7 h-7" />,
-        color: 'bg-gradient-to-br from-pink-500 to-rose-600',
-        stats: '🎵 Music-based learning',
-        isActive: true,
-        isNew: false
-    },
-    {
-        id: 'word-puzzle',
-        title: 'Word Puzzle',
-        description: 'Unscramble words and solve puzzles to test your vocabulary.',
-        href: '#',
-        icon: <Puzzle className="w-7 h-7" />,
-        color: 'bg-gradient-to-br from-emerald-500 to-teal-600',
-        stats: 'Coming Soon',
-        isActive: false,
         isNew: false
     }
 ];
@@ -151,35 +126,6 @@ export default function GamesHubPage() {
                     {games.map((game) => (
                         <GameCard key={game.id} game={game} />
                     ))}
-                </div>
-
-                {/* Daily Challenge Banner */}
-                <div className="mt-12 bg-neutral-white rounded-[2rem] border border-neutral-gray/20 p-8 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
-
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
-                        <div className="flex items-center gap-5">
-                            <div className="w-16 h-16 bg-neutral-ink rounded-2xl flex items-center justify-center text-white">
-                                <Heart size={28} className="fill-current" />
-                            </div>
-                            <div>
-                                <h2 className="text-2xl font-black text-neutral-ink font-display tracking-tight">
-                                    Quoot Daily Challenge
-                                </h2>
-                                <p className="text-neutral-ink font-bold">
-                                    Complete today&apos;s deck to earn bonus XP!
-                                </p>
-                            </div>
-                        </div>
-
-                        <Link
-                            href="/quoot"
-                            className="px-8 py-4 bg-neutral-ink text-white font-black font-display text-[10px] uppercase tracking-widest rounded-2xl hover:bg-primary-strong transition-all active:scale-[0.98] flex items-center gap-2"
-                        >
-                            <Zap size={18} />
-                            Play Now
-                        </Link>
-                    </div>
                 </div>
             </main>
         </div>
