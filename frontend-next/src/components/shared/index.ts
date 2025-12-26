@@ -12,3 +12,5 @@ export type { FeatureItem } from './FeatureIconGrid';
 export type { CTAButtonProps } from './CTAButton';
 export type { ViewMode } from './ViewModeToggle';
 export type { ListingMetadata } from './ListingCard';
+export { RetrievalModal } from './RetrievalModal';
+export { HistoryPanel } from './HistoryPanel';

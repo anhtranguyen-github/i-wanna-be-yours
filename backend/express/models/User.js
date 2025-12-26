@@ -29,7 +29,12 @@ const UserSchema = new mongoose.Schema({
     updated_at: {
         type: Date,
         default: Date.now
-    }
+    },
+    followedItems: [{
+        itemId: { type: mongoose.Schema.Types.ObjectId, required: true },
+        itemType: { type: String, enum: ['PRACTICE', 'FLASHCARD', 'QUOOT'], required: true },
+        addedAt: { type: Date, default: Date.now }
+    }]
 });
 
 // Update updated_at on save
