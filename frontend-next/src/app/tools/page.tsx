@@ -60,16 +60,16 @@ const routes = [
 export default function ToolsPage() {
     return (
         <div className="min-h-screen bg-secondary pb-24">
-            <header className="bg-neutral-white border-b border-neutral-gray/30 px-6 py-8 shadow-sm">
+            <header className="bg-neutral-white border-b border-neutral-gray/30 px-6 py-8 ">
                 <div className="max-w-6xl mx-auto flex items-center gap-4">
-                    <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center shadow-inner">
+                    <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center ">
                         <WrenchIcon className="w-6 h-6 text-primary-strong" />
                     </div>
                     <div>
                         <h1 className="text-3xl font-black text-neutral-ink font-display">
                             Linguistic <span className="text-primary-strong">Laboratory</span>
                         </h1>
-                        <p className="text-muted-foreground mt-1">High-performance utilities for Japanese acquisition</p>
+                        <p className="text-neutral-ink mt-1">High-performance utilities for Japanese acquisition</p>
                     </div>
                 </div>
             </header>
@@ -78,8 +78,8 @@ export default function ToolsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {routes.map((route) => (
                         <Link key={route.href} href={route.href}>
-                            <div className="bg-neutral-white rounded-2xl border border-neutral-gray/20 p-8 hover:border-primary/40 transition-all group h-full flex flex-col items-center text-center cursor-pointer shadow-sm hover:shadow-xl">
-                                <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110 duration-500 shadow-inner ${route.color}`}>
+                            <div className="bg-neutral-white rounded-2xl border border-neutral-gray/20 p-8 hover:border-primary/40 transition-all group h-full flex flex-col items-center text-center cursor-pointer  hover:">
+                                <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110 duration-500  ${route.color}`}>
                                     {route.icon}
                                 </div>
                                 <h2 className="text-xl font-black text-neutral-ink mb-2 font-display">{route.title}</h2>

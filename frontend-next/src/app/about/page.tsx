@@ -174,7 +174,7 @@ export default function About() {
         </div>
 
         <div>
-          <div className="p-6 bg-white shadow-xl rounded-lg border border-gray-200">
+          <div className="p-6 bg-white  rounded-lg border border-gray-200">
             <h2 className="font-semibold text-2xl mb-5 border-b pb-2 border-gray-300">
               Sources & Literature:
             </h2>
@@ -228,7 +228,7 @@ export default function About() {
         </div>
 
         <div>
-          <div className="p-6 bg-white shadow-xl rounded-lg border border-gray-200">
+          <div className="p-6 bg-white  rounded-lg border border-gray-200">
             <h2 className="font-semibold text-2xl mb-5 border-b pb-2 border-gray-300">
               Web Sources:
             </h2>
@@ -269,7 +269,7 @@ export default function About() {
 
 
 
-          {/* # Kanjidic 
+          {/* # Kanjidic
 we are using kanji dictionary from
 https://www.edrdg.org/wiki/index.php/KANJIDIC_Project
 
@@ -283,7 +283,7 @@ then we use our own python script to convert it to json file so it is easier to 
 json will have 50 MB */}
 
 
-          <div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-lg">
+          <div className="max-w-6xl mx-auto p-6 bg-white  rounded-lg">
             <h1 className="text-2xl font-bold text-neutral-ink mb-4">Kanjidic Project</h1>
             <p className="text-neutral-ink mb-2">
               We are using the kanji dictionary from the
@@ -317,12 +317,12 @@ json will have 50 MB */}
 
 
 
-          {/* # Radicals radkfile 
+          {/* # Radicals radkfile
 https://www.edrdg.org/krad/kradinf.html
 
 
 Copyright
-The RADKFILE and KRADFILE files are copright and available under the EDRDG Licence. 
+The RADKFILE and KRADFILE files are copright and available under the EDRDG Licence.
 The copyright of the RADKFILE2 and KRADFILE2 files is held by Jim Rose.
 Jim Breen
 
@@ -330,14 +330,14 @@ well, I need to read more about the licence, it might not allow commercial use
 https://www.edrdg.org/edrdg/licence.html
 
 
-The dictionary files are made available under a Creative Commons Attribution-ShareAlike Licence (V4.0). 
+The dictionary files are made available under a Creative Commons Attribution-ShareAlike Licence (V4.0).
 
 
 RADKFILE/KRADFILE - files relating to the decomposition of the 6,355 kanji in JIS X 0208 into their visible components.
 radkfile2/kradkfile2 is copyright by Jim Breen - but we are not using these specific files */}
 
 
-          <div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-lg">
+          <div className="max-w-6xl mx-auto p-6 bg-white  rounded-lg">
             <h1 className="text-2xl font-bold text-neutral-ink mb-4">Radicals - RADKFILE</h1>
             <p className="text-neutral-ink mb-2">
               For more information on RADKFILE, visit
@@ -387,7 +387,7 @@ mecab apt package
 mecab-async - https://www.npmjs.com/package/mecab-async - MIT Licence */}
 
 
-          <div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-lg">
+          <div className="max-w-6xl mx-auto p-6 bg-white  rounded-lg">
             <h1 className="text-2xl font-bold text-neutral-ink mb-4">Mecab</h1>
             <p className="text-neutral-ink mb-2">
               We are using the Mecab package available through the apt package manager.
@@ -410,7 +410,7 @@ mecab-async - https://www.npmjs.com/package/mecab-async - MIT Licence */}
 
 
 
-          {/* # KUROSHIRO Parser 
+          {/* # KUROSHIRO Parser
 
 https://kuroshiro.org/
 https://github.com/hexenq/kuroshiro
@@ -418,7 +418,7 @@ https://github.com/hexenq/kuroshiro
 MIT licence
 it is node package */}
 
-          <div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-lg">
+          <div className="max-w-6xl mx-auto p-6 bg-white  rounded-lg">
             <h1 className="text-2xl font-bold text-neutral-ink mb-4">KUROSHIRO Parser</h1>
             <p className="text-neutral-ink mb-2">
               The KUROSHIRO Parser is a powerful tool for converting Japanese text into various forms. For more details, visit the official website at
@@ -452,7 +452,7 @@ it is node package */}
 
 
 
-          {/* # JMDIC 
+          {/* # JMDIC
 
 https://www.edrdg.org/jmdict/j_jmdict.html
 https://www.edrdg.org/edrdg/licence.html
@@ -471,10 +471,10 @@ so downloaded jmdict file from there (without example tatoeba sentences)
 next time we can download the bigger file as well
 
 Licence (jmdict for yomitan):
-The code in this repository is licensed under the MIT license. 
+The code in this repository is licensed under the MIT license.
 The released dictionaries are licensed under the Creative Commons Attribution-ShareAlike Licence (V4.0) that JMdict is. */}
 
-          <div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-lg">
+          <div className="max-w-6xl mx-auto p-6 bg-white  rounded-lg">
             <h1 className="text-2xl font-bold text-neutral-ink mb-4">JMDICT</h1>
             <p className="text-neutral-ink mb-2">
               The JMDict files are available under a Creative Commons Attribution-ShareAlike Licence (V4.0). You can view the Licence Deed
@@ -549,7 +549,7 @@ radical meanings taken from wikipedia:
 # source:
 # https://en.wikipedia.org/wiki/List_of_kanji_radicals_by_stroke_count
 
-KRADFILE 
+KRADFILE
 https://www.edrdg.org/krad/kradinf.html
 The RADKFILE and KRADFILE files are copright and available under the EDRDG Licence. The copyright of the RADKFILE2 and KRADFILE2 files is held by Jim Rose.
 
@@ -561,7 +561,7 @@ https://www.edrdg.org/edrdg/sample.html
 
 we are using just KRADFILE (NOT KRADFILE2, so we are good with licence) */}
 
-          <div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-lg">
+          <div className="max-w-6xl mx-auto p-6 bg-white  rounded-lg">
             <h1 className="text-2xl font-bold text-neutral-ink mb-4">Radicals + KRADFILE</h1>
             <p className="text-neutral-ink mb-2">
               The meanings of the radicals used in our project are sourced from Wikipedia. You can view the full list of kanji radicals by stroke count
@@ -614,15 +614,15 @@ we are using just KRADFILE (NOT KRADFILE2, so we are good with licence) */}
           </div>
 
 
-          {/* # JAMDICT 
+          {/* # JAMDICT
 
-MIT licence 
+MIT licence
 
 https://pypi.org/project/jamdict/
 https://github.com/tristcoil/jamdict?tab=readme-ov-file */}
 
 
-          <div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-lg">
+          <div className="max-w-6xl mx-auto p-6 bg-white  rounded-lg">
             <h1 className="text-2xl font-bold text-neutral-ink mb-4">JAMDICT</h1>
             <p className="text-neutral-ink mb-2">
               JAMDICT is a Python package for working with Japanese dictionary files. It is licensed under the MIT License.
@@ -653,7 +653,7 @@ https://github.com/tristcoil/jamdict?tab=readme-ov-file */}
 
 
 
-          <div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-lg">
+          <div className="max-w-6xl mx-auto p-6 bg-white  rounded-lg">
             <h1 className="text-2xl font-bold text-neutral-ink mb-4">Kanji Radicals</h1>
             <p className="text-neutral-ink mb-2">
               List of Kanji Radicals sourced from
@@ -690,7 +690,7 @@ function Example() {
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto grid max-w-2xl grid-cols-1 items-start gap-x-8 gap-y-16 sm:gap-y-24 lg:mx-0 lg:max-w-none lg:grid-cols-2">
           <div className="lg:pr-4">
-            <div className="relative overflow-hidden rounded-3xl bg-gray-900 px-6 pb-9 pt-64 shadow-2xl sm:px-12 lg:max-w-lg lg:px-8 lg:pb-8 xl:px-10 xl:pb-10">
+            <div className="relative overflow-hidden rounded-3xl bg-gray-900 px-6 pb-9 pt-64  sm:px-12 lg:max-w-lg lg:px-8 lg:pb-8 xl:px-10 xl:pb-10">
               <img
                 className="absolute inset-0 h-full w-full object-cover brightness-125 saturate-0"
                 src="https://images.unsplash.com/photo-1630569267625-157f8f9d1a7e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2669&q=80"

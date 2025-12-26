@@ -56,7 +56,7 @@ export default function UnifiedChatPage() {
     if (loading) {
         return (
             <div className="flex flex-1 h-full items-center justify-center bg-secondary">
-                <div className="flex flex-col items-center gap-4 text-muted-foreground">
+                <div className="flex flex-col items-center gap-4 text-neutral-ink">
                     <div className="relative">
                         <Loader2 className="w-10 h-10 animate-spin text-primary" />
                         <div className="absolute inset-0 flex items-center justify-center">
@@ -75,7 +75,7 @@ export default function UnifiedChatPage() {
     return (
         <div className="flex flex-1 h-full bg-secondary overflow-hidden">
             {/* Main Chat Area */}
-            <main className="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-neutral-white shadow-xl z-10 relative">
+            <main className="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-neutral-white  z-10 relative">
                 <ChatMainArea conversationId={conversationId} />
             </main>
 

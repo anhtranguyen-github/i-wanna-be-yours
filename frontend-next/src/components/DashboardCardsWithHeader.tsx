@@ -62,7 +62,7 @@ const DashboardCardsWithHeader = ({
 
               <div className="flex items-center pt-4">
                 <Link href={card.link}>
-                  <button className="px-5 py-2.5 bg-brand-blue text-white text-sm font-bold rounded-xl shadow-md hover:bg-brand-blue/90 hover:shadow-lg transition-all active:scale-95">
+                  <button className="px-5 py-2.5 bg-brand-blue text-white text-sm font-bold rounded-xl  hover:bg-brand-blue/90 hover: transition-all active:scale-95">
                     Learn More
                   </button>
                 </Link>

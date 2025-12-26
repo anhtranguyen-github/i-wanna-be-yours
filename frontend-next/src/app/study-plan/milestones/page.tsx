@@ -89,7 +89,7 @@ function MilestonesContent() {
         return (
             <div className="min-h-screen bg-secondary py-12">
                 <div className="container mx-auto px-6 max-w-2xl text-center">
-                    <div className="bg-neutral-white p-12 rounded-[2.5rem] border border-neutral-gray/20 shadow-xl">
+                    <div className="bg-neutral-white p-12 rounded-[2.5rem] border border-neutral-gray/20 ">
                         <Target className="w-16 h-16 mx-auto mb-6 text-neutral-ink" />
                         <h2 className="text-2xl font-black text-brand-dark mb-4">
                             No Study Plan Found
@@ -120,12 +120,12 @@ function MilestonesContent() {
                 </Link>
 
                 {/* Header */}
-                <div className="bg-neutral-white p-8 rounded-[2.5rem] border border-neutral-gray/20 shadow-lg mb-8">
+                <div className="bg-neutral-white p-8 rounded-[2.5rem] border border-neutral-gray/20  mb-8">
                     <div className="flex items-center justify-between">
                         <div>
                             <div className="flex items-center gap-4 mb-3">
                                 <div
-                                    className="px-4 py-1.5 rounded-xl text-white font-black text-[10px] uppercase tracking-widest shadow-md"
+                                    className="px-4 py-1.5 rounded-xl text-white font-black text-[10px] uppercase tracking-widest "
                                     style={{ backgroundColor: levelInfo.color }}
                                 >
                                     {plan.target_level}
@@ -148,9 +148,9 @@ function MilestonesContent() {
                     </div>
 
                     {/* Progress Bar */}
-                    <div className="mt-8 h-4 bg-neutral-beige rounded-full overflow-hidden shadow-inner">
+                    <div className="mt-8 h-4 bg-neutral-beige rounded-full overflow-hidden ">
                         <div
-                            className="h-full bg-primary-strong rounded-full transition-all shadow-lg"
+                            className="h-full bg-primary-strong rounded-full transition-all "
                             style={{ width: `${plan.overall_progress_percent}%` }}
                         />
                     </div>
@@ -170,7 +170,7 @@ function MilestonesContent() {
                             className={`
                                 px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all duration-300
                                 ${filter === tab.id
-                                    ? 'bg-neutral-white text-primary-strong shadow-md border border-neutral-gray/10'
+                                    ? 'bg-neutral-white text-primary-strong  border border-neutral-gray/10'
                                     : 'text-neutral-ink hover:text-neutral-ink'
                                 }
                             `}
@@ -196,14 +196,14 @@ function MilestonesContent() {
                                     key={milestone.id}
                                     href={`/study-plan/milestones/${milestone.id}`}
                                     className={`
-                                        bg-neutral-white p-8 rounded-[2rem] border transition-all duration-500 group shadow-md hover:shadow-2xl relative overflow-hidden
+                                        bg-neutral-white p-8 rounded-[2rem] border transition-all duration-500 group  hover: relative overflow-hidden
                                         ${isCurrent ? 'border-primary-strong/50 ring-4 ring-primary-strong/5' : 'border-neutral-gray/20'}
                                     `}
                                 >
                                     <div className="flex items-start gap-4">
                                         {/* Status Icon */}
                                         <div className={`
-                                            w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 font-black text-lg shadow-inner
+                                            w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 font-black text-lg 
                                             ${milestone.status === 'completed'
                                                 ? 'bg-primary-leaf text-white'
                                                 : milestone.status === 'in_progress'

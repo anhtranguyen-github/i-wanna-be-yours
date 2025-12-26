@@ -13,7 +13,7 @@ export default function Reading() {
               Japanese <span className="text-reading">Reading</span> Section
             </h1>
 
-            <p className="text-muted-foreground font-bold text-sm leading-relaxed max-w-3xl">
+            <p className="text-neutral-ink font-bold text-sm leading-relaxed max-w-3xl">
               Explore our collection of Japanese short stories, each featuring
               audio, romaji, and English translations. Delve into detailed
               sentence-by-sentence explanations along with grammar insights and

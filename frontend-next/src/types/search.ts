@@ -25,4 +25,7 @@ export interface SearchNexusProps {
     onPersonalTabAttempt: () => void;
     isLoggedIn: boolean;
     className?: string;
+    variant?: 'default' | 'minimal';
+    showSwitches?: boolean;
+    showFilters?: boolean;
 }

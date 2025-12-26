@@ -21,7 +21,7 @@ export default function Downloads() {
         <h1 className="text-blue-900 text-3xl font-bold">Downloads</h1>
 
         <div className="grid grid-cols-3 gap-4 text-center m-2 sm:m-8">
-          <div className="m-2 p-2 sm:m-4 sm:p-4 max-w-sm w-full bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-lg transition-shadow duration-300 ease-in-out">
+          <div className="m-2 p-2 sm:m-4 sm:p-4 max-w-sm w-full bg-white rounded-lg border border-gray-200  hover: transition-shadow duration-300 ease-in-out">
             <div className="text-lg sm:text-xl font-semibold text-slate-600">
               <p>花びらより</p>
               <p>無料でダウンロード</p>
@@ -29,7 +29,7 @@ export default function Downloads() {
             </div>
           </div>
 
-          <div className="m-2 p-2 sm:m-4 sm:p-4 max-w-sm w-full bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-lg transition-shadow duration-300 ease-in-out">
+          <div className="m-2 p-2 sm:m-4 sm:p-4 max-w-sm w-full bg-white rounded-lg border border-gray-200  hover: transition-shadow duration-300 ease-in-out">
             <div className="text-md sm:text-lg text-neutral-ink">
               <p>hanachan yori</p>
               <p>Muryou de daunroodo</p>
@@ -37,7 +37,7 @@ export default function Downloads() {
             </div>
           </div>
 
-          <div className="m-2 p-2 sm:m-4 sm:p-4 max-w-sm w-full bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-lg transition-shadow duration-300 ease-in-out">
+          <div className="m-2 p-2 sm:m-4 sm:p-4 max-w-sm w-full bg-white rounded-lg border border-gray-200  hover: transition-shadow duration-300 ease-in-out">
             <div className="text-sm sm:text-base text-neutral-ink">
               <p>From the petals</p>
               <p>Downloads free, drifting</p>
@@ -48,7 +48,7 @@ export default function Downloads() {
 
         <br></br>
 
-        <div className="max-w-4xl w-full p-6 bg-white shadow-xl rounded-lg border border-gray-200">
+        <div className="max-w-4xl w-full p-6 bg-white  rounded-lg border border-gray-200">
           <h2 className="text-neutral-ink font-semibold text-2xl mb-5 border-b pb-2 border-gray-300">
             Downloads:
           </h2>

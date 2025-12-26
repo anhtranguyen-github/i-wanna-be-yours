@@ -74,13 +74,13 @@ export default function KanjiListPage() {
                             href="/library"
                             className="p-3 hover:bg-muted rounded-full transition-all active:scale-95 group"
                         >
-                            <ArrowLeft className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                            <ArrowLeft className="w-6 h-6 text-neutral-ink group-hover:text-primary transition-colors" />
                         </Link>
                         <div>
                             <h1 className="text-4xl font-black text-foreground font-display tracking-tight">
                                 JLPT <span className="text-kanji">Kanji</span>
                             </h1>
-                            <p className="text-muted-foreground font-bold text-sm">Master kanji characters and their readings</p>
+                            <p className="text-neutral-ink font-bold text-sm">Master kanji characters and their readings</p>
                         </div>
                     </div>
                 </div>
@@ -97,7 +97,7 @@ export default function KanjiListPage() {
                                     px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap font-display
                                     ${selectedLevel === level
                                         ? 'bg-kanji text-white '
-                                        : 'bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground'
+                                        : 'bg-muted/50 text-neutral-ink hover:bg-muted hover:text-foreground'
                                     }
                                 `}
                             >
@@ -123,7 +123,7 @@ export default function KanjiListPage() {
                 {loading ? (
                     <div className="flex flex-col justify-center items-center py-32">
                         <div className="w-16 h-16 border-4 border-kanji border-t-transparent rounded-full animate-spin mb-6"></div>
-                        <p className="text-xs font-black text-muted-foreground uppercase tracking-widest font-display">Loading Kanji...</p>
+                        <p className="text-xs font-black text-neutral-ink uppercase tracking-widest font-display">Loading Kanji...</p>
                     </div>
                 ) : filteredKanji.length === 0 ? (
                     <div className="text-center py-32 bg-card rounded-2xl border-2 border-dashed border-border flex flex-col items-center">
@@ -131,7 +131,7 @@ export default function KanjiListPage() {
                             <BookOpen className="w-12 h-12 text-neutral-ink" />
                         </div>
                         <h3 className="text-2xl font-black text-foreground mb-3 font-display">No Kanji Found</h3>
-                        <p className="text-muted-foreground font-bold">Try adjusting your search or level.</p>
+                        <p className="text-neutral-ink font-bold">Try adjusting your search or level.</p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
@@ -150,7 +150,7 @@ export default function KanjiListPage() {
                                     {(item.k_audio || item.audio) && (
                                         <button
                                             onClick={() => playAudio(item.k_audio || item.audio || '')}
-                                            className="p-3 bg-muted/50 hover:bg-kanji hover:text-white rounded-xl transition-all text-muted-foreground "
+                                            className="p-3 bg-muted/50 hover:bg-kanji hover:text-white rounded-xl transition-all text-neutral-ink "
                                         >
                                             <Volume2 className="w-6 h-6" />
                                         </button>
@@ -172,7 +172,7 @@ export default function KanjiListPage() {
                                             <span className="text-foreground font-jp text-xl font-black">{item.exampleWord}</span>
                                             <span className="text-kanji font-jp text-sm font-bold opacity-80">{item.exampleReading}</span>
                                         </div>
-                                        <div className="text-muted-foreground text-xs font-bold leading-relaxed border-t border-border/50 pt-3">
+                                        <div className="text-neutral-ink text-xs font-bold leading-relaxed border-t border-border/50 pt-3">
                                             {item.translation}
                                         </div>
                                     </div>

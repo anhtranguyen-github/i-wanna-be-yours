@@ -9,7 +9,7 @@ interface KanjiCardProps {
   uri: string;
 }
 
-//export default 
+//export default
 function KanjiCard({ kanji, uri }: KanjiCardProps) {
   const [cardState, setCardState] = useState<CardState>("unknown");
 
@@ -40,7 +40,7 @@ function KanjiCard({ kanji, uri }: KanjiCardProps) {
       bg: "bg-card",
       border: "border-border",
       label: "U",
-      badge: "bg-muted text-muted-foreground"
+      badge: "bg-muted text-neutral-ink"
     },
     seen: {
       bg: "bg-secondary/5",
@@ -104,7 +104,7 @@ interface KanjiGridProps {
   data: KanjiItem[];
 }
 
-//export default 
+//export default
 function KanjiGrid({ data }: KanjiGridProps) {
   return (
     <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8 gap-4">
@@ -153,7 +153,7 @@ export default function KanjiPage() {
           </h1>
 
           <div className="max-w-3xl mx-auto space-y-4">
-            <p className="text-muted-foreground font-bold text-sm leading-relaxed">
+            <p className="text-neutral-ink font-bold text-sm leading-relaxed">
               We have curated JLPT-graded kanji lists with mnemonics powered by{" "}
               <a
                 href="https://www.kanjidamage.com"
@@ -181,7 +181,7 @@ export default function KanjiPage() {
                 className={`flex-1 min-w-[80px] px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all font-display
                   ${isActive
                     ? "bg-card text-primary "
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                    : "text-neutral-ink hover:text-foreground hover:bg-muted"
                   }
                 `}
               >

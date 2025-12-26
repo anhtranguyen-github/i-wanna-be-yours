@@ -253,7 +253,7 @@ const GrammarFlashcardModal: FC<GrammarFlashcardModalProps> = ({
             >
               {/* Fixed-size modal with responsive breakpoints */}
               <Dialog.Panel
-                className="relative transform w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl h-[85vh] max-h-[700px] overflow-hidden rounded-[2.5rem] bg-white p-4 sm:p-8 text-left shadow-2xl transition-all border border-slate-100"
+                className="relative transform w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl h-[85vh] max-h-[700px] overflow-hidden rounded-[2.5rem] bg-white p-4 sm:p-8 text-left  transition-all border border-slate-100"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="h-full flex flex-col">
@@ -317,7 +317,7 @@ const GrammarFlashcardModal: FC<GrammarFlashcardModalProps> = ({
 
                         {/* Content - Scrollable */}
                         <div className="flex-1 min-h-0 overflow-y-auto p-8 sm:p-10 space-y-8 custom-scrollbar relative z-10">
-                          <div className="w-full rounded-[2rem] bg-slate-50 p-6 border border-slate-100 shadow-sm">
+                          <div className="w-full rounded-[2rem] bg-slate-50 p-6 border border-slate-100 ">
                             <h3 className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-3">
                               Formation Matrix
                             </h3>
@@ -326,7 +326,7 @@ const GrammarFlashcardModal: FC<GrammarFlashcardModalProps> = ({
                             </p>
                           </div>
 
-                          <div className="w-full rounded-[2rem] bg-slate-50 p-6 border border-slate-100 shadow-sm">
+                          <div className="w-full rounded-[2rem] bg-slate-50 p-6 border border-slate-100 ">
                             <h3 className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-3">
                               Detailed Logic
                             </h3>
@@ -437,7 +437,7 @@ const ExampleSection: FC<ExampleSectionProps> = ({ examples }) => {
       {examples.map((ex, i) => (
         <div
           key={i}
-          className="rounded-[2rem] border border-slate-100 bg-slate-50/50 p-6 shadow-sm hover:shadow-md hover:bg-white transition-all group/ex"
+          className="rounded-[2rem] border border-slate-100 bg-slate-50/50 p-6  hover: hover:bg-white transition-all group/ex"
         >
           <div className="flex items-center justify-between gap-4">
             {/* JP Sentence */}
@@ -447,7 +447,7 @@ const ExampleSection: FC<ExampleSectionProps> = ({ examples }) => {
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => playExampleAudio(ex.grammar_audio)}
-                className="w-10 h-10 rounded-xl bg-white border border-slate-100 text-slate-300 hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all shadow-sm"
+                className="w-10 h-10 rounded-xl bg-white border border-slate-100 text-slate-300 hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all "
               >
                 <FontAwesomeIcon
                   icon={faPlayCircle}
@@ -456,7 +456,7 @@ const ExampleSection: FC<ExampleSectionProps> = ({ examples }) => {
               </button>
               <button
                 onClick={() => toggleOpenState(i)}
-                className="w-10 h-10 rounded-xl bg-white border border-slate-100 text-slate-300 hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all shadow-sm"
+                className="w-10 h-10 rounded-xl bg-white border border-slate-100 text-slate-300 hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all "
               >
                 {openStates[i] ? (
                   <ChevronUpIcon className="h-5 w-5" />

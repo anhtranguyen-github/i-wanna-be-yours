@@ -11,7 +11,7 @@ const CloneButton: React.FC<CloneButtonProps> = ({collection, level, userId }) =
 
     const host = "localhost";
     const port = 5100;
-  
+
     let baseUrl;
     if (process.env.REACT_APP_HOST_IP) {
       baseUrl = `http://${process.env.REACT_APP_HOST_IP}`;
@@ -36,7 +36,7 @@ const CloneButton: React.FC<CloneButtonProps> = ({collection, level, userId }) =
         return; // Exit the function if the collection type is not recognized
     }
 
-    
+
     const data = {
       userId: userId,
       collection: collection,

@@ -48,7 +48,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-12 bg-white p-6 rounded-[2rem] border border-slate-100 shadow-xl shadow-primary/5">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-12 bg-white p-6 rounded-[2rem] border border-slate-100  shadow-primary/5">
         <div className="flex items-center gap-4">
           <div className="p-4 bg-primary/10 rounded-2xl text-primary">
             <Flame className="w-8 h-8 fill-primary" />
@@ -178,7 +178,7 @@ const HiraganaCard: React.FC<HiraganaCardProps> = ({
       <div className={`relative w-full h-full transition-all duration-500 preserve-3d cursor-pointer ${isFlipped ? 'rotate-y-180' : ''}`}>
 
         {/* Front */}
-        <div className={`absolute inset-0 backface-hidden bg-white border border-slate-100 rounded-[2rem] shadow-sm group-hover:shadow-md transition-all flex flex-col items-center justify-center p-6 bg-gradient-to-b from-white to-slate-50/50`}>
+        <div className={`absolute inset-0 backface-hidden bg-white border border-slate-100 rounded-[2rem]  group-hover: transition-all flex flex-col items-center justify-center p-6 bg-gradient-to-b from-white to-slate-50/50`}>
           <div className="absolute top-4 left-0 right-0 px-6 flex justify-between items-center opacity-40">
             <span className="text-[8px] font-black uppercase tracking-widest">{flipCount} F</span>
             <span className="text-[8px] font-black uppercase tracking-widest">{streak} D</span>
@@ -201,7 +201,7 @@ const HiraganaCard: React.FC<HiraganaCardProps> = ({
         </div>
 
         {/* Back */}
-        <div className="absolute inset-0 backface-hidden rotate-y-180 bg-primary/5 border border-primary/20 rounded-[2rem] shadow-sm flex flex-col items-center justify-center p-6 text-center">
+        <div className="absolute inset-0 backface-hidden rotate-y-180 bg-primary/5 border border-primary/20 rounded-[2rem]  flex flex-col items-center justify-center p-6 text-center">
           <h5 className="text-[10px] font-black text-primary/60 uppercase tracking-widest mb-1">
             [{reading}]
           </h5>
@@ -216,7 +216,7 @@ const HiraganaCard: React.FC<HiraganaCardProps> = ({
             target="_blank"
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
-            className="absolute bottom-4 right-4 p-2 rounded-xl bg-white border border-primary/10 text-primary hover:bg-primary/10 transition-colors shadow-sm"
+            className="absolute bottom-4 right-4 p-2 rounded-xl bg-white border border-primary/10 text-primary hover:bg-primary/10 transition-colors "
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960" fill="currentColor">
               <path d="M240-400q-33 0-56.5-23.5T160-480t23.5-56.5T240-560t56.5 23.5T320-480t-23.5 56.5T240-400m240 0q-33 0-56.5-23.5T400-480t23.5-56.5T480-560t56.5 23.5T560-480t-23.5 56.5T480-400m240 0q-33 0-56.5-23.5T640-480t23.5-56.5T720-560t56.5 23.5T800-480t-23.5 56.5T720-400" />
@@ -226,7 +226,7 @@ const HiraganaCard: React.FC<HiraganaCardProps> = ({
       </div>
 
       {showAchievement && (
-        <div className="fixed bottom-8 right-8 bg-slate-900 text-white p-4 rounded-2xl z-50 animate-in slide-in-from-right-8 fade-in shadow-2xl animate-out fade-out slide-out-to-right-8 duration-300">
+        <div className="fixed bottom-8 right-8 bg-slate-900 text-white p-4 rounded-2xl z-50 animate-in slide-in-from-right-8 fade-in  animate-out fade-out slide-out-to-right-8 duration-300">
           <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-1">Achievement Unlocked!</p>
           <p className="font-bold text-sm tracking-tight">{recentAchievement}</p>
         </div>
@@ -276,7 +276,7 @@ const TabComponent = () => {
         {jlptLevels.map((level) => (
           <button
             key={level}
-            className={`px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all whitespace-nowrap ${activeJLPTTab === level ? "bg-white text-neutral-ink shadow-md ring-1 ring-slate-200" : "text-neutral-ink hover:text-neutral-ink"}`}
+            className={`px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all whitespace-nowrap ${activeJLPTTab === level ? "bg-white text-neutral-ink  ring-1 ring-slate-200" : "text-neutral-ink hover:text-neutral-ink"}`}
             onClick={() => setActiveJLPTTab(level)}
           >
             {level.replace('_', ' ')}
@@ -288,7 +288,7 @@ const TabComponent = () => {
         {vocabSets.map((set) => (
           <button
             key={set}
-            className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${activeVocabTab === set ? "bg-primary text-white shadow-lg shadow-primary/20" : "bg-slate-50 text-neutral-ink hover:text-neutral-ink hover:bg-slate-100"}`}
+            className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${activeVocabTab === set ? "bg-primary text-white  shadow-primary/20" : "bg-slate-50 text-neutral-ink hover:text-neutral-ink hover:bg-slate-100"}`}
             onClick={() => setActiveVocabTab(set)}
           >
             {set}
@@ -298,7 +298,7 @@ const TabComponent = () => {
 
       <div className="w-full flex justify-end mb-8">
         <button
-          className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-widest text-neutral-ink hover:text-primary hover:border-primary transition-all shadow-sm"
+          className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-widest text-neutral-ink hover:text-primary hover:border-primary transition-all "
           onClick={() => setShowReadings(!showReadings)}
         >
           {showReadings ? <EyeOff size={14} /> : <Eye size={14} />}

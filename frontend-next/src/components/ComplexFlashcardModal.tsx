@@ -225,7 +225,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
   return (
     <>
 
-      {/* <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden m-4 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl">
+      {/* <div className="bg-white dark:bg-gray-800 rounded-lg  overflow-hidden m-4 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:">
   <div className="p-6">
     <div className="text-xs font-semibold text-neutral-ink dark:text-neutral-ink uppercase tracking-widest">
       Level: {p_tag}
@@ -253,7 +253,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
 </div> */}
 
 
-      {/* <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden m-2 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+      {/* <div className="bg-white dark:bg-gray-800 rounded-lg  overflow-hidden m-2 transition duration-300 ease-in-out transform hover:-translate-y-1 hover: flex flex-col md:flex-row justify-between items-center text-center md:text-left">
   <div className="p-4 flex-grow">
     <div className="text-xs font-semibold text-neutral-ink dark:text-neutral-ink uppercase tracking-widest">
       Level: {p_tag}
@@ -288,7 +288,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
 
 
 
-      {/* <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden m-2 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+      {/* <div className="bg-white dark:bg-gray-800 rounded-lg  overflow-hidden m-2 transition duration-300 ease-in-out transform hover:-translate-y-1 hover: flex flex-col md:flex-row justify-between items-center text-center md:text-left">
   <div className="p-4 flex-grow">
     <div className="text-sm md:text-lg font-semibold text-neutral-ink dark:text-neutral-ink uppercase tracking-widest">
       Level: {p_tag}
@@ -321,7 +321,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
 </div> */}
 
 
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden m-2 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl flex flex-row justify-between items-center text-center sm:text-left">
+      <div className="bg-white dark:bg-gray-800 rounded-lg  overflow-hidden m-2 transition duration-300 ease-in-out transform hover:-translate-y-1 hover: flex flex-row justify-between items-center text-center sm:text-left">
         <div className="p-4 flex-grow">
           <div className="text-xs sm:text-sm md:text-md lg:text-lg font-semibold text-neutral-ink dark:text-neutral-ink uppercase tracking-widest">
             Level: {p_tag}
@@ -398,7 +398,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                 leaveTo="opacity-0 translate-y-4 scale-95"
               >
                 <Dialog.Panel
-                  className="relative transform w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl h-[85vh] max-h-[700px] overflow-hidden rounded-[2.5rem] bg-white p-4 sm:p-8 text-left shadow-2xl transition-all z-20 border border-slate-100"
+                  className="relative transform w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl h-[85vh] max-h-[700px] overflow-hidden rounded-[2.5rem] bg-white p-4 sm:p-8 text-left  transition-all z-20 border border-slate-100"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <div className="bg-white flex flex-col items-center h-full relative z-20">
@@ -421,7 +421,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                             </span>
                             <button
                               onClick={playKanjiAudio}
-                              className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 text-neutral-ink hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all shadow-sm"
+                              className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 text-neutral-ink hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all "
                             >
                               <FontAwesomeIcon icon={faPlayCircle} className="w-5 h-5" />
                             </button>
@@ -433,14 +433,14 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
 
                         <div className="space-y-6 pt-6 border-t border-slate-50">
                           <div className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em] font-display">Compound Pattern</div>
-                          <div className="bg-slate-50 rounded-[2rem] p-6 border border-slate-100 shadow-sm space-y-4">
+                          <div className="bg-slate-50 rounded-[2rem] p-6 border border-slate-100  space-y-4">
                             <div className="flex items-center justify-between">
                               <div className="text-2xl font-black text-neutral-ink italic tracking-tight font-jp">
                                 {currentQuestion.exampleWord}
                               </div>
                               <button
                                 onClick={handlePlayAudio}
-                                className="w-10 h-10 rounded-xl bg-white border border-slate-100 text-neutral-ink hover:text-primary flex items-center justify-center transition-all shadow-sm"
+                                className="w-10 h-10 rounded-xl bg-white border border-slate-100 text-neutral-ink hover:text-primary flex items-center justify-center transition-all "
                               >
                                 <FontAwesomeIcon icon={faPlayCircle} className="w-4 h-4" />
                               </button>
@@ -463,7 +463,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
 
                     <div className="flex justify-between items-center w-full mt-10 px-6 relative z-20">
                       <button
-                        className="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 text-neutral-ink hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all shadow-sm"
+                        className="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 text-neutral-ink hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all "
                         onClick={handlePreviousQuestion}
                       >
                         <FontAwesomeIcon icon={faArrowLeft} className="w-5 h-5" />
@@ -475,7 +475,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                             key={idx}
                             className={`py-2 px-6 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all
                               ${difficulty === level
-                                ? "bg-primary text-white shadow-md scale-105"
+                                ? "bg-primary text-white  scale-105"
                                 : "text-neutral-ink hover:text-slate-600"
                               }`}
                             onClick={() => handleDifficultySelection(level)}
@@ -486,7 +486,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                       </div>
 
                       <button
-                        className="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 text-neutral-ink hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all shadow-sm"
+                        className="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 text-neutral-ink hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all "
                         onClick={handleNextQuestion}
                       >
                         <FontAwesomeIcon icon={faArrowRight} className="w-5 h-5" />
@@ -522,7 +522,7 @@ export default ComplexFlashcardModal;
 // ------------------------ OLD CODE ------------------------------
 
 
-{/* <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg ">
+{/* <div className="bg-white dark:bg-gray-800 rounded-lg  ">
         <div className="p-4">
           <div className="uppercase tracking-wide text-sm text-neutral-ink dark:text-neutral-ink font-semibold">
             Level: {p_tag}
@@ -552,7 +552,7 @@ export default ComplexFlashcardModal;
 
 
 
-{/* <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg m-4">
+{/* <div className="bg-white dark:bg-gray-800 rounded-lg  m-4">
   <div className="p-4">
     <div className="uppercase tracking-wide text-sm text-neutral-ink dark:text-neutral-ink font-semibold">
       Level: {p_tag}
@@ -579,7 +579,7 @@ export default ComplexFlashcardModal;
 </div> */}
 
 
-{/* <div className="bg-white dark:bg-gray-900 rounded-lg shadow overflow-hidden m-4 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
+{/* <div className="bg-white dark:bg-gray-900 rounded-lg shadow overflow-hidden m-4 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:">
   <div className="p-6">
     <div className="text-xs font-semibold text-neutral-ink dark:text-neutral-ink uppercase tracking-wide">
       Level: {p_tag}

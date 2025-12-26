@@ -11,7 +11,7 @@ const TermsOfService = () => {
         By using this website, you agree that all use of the platform is at your own risk. We do not guarantee the accuracy, reliability, or completeness of any content or services provided.
       </p>
       <p className="mb-4">
-        We are not responsible for any losses, damages, or issues arising from the use of this website, including but not limited to direct, indirect, or incidental consequences. 
+        We are not responsible for any losses, damages, or issues arising from the use of this website, including but not limited to direct, indirect, or incidental consequences.
       </p>
       <p className="mb-4">
         This platform is provided `as is`` without warranties of any kind, either express or implied. It is your responsibility to ensure that the services meet your needs.

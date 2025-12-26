@@ -14,7 +14,7 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
                     <AlertTriangle size={28} />
                 </div>
                 <h2 className="text-xl font-bold text-foreground mb-2">Something went wrong</h2>
-                <p className="text-muted-foreground mb-6 text-sm">We couldn't load your flashcards. This might be a temporary issue.</p>
+                <p className="text-neutral-ink mb-6 text-sm">We couldn't load your flashcards. This might be a temporary issue.</p>
                 <div className="flex gap-3">
                     <Link href="/flashcards" className="flex-1 py-3 bg-muted rounded-xl font-bold text-foreground text-center hover:bg-muted/80 transition-colors">Go Back</Link>
                     <button onClick={() => reset()} className="flex-1 py-3 bg-foreground text-background rounded-xl font-bold hover:bg-foreground/90 transition-colors flex items-center justify-center gap-2">

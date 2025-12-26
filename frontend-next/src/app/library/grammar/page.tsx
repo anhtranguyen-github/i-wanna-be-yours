@@ -82,7 +82,7 @@ export default function GrammarListPage() {
                             <h1 className="text-4xl font-black text-foreground font-display tracking-tight">
                                 Grammar <span className="text-primary">Library</span>
                             </h1>
-                            <p className="text-muted-foreground font-bold text-sm">Master Japanese grammar patterns</p>
+                            <p className="text-neutral-ink font-bold text-sm">Master Japanese grammar patterns</p>
                         </div>
                     </div>
 
@@ -101,7 +101,7 @@ export default function GrammarListPage() {
                         <select
                             value={selectedLevel}
                             onChange={(e) => setSelectedLevel(e.target.value)}
-                            className="px-6 py-3 bg-card border border-border rounded-xl text-xs font-black uppercase tracking-widest text-muted-foreground focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary  font-display cursor-pointer"
+                            className="px-6 py-3 bg-card border border-border rounded-xl text-xs font-black uppercase tracking-widest text-neutral-ink focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary  font-display cursor-pointer"
                         >
                             {JLPT_LEVELS.map(l => (
                                 <option key={l.value} value={l.value}>{l.label}</option>
@@ -115,7 +115,7 @@ export default function GrammarListPage() {
                     {loading ? (
                         <div className="flex flex-col items-center justify-center py-32">
                             <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mb-6"></div>
-                            <p className="text-xs font-black text-muted-foreground uppercase tracking-widest font-display">Loading Grammar...</p>
+                            <p className="text-xs font-black text-neutral-ink uppercase tracking-widest font-display">Loading Grammar...</p>
                         </div>
                     ) : error ? (
                         <div className="bg-card rounded-2xl border-2 border-dashed border-border p-20 flex flex-col items-center justify-center text-center">
@@ -136,7 +136,7 @@ export default function GrammarListPage() {
                                 <Filter className="w-12 h-12 text-neutral-ink" />
                             </div>
                             <h3 className="text-2xl font-black text-foreground mb-4 font-display">No Patterns Found</h3>
-                            <p className="text-muted-foreground font-bold">Try adjusting your search terms or level filter.</p>
+                            <p className="text-neutral-ink font-bold">Try adjusting your search terms or level filter.</p>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -160,7 +160,7 @@ export default function GrammarListPage() {
                                             </span>
                                         </div>
 
-                                        <p className="text-muted-foreground font-bold text-sm leading-relaxed line-clamp-2 flex-1 pt-2">
+                                        <p className="text-neutral-ink font-bold text-sm leading-relaxed line-clamp-2 flex-1 pt-2">
                                             {grammar.short_explanation}
                                         </p>
 

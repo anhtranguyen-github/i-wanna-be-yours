@@ -334,7 +334,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
 
   // if (!isOpen)
   //   return (
-  //     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden m-2 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl flex flex-row justify-between items-center text-center sm:text-left">
+  //     <div className="bg-white dark:bg-gray-800 rounded-lg  overflow-hidden m-2 transition duration-300 ease-in-out transform hover:-translate-y-1 hover: flex flex-row justify-between items-center text-center sm:text-left">
   //       <div className="p-4 flex-grow">
   //         <div className="text-xs sm:text-sm md:text-md lg:text-lg font-semibold text-neutral-ink dark:text-neutral-ink uppercase tracking-widest">
   //           {p_tag}
@@ -441,7 +441,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
               >
                 {/* Fixed-size modal with responsive breakpoints */}
                 <Dialog.Panel
-                  className="relative transform w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl h-[85vh] max-h-[700px] overflow-hidden rounded-[2.5rem] bg-white p-4 sm:p-8 text-left shadow-2xl transition-all z-50 border border-slate-100"
+                  className="relative transform w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl h-[85vh] max-h-[700px] overflow-hidden rounded-[2.5rem] bg-white p-4 sm:p-8 text-left  transition-all z-50 border border-slate-100"
                   onClick={(e) => e.stopPropagation()}
                 >
                   {/* Completion Screen */}
@@ -487,13 +487,13 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                               <div className="flex bg-slate-50 rounded-2xl p-1.5 border border-slate-100">
                                 <button
                                   onClick={() => setSettings(s => ({ ...s, mode: 'basic' }))}
-                                  className={`flex-1 text-[10px] font-black uppercase tracking-widest py-2 rounded-xl transition-all ${settings.mode === 'basic' ? 'bg-white shadow-sm text-primary' : 'text-neutral-ink hover:text-slate-600'}`}
+                                  className={`flex-1 text-[10px] font-black uppercase tracking-widest py-2 rounded-xl transition-all ${settings.mode === 'basic' ? 'bg-white  text-primary' : 'text-neutral-ink hover:text-slate-600'}`}
                                 >
                                   Static
                                 </button>
                                 <button
                                   onClick={() => setSettings(s => ({ ...s, mode: 'learn' }))}
-                                  className={`flex-1 text-[10px] font-black uppercase tracking-widest py-2 rounded-xl transition-all ${settings.mode === 'learn' ? 'bg-primary text-white shadow-sm' : 'text-neutral-ink hover:text-slate-600'}`}
+                                  className={`flex-1 text-[10px] font-black uppercase tracking-widest py-2 rounded-xl transition-all ${settings.mode === 'learn' ? 'bg-primary text-white ' : 'text-neutral-ink hover:text-slate-600'}`}
                                 >
                                   Neural
                                 </button>
@@ -507,7 +507,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                                 onClick={() => setSettings(s => ({ ...s, shuffle: !s.shuffle }))}
                                 className={`w-12 h-6 rounded-full relative transition-all ${settings.shuffle ? 'bg-primary' : 'bg-slate-100 border border-slate-200'}`}
                               >
-                                <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow-md transition-all ${settings.shuffle ? 'left-7' : 'left-1'}`}></div>
+                                <div className={`absolute top-1 w-4 h-4 bg-white rounded-full  transition-all ${settings.shuffle ? 'left-7' : 'left-1'}`}></div>
                               </button>
                             </div>
 
@@ -517,13 +517,13 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                               <div className="flex bg-slate-50 rounded-2xl p-1.5 border border-slate-100">
                                 <button
                                   onClick={() => setSettings(s => ({ ...s, defaultSide: 'front' }))}
-                                  className={`flex-1 text-[10px] font-black uppercase tracking-widest py-2 rounded-xl transition-all ${settings.defaultSide === 'front' ? 'bg-white shadow-sm text-primary' : 'text-neutral-ink hover:text-slate-600'}`}
+                                  className={`flex-1 text-[10px] font-black uppercase tracking-widest py-2 rounded-xl transition-all ${settings.defaultSide === 'front' ? 'bg-white  text-primary' : 'text-neutral-ink hover:text-slate-600'}`}
                                 >
                                   Front
                                 </button>
                                 <button
                                   onClick={() => setSettings(s => ({ ...s, defaultSide: 'back' }))}
-                                  className={`flex-1 text-[10px] font-black uppercase tracking-widest py-2 rounded-xl transition-all ${settings.defaultSide === 'back' ? 'bg-white shadow-sm text-primary' : 'text-neutral-ink hover:text-slate-600'}`}
+                                  className={`flex-1 text-[10px] font-black uppercase tracking-widest py-2 rounded-xl transition-all ${settings.defaultSide === 'back' ? 'bg-white  text-primary' : 'text-neutral-ink hover:text-slate-600'}`}
                                 >
                                   Rear
                                 </button>
@@ -584,7 +584,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                               <div className="flex items-center space-x-6">
                                 <button
                                   onClick={(e) => { e.stopPropagation(); playVocabularyAudio(); }}
-                                  className="w-14 h-14 rounded-2xl bg-white border border-slate-100 text-neutral-ink hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all active:scale-90 shadow-sm"
+                                  className="w-14 h-14 rounded-2xl bg-white border border-slate-100 text-neutral-ink hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all active:scale-90 "
                                 >
                                   <FontAwesomeIcon
                                     icon={faPlayCircle}
@@ -625,14 +625,14 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                               {!isFlipped ? (
                                 <button
                                   onClick={(e) => { e.stopPropagation(); flipCard(); }}
-                                  className="flex-1 px-4 py-2 bg-primary text-white font-black uppercase tracking-widest text-[10px] rounded-xl shadow-md hover:bg-primary/90 transition-all"
+                                  className="flex-1 px-4 py-2 bg-primary text-white font-black uppercase tracking-widest text-[10px] rounded-xl  hover:bg-primary/90 transition-all"
                                 >
                                   Show Answer
                                 </button>
                               ) : (
                                 <button
                                   onClick={(e) => { e.stopPropagation(); handleNextQuestion(); }}
-                                  className="flex-1 px-4 py-2 bg-primary text-white font-black uppercase tracking-widest text-[10px] rounded-xl shadow-md hover:bg-primary/90 transition-all"
+                                  className="flex-1 px-4 py-2 bg-primary text-white font-black uppercase tracking-widest text-[10px] rounded-xl  hover:bg-primary/90 transition-all"
                                 >
                                   Next Card <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
                                 </button>
@@ -676,7 +676,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                               <div className="flex justify-center">
                                 <button
                                   onClick={flipCard}
-                                  className="px-8 py-3 bg-primary text-white font-black uppercase tracking-widest text-[10px] rounded-2xl shadow-lg hover:bg-primary/90 transition-all active:scale-95"
+                                  className="px-8 py-3 bg-primary text-white font-black uppercase tracking-widest text-[10px] rounded-2xl  hover:bg-primary/90 transition-all active:scale-95"
                                 >
                                   Show Answer
                                 </button>
@@ -768,7 +768,7 @@ const SentenceSection: React.FC<SentenceSectionProps> = ({ sentences }) => {
       {visibleSentences.map((sentence, index) => (
         <div
           key={index}
-          className="rounded-[2.5rem] border border-slate-100 bg-slate-50/50 p-6 shadow-sm hover:shadow-md hover:bg-white transition-all group/ex"
+          className="rounded-[2.5rem] border border-slate-100 bg-slate-50/50 p-6  hover: hover:bg-white transition-all group/ex"
         >
           <div className="flex items-center justify-between gap-4">
             {/* JP Sentence */}
@@ -780,7 +780,7 @@ const SentenceSection: React.FC<SentenceSectionProps> = ({ sentences }) => {
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => playSentenceAudio(sentence.sentence_audio)}
-                className="w-10 h-10 rounded-xl bg-white border border-slate-100 text-slate-300 hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all shadow-sm"
+                className="w-10 h-10 rounded-xl bg-white border border-slate-100 text-slate-300 hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all "
               >
                 <FontAwesomeIcon
                   icon={faPlayCircle}
@@ -789,7 +789,7 @@ const SentenceSection: React.FC<SentenceSectionProps> = ({ sentences }) => {
               </button>
               <button
                 onClick={() => toggleOpenState(index)}
-                className="w-10 h-10 rounded-xl bg-white border border-slate-100 text-slate-300 hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all shadow-sm"
+                className="w-10 h-10 rounded-xl bg-white border border-slate-100 text-slate-300 hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all "
               >
                 {openStates[index] ? (
                   <ChevronUpIcon className="h-5 w-5" />

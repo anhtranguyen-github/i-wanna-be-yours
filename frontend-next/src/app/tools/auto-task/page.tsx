@@ -60,7 +60,7 @@ export default function AutoTask() {
     <h2 className="text-2xl font-bold mb-4">Auto Task</h2>
     <div className="flex flex-wrap gap-4 mb-6">
       {tasks.map(t => (
-        <div key={t.key} className="shadow-lg bg-white rounded px-5 py-4 w-[270px] min-h-[130px] flex flex-col justify-between border border-indigo-100 hover:shadow-indigo-200 transition cursor-pointer" onClick={() => openTask(t)}>
+        <div key={t.key} className=" bg-white rounded px-5 py-4 w-[270px] min-h-[130px] flex flex-col justify-between border border-indigo-100 hover:shadow-indigo-200 transition cursor-pointer" onClick={() => openTask(t)}>
           <div>
             <div className="font-semibold text-lg">{t.name}</div>
             <div className="text-neutral-ink text-sm mb-2">{t.description}</div>
@@ -77,7 +77,7 @@ export default function AutoTask() {
     {/* Task Modal */}
     {modalTask && (
       <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-40">
-        <div className="bg-white rounded shadow-lg max-w-lg w-full p-6 relative animate-fade-in">
+        <div className="bg-white rounded  max-w-lg w-full p-6 relative animate-fade-in">
           <button className="absolute right-3 top-3 text-neutral-ink hover:text-red-500 text-xl font-bold" onClick={closeTask}>×</button>
           <div className="text-xl font-bold mb-2">{modalTask.name}</div>
           <div className="mb-1 text-neutral-ink text-sm">{modalTask.description}</div>
@@ -91,7 +91,7 @@ export default function AutoTask() {
                 {runUploads.map(f => (
                   <span key={f.id} className="bg-gray-200 rounded-lg px-3 py-1 text-xs font-semibold flex items-center gap-1">
                     <span>{f.type === "image" ? "🖼️" : f.type === "pdf" ? "📄" : "📎"} {f.name}</span>
-                    <button onClick={()=>removeUpload(f.id)} className="ml-1 text-neutral-ink/60 hover:text-red-600 font-bold">×</button>
+                    <button onClick={()=>removeUpload(f.id)} className="ml-1 text-neutral-ink hover:text-red-600 font-bold">×</button>
                   </span>
                 ))}
               </div>
@@ -105,7 +105,7 @@ export default function AutoTask() {
     {/* Add Task Modal */}
     {showAdd && (
       <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-40">
-        <div className="bg-white rounded shadow-lg max-w-md w-full p-6 relative animate-fade-in">
+        <div className="bg-white rounded  max-w-md w-full p-6 relative animate-fade-in">
           <button className="absolute right-3 top-3 text-neutral-ink hover:text-red-500 text-xl font-bold" onClick={()=>setShowAdd(false)}>×</button>
           <div className="text-lg font-bold mb-2">Add New Task</div>
           <input className="w-full border rounded px-2 py-1 my-2" value={addName} onChange={e=>setAddName(e.target.value)} placeholder="Task Name"/>

@@ -67,7 +67,7 @@ export default async function GrammarPoint({
         </h1>
 
         {grammarDetails && (
-          <div className="flex flex-col items-center w-99 max-w-1400px h-auto border border-gray-300 rounded-lg shadow-md bg-slate-200 overflow-hidden m-3 my-4 px-6 py-8">
+          <div className="flex flex-col items-center w-99 max-w-1400px h-auto border border-gray-300 rounded-lg  bg-slate-200 overflow-hidden m-3 my-4 px-6 py-8">
             <h2 className="text-xl font-bold mb-10">{grammarDetails.title}</h2>
             <div className="grid grid-cols-1 gap-4 w-full">
               <p className="text-lg font-bold">Short explanation:</p>

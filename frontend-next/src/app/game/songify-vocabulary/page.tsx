@@ -12,7 +12,7 @@ export default function LearningText() {
       </h2>
 
 
-      <div className="text-xs max-w-8xl mx-auto bg-white shadow-md rounded-md p-6">
+      <div className="text-xs max-w-8xl mx-auto bg-white  rounded-md p-6">
         <p className="mb-4">
           This is a highly experimental approach to learning vocabulary, where
           we use AI to generate songs from example sentences. The idea is to
@@ -61,7 +61,7 @@ export default function LearningText() {
 
 
 
-        {/* <div className="bg-gray-100 p-4 rounded-md shadow-inner mt-5">
+        {/* <div className="bg-gray-100 p-4 rounded-md  mt-5">
           <h2 className="text-xl font-semibold mb-4">
             Example Vocabulary: `貧しい / 가난한`
           </h2>
@@ -88,7 +88,7 @@ export default function LearningText() {
 
 
 
-        <div className="bg-gray-100 p-6 rounded-md shadow-inner mt-5">
+        <div className="bg-gray-100 p-6 rounded-md  mt-5">
           <h2 className="text-xl font-semibold mb-4">
             Example Vocabulary: `貧しい / 가난한`
           </h2>

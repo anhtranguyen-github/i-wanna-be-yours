@@ -238,7 +238,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
 
   // if (!isOpen)
   //   return (
-  //     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden m-2 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl flex flex-row justify-between items-center text-center sm:text-left">
+  //     <div className="bg-white dark:bg-gray-800 rounded-lg  overflow-hidden m-2 transition duration-300 ease-in-out transform hover:-translate-y-1 hover: flex flex-row justify-between items-center text-center sm:text-left">
   //       <div className="p-4 flex-grow">
   //         <div className="text-xs sm:text-sm md:text-md lg:text-lg font-semibold text-neutral-ink dark:text-neutral-ink uppercase tracking-widest">
   //           {p_tag}
@@ -339,7 +339,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
               >
                 {/* Fixed-size modal with responsive breakpoints */}
                 <Dialog.Panel
-                  className="relative transform w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl h-[85vh] max-h-[700px] overflow-hidden rounded-[2.5rem] bg-white p-4 sm:p-8 text-left shadow-2xl transition-all z-50 border border-slate-100"
+                  className="relative transform w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl h-[85vh] max-h-[700px] overflow-hidden rounded-[2.5rem] bg-white p-4 sm:p-8 text-left  transition-all z-50 border border-slate-100"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <div className="h-full flex flex-col">
@@ -402,7 +402,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                             <div className="flex items-center space-x-6">
                               <button
                                 onClick={(e) => { e.stopPropagation(); playVocabularyAudio(); }}
-                                className="w-14 h-14 rounded-2xl bg-white border border-slate-100 text-neutral-ink hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all active:scale-90 shadow-sm"
+                                className="w-14 h-14 rounded-2xl bg-white border border-slate-100 text-neutral-ink hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all active:scale-90 "
                               >
                                 <FontAwesomeIcon
                                   icon={faPlayCircle}
@@ -547,7 +547,7 @@ const SentenceSection: React.FC<SentenceSectionProps> = ({ sentences }) => {
       {visibleSentences.map((sentence, index) => (
         <div
           key={index}
-          className="rounded-[2.5rem] border border-slate-100 bg-slate-50/50 p-6 shadow-sm hover:shadow-md hover:bg-white transition-all group/ex"
+          className="rounded-[2.5rem] border border-slate-100 bg-slate-50/50 p-6  hover: hover:bg-white transition-all group/ex"
         >
           <div className="flex items-center justify-between gap-4">
             {/* JP Sentence */}
@@ -559,7 +559,7 @@ const SentenceSection: React.FC<SentenceSectionProps> = ({ sentences }) => {
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => playSentenceAudio(sentence.sentence_audio)}
-                className="w-10 h-10 rounded-xl bg-white border border-slate-100 text-slate-300 hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all shadow-sm"
+                className="w-10 h-10 rounded-xl bg-white border border-slate-100 text-slate-300 hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all "
               >
                 <FontAwesomeIcon
                   icon={faPlayCircle}
@@ -568,7 +568,7 @@ const SentenceSection: React.FC<SentenceSectionProps> = ({ sentences }) => {
               </button>
               <button
                 onClick={() => toggleOpenState(index)}
-                className="w-10 h-10 rounded-xl bg-white border border-slate-100 text-slate-300 hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all shadow-sm"
+                className="w-10 h-10 rounded-xl bg-white border border-slate-100 text-slate-300 hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all "
               >
                 {openStates[index] ? (
                   <ChevronUpIcon className="h-5 w-5" />

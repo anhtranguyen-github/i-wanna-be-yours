@@ -17,8 +17,9 @@ import PracticeListCard from "@/components/practice/PracticeListCard";
 import PracticeCard from "@/components/practice/PracticeCard";
 import { SearchNexus } from "@/components/shared/SearchNexus";
 import { SearchNexusState, FilterGroup } from "@/types/search";
-import { InformativeLoginCard } from "@/components/shared/InformativeLoginCard";
+import { InformativeLoginCard, CreateButton } from "@/components/shared";
 import { useUser } from "@/context/UserContext";
+import { Globe, User as UserIcon } from "lucide-react";
 
 export default function PracticeHubPage() {
     const router = useRouter();
@@ -36,7 +37,8 @@ export default function PracticeHubPage() {
             skill: ['ALL'],
             timing: ['ALL'],
             origin: ['ALL'],
-            status: ['ALL']
+            status: ['ALL'],
+            access: ['PUBLIC']
         },
         activeTab: 'PUBLIC'
     });
@@ -45,22 +47,31 @@ export default function PracticeHubPage() {
     // Filter Groups Configuration
     const filterGroups: FilterGroup[] = [
         {
+            id: 'access',
+            label: 'Access',
+            type: 'SINGLE',
+            options: [
+                { id: 'PUBLIC', label: 'Public Portal', icon: <Globe size={12} /> },
+                { id: 'PERSONAL', label: 'My Trials', icon: <UserIcon size={12} /> }
+            ]
+        },
+        {
             id: 'mode',
             label: 'Protocol Mode',
             type: 'SINGLE',
             options: [
-                { id: 'ALL', label: 'All Modes' },
-                { id: 'FULL_EXAM', label: 'Simulation' },
-                { id: 'QUIZ', label: 'Daily Burst' },
-                { id: 'SINGLE_EXAM', label: 'Skill Forge' }
+                { id: 'ALL', label: 'All Protocols' },
+                { id: 'QUIZ', label: 'Quick Quiz' },
+                { id: 'FULL_EXAM', label: 'Full Exam' },
+                { id: 'SINGLE_EXAM', label: 'Single Topic' }
             ]
         },
         {
             id: 'level',
-            label: 'Level Sector',
+            label: 'Cognitive Level',
             type: 'SINGLE',
             options: [
-                { id: 'ALL', label: 'Global' },
+                { id: 'ALL', label: 'All Levels' },
                 { id: 'N5', label: 'JLPT N5' },
                 { id: 'N4', label: 'JLPT N4' },
                 { id: 'N3', label: 'JLPT N3' },
@@ -70,10 +81,10 @@ export default function PracticeHubPage() {
         },
         {
             id: 'skill',
-            label: 'Domain',
+            label: 'Domain Specification',
             type: 'SINGLE',
             options: [
-                { id: 'ALL', label: 'All Domains' },
+                { id: 'ALL', label: 'All Skills' },
                 { id: 'VOCABULARY', label: 'Vocabulary' },
                 { id: 'GRAMMAR', label: 'Grammar' },
                 { id: 'READING', label: 'Reading' },
@@ -82,11 +93,11 @@ export default function PracticeHubPage() {
         },
         {
             id: 'status',
-            label: 'Memory Status',
+            label: 'Completion Status',
             type: 'SINGLE',
             options: [
-                { id: 'ALL', label: 'Entire Nexus' },
-                { id: 'NEVER_ATTEMPTED', label: 'Untouched' },
+                { id: 'ALL', label: 'All States' },
+                { id: 'UNSTARTED', label: 'Pristine' },
                 { id: 'IN_PROGRESS', label: 'Active' },
                 { id: 'COMPLETED', label: 'Finalized' }
             ]
@@ -97,19 +108,17 @@ export default function PracticeHubPage() {
     const fetchNodes = useCallback(async () => {
         setIsLoading(true);
         try {
-            // Map searchState back to FilterState for service
             const apiFilters: FilterState = {
                 mode: (searchState.activeFilters.mode?.[0] || 'ALL') as any,
                 level: (searchState.activeFilters.level?.[0] || 'ALL') as any,
                 skill: (searchState.activeFilters.skill?.[0] || 'ALL') as any,
                 timing: (searchState.activeFilters.timing?.[0] || 'ALL') as any,
-                origin: (searchState.activeFilters.origin?.[0] || 'ALL') as any,
+                origin: searchState.activeTab === 'PUBLIC' ? 'system' : 'manual',
                 status: (searchState.activeFilters.status?.[0] || 'ALL') as any,
             };
 
             const { nodes: fetchedNodes } = await practiceService.getNodes(apiFilters);
 
-            // Front-end search filtering
             const filtered = fetchedNodes.filter(node =>
                 node.title.toLowerCase().includes(searchState.query.toLowerCase()) ||
                 node.description.toLowerCase().includes(searchState.query.toLowerCase())
@@ -132,142 +141,116 @@ export default function PracticeHubPage() {
     };
 
     const handleSearchChange = (newState: SearchNexusState) => {
+        const accessFilter = newState.activeFilters.access?.[0];
+
+        if (accessFilter && accessFilter !== searchState.activeTab) {
+            if (accessFilter === 'PERSONAL' && !user) {
+                setShowLoginPrompt(true);
+                return;
+            }
+            newState.activeTab = accessFilter as 'PUBLIC' | 'PERSONAL';
+        } else if (newState.activeTab !== searchState.activeTab) {
+            newState.activeFilters = {
+                ...newState.activeFilters,
+                access: [newState.activeTab]
+            };
+        }
+
         setSearchState(newState);
         if (newState.activeTab === 'PUBLIC') setShowLoginPrompt(false);
     };
 
     return (
-        <div className="min-h-screen bg-secondary/30 pb-20">
-            {/* Header Section */}
-            <div className="bg-neutral-white border-b border-neutral-gray/10 px-8 py-10 shadow-sm relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-[100px] -mr-48 -mt-48 transition-all duration-1000" />
+        <div className="min-h-screen bg-neutral-beige/20 pb-24">
+            {/* Header */}
+            <header className="bg-neutral-white border-b border-neutral-gray/20 px-8 py-12">
+                <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div className="space-y-4 text-center md:text-left">
+                        <h1 className="text-5xl font-black text-neutral-ink font-display tracking-tight">Practice Hub</h1>
+                        <p className="text-neutral-ink font-bold max-w-xl">
+                            Refine your knowledge through structured drills and simulated exams.
+                        </p>
+                    </div>
 
-                <div className="max-w-7xl mx-auto relative z-10">
-                    <button
-                        onClick={() => router.push('/dashboard')}
-                        className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-neutral-ink hover:text-primary-strong transition-all mb-8 group"
-                    >
-                        <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-                        Back to Command Center
-                    </button>
-
-                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
-                        <div className="space-y-4">
-                            <div className="flex items-center gap-3">
-                                <div className="p-3 bg-primary-strong text-white rounded-2xl shadow-lg shadow-primary/20">
-                                    <BrainCircuit size={32} />
-                                </div>
-                                <h1 className="text-5xl font-black text-neutral-ink font-display tracking-tight">Practice Nexus</h1>
-                            </div>
-                            <p className="text-lg text-neutral-ink/70 font-medium max-w-2xl leading-relaxed">
-                                Unified training environment. Select your objective, specify your cognitive parameters, and initiate the protocol.
-                            </p>
-                            <div className="flex items-center gap-6 mt-4">
-                                <div className="flex items-center gap-2 text-primary-strong font-black text-xs uppercase tracking-widest">
-                                    <Zap size={16} />
-                                    Active Nodes: {nodes.length}
-                                </div>
-                                <div className="flex items-center gap-2 text-secondary font-black text-xs uppercase tracking-widest">
-                                    <Activity size={16} />
-                                    Proficiency: Advanced
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* View Switcher */}
-                        <div className="flex items-center p-1.5 bg-neutral-beige rounded-2xl border border-neutral-gray/10 shadow-inner">
+                    <div className="flex items-center gap-4">
+                        <div className="flex bg-neutral-white border border-neutral-gray/20 rounded-xl p-1">
                             <button
                                 onClick={() => setViewMode('LIST')}
-                                className={`p-3 rounded-xl transition-all ${viewMode === 'LIST' ? "bg-neutral-white text-primary-strong shadow-md scale-105" : "text-neutral-ink/40 hover:text-neutral-ink"}`}
-                                title="List View"
+                                className={`p-2 rounded-lg transition-all ${viewMode === 'LIST' ? 'bg-neutral-ink text-white' : 'text-neutral-ink hover:bg-neutral-beige'}`}
                             >
                                 <StretchHorizontal size={20} />
                             </button>
                             <button
                                 onClick={() => setViewMode('GRID')}
-                                className={`p-3 rounded-xl transition-all ${viewMode === 'GRID' ? "bg-neutral-white text-primary-strong shadow-md scale-105" : "text-neutral-ink/40 hover:text-neutral-ink"}`}
-                                title="Grid View"
+                                className={`p-2 rounded-lg transition-all ${viewMode === 'GRID' ? 'bg-neutral-ink text-white' : 'text-neutral-ink hover:bg-neutral-beige'}`}
                             >
                                 <LayoutGrid size={20} />
                             </button>
                         </div>
+                        <CreateButton href="/practice/create" label="Create New Plan" />
                     </div>
                 </div>
-            </div>
+            </header>
 
-            {/* Filter Hub */}
-            <div className="max-w-7xl mx-auto px-8 -mt-8 relative z-20">
+            {/* Nexus Controller */}
+            <div className="max-w-7xl mx-auto px-8 -mt-8 relative z-50">
                 <SearchNexus
-                    placeholder="Search for grammar patterns, vocabulary sets, or listening exercises..."
+                    placeholder="Search practice protocols..."
                     groups={filterGroups}
                     state={searchState}
                     onChange={handleSearchChange}
                     onPersonalTabAttempt={() => setShowLoginPrompt(true)}
                     isLoggedIn={!!user}
+                    variant="minimal"
+                    showSwitches={false}
                 />
             </div>
 
-            {/* Content Area */}
-            <main className="max-w-7xl mx-auto px-8 mt-12">
-                {showLoginPrompt ? (
-                    <div className="py-20 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                        <InformativeLoginCard
-                            title="Personal Practice Dashboard"
-                            description="Take control of your learning. Log in to create custom practice sets, track your mastery over 1000s of nodes, and resume active protocols."
-                            icon={BrainCircuit}
-                            benefits={[
-                                "Advanced performance analytics",
-                                "Custom practice-set creation",
-                                "History of all completed protocols",
-                                "Priority access to new AI nodes"
-                            ]}
-                            flowType="PRACTICE"
-                        />
-                    </div>
-                ) : isLoading ? (
-                    <div className="grid grid-cols-1 gap-4">
-                        {[1, 2, 3, 4, 5].map(i => (
-                            <div key={i} className="h-32 bg-neutral-white/50 border border-neutral-gray/10 rounded-[1.5rem] animate-pulse" />
+            {/* Content Display */}
+            <main className="max-w-7xl mx-auto px-8 pt-12">
+                {isLoading ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {[1, 2, 3, 4, 5, 6].map(i => (
+                            <div key={i} className="h-64 bg-neutral-white rounded-[2rem] border border-neutral-gray/20 animate-pulse" />
                         ))}
                     </div>
                 ) : nodes.length > 0 ? (
-                    <div className={viewMode === 'LIST' ? "flex flex-col gap-4" : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"}>
+                    <div className={viewMode === 'GRID' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" : "space-y-4"}>
                         {nodes.map(node => (
-                            viewMode === 'LIST' ? (
-                                <PracticeListCard key={node.id} node={node} onStart={handleStartNode} />
-                            ) : (
+                            viewMode === 'GRID' ? (
                                 <PracticeCard key={node.id} config={node as any} onStart={handleStartNode} />
+                            ) : (
+                                <PracticeListCard key={node.id} node={node} onStart={handleStartNode} />
                             )
                         ))}
                     </div>
                 ) : (
-                    <div className="flex flex-col items-center justify-center py-32 text-center bg-neutral-white/30 rounded-[3rem] border-2 border-dashed border-neutral-gray/20">
-                        <div className="p-8 bg-neutral-beige/50 rounded-full mb-8">
-                            <SearchX size={64} className="text-neutral-ink/20" />
+                    <div className="text-center py-24 bg-neutral-white rounded-[2rem] border border-neutral-gray/20 space-y-6">
+                        <div className="w-20 h-20 bg-neutral-beige/50 rounded-full flex items-center justify-center mx-auto">
+                            <SearchX size={40} className="text-neutral-ink" />
                         </div>
-                        <h3 className="text-3xl font-black text-neutral-ink font-display mb-4">No Nodes Detected</h3>
-                        <p className="text-neutral-ink/60 font-bold max-w-sm">
-                            Your current parameters yielded zero matches in the Nexus. Try relaxing your filters or synthesis criteria.
-                        </p>
-                        <button
-                            onClick={() => {
-                                setSearchState({
-                                    query: "",
-                                    activeFilters: {
-                                        mode: ['ALL'],
-                                        level: ['ALL'],
-                                        skill: ['ALL'],
-                                        timing: ['ALL'],
-                                        origin: ['ALL'],
-                                        status: ['ALL']
-                                    },
-                                    activeTab: 'PUBLIC'
-                                });
-                            }}
-                            className="mt-8 px-8 py-4 bg-neutral-ink text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-primary-strong transition-all"
-                        >
-                            Reset Parameters
-                        </button>
+                        <div className="space-y-2">
+                            <h3 className="text-2xl font-black text-neutral-ink">No protocols detected</h3>
+                            <p className="text-neutral-ink font-bold">Adjust your parameters or initialize a new plan.</p>
+                        </div>
+                    </div>
+                )}
+
+                {/* Personalization Gate */}
+                {searchState.activeTab === 'PERSONAL' && !user && (
+                    <div className="mt-12">
+                        <InformativeLoginCard
+                            title="Personal Practice Ledger"
+                            description="Track your mastery, bookmark difficult drills, and create customized study tracks."
+                            icon={BrainCircuit}
+                            benefits={[
+                                "Personal Mastery Statistics",
+                                "Custom Practice Routines",
+                                "AI-Generated Drill Focus",
+                                "Cross-Device Synchronization"
+                            ]}
+                            flowType="PRACTICE"
+                        />
                     </div>
                 )}
             </main>

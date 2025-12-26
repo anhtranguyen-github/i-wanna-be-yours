@@ -43,7 +43,7 @@ export const NAV_CONFIG: NavSection[] = [
         label: 'Game',
         href: '/game',
         icon: Gamepad2,
-        matchPaths: ['/game', '/flashcards'],
+        matchPaths: ['/game', '/flashcards', '/quoot'],
     },
     {
         id: 'library',

@@ -283,7 +283,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
 
   // if (!isOpen)
   //   return (
-  //     <div className=" p-2 bg-white dark:bg-gray-800 rounded-lg shadow transition-shadow duration-300 ease-in-out hover:shadow-xl">
+  //     <div className=" p-2 bg-white dark:bg-gray-800 rounded-lg shadow transition-shadow duration-300 ease-in-out hover:">
   //       <div className="text-sm md:text-md lg:text-lg font-semibold text-neutral-ink dark:text-neutral-ink uppercase tracking-widest">
   //         Level: {p_tag}
   //       </div>
@@ -378,7 +378,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
               >
                 {/* Fixed-size modal with responsive breakpoints */}
                 <Dialog.Panel
-                  className="relative transform w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl h-[85vh] max-h-[700px] overflow-hidden rounded-[2.5rem] bg-white p-4 sm:p-8 text-left shadow-2xl transition-all z-50 border border-slate-100 flex flex-col"
+                  className="relative transform w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl h-[85vh] max-h-[700px] overflow-hidden rounded-[2.5rem] bg-white p-4 sm:p-8 text-left  transition-all z-50 border border-slate-100 flex flex-col"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <div className="h-full flex flex-col">
@@ -414,13 +414,13 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                             <div className="flex bg-slate-50 rounded-2xl p-1.5 border border-slate-100">
                               <button
                                 onClick={() => setSettings(s => ({ ...s, mode: 'basic' }))}
-                                className={`flex-1 text-[10px] font-black uppercase tracking-widest py-2 rounded-xl transition-all ${settings.mode === 'basic' ? 'bg-white shadow-sm text-primary' : 'text-neutral-ink hover:text-slate-600'}`}
+                                className={`flex-1 text-[10px] font-black uppercase tracking-widest py-2 rounded-xl transition-all ${settings.mode === 'basic' ? 'bg-white  text-primary' : 'text-neutral-ink hover:text-slate-600'}`}
                               >
                                 Static
                               </button>
                               <button
                                 onClick={() => setSettings(s => ({ ...s, mode: 'learn' }))}
-                                className={`flex-1 text-[10px] font-black uppercase tracking-widest py-2 rounded-xl transition-all ${settings.mode === 'learn' ? 'bg-primary text-white shadow-sm' : 'text-neutral-ink hover:text-slate-600'}`}
+                                className={`flex-1 text-[10px] font-black uppercase tracking-widest py-2 rounded-xl transition-all ${settings.mode === 'learn' ? 'bg-primary text-white ' : 'text-neutral-ink hover:text-slate-600'}`}
                               >
                                 Neural
                               </button>
@@ -434,7 +434,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                               onClick={() => setSettings(s => ({ ...s, shuffle: !s.shuffle }))}
                               className={`w-12 h-6 rounded-full relative transition-all ${settings.shuffle ? 'bg-primary' : 'bg-slate-100 border border-slate-200'}`}
                             >
-                              <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow-md transition-all ${settings.shuffle ? 'left-7' : 'left-1'}`}></div>
+                              <div className={`absolute top-1 w-4 h-4 bg-white rounded-full  transition-all ${settings.shuffle ? 'left-7' : 'left-1'}`}></div>
                             </button>
                           </div>
 
@@ -444,13 +444,13 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                             <div className="flex bg-slate-50 rounded-2xl p-1.5 border border-slate-100">
                               <button
                                 onClick={() => setSettings(s => ({ ...s, defaultSide: 'front' }))}
-                                className={`flex-1 text-[10px] font-black uppercase tracking-widest py-2 rounded-xl transition-all ${settings.defaultSide === 'front' ? 'bg-white shadow-sm text-primary' : 'text-neutral-ink hover:text-slate-600'}`}
+                                className={`flex-1 text-[10px] font-black uppercase tracking-widest py-2 rounded-xl transition-all ${settings.defaultSide === 'front' ? 'bg-white  text-primary' : 'text-neutral-ink hover:text-slate-600'}`}
                               >
                                 Front
                               </button>
                               <button
                                 onClick={() => setSettings(s => ({ ...s, defaultSide: 'back' }))}
-                                className={`flex-1 text-[10px] font-black uppercase tracking-widest py-2 rounded-xl transition-all ${settings.defaultSide === 'back' ? 'bg-white shadow-sm text-primary' : 'text-neutral-ink hover:text-slate-600'}`}
+                                className={`flex-1 text-[10px] font-black uppercase tracking-widest py-2 rounded-xl transition-all ${settings.defaultSide === 'back' ? 'bg-white  text-primary' : 'text-neutral-ink hover:text-slate-600'}`}
                               >
                                 Rear
                               </button>
@@ -488,7 +488,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                             </span>
                             <button
                               onClick={(e) => { e.stopPropagation(); playKanjiAudio(); }}
-                              className="w-16 h-16 rounded-3xl bg-slate-50 border border-slate-100 text-neutral-ink hover:text-primary hover:border-primary/20 hover:bg-white flex items-center justify-center transition-all active:scale-90 shadow-sm mx-auto"
+                              className="w-16 h-16 rounded-3xl bg-slate-50 border border-slate-100 text-neutral-ink hover:text-primary hover:border-primary/20 hover:bg-white flex items-center justify-center transition-all active:scale-90  mx-auto"
                             >
                               <FontAwesomeIcon
                                 icon={faPlayCircle}
@@ -513,7 +513,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                             <div className="flex items-center space-x-6">
                               <button
                                 onClick={(e) => { e.stopPropagation(); playKanjiAudio(); }}
-                                className="w-16 h-16 rounded-2xl bg-white border border-slate-100 text-neutral-ink hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all active:scale-90 shadow-sm"
+                                className="w-16 h-16 rounded-2xl bg-white border border-slate-100 text-neutral-ink hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all active:scale-90 "
                               >
                                 <FontAwesomeIcon
                                   icon={faPlayCircle}
@@ -542,14 +542,14 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
 
                               <div className="space-y-4">
                                 <div className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em] font-display">Compound Pattern</div>
-                                <div className="p-8 bg-slate-50 border border-slate-100 rounded-[2rem] shadow-sm flex items-center justify-between group/comp">
+                                <div className="p-8 bg-slate-50 border border-slate-100 rounded-[2rem]  flex items-center justify-between group/comp">
                                   <div className="flex-1">
                                     <div className="text-3xl font-jp font-black text-neutral-ink mb-2 tracking-tighter italic">{currentQuestion.exampleWord}</div>
                                     <div className="text-base font-bold text-neutral-ink italic">{currentQuestion.exampleReading}</div>
                                   </div>
                                   <button
                                     onClick={(e) => { e.stopPropagation(); handlePlayAudio(); }}
-                                    className="w-12 h-12 rounded-xl bg-white border border-slate-100 text-slate-300 group-hover/comp:text-primary group-hover/comp:border-primary/20 flex items-center justify-center transition-all shadow-sm"
+                                    className="w-12 h-12 rounded-xl bg-white border border-slate-100 text-slate-300 group-hover/comp:text-primary group-hover/comp:border-primary/20 flex items-center justify-center transition-all "
                                   >
                                     <FontAwesomeIcon icon={faPlayCircle} className="w-5 h-5" />
                                   </button>
@@ -576,14 +576,14 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                             {!isFlipped ? (
                               <button
                                 onClick={(e) => { e.stopPropagation(); flipCard(); }}
-                                className="flex-1 px-4 py-2 bg-brand-salmon text-white font-bold rounded-xl shadow-md hover:bg-brand-salmon/90 transition-colors"
+                                className="flex-1 px-4 py-2 bg-brand-salmon text-white font-bold rounded-xl  hover:bg-brand-salmon/90 transition-colors"
                               >
                                 Show Answer
                               </button>
                             ) : (
                               <button
                                 onClick={(e) => { e.stopPropagation(); handleNextQuestion(); }}
-                                className="flex-1 px-4 py-2 bg-blue-500 text-white font-bold rounded-xl shadow-md hover:bg-blue-600 transition-colors"
+                                className="flex-1 px-4 py-2 bg-blue-500 text-white font-bold rounded-xl  hover:bg-blue-600 transition-colors"
                               >
                                 Next Card <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
                               </button>

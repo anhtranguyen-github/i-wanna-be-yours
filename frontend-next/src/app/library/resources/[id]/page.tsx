@@ -56,7 +56,7 @@ export default function ResourceDetailPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-background flex flex-col items-center justify-center text-muted-foreground">
+            <div className="min-h-screen bg-background flex flex-col items-center justify-center text-neutral-ink">
                 <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mb-6"></div>
                 <div className="text-xs font-black uppercase tracking-widest font-display animate-pulse">Loading resource...</div>
             </div>
@@ -70,7 +70,7 @@ export default function ResourceDetailPage() {
                     <FileText size={48} className="text-neutral-ink" />
                 </div>
                 <h2 className="text-3xl font-black text-foreground mb-4 font-display">Resource Not Found</h2>
-                <p className="text-muted-foreground font-bold mb-10 max-w-md leading-relaxed">{error || "The requested resource could not be found."}</p>
+                <p className="text-neutral-ink font-bold mb-10 max-w-md leading-relaxed">{error || "The requested resource could not be found."}</p>
                 <button
                     onClick={() => router.push('/library/resources')}
                     className="flex items-center gap-3 px-8 py-4 bg-foreground text-background rounded-2xl font-black font-display uppercase tracking-widest text-sm  hover:opacity-90 active:scale-95 transition-all"
@@ -87,7 +87,7 @@ export default function ResourceDetailPage() {
             {/* Back button */}
             <button
                 onClick={() => router.back()}
-                className="flex items-center gap-3 text-muted-foreground hover:text-primary mb-10 transition-all active:scale-95 group"
+                className="flex items-center gap-3 text-neutral-ink hover:text-primary mb-10 transition-all active:scale-95 group"
             >
                 <ArrowLeft size={24} className="group-hover:-translate-x-1 transition-transform" />
                 <span className="text-xs font-black uppercase tracking-widest font-display">Back to Vault</span>
@@ -106,11 +106,11 @@ export default function ResourceDetailPage() {
                                     <FileText size={14} />
                                     <span className="capitalize">{resource.type}</span>
                                 </span>
-                                <span className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest font-display">
+                                <span className="flex items-center gap-2 text-[10px] font-black text-neutral-ink uppercase tracking-widest font-display">
                                     <HardDrive size={16} className="text-neutral-ink" />
                                     {formatFileSize(resource.fileSize)}
                                 </span>
-                                <span className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest font-display">
+                                <span className="flex items-center gap-2 text-[10px] font-black text-neutral-ink uppercase tracking-widest font-display">
                                     <Calendar size={16} className="text-neutral-ink" />
                                     {resource.createdAt ? new Date(resource.createdAt).toLocaleDateString() : 'N/A'}
                                 </span>
@@ -152,7 +152,7 @@ export default function ResourceDetailPage() {
                                 <FileText size={80} className="text-neutral-ink" />
                             </div>
                             <h3 className="text-2xl font-black text-foreground mb-4 font-display">Document Preview</h3>
-                            <p className="text-muted-foreground font-bold max-w-sm mx-auto mb-10 leading-relaxed text-sm">
+                            <p className="text-neutral-ink font-bold max-w-sm mx-auto mb-10 leading-relaxed text-sm">
                                 This file type cannot be previewed directly in the browser yet.
                                 Please download it to view its contents.
                             </p>
@@ -176,7 +176,7 @@ export default function ResourceDetailPage() {
                                 {resource.tags.map((tag, idx) => (
                                     <span
                                         key={idx}
-                                        className="px-4 py-1.5 bg-muted text-muted-foreground rounded-full text-[10px] font-black uppercase tracking-widest font-display "
+                                        className="px-4 py-1.5 bg-muted text-neutral-ink rounded-full text-[10px] font-black uppercase tracking-widest font-display "
                                     >
                                         {tag}
                                     </span>

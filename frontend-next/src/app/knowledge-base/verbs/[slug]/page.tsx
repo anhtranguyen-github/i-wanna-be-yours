@@ -57,10 +57,10 @@ const getDashboardCardsProps = (level: string): DashboardCardsProps[] => {
 
         case "JLPT_N5":
             return [];
-      
+
           case "JLPT_N4":
             return [];
-      
+
           case "JLPT_N3":
             return [
               {
@@ -113,13 +113,13 @@ const getDashboardCardsProps = (level: string): DashboardCardsProps[] => {
                 description: "",
               },
             ];
-      
+
           case "JLPT_N2":
             return [];
-      
+
           case "JLPT_N1":
             return [];
-      
+
           case "essential_verbs":
             return [
               {
@@ -235,7 +235,7 @@ interface HeadlineProps {
   title: string;
   subtitle: string;
 }
-  
+
 
 const getHeadlineProps = (level: string): HeadlineProps => {
     switch (level) {
@@ -244,27 +244,27 @@ const getHeadlineProps = (level: string): HeadlineProps => {
             title: "JLPT N5 Vocabulary",
             subtitle: "JLPT N5 vocabulary with example sentences and audio.",
           };
-        case  "JLPT_N4": 
+        case  "JLPT_N4":
         return {
             title: "JLPT N4 Vocabulary",
             subtitle: "JLPT N4 vocabulary with example sentences and audio.",
           };
-        case  "JLPT_N3": 
+        case  "JLPT_N3":
         return {
             title: "JLPT N3 Vocabulary",
             subtitle: "JLPT N3 vocabulary with example sentences and audio.",
           };
-        case  "JLPT_N2": 
+        case  "JLPT_N2":
         return{
             title: "JLPT N2 Vocabulary",
             subtitle: "JLPT N2 vocabulary with example sentences and audio.",
           };
-        case  "JLPT_N1": 
+        case  "JLPT_N1":
         return {
             title: "JLPT N1 Vocabulary",
             subtitle: "JLPT N1 vocabulary with example sentences and audio.",
           };
-        case  "essential_verbs": 
+        case  "essential_verbs":
         return {
             title: "Essential Japanese Verbs",
             subtitle: "Essential Japanese Verbs with example sentences and audio.",
@@ -278,7 +278,7 @@ const getHeadlineProps = (level: string): HeadlineProps => {
         };
     }
   };
-  
+
 
 
 

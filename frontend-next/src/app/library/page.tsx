@@ -65,7 +65,7 @@ export default function LibraryPage() {
                     </div>
                     <div>
                         <h1 className="text-3xl font-bold text-foreground font-display">Library</h1>
-                        <p className="text-muted-foreground">Browse your learning resources</p>
+                        <p className="text-neutral-ink">Browse your learning resources</p>
                     </div>
                 </div>
             </header>
@@ -74,8 +74,8 @@ export default function LibraryPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {routes.map((route) => (
                         <Link key={route.href} href={route.href}>
-                            <div className="bg-card rounded-2xl border border-neutral-gray/30 p-8 shadow-sm hover:shadow-md hover:border-primary/40 transition-all h-full flex flex-col items-center text-center cursor-pointer">
-                                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-inner ${route.color}`}>
+                            <div className="bg-card rounded-2xl border border-neutral-gray/30 p-8  hover: hover:border-primary/40 transition-all h-full flex flex-col items-center text-center cursor-pointer">
+                                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6  ${route.color}`}>
                                     {route.icon}
                                 </div>
                                 <h2 className="text-xl font-black text-neutral-ink mb-3 font-display">{route.title}</h2>

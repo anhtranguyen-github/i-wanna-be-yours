@@ -87,7 +87,7 @@ export default function ResourcesListPage() {
                         <h1 className="text-5xl font-black text-foreground tracking-tight mb-3 font-display">
                             Learning <span className="text-primary">Vault</span>
                         </h1>
-                        <p className="text-muted-foreground font-bold max-w-lg leading-relaxed">
+                        <p className="text-neutral-ink font-bold max-w-lg leading-relaxed">
                             {isGuest
                                 ? "Your personal AI-powered repository for Japanese study materials. Upload PDF, audio, or images to generate lessons."
                                 : "Manage your uploaded documents and interative files."}
@@ -121,7 +121,7 @@ export default function ResourcesListPage() {
                                         {feature.icon}
                                     </div>
                                     <h3 className="text-2xl font-black text-foreground mb-4 tracking-tight font-display">{feature.title}</h3>
-                                    <p className="text-muted-foreground font-bold leading-relaxed mb-8 text-sm">
+                                    <p className="text-neutral-ink font-bold leading-relaxed mb-8 text-sm">
                                         {feature.description}
                                     </p>
                                     <div className="flex items-center gap-2 text-foreground font-black text-xs uppercase tracking-widest font-display group-hover:gap-4 transition-all">
@@ -176,7 +176,7 @@ export default function ResourcesListPage() {
                                     <Search className="text-neutral-ink" size={40} />
                                 </div>
                                 <h3 className="text-3xl font-black text-foreground mb-4 font-display">Build Your Vault</h3>
-                                <p className="text-muted-foreground font-bold mb-10 max-w-sm leading-relaxed">Upload your first PDF, image, or audio file to begin your AI-powered learning journey.</p>
+                                <p className="text-neutral-ink font-bold mb-10 max-w-sm leading-relaxed">Upload your first PDF, image, or audio file to begin your AI-powered learning journey.</p>
                                 <button
                                     onClick={() => setShowUploader(true)}
                                     className="px-10 py-5 bg-foreground text-background font-black rounded-2xl  font-display uppercase tracking-widest text-sm hover:opacity-90 active:scale-95 transition-all"
@@ -203,7 +203,7 @@ export default function ResourcesListPage() {
                                                 <h3 className="text-xl font-black text-foreground mb-2 group-hover:text-primary transition-colors line-clamp-1 font-display">
                                                     {resource.title}
                                                 </h3>
-                                                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest font-display">
+                                                <p className="text-[10px] font-black text-neutral-ink uppercase tracking-widest font-display">
                                                     {resource.type} • {new Date(resource.createdAt).toLocaleDateString()}
                                                 </p>
                                             </div>

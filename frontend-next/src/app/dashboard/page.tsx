@@ -62,7 +62,7 @@ function AchievementCard({ achievement }: AchievementCardProps) {
                 <p className="font-bold text-foreground truncate font-display">
                     {achievement.name}
                 </p>
-                <p className="text-xs text-muted-foreground truncate font-medium">
+                <p className="text-xs text-neutral-ink truncate font-medium">
                     {achievement.description}
                 </p>
             </div>
@@ -81,11 +81,11 @@ function WeeklyGoalCard({ label, current, target, icon, color, unit = "" }: any)
                 <div className="p-2 rounded-lg" style={{ backgroundColor: `${color}15` }}>
                     <div className="w-5 h-5" style={{ color }}>{icon}</div>
                 </div>
-                <p className="text-xs font-bold text-muted-foreground uppercase tracking-tight font-display">{label}</p>
+                <p className="text-xs font-bold text-neutral-ink uppercase tracking-tight font-display">{label}</p>
             </div>
             <div className="flex items-baseline gap-2 mb-2">
                 <span className="text-2xl font-black text-foreground font-display">{current}{unit}</span>
-                <span className="text-xs font-bold text-muted-foreground">/ {target}{unit}</span>
+                <span className="text-xs font-bold text-neutral-ink">/ {target}{unit}</span>
             </div>
             <div className="h-2 bg-muted rounded-full overflow-hidden">
                 <div className="h-full rounded-full transition-all duration-500" style={{ width: `${progress}%`, backgroundColor: color }} />
@@ -104,7 +104,7 @@ function QuickAction({ label, icon, href, color }: any) {
             <div className="p-3 rounded-xl group-hover:scale-110 transition-transform" style={{ backgroundColor: `${color}15` }}>
                 <div className="w-6 h-6" style={{ color }}>{icon}</div>
             </div>
-            <span className="text-xs font-bold text-muted-foreground group-hover:text-foreground transition-colors font-display">{label}</span>
+            <span className="text-xs font-bold text-neutral-ink group-hover:text-foreground transition-colors font-display">{label}</span>
         </button>
     );
 }
@@ -238,7 +238,7 @@ export default function LearningDashboardPage() {
                                     <h2 className="text-2xl md:text-4xl font-black text-foreground mb-2 tracking-tight font-display">
                                         Your Personalized <span className="text-primary">Japanese Engine</span>
                                     </h2>
-                                    <p className="text-muted-foreground font-bold max-w-xl leading-relaxed">
+                                    <p className="text-neutral-ink font-bold max-w-xl leading-relaxed">
                                         You&apos;re currently in Preview Mode. Create an account to save your progress, unlock AI deep-dives, and sync across all your devices.
                                     </p>
                                 </div>
@@ -278,7 +278,7 @@ export default function LearningDashboardPage() {
                                 <span className="px-3 py-1 bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-widest rounded-full">AI Insight</span>
                                 <h3 className="text-xl font-black text-foreground tracking-tight font-display">Hanachan Assistant</h3>
                             </div>
-                            <p className="text-muted-foreground font-bold leading-relaxed italic max-w-2xl">
+                            <p className="text-neutral-ink font-bold leading-relaxed italic max-w-2xl">
                                 &quot;You&apos;re making amazing progress with N3 vocabulary! Based on our demo patterns, your retention is 15% higher in the morning. I recommend focusing on Kanji tomorrow to maintain your 5-day streak!&quot;
                             </p>
                         </div>
@@ -299,7 +299,7 @@ export default function LearningDashboardPage() {
                     <h1 className="text-4xl font-black text-foreground mb-2 font-display">
                         Learning Dashboard
                     </h1>
-                    <p className="text-muted-foreground font-bold">
+                    <p className="text-neutral-ink font-bold">
                         Track your Japanese learning progress and achievements
                     </p>
                 </div>
@@ -353,7 +353,7 @@ export default function LearningDashboardPage() {
                                 <h3 className="text-xl font-black text-foreground font-display">
                                     Weekly Progress
                                 </h3>
-                                <CalendarDaysIcon className="w-5 h-5 text-muted-foreground" />
+                                <CalendarDaysIcon className="w-5 h-5 text-neutral-ink" />
                             </div>
 
                             <div className="flex justify-center mb-6">
@@ -433,25 +433,25 @@ export default function LearningDashboardPage() {
                             </h3>
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between py-2 border-b border-border">
-                                    <span className="text-muted-foreground font-bold">Cards Reviewed</span>
+                                    <span className="text-neutral-ink font-bold">Cards Reviewed</span>
                                     <span className="font-black text-foreground font-display">
                                         {weeklyStats?.flashcard_reviews || 0}
                                     </span>
                                 </div>
                                 <div className="flex items-center justify-between py-2 border-b border-border">
-                                    <span className="text-muted-foreground font-bold">Quizzes Taken</span>
+                                    <span className="text-neutral-ink font-bold">Quizzes Taken</span>
                                     <span className="font-black text-foreground font-display">
                                         {weeklyStats?.quizzes_completed || 0}
                                     </span>
                                 </div>
                                 <div className="flex items-center justify-between py-2 border-b border-border">
-                                    <span className="text-muted-foreground font-bold">Avg. Quiz Score</span>
+                                    <span className="text-neutral-ink font-bold">Avg. Quiz Score</span>
                                     <span className="font-black text-foreground font-display">
                                         {weeklyStats?.avg_quiz_score || 0}%
                                     </span>
                                 </div>
                                 <div className="flex items-center justify-between py-2">
-                                    <span className="text-muted-foreground font-bold">Days Active</span>
+                                    <span className="text-neutral-ink font-bold">Days Active</span>
                                     <span className="font-black text-foreground font-display">
                                         {weeklyStats?.days_active || 0} / 7
                                     </span>
@@ -462,7 +462,7 @@ export default function LearningDashboardPage() {
 
                     {/* Right Column - Achievements */}
                     <div className="lg:col-span-1">
-                        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 h-full">
+                        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6  border border-gray-100 dark:border-gray-700 h-full">
                             <div className="flex items-center justify-between mb-4">
                                 <h3 className="text-lg font-semibold text-neutral-ink dark:text-white">
                                     Achievements
@@ -502,7 +502,7 @@ export default function LearningDashboardPage() {
                                         <AchievementCard key={achievement.id} achievement={achievement} />
                                     ))
                                 ) : (
-                                    <p className="text-muted-foreground text-center py-8 font-bold">
+                                    <p className="text-neutral-ink text-center py-8 font-bold">
                                         Start learning to earn achievements!
                                     </p>
                                 )}
@@ -522,7 +522,7 @@ export default function LearningDashboardPage() {
                                 <ClockIcon className="w-8 h-8 text-primary" />
                             </div>
                             <h4 className="text-2xl font-black text-foreground mb-2 font-display">Unlock Your Timeline</h4>
-                            <p className="text-muted-foreground max-w-sm mx-auto mb-6 font-bold">
+                            <p className="text-neutral-ink max-w-sm mx-auto mb-6 font-bold">
                                 Track every quiz, flashcard session, and milestone with a detailed history of your Japanese journey.
                             </p>
                             <button className="px-8 py-3 bg-foreground text-background font-black rounded-2xl hover:opacity-90  transition-all">
@@ -543,7 +543,7 @@ export default function LearningDashboardPage() {
                                         <p className="font-bold text-foreground capitalize font-display">
                                             {activity.activity_type.replace(/_/g, ' ')}
                                         </p>
-                                        <p className="text-xs font-bold text-muted-foreground">
+                                        <p className="text-xs font-bold text-neutral-ink">
                                             {new Date(activity.timestamp).toLocaleDateString('en-US', {
                                                 month: 'short',
                                                 day: 'numeric',

@@ -272,7 +272,7 @@ function Series({
   seriesLink,
 }: seriesProps) {
   return (
-    <div className="w-full grid lg:grid-cols-2 bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-4 hover:shadow-md transition-shadow">
+    <div className="w-full grid lg:grid-cols-2 bg-white rounded-xl  border border-gray-100 p-4 mb-4 hover: transition-shadow">
       <div className="flex flex-col lg:flex-row items-start lg:items-center">
         {/* <Image src={seriesImg} className="h-20 mr-5 mb-5 lg:mb-0" alt="Series" width={100%} layout="responsive" /> */}
         <Image

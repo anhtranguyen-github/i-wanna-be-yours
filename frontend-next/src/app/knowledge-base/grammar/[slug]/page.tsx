@@ -52,7 +52,7 @@ export default async function GrammarPoint({ params }: GrammarPointProps) {
       <div className="container mx-auto px-1 py-4">
         <GrammarBreadcrumb decodedTitle={decodedTitle} />
 
-        <div className="bg-gradient-to-br from-blue-50 to-gray-100 shadow-lg rounded-xl p-2 md:p-2 mt-4">
+        <div className="bg-gradient-to-br from-blue-50 to-gray-100  rounded-xl p-2 md:p-2 mt-4">
           {/* <h1 className="text-2xl md:text-3xl font-bold text-neutral-ink mb-4">
             Japanese JLPT Grammar Point
             <br />
@@ -64,7 +64,7 @@ export default async function GrammarPoint({ params }: GrammarPointProps) {
               <GrammarExplanations grammarDetails={grammarDetails} />
 
               {/* Detailed Grammar Notes */}
-              <div className="bg-white shadow-md rounded-lg p-2 md:p-2 mt-6">
+              <div className="bg-white  rounded-lg p-2 md:p-2 mt-6">
                 <h2 className="text-xl md:text-2xl font-semibold text-blue-600 mb-3">
                   Detailed Grammar Notes
                 </h2>
@@ -110,7 +110,7 @@ const GrammarExplanations: React.FC<GrammarExplanationsProps> = ({
   grammarDetails,
 }) => {
   return (
-    <div className="bg-white shadow-md rounded-lg p-2 mb-6">
+    <div className="bg-white  rounded-lg p-2 mb-6">
       <h1 className="text-xl md:text-2xl font-bold text-neutral-ink mb-4">
         Japanese JLPT Grammar Point
         <br />
@@ -146,7 +146,7 @@ const GrammarExplanations: React.FC<GrammarExplanationsProps> = ({
             {grammarDetails.examples.map((example, index) => (
               <div
                 key={index}
-                className="bg-blue-50 p-3 rounded-md shadow-sm flex items-start space-x-3 hover:bg-blue-100 transition-colors"
+                className="bg-blue-50 p-3 rounded-md  flex items-start space-x-3 hover:bg-blue-100 transition-colors"
               >
                 <PlayAudioButton
                   audioSrc={example.grammar_audio}
@@ -234,7 +234,7 @@ const GrammarExplanations: React.FC<GrammarExplanationsProps> = ({
 //         <FeaturesBanner />
 //         <GrammarBreadcrumb decodedTitle={decodedTitle} />
 
-//         <div className="bg-gray-100 shadow-lg rounded-lg p-2">
+//         <div className="bg-gray-100  rounded-lg p-2">
 //           <h1 className="text-4xl font-bold mb-8 text-neutral-ink">
 //             Japanese JLPT Grammar Point
 //             <br />
@@ -267,7 +267,7 @@ const GrammarExplanations: React.FC<GrammarExplanationsProps> = ({
 //                     {grammarDetails.examples.map((example: any, index: number) => (
 //                       <div
 //                         key={index}
-//                         className="bg-white shadow-md rounded-lg p-2 transform transition-transform hover:scale-105"
+//                         className="bg-white  rounded-lg p-2 transform transition-transform hover:scale-105"
 //                       >
 //                         <div className="flex items-start space-x-4">
 //                           <PlayAudioButton

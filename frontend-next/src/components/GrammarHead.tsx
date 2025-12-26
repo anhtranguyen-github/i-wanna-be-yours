@@ -8,8 +8,8 @@ import jlpt_universal_01 from "@public/img/jlpt_universal_11.jpg";
 export default function GrammarHead() {
   return (
     <div className="w-full flex lg:flex-row flex-col p-5 px-7">
-      
-      
+
+
       {/* <div className="relative h-72 lg:w-11/12">
         <Image
           src={jlpt_universal_01}

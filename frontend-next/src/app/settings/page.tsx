@@ -28,7 +28,7 @@ function SettingsSection({ title, children }: SettingsSectionProps) {
             <h2 className="text-sm font-semibold text-neutral-ink uppercase tracking-wider mb-3 px-1">
                 {title}
             </h2>
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden divide-y divide-slate-100">
+            <div className="bg-white rounded-2xl border border-slate-200  overflow-hidden divide-y divide-slate-100">
                 {children}
             </div>
         </div>
@@ -112,7 +112,7 @@ export default function SettingsPage() {
             <div className="bg-white border-b border-slate-200 sticky top-0 z-10">
                 <div className="max-w-3xl mx-auto px-6 py-6">
                     <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-green to-emerald-600 flex items-center justify-center shadow-lg">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-green to-emerald-600 flex items-center justify-center ">
                             <SettingsIcon size={24} className="text-white" />
                         </div>
                         <div>
@@ -152,7 +152,7 @@ export default function SettingsPage() {
                         iconColor="text-purple-500"
                         rightElement={
                             <div className="flex items-center gap-2 bg-slate-100 rounded-full p-1">
-                                <button className="p-1.5 rounded-full bg-white shadow-sm">
+                                <button className="p-1.5 rounded-full bg-white ">
                                     <Sun size={16} className="text-amber-500" />
                                 </button>
                                 <button className="p-1.5 rounded-full text-neutral-ink hover:bg-slate-200 transition-colors">

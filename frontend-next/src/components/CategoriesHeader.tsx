@@ -43,7 +43,7 @@ export default function CategoriesHeader() {
               key={cat}
               onClick={() => setFilter(cat)}
               className={`px-6 py-2 rounded-2xl text-sm font-bold transition-all duration-300 ${filter === cat
-                ? "bg-brand-blue text-white shadow-inner"
+                ? "bg-brand-blue text-white "
                 : "bg-white text-neutral-ink hover:bg-gray-100 clay-button"
                 }`}
             >

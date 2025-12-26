@@ -51,7 +51,7 @@ export default async function GrammarPoint({ params }: GrammarPointProps) {
         <FeaturesBanner />
         <GrammarBreadcrumb decodedTitle={decodedTitle} />
 
-        <div className="bg-gray-100 shadow-lg rounded-lg p-8">
+        <div className="bg-gray-100  rounded-lg p-8">
           <h1 className="text-4xl font-bold mb-8 text-neutral-ink">
             Japanese JLPT Grammar Point
             <br />
@@ -84,7 +84,7 @@ export default async function GrammarPoint({ params }: GrammarPointProps) {
                     {grammarDetails.examples.map((example: any, index: number) => (
                       <div
                         key={index}
-                        className="bg-white shadow-md rounded-lg p-6 transform transition-transform hover:scale-105"
+                        className="bg-white  rounded-lg p-6 transform transition-transform hover:scale-105"
                       >
                         <div className="flex items-start space-x-4">
                           <PlayAudioButton
@@ -201,7 +201,7 @@ export default async function GrammarPoint({ params }: GrammarPointProps) {
 //         <GrammarBreadcrumb decodedTitle={decodedTitle} />
 
 
-//         <div className="bg-gray-100 shadow-lg rounded-lg p-8">
+//         <div className="bg-gray-100  rounded-lg p-8">
 //           <h1 className="text-4xl font-bold mb-8 text-neutral-ink">
 //             Japanese JLPT Grammar Point
 //             <br />
@@ -234,7 +234,7 @@ export default async function GrammarPoint({ params }: GrammarPointProps) {
 //                     {grammarDetails.examples.map((example: any, index: number) => (
 //                       <div
 //                         key={index}
-//                         className="bg-white shadow-md rounded-lg p-6 transform transition-transform hover:scale-105"
+//                         className="bg-white  rounded-lg p-6 transform transition-transform hover:scale-105"
 //                       >
 //                         <div className="flex items-start space-x-4">
 //                           <PlayAudioButton audioSrc={example.grammar_audio} />

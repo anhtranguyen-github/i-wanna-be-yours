@@ -120,7 +120,7 @@ const ReadingCards: React.FC = () => {
                   {card.title}
                 </h2>
                 <div className="mt-2 flex flex-col gap-1">
-                  <p className="text-xs font-black text-muted-foreground uppercase tracking-widest font-display">
+                  <p className="text-xs font-black text-neutral-ink uppercase tracking-widest font-display">
                     {card.titleRomaji}
                   </p>
                   <p className="text-xl font-bold text-reading font-jp">
@@ -129,7 +129,7 @@ const ReadingCards: React.FC = () => {
                 </div>
               </div>
 
-              <div className="text-sm font-bold text-muted-foreground leading-relaxed">
+              <div className="text-sm font-bold text-neutral-ink leading-relaxed">
                 {card.shortDescription}
               </div>
             </div>

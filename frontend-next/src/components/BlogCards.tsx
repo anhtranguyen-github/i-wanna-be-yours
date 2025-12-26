@@ -66,7 +66,7 @@ const BlogCards = ({ cards, header }: BlogCardsProps) => {
                       <img
                         alt="profile"
                         src="/img/cover.jpg"
-                        className="mx-auto object-cover rounded-full h-10 w-10 border-2 border-white shadow-sm"
+                        className="mx-auto object-cover rounded-full h-10 w-10 border-2 border-white "
                       />
                     </Link>
                     {/* <Link href={card.link}>Read more</Link> */}

@@ -30,7 +30,7 @@ const ClosedFlashcard: React.FC<ClosedFlashcardProps> = ({
 
   return (
     <div
-      className="w-full max-w-sm sm:max-w-md bg-white dark:bg-gray-800 shadow-lg rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-gray-300 dark:hover:border-gray-600 flex flex-col"
+      className="w-full max-w-sm sm:max-w-md bg-white dark:bg-gray-800  rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 hover: hover:border-gray-300 dark:hover:border-gray-600 flex flex-col"
       onMouseEnter={onMouseEnter}
     >
       {/* Header: Icon, Title, Level */}
@@ -81,7 +81,7 @@ const ClosedFlashcard: React.FC<ClosedFlashcardProps> = ({
       <div className="p-6 pt-0 mt-auto space-y-4">
         <button
           onClick={openModal}
-          className="w-full py-3 px-4 bg-brand-salmon hover:bg-brand-salmon/90 text-white font-bold rounded-lg shadow-md transition-colors flex items-center justify-center gap-2"
+          className="w-full py-3 px-4 bg-brand-salmon hover:bg-brand-salmon/90 text-white font-bold rounded-lg  transition-colors flex items-center justify-center gap-2"
         >
           {buttonText || 'Start Session'}
           <ChevronRightIcon className="w-5 h-5" />
@@ -153,7 +153,7 @@ export default ClosedFlashcard;
 //   buttonText = 'Open Flashcard',
 // }) => {
 //   return (
-//     <div className="col-span-1 rounded-lg bg-white dark:bg-gray-800 shadow-md p-6 max-w-md">
+//     <div className="col-span-1 rounded-lg bg-white dark:bg-gray-800  p-6 max-w-md">
 //       {/* Content Section */}
 //       <div className="flex flex-col space-y-4">
 //         {/* Title and Badge */}

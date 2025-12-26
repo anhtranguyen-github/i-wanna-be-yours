@@ -44,12 +44,12 @@ export default function Home() {
       <div className="w-28 h-20 group perspective-1000" onClick={playAudio}>
         <div className="relative w-full h-full transition-all duration-500 preserve-3d cursor-pointer group-hover:rotate-y-180">
           {/* Front of the Card */}
-          <div className="absolute inset-0 backface-hidden bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center p-2 group-hover:shadow-md transition-shadow">
+          <div className="absolute inset-0 backface-hidden bg-white rounded-2xl  border border-slate-100 flex items-center justify-center p-2 group-hover: transition-shadow">
             <h5 className="text-3xl font-black text-neutral-ink font-jp">{kanji}</h5>
           </div>
 
           {/* Back of the Card */}
-          <div className="absolute inset-0 backface-hidden rotate-y-180 bg-primary/5 rounded-2xl shadow-sm border border-primary/20 flex flex-col items-center justify-center p-2">
+          <div className="absolute inset-0 backface-hidden rotate-y-180 bg-primary/5 rounded-2xl  border border-primary/20 flex flex-col items-center justify-center p-2">
             <h5 className="text-sm font-black text-primary uppercase tracking-widest">{reading}</h5>
 
             {/* Icon Link at the Bottom Left */}
@@ -165,7 +165,7 @@ export default function Home() {
             <button
               key={index}
               className={`px-8 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${activeTab === tab.toLowerCase()
-                ? "bg-white text-neutral-ink shadow-md ring-1 ring-slate-200"
+                ? "bg-white text-neutral-ink  ring-1 ring-slate-200"
                 : "text-neutral-ink hover:text-neutral-ink hover:bg-white/50"
                 }`}
               onClick={() => setActiveTab(tab.toLowerCase())}

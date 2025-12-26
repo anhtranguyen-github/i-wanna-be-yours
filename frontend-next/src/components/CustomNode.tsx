@@ -4,7 +4,7 @@ import { Handle, Position } from '@xyflow/react';
 
 function CustomNode({ data }) {
   return (
-    <div className="p-4 shadow-lg rounded-lg bg-white border-2 border-gray-300 max-w-sm">
+    <div className="p-4  rounded-lg bg-white border-2 border-gray-300 max-w-sm">
       <div className="text-center mb-2">
         <div className="text-xl font-semibold">{data.word}</div>
         <div className="text-neutral-ink text-sm mb-1">Meaning: {data.meaning}</div>

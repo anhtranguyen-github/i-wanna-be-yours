@@ -22,7 +22,7 @@ export default function LegacyQuootRedirect() {
 
     return (
         <div className="min-h-screen bg-background flex items-center justify-center">
-            <div className="animate-pulse text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground font-display">
+            <div className="animate-pulse text-[10px] font-black uppercase tracking-[0.3em] text-neutral-ink font-display">
                 Redirecting to Quoot...
             </div>
         </div>

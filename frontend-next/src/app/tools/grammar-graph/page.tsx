@@ -140,7 +140,7 @@ const HomePage = () => {
         <div className="max-w-2xl mx-auto mb-12">
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="w-full flex justify-between items-center px-8 py-4 bg-white border border-slate-100 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] text-neutral-ink hover:text-slate-600 hover:border-primary/20 transition-all shadow-sm"
+            className="w-full flex justify-between items-center px-8 py-4 bg-white border border-slate-100 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] text-neutral-ink hover:text-slate-600 hover:border-primary/20 transition-all "
           >
             <span>Intelligence Methodology & Safety</span>
             {isOpen ? (
@@ -164,7 +164,7 @@ const HomePage = () => {
 
         <div className="flex flex-col lg:flex-row gap-8 mb-12">
           {/* Form for Custom Sentence Submission */}
-          <div className="flex-1 bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-primary/5">
+          <div className="flex-1 bg-white p-10 rounded-[2.5rem] border border-slate-100  shadow-primary/5">
             <form onSubmit={handleSubmit} className="space-y-8">
               <div className="space-y-4">
                 <label
@@ -178,7 +178,7 @@ const HomePage = () => {
                   <input
                     type="text"
                     id="sentence"
-                    className="relative w-full p-6 rounded-2xl bg-white border border-slate-100 text-lg font-jp focus:outline-none focus:border-primary/30 transition-all shadow-inner text-neutral-ink"
+                    className="relative w-full p-6 rounded-2xl bg-white border border-slate-100 text-lg font-jp focus:outline-none focus:border-primary/30 transition-all  text-neutral-ink"
                     placeholder="Enter sentence for deep analysis..."
                     value={sentence}
                     onChange={(e) => setSentence(e.target.value)}
@@ -198,7 +198,7 @@ const HomePage = () => {
                       key={lang}
                       type="button"
                       onClick={() => setLanguage(lang)}
-                      className={`px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-[0.15em] transition-all ${language === lang ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-slate-50 text-neutral-ink hover:bg-slate-100'}`}
+                      className={`px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-[0.15em] transition-all ${language === lang ? 'bg-primary text-white  shadow-primary/20' : 'bg-slate-50 text-neutral-ink hover:bg-slate-100'}`}
                     >
                       {lang}
                     </button>
@@ -208,7 +208,7 @@ const HomePage = () => {
 
               <button
                 type="submit"
-                className="w-full bg-primary text-white py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-primary/20 disabled:opacity-50"
+                className="w-full bg-primary text-white py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-[0.98] transition-all  shadow-primary/20 disabled:opacity-50"
                 disabled={loading}
               >
                 {loading ? (
@@ -222,7 +222,7 @@ const HomePage = () => {
           </div>
 
           {/* Grammar Explanation Component */}
-          <div className="flex-1 lg:max-w-md bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-primary/5 overflow-hidden">
+          <div className="flex-1 lg:max-w-md bg-white p-10 rounded-[2.5rem] border border-slate-100  shadow-primary/5 overflow-hidden">
             <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-8 pb-4 border-b border-slate-50">Linguistic Blueprint</h3>
             <div className="custom-scrollbar">
               <GrammarExplanationSimple sentence={sentence} url={gptGrammarUrl} />
@@ -235,7 +235,7 @@ const HomePage = () => {
           {/* Metadata Display */}
           {!loading && metadata && (
             <div className="flex justify-end">
-              <div className="bg-slate-900 text-white p-6 rounded-3xl shadow-2xl space-y-2 border border-slate-800">
+              <div className="bg-slate-900 text-white p-6 rounded-3xl  space-y-2 border border-slate-800">
                 <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 mb-4">Telemetry Details</h2>
                 <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-[11px]">
                   <span className="text-neutral-ink">Processing Model:</span>
@@ -258,7 +258,7 @@ const HomePage = () => {
               </div>
             )}
             {!loading && (
-              <div className="bg-white p-12 rounded-[3rem] border border-slate-100 shadow-2xl shadow-primary/5 min-h-[600px] flex justify-center items-center overflow-x-auto">
+              <div className="bg-white p-12 rounded-[3rem] border border-slate-100  shadow-primary/5 min-h-[600px] flex justify-center items-center overflow-x-auto">
                 <ParseTree data={data} />
               </div>
             )}

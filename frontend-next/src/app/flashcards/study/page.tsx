@@ -91,7 +91,7 @@ export default function StudyPage() {
                     Session <span className="text-secondary italic-none not-italic">Synchronized</span>
                 </h1>
 
-                <p className="text-muted-foreground font-bold italic mb-12 max-w-md leading-relaxed tracking-tight">
+                <p className="text-neutral-ink font-bold italic mb-12 max-w-md leading-relaxed tracking-tight">
                     All currently due neural nodes have been successfully reinforced. Cognitive integrity is optimal.
                 </p>
 
@@ -124,7 +124,7 @@ export default function StudyPage() {
                     <Sparkles size={48} />
                 </div>
                 <h1 className="text-3xl font-black text-foreground font-display tracking-tight mb-4 italic">Neural Quiessence</h1>
-                <p className="text-muted-foreground font-bold italic mb-12 max-w-md">No pending nodes require immediate reinforcement at this cycle.</p>
+                <p className="text-neutral-ink font-bold italic mb-12 max-w-md">No pending nodes require immediate reinforcement at this cycle.</p>
                 <Link
                     href="/flashcards"
                     className="px-10 py-5 bg-card border border-border/50 text-foreground rounded-2xl font-black font-display text-[10px] uppercase tracking-widest  hover:border-secondary/30 hover:text-secondary transition-all active:scale-95"
@@ -153,7 +153,7 @@ export default function StudyPage() {
                     href="/flashcards"
                     className="group w-12 h-12 bg-muted/50 hover:bg-card border border-border/30 rounded-2xl flex items-center justify-center transition-all  active:scale-90"
                 >
-                    <X size={20} className="text-muted-foreground group-hover:text-destructive transition-colors" />
+                    <X size={20} className="text-neutral-ink group-hover:text-destructive transition-colors" />
                 </Link>
 
                 <div className="flex-1 mx-12 flex flex-col gap-3">

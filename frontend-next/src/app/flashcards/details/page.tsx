@@ -111,27 +111,27 @@ const EditModal: React.FC<{
                 <div className="flex justify-between items-center relative z-10">
                     <h3 className="text-2xl font-black text-foreground font-display tracking-tight italic">Triage <span className="text-primary italic-none not-italic">Node</span></h3>
                     <button onClick={onClose} className="p-2 hover:bg-muted rounded-xl transition-all">
-                        <X size={24} className="text-muted-foreground" />
+                        <X size={24} className="text-neutral-ink" />
                     </button>
                 </div>
 
                 <div className="space-y-6 relative z-10">
                     <div>
-                        <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground font-display mb-2 ml-1">Spectral Front (Word)</label>
+                        <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-neutral-ink font-display mb-2 ml-1">Spectral Front (Word)</label>
                         <input className="w-full px-6 py-4 bg-muted/30 border border-border/50 rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary/30 transition-all font-jp font-bold"
                             value={formData.vocabulary_original}
                             onChange={e => setFormData({ ...formData, vocabulary_original: e.target.value })}
                         />
                     </div>
                     <div>
-                        <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground font-display mb-2 ml-1">Logic Pattern (Reading)</label>
+                        <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-neutral-ink font-display mb-2 ml-1">Logic Pattern (Reading)</label>
                         <input className="w-full px-6 py-4 bg-muted/30 border border-border/50 rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary/30 transition-all font-jp font-bold"
                             value={formData.vocabulary_simplified}
                             onChange={e => setFormData({ ...formData, vocabulary_simplified: e.target.value })}
                         />
                     </div>
                     <div>
-                        <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground font-display mb-2 ml-1">Semantic Bridge (Meaning)</label>
+                        <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-neutral-ink font-display mb-2 ml-1">Semantic Bridge (Meaning)</label>
                         <input className="w-full px-6 py-4 bg-muted/30 border border-border/50 rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary/30 transition-all font-bold"
                             value={formData.vocabulary_english}
                             onChange={e => setFormData({ ...formData, vocabulary_english: e.target.value })}
@@ -140,7 +140,7 @@ const EditModal: React.FC<{
                 </div>
 
                 <div className="flex justify-end pt-6 gap-4 relative z-10">
-                    <button onClick={onClose} className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-foreground font-display transition-colors">Cancel</button>
+                    <button onClick={onClose} className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-neutral-ink hover:text-foreground font-display transition-colors">Cancel</button>
                     <button onClick={() => onSave(formData)} className="px-10 py-4 bg-primary text-primary-foreground font-black font-display text-[10px] uppercase tracking-widest rounded-2xl  hover:opacity-95 transition-all">Submit Calibration</button>
                 </div>
             </div>
@@ -168,7 +168,7 @@ const SentenceSection: React.FC<{ sentences: Sentence[] }> = ({ sentences }) => 
                 Operational Contexts
             </div>
             {sentences.map((sentence, index) => (
-                <div key={index} className="group/s bg-slate-50/50 p-6 rounded-[2rem] border border-slate-100 hover:border-primary/30 hover:bg-white transition-all duration-500 shadow-sm hover:shadow-md">
+                <div key={index} className="group/s bg-slate-50/50 p-6 rounded-[2rem] border border-slate-100 hover:border-primary/30 hover:bg-white transition-all duration-500  hover:">
                     <div className="flex items-start gap-6">
                         <button
                             onClick={() => playSentenceAudio(sentence.sentence_audio)}
@@ -327,7 +327,7 @@ export default function FlashcardDeckPage() {
     );
 
     if (!displayQuestions.length) return (
-        <div className="min-h-screen bg-background flex flex-col items-center justify-center text-center p-8 italic font-bold text-muted-foreground opacity-40">
+        <div className="min-h-screen bg-background flex flex-col items-center justify-center text-center p-8 italic font-bold text-neutral-ink opacity-40">
             Synaptic cluster is currently devoid of logic nodes.
         </div>
     );
@@ -344,7 +344,7 @@ export default function FlashcardDeckPage() {
                 <div className="max-w-5xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-8">
                     <div className="flex items-center gap-6 group">
                         <Link href="/flashcards" className="w-14 h-14 bg-muted hover:bg-card border border-border/30 rounded-2xl flex items-center justify-center transition-all  active:scale-90 group/back">
-                            <ArrowLeft size={24} className="text-muted-foreground group-hover/back:text-primary transition-colors" />
+                            <ArrowLeft size={24} className="text-neutral-ink group-hover/back:text-primary transition-colors" />
                         </Link>
                         <div>
                             <h1 className="text-4xl font-black text-foreground font-display tracking-tight leading-none mb-2 italic">
@@ -478,13 +478,13 @@ export default function FlashcardDeckPage() {
                                             </div>
                                             <div className="flex-1">
                                                 <div className="text-[10px] font-black text-neutral-ink uppercase tracking-widest font-display mb-1">Logic Mapping</div>
-                                                <div className="font-bold text-foreground/70 italic text-lg leading-none">
+                                                <div className="font-bold text-neutral-ink italic text-lg leading-none">
                                                     {isKanji ? q.reading : q.vocabulary_simplified}
                                                 </div>
                                             </div>
                                             <div className="flex-1 text-right">
                                                 <div className="text-[10px] font-black text-neutral-ink uppercase tracking-widest font-display mb-1">Semantic Bridge</div>
-                                                <div className="font-bold text-muted-foreground italic leading-none truncate max-w-[150px]">
+                                                <div className="font-bold text-neutral-ink italic leading-none truncate max-w-[150px]">
                                                     {isKanji ? q.translation : q.vocabulary_english}
                                                 </div>
                                             </div>

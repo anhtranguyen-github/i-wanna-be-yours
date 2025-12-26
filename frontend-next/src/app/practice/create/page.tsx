@@ -117,8 +117,8 @@ export default function CreateQuizPage() {
 
     if (userLoading) return (
         <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
-            <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
-            <p className="text-sm text-muted-foreground">Loading...</p>
+            <Loader2 className="w-8 h-8 animate-spin text-neutral-ink" />
+            <p className="text-sm text-neutral-ink">Loading...</p>
         </div>
     );
 
@@ -129,11 +129,11 @@ export default function CreateQuizPage() {
                 <div className="max-w-6xl mx-auto flex items-center justify-between gap-6">
                     <div className="flex items-center gap-4">
                         <Link href="/practice" className="w-10 h-10 bg-muted hover:bg-muted/80 rounded-xl flex items-center justify-center transition-colors">
-                            <ArrowLeft size={20} className="text-muted-foreground" />
+                            <ArrowLeft size={20} className="text-neutral-ink" />
                         </Link>
                         <div>
                             <h1 className="text-xl font-bold text-foreground font-display">Create Quiz</h1>
-                            <p className="text-xs text-muted-foreground">Design your own practice quiz</p>
+                            <p className="text-xs text-neutral-ink">Design your own practice quiz</p>
                         </div>
                     </div>
                     <button onClick={handleSave} disabled={saving} className="flex items-center gap-2 px-5 py-2.5 bg-foreground text-background font-bold rounded-xl hover:bg-foreground/90 transition-colors disabled:opacity-50">
@@ -176,32 +176,32 @@ export default function CreateQuizPage() {
                     {/* Settings Sidebar */}
                     <div className="lg:col-span-4 space-y-6">
                         <div className="bg-card rounded-2xl border border-border p-6">
-                            <h2 className="text-sm font-bold text-muted-foreground mb-6">Quiz Settings</h2>
+                            <h2 className="text-sm font-bold text-neutral-ink mb-6">Quiz Settings</h2>
                             <div className="space-y-5">
                                 <div>
-                                    <label className="text-xs font-bold text-muted-foreground mb-1.5 block">Title</label>
+                                    <label className="text-xs font-bold text-neutral-ink mb-1.5 block">Title</label>
                                     <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Enter quiz title..." className="w-full px-4 py-3 bg-muted rounded-xl border-none focus:outline-none focus:ring-2 focus:ring-primary/20" />
                                 </div>
                                 <div>
-                                    <label className="text-xs font-bold text-muted-foreground mb-1.5 block">Description</label>
+                                    <label className="text-xs font-bold text-neutral-ink mb-1.5 block">Description</label>
                                     <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Optional description..." rows={3} className="w-full px-4 py-3 bg-muted rounded-xl border-none focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none" />
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="text-xs font-bold text-muted-foreground mb-1.5 block">JLPT Level</label>
+                                        <label className="text-xs font-bold text-neutral-ink mb-1.5 block">JLPT Level</label>
                                         <select value={jlptLevel} onChange={(e) => setJlptLevel(e.target.value)} className="w-full px-4 py-3 bg-muted rounded-xl border-none focus:outline-none">
                                             {JLPT_LEVELS.map(l => <option key={l} value={l}>{l.toUpperCase()}</option>)}
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="text-xs font-bold text-muted-foreground mb-1.5 block">Category</label>
+                                        <label className="text-xs font-bold text-neutral-ink mb-1.5 block">Category</label>
                                         <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full px-4 py-3 bg-muted rounded-xl border-none focus:outline-none">
                                             {CATEGORIES.map(c => <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>)}
                                         </select>
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="text-xs font-bold text-muted-foreground mb-1.5 block">Time Limit (minutes)</label>
+                                    <label className="text-xs font-bold text-neutral-ink mb-1.5 block">Time Limit (minutes)</label>
                                     <input type="number" value={timeLimit || ''} onChange={(e) => setTimeLimit(e.target.value ? parseInt(e.target.value) : null)} placeholder="No limit" className="w-full px-4 py-3 bg-muted rounded-xl border-none focus:outline-none focus:ring-2 focus:ring-primary/20" />
                                 </div>
                                 <div className="flex items-center justify-between p-4 bg-muted rounded-xl">
@@ -218,7 +218,7 @@ export default function CreateQuizPage() {
                     <div className="lg:col-span-8">
                         <div className="bg-card rounded-2xl border border-border p-6">
                             <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-sm font-bold text-muted-foreground">Questions ({questions.length})</h2>
+                                <h2 className="text-sm font-bold text-neutral-ink">Questions ({questions.length})</h2>
                                 <button onClick={addQuestion} className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground font-bold text-sm rounded-xl hover:bg-primary/90 transition-colors">
                                     <Plus size={16} /> Add Question
                                 </button>
@@ -227,10 +227,10 @@ export default function CreateQuizPage() {
                             {questions.length === 0 ? (
                                 <div className="text-center py-16">
                                     <div className="w-16 h-16 bg-muted rounded-2xl flex items-center justify-center mx-auto mb-4">
-                                        <Plus size={28} className="text-muted-foreground" />
+                                        <Plus size={28} className="text-neutral-ink" />
                                     </div>
                                     <h3 className="font-bold text-foreground mb-2">No questions yet</h3>
-                                    <p className="text-sm text-muted-foreground mb-6">Add your first question to get started</p>
+                                    <p className="text-sm text-neutral-ink mb-6">Add your first question to get started</p>
                                     <button onClick={addQuestion} className="px-6 py-3 bg-foreground text-background font-bold rounded-xl hover:bg-foreground/90 transition-colors">Add Question</button>
                                 </div>
                             ) : (
@@ -242,7 +242,7 @@ export default function CreateQuizPage() {
                                                     <span className="w-8 h-8 bg-muted rounded-lg flex items-center justify-center font-bold text-sm">{index + 1}</span>
                                                     <span className="font-bold text-foreground">{q.prompt || 'Untitled Question'}</span>
                                                 </button>
-                                                <button onClick={() => removeQuestion(index)} className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors">
+                                                <button onClick={() => removeQuestion(index)} className="p-2 text-neutral-ink hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors">
                                                     <Trash2 size={16} />
                                                 </button>
                                             </div>
@@ -251,35 +251,35 @@ export default function CreateQuizPage() {
                                                 <div className="space-y-4 pt-4 border-t border-border">
                                                     <div className="grid grid-cols-2 gap-4">
                                                         <div>
-                                                            <label className="text-xs font-bold text-muted-foreground mb-1.5 block">Question Type</label>
+                                                            <label className="text-xs font-bold text-neutral-ink mb-1.5 block">Question Type</label>
                                                             <select value={q.question_type} onChange={(e) => updateQuestion(index, { question_type: e.target.value })} className="w-full px-3 py-2.5 bg-muted rounded-lg border-none text-sm focus:outline-none">
                                                                 {QUESTION_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
                                                             </select>
                                                         </div>
                                                         <div>
-                                                            <label className="text-xs font-bold text-muted-foreground mb-1.5 block">Points</label>
+                                                            <label className="text-xs font-bold text-neutral-ink mb-1.5 block">Points</label>
                                                             <input type="number" value={q.points} onChange={(e) => updateQuestion(index, { points: parseInt(e.target.value) || 1 })} className="w-full px-3 py-2.5 bg-muted rounded-lg border-none text-sm focus:outline-none" />
                                                         </div>
                                                     </div>
                                                     <div>
-                                                        <label className="text-xs font-bold text-muted-foreground mb-1.5 block">Question</label>
+                                                        <label className="text-xs font-bold text-neutral-ink mb-1.5 block">Question</label>
                                                         <input type="text" value={q.prompt} onChange={(e) => updateQuestion(index, { prompt: e.target.value })} placeholder="Enter your question..." className="w-full px-3 py-2.5 bg-muted rounded-lg border-none text-sm focus:outline-none" />
                                                     </div>
                                                     <div>
-                                                        <label className="text-xs font-bold text-muted-foreground mb-1.5 block">Options</label>
+                                                        <label className="text-xs font-bold text-neutral-ink mb-1.5 block">Options</label>
                                                         <div className="grid grid-cols-2 gap-2">
                                                             {q.options.map((opt, optIdx) => (
                                                                 <div key={optIdx} className="relative">
                                                                     <input type="text" value={opt} onChange={(e) => updateOption(index, optIdx, e.target.value)} placeholder={`Option ${String.fromCharCode(65 + optIdx)}`} className={`w-full px-3 py-2.5 rounded-lg border-none text-sm focus:outline-none ${q.correct_answer === opt && opt ? 'bg-primary/10 ring-2 ring-primary/30' : 'bg-muted'}`} />
                                                                     {opt && (
-                                                                        <button onClick={() => updateQuestion(index, { correct_answer: opt })} className={`absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded ${q.correct_answer === opt ? 'text-primary' : 'text-muted-foreground hover:text-primary'}`}>
+                                                                        <button onClick={() => updateQuestion(index, { correct_answer: opt })} className={`absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded ${q.correct_answer === opt ? 'text-primary' : 'text-neutral-ink hover:text-primary'}`}>
                                                                             <Check size={14} />
                                                                         </button>
                                                                     )}
                                                                 </div>
                                                             ))}
                                                         </div>
-                                                        <p className="text-xs text-muted-foreground mt-2">Click ✓ to mark the correct answer</p>
+                                                        <p className="text-xs text-neutral-ink mt-2">Click ✓ to mark the correct answer</p>
                                                     </div>
                                                 </div>
                                             )}
