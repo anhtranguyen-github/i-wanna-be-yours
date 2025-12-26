@@ -10,21 +10,24 @@ const QuootCardSchema = new mongoose.Schema({
     type: { type: String, default: 'vocabulary' }
 });
 
-const QuootDeck = mongoose.model('QuootDeck', new mongoose.Schema({
+const QuootArena = mongoose.model('QuootArena', new mongoose.Schema({
     title: { type: String, required: true },
     description: String,
     icon: { type: String, default: '⚔️' },
     level: { type: String, default: 'N3' },
-    isPublic: { type: Boolean, default: true },
+    visibility: { type: String, default: 'global' },
+    creatorName: { type: String, default: 'Hanabira' },
     cards: [QuootCardSchema]
 }));
 
-const QUOOT_DATA = [
+const ARENA_DATA = [
     {
         title: "Anime Battle: Cyberpunk",
         description: "vocabulary from high-stakes tech and sci-fi anime.",
         icon: "🦾",
         level: "N2",
+        visibility: "global",
+        creatorName: "Hanabira Official",
         cards: [
             { front: "電脳", back: "Cyberbrain", reading: "でんのう" },
             { front: "強化", back: "Enhancement", reading: "きょうか" },
@@ -37,6 +40,8 @@ const QUOOT_DATA = [
         description: "Master the most common suru verbs in a fast-paced battle.",
         icon: "🏃",
         level: "N4",
+        visibility: "global",
+        creatorName: "Hanabira Official",
         cards: [
             { front: "勉強する", back: "to study", reading: "べんきょうする" },
             { front: "散歩する", back: "to take a walk", reading: "さんぽする" },
@@ -52,11 +57,11 @@ async function seed() {
         console.log('Connected to MongoDB');
 
         // Clear existing
-        await QuootDeck.deleteMany({});
-        console.log('Cleared existing Quoot decks');
+        await QuootArena.deleteMany({ visibility: 'global' });
+        console.log('Cleared existing global Quoot arenas');
 
-        await QuootDeck.insertMany(QUOOT_DATA);
-        console.log(`Successfully seeded ${QUOOT_DATA.length} Quoot decks`);
+        await QuootArena.insertMany(ARENA_DATA);
+        console.log(`Successfully seeded ${ARENA_DATA.length} Quoot arenas`);
 
         mongoose.connection.close();
     } catch (err) {

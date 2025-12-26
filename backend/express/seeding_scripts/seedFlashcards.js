@@ -10,23 +10,26 @@ const FlashcardSchema = new mongoose.Schema({
     mnemonic: String
 });
 
-const FlashcardDeck = mongoose.model('FlashcardDeck', new mongoose.Schema({
+const FlashcardSet = mongoose.model('FlashcardSet', new mongoose.Schema({
     title: { type: String, required: true },
     description: String,
     icon: { type: String, default: '🎴' },
     level: { type: String, default: 'N3' },
     tags: [String],
-    isPublic: { type: Boolean, default: true },
+    visibility: { type: String, default: 'global' },
+    creatorName: { type: String, default: 'Hanabira' },
     cards: [FlashcardSchema]
 }));
 
-const FLASHCARD_DATA = [
+const SET_DATA = [
     {
         title: "JLPT N5 Core Kanji",
         description: "The absolute basics for your Japanese journey.",
         icon: "🧧",
         level: "N5",
         tags: ["kanji", "beginner"],
+        visibility: "global",
+        creatorName: "Hanabira Official",
         cards: [
             { front: "日", back: "Day / Sun", reading: "ひ / にち", mnemonic: "Looks like a window where the sun shines in." },
             { front: "月", back: "Month / Moon", reading: "つき / げつ", mnemonic: "Looks like a crescent moon with two rays." },
@@ -39,6 +42,8 @@ const FLASHCARD_DATA = [
         icon: "✨",
         level: "N4",
         tags: ["vocabulary", "adjectives"],
+        visibility: "global",
+        creatorName: "Hanabira Official",
         cards: [
             { front: "高い", back: "Expensive / High", reading: "たかい" },
             { front: "安い", back: "Cheap", reading: "やすい" },
@@ -52,11 +57,11 @@ async function seed() {
         await mongoose.connect(MONGO_URI);
         console.log('Connected to MongoDB');
 
-        await FlashcardDeck.deleteMany({});
-        console.log('Cleared existing Flashcard decks');
+        await FlashcardSet.deleteMany({ visibility: 'global' });
+        console.log('Cleared existing global Flashcard sets');
 
-        await FlashcardDeck.insertMany(FLASHCARD_DATA);
-        console.log(`Successfully seeded ${FLASHCARD_DATA.length} Flashcard decks`);
+        await FlashcardSet.insertMany(SET_DATA);
+        console.log(`Successfully seeded ${SET_DATA.length} Flashcard sets`);
 
         mongoose.connection.close();
     } catch (err) {
