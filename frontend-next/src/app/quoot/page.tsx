@@ -10,12 +10,13 @@ import {
     Zap,
     User as UserIcon,
     ShieldCheck,
-    Download
+    Link2,
+    History
 } from "lucide-react";
 import { RetrievalModal } from "@/components/shared";
 import { SearchNexus } from "@/components/shared/SearchNexus";
 import { SearchNexusState, FilterGroup } from "@/types/search";
-import { InformativeLoginCard, CreateButton, PageHeader, ViewModeToggle, CreateContentPanel, ListingCard } from "@/components/shared";
+import { InformativeLoginCard, CreateButton, PageHeader, ViewModeToggle, CreateContentPanel, ListingCard, HistoryModal } from "@/components/shared";
 import type { ViewMode } from "@/components/shared";
 import { useUser } from "@/context/UserContext";
 import { useGlobalAuth } from "@/context/GlobalAuthContext";
@@ -60,6 +61,7 @@ export default function GamePage() {
     const [viewMode, setViewMode] = useState<ViewMode>('GRID');
     const [isCreatePanelOpen, setIsCreatePanelOpen] = useState(false);
     const [isRetrievalOpen, setIsRetrievalOpen] = useState(false);
+    const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
     const filterGroups: FilterGroup[] = [
         {
@@ -205,10 +207,17 @@ export default function GamePage() {
                         <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
                         <button
                             onClick={() => setIsRetrievalOpen(true)}
-                            className="w-10 h-10 rounded-xl bg-neutral-white/20 border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-all"
-                            title="Join by Registry ID"
+                            className="w-10 h-10 rounded-xl bg-neutral-white border border-neutral-gray/20 flex items-center justify-center text-neutral-ink hover:text-primary-strong hover:border-primary-strong transition-all"
+                            title="Add by ID"
                         >
-                            <Download size={20} />
+                            <Link2 size={20} />
+                        </button>
+                        <button
+                            onClick={() => setIsHistoryOpen(true)}
+                            className="w-10 h-10 rounded-xl bg-neutral-white border border-neutral-gray/20 flex items-center justify-center text-neutral-ink hover:text-primary-strong hover:border-primary-strong transition-all"
+                            title="View History"
+                        >
+                            <History size={20} />
                         </button>
                         <CreateButton label="Create Arena" onClick={handleCreateClick} />
                     </>
@@ -294,6 +303,11 @@ export default function GamePage() {
                 isOpen={isRetrievalOpen}
                 onClose={() => setIsRetrievalOpen(false)}
                 type="QUOOT"
+            />
+
+            <HistoryModal
+                isOpen={isHistoryOpen}
+                onClose={() => setIsHistoryOpen(false)}
             />
         </div>
     );

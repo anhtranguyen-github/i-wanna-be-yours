@@ -16,8 +16,8 @@ import { FilterState, PracticeNode } from "@/types/practice";
 import * as practiceService from "@/services/practiceService";
 import { SearchNexus } from "@/components/shared/SearchNexus";
 import { SearchNexusState, FilterGroup } from "@/types/search";
-import { InformativeLoginCard, CreateButton, PageHeader, ViewModeToggle, CreateContentPanel, ListingCard, RetrievalModal } from "@/components/shared";
-import { Download } from "lucide-react";
+import { InformativeLoginCard, CreateButton, PageHeader, ViewModeToggle, CreateContentPanel, ListingCard, RetrievalModal, HistoryModal } from "@/components/shared";
+import { Link2, History } from "lucide-react";
 import type { ViewMode } from "@/components/shared";
 import { useUser } from "@/context/UserContext";
 import { useGlobalAuth } from "@/context/GlobalAuthContext";
@@ -33,6 +33,7 @@ export default function PracticeHubPage() {
     const [viewMode, setViewMode] = useState<ViewMode>('LIST');
     const [isCreatePanelOpen, setIsCreatePanelOpen] = useState(false);
     const [isRetrievalOpen, setIsRetrievalOpen] = useState(false);
+    const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
     const [searchState, setSearchState] = useState<SearchNexusState>({
         query: "",
@@ -175,9 +176,16 @@ export default function PracticeHubPage() {
                         <button
                             onClick={() => setIsRetrievalOpen(true)}
                             className="w-10 h-10 rounded-xl bg-neutral-white border border-neutral-gray/20 flex items-center justify-center text-neutral-ink hover:text-primary-strong hover:border-primary-strong transition-all"
-                            title="Join by Registry ID"
+                            title="Add by ID"
                         >
-                            <Download size={20} />
+                            <Link2 size={20} />
+                        </button>
+                        <button
+                            onClick={() => setIsHistoryOpen(true)}
+                            className="w-10 h-10 rounded-xl bg-neutral-white border border-neutral-gray/20 flex items-center justify-center text-neutral-ink hover:text-primary-strong hover:border-primary-strong transition-all"
+                            title="View History"
+                        >
+                            <History size={20} />
                         </button>
                         <CreateButton label="Create Protocol" onClick={handleCreateClick} />
                     </>
@@ -266,6 +274,11 @@ export default function PracticeHubPage() {
                 isOpen={isRetrievalOpen}
                 onClose={() => setIsRetrievalOpen(false)}
                 type="PRACTICE"
+            />
+
+            <HistoryModal
+                isOpen={isHistoryOpen}
+                onClose={() => setIsHistoryOpen(false)}
             />
         </div>
     );
