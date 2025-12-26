@@ -193,6 +193,7 @@ export interface FilterState {
     timing?: 'ALL' | 'TIMED' | 'UNLIMITED';
     status?: 'ALL' | 'COMPLETED' | 'IN_PROGRESS' | 'NEVER_ATTEMPTED';
     origin?: 'ALL' | ProtocolOrigin;
+    access?: 'PUBLIC' | 'PERSONAL';
 }
 
 // --- UI Props ---
