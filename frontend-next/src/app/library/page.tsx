@@ -55,20 +55,16 @@ const routes = [
     },
 ];
 
+import { PageHeader } from "@/components/shared";
+
 export default function LibraryPage() {
     return (
         <div className="min-h-screen bg-background pb-24">
-            <header className="bg-card border-b border-border px-6 py-8">
-                <div className="max-w-6xl mx-auto flex items-center gap-4">
-                    <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center">
-                        <Library className="w-6 h-6 text-primary-strong" />
-                    </div>
-                    <div>
-                        <h1 className="text-3xl font-bold text-foreground font-display">Library</h1>
-                        <p className="text-neutral-ink">Browse your learning resources</p>
-                    </div>
-                </div>
-            </header>
+            <PageHeader
+                title="Library"
+                subtitle="Browse your learning resources"
+                icon={<Library className="w-6 h-6 text-primary-strong" />}
+            />
 
             <main className="max-w-6xl mx-auto px-6 py-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

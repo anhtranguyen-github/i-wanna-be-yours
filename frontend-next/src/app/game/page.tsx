@@ -13,7 +13,6 @@ import {
     Zap,
     Heart,
     Puzzle,
-    ArrowLeft,
     ChevronRight,
     Sparkles
 } from "lucide-react";
@@ -122,6 +121,8 @@ function GameCard({ game }: { game: typeof games[0] }) {
     );
 }
 
+import { PageHeader } from "@/components/shared";
+
 // =============================================================================
 // MAIN PAGE
 // =============================================================================
@@ -130,34 +131,12 @@ export default function GamesHubPage() {
     return (
         <div className="min-h-screen bg-neutral-beige/20 pb-24">
             {/* Header */}
-            <header className="bg-neutral-white border-b border-neutral-gray/20 px-6 py-12 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-[100px] -mr-48 -mt-48" />
-
-                <div className="max-w-6xl mx-auto relative z-10">
-                    <Link
-                        href="/dashboard"
-                        className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-neutral-ink hover:text-primary-strong mb-8 transition-colors group"
-                    >
-                        <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-                        Back to Dashboard
-                    </Link>
-
-                    <div className="flex items-center gap-5 mb-4">
-                        <div className="w-16 h-16 bg-neutral-ink rounded-2xl flex items-center justify-center">
-                            <Gamepad2 size={32} className="text-white" />
-                        </div>
-                        <div>
-                            <h1 className="text-5xl font-black text-neutral-ink font-display tracking-tight">
-                                Games
-                            </h1>
-                            <p className="text-neutral-ink font-bold text-lg">Fun ways to practice Japanese</p>
-                        </div>
-                    </div>
-                    <p className="text-neutral-ink max-w-2xl leading-relaxed font-bold">
-                        Master Japanese through engaging gameplay. Choose a game below to start practicing vocabulary, kanji, and grammar in a fun and competitive way.
-                    </p>
-                </div>
-            </header>
+            <PageHeader
+                title="Games"
+                subtitle="Fun ways to practice Japanese"
+                icon={<Gamepad2 size={24} className="text-primary-strong" />}
+                iconBgColor="bg-neutral-ink"
+            />
 
             {/* Games Grid */}
             <main className="max-w-6xl mx-auto px-6 py-12">

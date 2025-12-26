@@ -57,22 +57,17 @@ const routes = [
     },
 ];
 
+import { PageHeader } from "@/components/shared";
+
 export default function ToolsPage() {
     return (
         <div className="min-h-screen bg-secondary pb-24">
-            <header className="bg-neutral-white border-b border-neutral-gray/30 px-6 py-8 ">
-                <div className="max-w-6xl mx-auto flex items-center gap-4">
-                    <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center ">
-                        <WrenchIcon className="w-6 h-6 text-primary-strong" />
-                    </div>
-                    <div>
-                        <h1 className="text-3xl font-black text-neutral-ink font-display">
-                            Linguistic <span className="text-primary-strong">Laboratory</span>
-                        </h1>
-                        <p className="text-neutral-ink mt-1">High-performance utilities for Japanese acquisition</p>
-                    </div>
-                </div>
-            </header>
+            <PageHeader
+                title="Linguistic Laboratory"
+                highlightWord="Laboratory"
+                subtitle="High-performance utilities for Japanese acquisition"
+                icon={<WrenchIcon className="w-6 h-6 text-primary-strong" />}
+            />
 
             <main className="max-w-6xl mx-auto px-6 py-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
