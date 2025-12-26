@@ -8,11 +8,13 @@
     "express-rate-limit": "^8.2.1",
     "expressjs": "^1.0.1",
     "helmet": "^8.1.0",
+    "http-proxy-middleware": "^3.0.5",
     "ioredis": "^5.3.2",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^6.7.2",
     "nodemon": "^3.1.9",
     "path": "^0.12.7",
-    "redis": "^4.6.10"
+    "redis": "^4.6.10",
+    "zod": "^4.2.1"
   }
 }

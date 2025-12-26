@@ -3,6 +3,7 @@ const router = express.Router();
 const { JLPTAttempt } = require('../models/JLPTAttempt');
 const { JLPTUserExam } = require('../models/JLPTUserExam');
 const { verifyAccessToken } = require('../utils/auth');
+const { verifyJWT } = require('../middleware/auth');
 const rateLimit = require('express-rate-limit');
 
 const genLimiter = rateLimit({
@@ -13,36 +14,8 @@ const genLimiter = rateLimit({
     legacyHeaders: false,
 });
 
-/**
- * Middleware to protect routes and attach user to request
- */
-async function authenticate(req, res, next) {
-    let token = null;
-
-    // Check Authorization header
-    const authHeader = req.headers.authorization;
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-        token = authHeader.split(' ')[1];
-    }
-
-    // Check Cookies if not in header
-    if (!token && req.cookies) {
-        token = req.cookies.accessToken;
-    }
-
-    if (!token) {
-        return res.status(401).json({ error: 'Unauthorized: No token provided' });
-    }
-
-    const payload = verifyAccessToken(token);
-
-    if (!payload) {
-        return res.status(401).json({ error: 'Unauthorized: Invalid token' });
-    }
-
-    req.user = payload;
-    next();
-}
+// Redundant local authenticate function removed. 
+// Using shared verifyJWT middleware instead.
 
 // === Attempts Routes ===
 
@@ -50,7 +23,7 @@ async function authenticate(req, res, next) {
  * GET /jlpt/attempts
  * Fetch user's exam attempts
  */
-router.get('/attempts', authenticate, async (req, res) => {
+router.get('/attempts', verifyJWT, async (req, res) => {
     try {
         const limit = parseInt(req.query.limit) || 20;
         const offset = parseInt(req.query.offset) || 0;
@@ -74,7 +47,7 @@ router.get('/attempts', authenticate, async (req, res) => {
  * POST /jlpt/attempts
  * Save a new exam attempt
  */
-router.post('/attempts', authenticate, async (req, res) => {
+router.post('/attempts', verifyJWT, async (req, res) => {
     try {
         const { examId, level, score, totalQuestions, answers, completedAt } = req.body;
 
@@ -173,7 +146,7 @@ router.get('/exams', async (req, res) => {
  * POST /jlpt/exams
  * Create a new custom exam
  */
-router.post('/exams', authenticate, async (req, res) => {
+router.post('/exams', verifyJWT, async (req, res) => {
     try {
         const { title, description, level, questions, isPublic } = req.body;
 
@@ -202,7 +175,7 @@ router.post('/exams', authenticate, async (req, res) => {
  * PUT /jlpt/exams/:id
  * Update an existing custom exam
  */
-router.put('/exams/:id', authenticate, async (req, res) => {
+router.put('/exams/:id', verifyJWT, async (req, res) => {
     try {
         const { id } = req.params;
         const userId = req.user.id || req.user.userId;
@@ -236,7 +209,7 @@ router.put('/exams/:id', authenticate, async (req, res) => {
  * DELETE /jlpt/exams/:id
  * Delete a custom exam
  */
-router.delete('/exams/:id', authenticate, async (req, res) => {
+router.delete('/exams/:id', verifyJWT, async (req, res) => {
     try {
         const { id } = req.params;
         const userId = req.user.id || req.user.userId;
@@ -292,7 +265,7 @@ router.get('/exams/:id', async (req, res) => {
  * POST /jlpt/generate
  * Mock endpoint for AI generation
  */
-router.post('/generate', authenticate, genLimiter, async (req, res) => {
+router.post('/generate', verifyJWT, genLimiter, async (req, res) => {
     try {
         // In a real app, this would call an LLM
         // For now, we'll return mock data or a helpful message
