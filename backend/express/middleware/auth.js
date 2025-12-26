@@ -38,6 +38,31 @@ const verifyJWT = (req, res, next) => {
 };
 
 /**
+ * Optional auth middleware - continues if no token, but sets req.user if valid token present
+ */
+const optionalAuth = (req, res, next) => {
+    let token = null;
+
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+        token = authHeader.split(' ')[1];
+    }
+
+    if (!token && req.cookies && req.cookies.accessToken) {
+        token = req.cookies.accessToken;
+    }
+
+    if (token) {
+        const payload = verifyAccessToken(token);
+        if (payload) {
+            req.user = payload;
+        }
+    }
+
+    next();
+};
+
+/**
  * Middleware to check user roles
  * @param {string[]} roles - Array of allowed roles 
  */
@@ -63,5 +88,7 @@ const checkRole = (roles) => {
 
 module.exports = {
     verifyJWT,
-    checkRole
+    optionalAuth,
+    checkRole,
+    verifyAccessToken
 };
