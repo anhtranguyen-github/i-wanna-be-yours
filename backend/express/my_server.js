@@ -82,6 +82,14 @@ app.use("/e-api/v1/auth", authRoutes);
 const practiceRoutes = require("./routes/practiceRoutes");
 app.use("/e-api/v1/practice", practiceRoutes);
 
+// --- Quoot Routes (Dedicated) ---
+const quootRoutes = require("./routes/quootRoutes");
+app.use("/e-api/v1/quoot", quootRoutes);
+
+// --- Flashcard Routes (Dedicated) ---
+const flashcardRoutes = require("./routes/flashcardRoutes");
+app.use("/e-api/v1/flashcards", flashcardRoutes);
+
 // --- Flask Proxy ---
 // Route all /e-api/v1/f/ requests to the Flask service on port 5100
 app.use("/e-api/v1/f", verifyJWT, createProxyMiddleware({
