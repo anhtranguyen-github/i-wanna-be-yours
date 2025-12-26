@@ -14,7 +14,8 @@ import {
     Clock, Flame, Star, ArrowLeft, Sparkles, MessageSquare,
     ChevronDown, ChevronUp, Brain, Volume2
 } from "lucide-react";
-import { mockExamConfigs, getQuestionsForExam } from "@/data/mockPractice";
+import { practiceService } from "@/services/practiceService";
+import { Question, PracticeNode } from "@/types/practice";
 import { useUser } from "@/context/UserContext";
 import { useGlobalAuth } from "@/context/GlobalAuthContext";
 import { ResultShell } from "@/components/results/ResultShell";
@@ -30,12 +31,29 @@ export default function PremiumResultPage() {
     const [sessionData, setSessionData] = useState<any>(null);
     const [expandedQuestions, setExpandedQuestions] = useState<Set<string>>(new Set());
 
-    // Load practice node and questions
-    const node = useMemo(() => mockExamConfigs.find((e) => e.id === nodeId), [nodeId]);
-    const questions = useMemo(() => (nodeId ? getQuestionsForExam(nodeId) : []), [nodeId]);
+    const [node, setNode] = useState<PracticeNode | null>(null);
+    const [questions, setQuestions] = useState<Question[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
-    // Load data from localStorage
+    // Load data from API and localStorage
     useEffect(() => {
+        if (!nodeId) return;
+
+        const loadContent = async () => {
+            setIsLoading(true);
+            try {
+                const data = await practiceService.getNodeSessionData(nodeId);
+                setNode(data.node);
+                setQuestions(data.questions);
+            } catch (err) {
+                console.error("Failed to load practice result content:", err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        loadContent();
+
         const stored = localStorage.getItem(`practice_session_${nodeId}`);
         if (stored) {
             try {
@@ -47,7 +65,7 @@ export default function PremiumResultPage() {
     }, [nodeId]);
 
     const unifiedResult = useMemo(() => {
-        if (!node || !questions.length) return null;
+        if (!node || !unifiedResult || !questions.length) return null;
         return processPracticeResult(node, sessionData, questions);
     }, [node, sessionData, questions]);
 
@@ -75,6 +93,15 @@ export default function PremiumResultPage() {
     };
 
     // Error state
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-background flex flex-col items-center justify-center p-8">
+                <Sparkles className="w-12 h-12 text-primary animate-pulse mb-6" />
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-ink font-display">Reconstructing Session Results...</p>
+            </div>
+        );
+    }
+
     if (!node || !unifiedResult) {
         return (
             <div className="min-h-screen bg-background flex flex-col items-center justify-center p-8 text-center">
@@ -82,7 +109,7 @@ export default function PremiumResultPage() {
                     <AlertTriangle size={32} />
                 </div>
                 <h2 className="text-2xl font-black text-foreground font-display mb-2">Results Not Found</h2>
-                <p className="text-muted-foreground font-bold mb-6">We couldn&apos;t find your session data. Did you finish the practice?</p>
+                <p className="text-neutral-ink font-bold mb-6">We couldn&apos;t find your session data. Did you finish the practice?</p>
                 <Link
                     href="/practice"
                     className="px-6 py-3 bg-foreground text-background font-black font-display text-sm rounded-xl"
@@ -105,7 +132,7 @@ export default function PremiumResultPage() {
             customActions={
                 <button
                     onClick={() => handleAskAI()}
-                    className="px-10 py-5 bg-secondary text-white rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] flex items-center gap-3 hover:scale-105 transition-all shadow-xl shadow-secondary/20"
+                    className="px-10 py-5 bg-secondary text-white rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] flex items-center gap-3 hover:scale-105 transition-all  shadow-secondary/20"
                 >
                     <MessageSquare size={20} />
                     Consult AI Tutor
@@ -121,7 +148,7 @@ export default function PremiumResultPage() {
                         </div>
                         <div>
                             <h3 className="text-2xl font-black text-neutral-ink font-display">Optimization Targets</h3>
-                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-ink/20">Review your incorrect transmissions</p>
+                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-ink">Review your incorrect transmissions</p>
                         </div>
                     </div>
 
@@ -133,7 +160,7 @@ export default function PremiumResultPage() {
                             const isExpanded = expandedQuestions.has(q.id);
 
                             return (
-                                <div key={q.id} className="bg-neutral-white border border-neutral-gray/10 rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                                <div key={q.id} className="bg-neutral-white border border-neutral-gray/10 rounded-[2.5rem] overflow-hidden  hover: transition-shadow">
                                     <button
                                         onClick={() => toggleQuestion(q.id)}
                                         className="w-full text-left p-8 flex items-center justify-between group"
@@ -147,7 +174,7 @@ export default function PremiumResultPage() {
                                                 <span className="block text-[8px] font-black uppercase text-rose-500/40">Your Response</span>
                                                 <span className="text-sm font-bold text-rose-500">{userOption?.text || 'No Answer'}</span>
                                             </div>
-                                            {isExpanded ? <ChevronUp size={24} className="text-neutral-ink/20" /> : <ChevronDown size={24} className="text-neutral-ink/20" />}
+                                            {isExpanded ? <ChevronUp size={24} className="text-neutral-ink" /> : <ChevronDown size={24} className="text-neutral-ink" />}
                                         </div>
                                     </button>
 
@@ -168,9 +195,9 @@ export default function PremiumResultPage() {
                                                 <div className="p-8 bg-neutral-white border border-neutral-gray/10 rounded-2xl">
                                                     <div className="flex items-center gap-3 mb-4">
                                                         <Brain size={16} className="text-primary-strong" />
-                                                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-ink/40">Linguistic Analysis</span>
+                                                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-ink">Linguistic Analysis</span>
                                                     </div>
-                                                    <p className="text-neutral-ink/60 font-bold leading-relaxed">{q.explanation}</p>
+                                                    <p className="text-neutral-ink font-bold leading-relaxed">{q.explanation}</p>
                                                 </div>
                                             )}
 

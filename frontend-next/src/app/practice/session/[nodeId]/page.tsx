@@ -14,7 +14,7 @@ import {
     CheckCircle2, HelpCircle, ArrowLeft, Loader2
 } from "lucide-react";
 import Link from "next/link";
-import { mockExamConfigs, getQuestionsForExam } from "@/data/mockPractice";
+import { practiceService } from "@/services/practiceService";
 import { PracticeNode, Question, UserAnswer, DisplayMode, QuestionStatus } from "@/types/practice";
 
 export default function UnifiedSessionPage() {
@@ -23,8 +23,28 @@ export default function UnifiedSessionPage() {
     const nodeId = params?.nodeId as string;
 
     // Load practice node and questions
-    const node = useMemo(() => mockExamConfigs.find((e) => e.id === nodeId), [nodeId]);
-    const questions = useMemo(() => (nodeId ? getQuestionsForExam(nodeId) : []), [nodeId]);
+    const [node, setNode] = useState<PracticeNode | null>(null);
+    const [questions, setQuestions] = useState<Question[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (!nodeId) return;
+
+        const loadData = async () => {
+            setIsLoading(true);
+            try {
+                const data = await practiceService.getNodeSessionData(nodeId);
+                setNode(data.node);
+                setQuestions(data.questions);
+            } catch (err) {
+                console.error("Failed to load practice session:", err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        loadData();
+    }, [nodeId]);
 
     // State
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -122,11 +142,11 @@ export default function UnifiedSessionPage() {
     const flaggedCount = flagged.size;
 
     // Loading state
-    if (!node && nodeId) {
+    if (isLoading) {
         return (
             <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-6">
                 <Loader2 className="w-16 h-16 animate-spin text-primary" />
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground font-display">
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-ink font-display">
                     Loading Practice Node...
                 </p>
             </div>
@@ -141,7 +161,7 @@ export default function UnifiedSessionPage() {
                     <AlertTriangle size={32} />
                 </div>
                 <h2 className="text-2xl font-black text-foreground font-display mb-2">Practice Not Found</h2>
-                <p className="text-muted-foreground font-bold mb-6">The requested practice session could not be loaded.</p>
+                <p className="text-neutral-ink font-bold mb-6">The requested practice session could not be loaded.</p>
                 <Link
                     href="/practice"
                     className="px-6 py-3 bg-foreground text-background font-black font-display text-sm rounded-xl hover:bg-foreground/90 transition-colors"
@@ -183,7 +203,7 @@ export default function UnifiedSessionPage() {
                                 <span className="px-2 py-0.5 bg-primary/10 text-primary rounded text-xs font-black uppercase tracking-widest">
                                     {node.tags.level}
                                 </span>
-                                <span className="px-2 py-0.5 bg-muted text-muted-foreground rounded text-xs font-black uppercase tracking-widest">
+                                <span className="px-2 py-0.5 bg-muted text-neutral-ink rounded text-xs font-black uppercase tracking-widest">
                                     {getModeLabel()}
                                 </span>
                             </div>
@@ -203,13 +223,13 @@ export default function UnifiedSessionPage() {
                         <div className="hidden sm:flex items-center gap-1 p-1 bg-muted rounded-xl">
                             <button
                                 onClick={() => setDisplayMode("FOCUS")}
-                                className={`px-3 py-2 rounded-lg text-sm font-bold transition-colors ${displayMode === "FOCUS" ? "bg-card text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                                className={`px-3 py-2 rounded-lg text-sm font-bold transition-colors ${displayMode === "FOCUS" ? "bg-card text-foreground" : "text-neutral-ink hover:text-foreground"}`}
                             >
                                 <Target size={16} />
                             </button>
                             <button
                                 onClick={() => setDisplayMode("SCROLL")}
-                                className={`px-3 py-2 rounded-lg text-sm font-bold transition-colors ${displayMode === "SCROLL" ? "bg-card text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                                className={`px-3 py-2 rounded-lg text-sm font-bold transition-colors ${displayMode === "SCROLL" ? "bg-card text-foreground" : "text-neutral-ink hover:text-foreground"}`}
                             >
                                 <AlignJustify size={16} />
                             </button>
@@ -244,13 +264,13 @@ export default function UnifiedSessionPage() {
                     <div className="p-6 h-full flex flex-col overflow-hidden">
                         <div className="mb-6 pb-6 border-b border-border">
                             <div className="flex items-center justify-between mb-4">
-                                <span className="text-sm font-bold text-muted-foreground">Progress</span>
+                                <span className="text-sm font-bold text-neutral-ink">Progress</span>
                                 <span className="text-sm font-bold text-foreground">{currentIndex + 1} / {questions.length}</span>
                             </div>
                             <div className="h-2 bg-muted rounded-full overflow-hidden">
                                 <div className="h-full bg-primary transition-all" style={{ width: `${((currentIndex + 1) / questions.length) * 100}%` }} />
                             </div>
-                            <div className="flex items-center gap-4 mt-4 text-xs font-bold text-muted-foreground">
+                            <div className="flex items-center gap-4 mt-4 text-xs font-bold text-neutral-ink">
                                 <span className="text-primary">{answeredCount} answered</span>
                                 <span className="text-secondary-foreground">{flaggedCount} flagged</span>
                             </div>
@@ -262,7 +282,7 @@ export default function UnifiedSessionPage() {
                                 {questions.map((q, index) => {
                                     const status = getQuestionStatus(q.id);
                                     const isCurrent = index === currentIndex;
-                                    let colorClass = "bg-muted text-muted-foreground hover:bg-muted/80";
+                                    let colorClass = "bg-muted text-neutral-ink hover:bg-muted/80";
                                     if (status === "ANSWERED") colorClass = "bg-primary/10 text-primary border-primary/30";
                                     if (status === "FLAGGED") colorClass = "bg-secondary text-secondary-foreground";
                                     if (isCurrent) colorClass = "bg-foreground text-background";
@@ -287,10 +307,10 @@ export default function UnifiedSessionPage() {
                         {/* Legend */}
                         <div className="pt-4 border-t border-border shrink-0">
                             <div className="grid grid-cols-2 gap-2 text-xs">
-                                <div className="flex items-center gap-2"><div className="w-3 h-3 bg-muted rounded" /><span className="text-muted-foreground">Unanswered</span></div>
-                                <div className="flex items-center gap-2"><div className="w-3 h-3 bg-primary/10 border border-primary/30 rounded" /><span className="text-muted-foreground">Answered</span></div>
-                                <div className="flex items-center gap-2"><div className="w-3 h-3 bg-secondary rounded" /><span className="text-muted-foreground">Flagged</span></div>
-                                <div className="flex items-center gap-2"><div className="w-3 h-3 bg-foreground rounded" /><span className="text-muted-foreground">Current</span></div>
+                                <div className="flex items-center gap-2"><div className="w-3 h-3 bg-muted rounded" /><span className="text-neutral-ink">Unanswered</span></div>
+                                <div className="flex items-center gap-2"><div className="w-3 h-3 bg-primary/10 border border-primary/30 rounded" /><span className="text-neutral-ink">Answered</span></div>
+                                <div className="flex items-center gap-2"><div className="w-3 h-3 bg-secondary rounded" /><span className="text-neutral-ink">Flagged</span></div>
+                                <div className="flex items-center gap-2"><div className="w-3 h-3 bg-foreground rounded" /><span className="text-neutral-ink">Current</span></div>
                             </div>
                         </div>
                     </div>
@@ -329,7 +349,7 @@ export default function UnifiedSessionPage() {
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-8 bg-background/80 backdrop-blur-sm">
                     <div className="w-full max-w-md bg-card rounded-2xl p-8 border border-border text-center">
                         <h3 className="text-xl font-black text-foreground font-display mb-2">Submit Practice?</h3>
-                        <p className="text-muted-foreground font-bold mb-6">
+                        <p className="text-neutral-ink font-bold mb-6">
                             You have answered {answeredCount} of {questions.length} questions.
                             {questions.length - answeredCount > 0 && (
                                 <span className="text-destructive"> ({questions.length - answeredCount} unanswered)</span>
@@ -364,7 +384,7 @@ export default function UnifiedSessionPage() {
                         </div>
                     </div>
                     <h3 className="text-2xl font-black text-foreground font-display mb-2">Analyzing your results...</h3>
-                    <p className="text-muted-foreground font-bold animate-pulse">Calculating score and preparing insights</p>
+                    <p className="text-neutral-ink font-bold animate-pulse">Calculating score and preparing insights</p>
                 </div>
             )}
         </div>
@@ -385,12 +405,12 @@ function FocusModeView({ question, questionIndex, totalQuestions, selectedOption
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                     <span className="w-10 h-10 bg-primary/10 text-primary rounded-xl flex items-center justify-center font-black">{questionIndex + 1}</span>
-                    <span className="text-sm text-muted-foreground font-bold">of {totalQuestions} questions</span>
+                    <span className="text-sm text-neutral-ink font-bold">of {totalQuestions} questions</span>
                 </div>
                 <button
                     onClick={onToggleFlag}
                     disabled={isSubmitted}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-colors ${isFlagged ? "bg-secondary text-secondary-foreground" : "bg-muted text-muted-foreground hover:text-foreground"} ${isSubmitted ? "opacity-50 cursor-not-allowed" : ""}`}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-colors ${isFlagged ? "bg-secondary text-secondary-foreground" : "bg-muted text-neutral-ink hover:text-foreground"} ${isSubmitted ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
                     <Flag size={16} className={isFlagged ? "fill-current" : ""} />
                     {isFlagged ? "Flagged" : "Flag"}
@@ -442,7 +462,7 @@ function FocusModeView({ question, questionIndex, totalQuestions, selectedOption
                         <HelpCircle size={20} className="text-primary shrink-0 mt-0.5" />
                         <div>
                             <h4 className="font-black text-foreground mb-1">Explanation</h4>
-                            <p className="text-muted-foreground font-jp">{question.explanation}</p>
+                            <p className="text-neutral-ink font-jp">{question.explanation}</p>
                         </div>
                     </div>
                 </div>
@@ -453,14 +473,14 @@ function FocusModeView({ question, questionIndex, totalQuestions, selectedOption
                 <button
                     onClick={onPrevious}
                     disabled={questionIndex === 0}
-                    className={`flex items-center gap-2 px-5 py-3 rounded-xl font-black transition-colors ${questionIndex === 0 ? "bg-muted text-muted-foreground cursor-not-allowed" : "bg-card border border-border text-foreground hover:border-primary/50"}`}
+                    className={`flex items-center gap-2 px-5 py-3 rounded-xl font-black transition-colors ${questionIndex === 0 ? "bg-muted text-neutral-ink cursor-not-allowed" : "bg-card border border-border text-foreground hover:border-primary/50"}`}
                 >
                     <ChevronLeft size={18} /> Previous
                 </button>
                 <button
                     onClick={onNext}
                     disabled={questionIndex === totalQuestions - 1}
-                    className={`flex items-center gap-2 px-5 py-3 rounded-xl font-black transition-colors ${questionIndex === totalQuestions - 1 ? "bg-muted text-muted-foreground cursor-not-allowed" : "bg-foreground text-background hover:bg-foreground/90"}`}
+                    className={`flex items-center gap-2 px-5 py-3 rounded-xl font-black transition-colors ${questionIndex === totalQuestions - 1 ? "bg-muted text-neutral-ink cursor-not-allowed" : "bg-foreground text-background hover:bg-foreground/90"}`}
                 >
                     Next <ChevronRight size={18} />
                 </button>
@@ -498,7 +518,7 @@ function ScrollModeView({ questions, answers, flagged, isSubmitted, onSelectAnsw
                             <button
                                 onClick={() => onToggleFlag(question.id)}
                                 disabled={isSubmitted}
-                                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-black transition-colors ${isFlagged ? "bg-secondary text-secondary-foreground" : "bg-muted text-muted-foreground"} ${isSubmitted ? "opacity-50" : ""}`}
+                                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-black transition-colors ${isFlagged ? "bg-secondary text-secondary-foreground" : "bg-muted text-neutral-ink"} ${isSubmitted ? "opacity-50" : ""}`}
                             >
                                 <Flag size={12} className={isFlagged ? "fill-current" : ""} />
                                 {isFlagged ? "Flagged" : "Flag"}
@@ -546,7 +566,7 @@ function ScrollModeView({ questions, answers, flagged, isSubmitted, onSelectAnsw
                             <div className="mt-6 p-5 bg-muted/50 rounded-xl border border-border">
                                 <div className="flex items-start gap-3">
                                     <HelpCircle size={16} className="text-primary shrink-0 mt-0.5" />
-                                    <p className="text-sm text-muted-foreground font-jp">{question.explanation}</p>
+                                    <p className="text-sm text-neutral-ink font-jp">{question.explanation}</p>
                                 </div>
                             </div>
                         )}

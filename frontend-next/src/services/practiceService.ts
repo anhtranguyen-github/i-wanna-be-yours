@@ -14,7 +14,6 @@ import {
 } from '@/types/practice';
 import * as jlptService from './jlptService';
 import * as quizService from './quizService';
-import { mockExamConfigs } from '@/data/mockPractice';
 
 // Migration/Helper: Map ExamConfig to PracticeNode
 export const mapExamToNode = (exam: any): PracticeNode => {
@@ -69,7 +68,7 @@ export const mapQuizToNode = (quiz: any): PracticeNode => {
             timeLimitSeconds: quiz.time_limit_seconds || quiz.stats?.timeLimitSeconds,
             timeLimitMinutes: (quiz.time_limit_seconds || quiz.stats?.timeLimitSeconds)
                 ? Math.floor((quiz.time_limit_seconds || quiz.stats?.timeLimitSeconds) / 60)
-                : (quiz.stats?.timeLimitMinutes)
+                : (quiz.stats?.questionCount) ? Math.floor(quiz.stats.questionCount * 1.5) : 30 // Fallback
         }
     };
 };
@@ -79,15 +78,26 @@ export const mapQuizToNode = (quiz: any): PracticeNode => {
  */
 export async function getNodes(filters: FilterState): Promise<{ nodes: PracticeNode[], total: number }> {
     try {
-        // 1. Fetch from mock for now (System Exams)
-        let nodes = mockExamConfigs.map(mapExamToNode);
+        // 1. Fetch System Exams from API
+        let nodes: PracticeNode[] = [];
+        try {
+            const systemExamsResponse = await fetch('/e-api/v1/jlpt/exams?is_public=true');
+            if (systemExamsResponse.ok) {
+                const data = await systemExamsResponse.json();
+                nodes = data.exams.map(mapExamToNode);
+            }
+        } catch (e) {
+            console.warn('Failed to fetch system exams from API:', e);
+        }
 
         // 2. Fetch User Custom Exams (if filters allow)
         if (filters.mode === 'ALL' || filters.mode === 'FULL_EXAM' || filters.mode === 'SINGLE_EXAM') {
             try {
-                const userExams = await jlptService.getLocalUserExams();
-                nodes = [...nodes, ...userExams.map(e => mapExamToNode(e.config || e))];
-            } catch (e) { console.warn('Failed to fetch local user exams:', e); }
+                const userExams = await jlptService.getUserExams();
+                const userNodes = userExams.exams.map(e => mapExamToNode(e.config || e));
+                const existingIds = new Set(nodes.map(n => n.id));
+                nodes = [...nodes, ...userNodes.filter(n => !existingIds.has(n.id))];
+            } catch (e) { console.warn('Failed to fetch user exams:', e); }
         }
 
         // 3. Fetch System Quizzes (if filters allow)
@@ -111,37 +121,43 @@ export async function getNodes(filters: FilterState): Promise<{ nodes: PracticeN
             const timingMatch = !filters.timing || filters.timing === 'ALL' ||
                 (filters.timing === 'TIMED' ? !!node.stats.timeLimitMinutes : !node.stats.timeLimitMinutes);
 
-            const originMatch = !filters.origin || filters.origin === 'ALL' || node.tags.origin === filters.origin;
+            const originMatch = !filters.origin || filters.origin === 'ALL' ||
+                (filters.origin === 'system' ? node.tags.origin === 'system' : node.tags.origin !== 'system');
 
             return modeMatch && levelMatch && skillMatch && timingMatch && originMatch;
         });
 
-        // 5. Inject Personal Data (Mocking for now)
-        const attempts = jlptService.getLocalAttempts();
-        filteredNodes = filteredNodes.map(node => {
-            const nodeAttempts = (attempts as any[]).filter(a => (a.nodeId || a.examId) === node.id);
-            if (nodeAttempts.length > 0) {
-                const best = Math.max(...nodeAttempts.map(a => a.scorePercentage));
+        // 5. Inject Personal Data (Using API)
+        try {
+            const { attempts } = await jlptService.getAttempts();
+            filteredNodes = filteredNodes.map(node => {
+                const nodeAttempts = (attempts as any[]).filter(a => (a.nodeId || a.examId) === node.id);
+                if (nodeAttempts.length > 0) {
+                    const best = Math.max(...nodeAttempts.map(a => a.scorePercentage));
+                    const lastAttempt = nodeAttempts[nodeAttempts.length - 1];
+                    return {
+                        ...node,
+                        personalData: {
+                            hasCompleted: true,
+                            bestScore: best,
+                            attemptCount: nodeAttempts.length,
+                            status: best >= 60 ? 'PASSED' : 'FAILED',
+                            lastAttemptedAt: lastAttempt.completedAt
+                        }
+                    };
+                }
                 return {
                     ...node,
                     personalData: {
-                        hasCompleted: true,
-                        bestScore: best,
-                        attemptCount: nodeAttempts.length,
-                        status: best >= 60 ? 'PASSED' : 'FAILED',
-                        lastAttemptedAt: nodeAttempts[0].completedAt
+                        hasCompleted: false,
+                        attemptCount: 0,
+                        status: 'NEW'
                     }
                 };
-            }
-            return {
-                ...node,
-                personalData: {
-                    hasCompleted: false,
-                    attemptCount: 0,
-                    status: 'NEW'
-                }
-            };
-        });
+            });
+        } catch (e) {
+            console.warn('Failed to fetch attempts from API:', e);
+        }
 
         return {
             nodes: filteredNodes,
@@ -156,7 +172,7 @@ export async function getNodes(filters: FilterState): Promise<{ nodes: PracticeN
 /**
  * Fetch a specific node and its questions
  */
-export async function getNodeSessionData(id: string, mode: PracticeMode): Promise<{ node: PracticeNode, questions: Question[] }> {
+export async function getNodeSessionData(id: string, mode?: PracticeMode): Promise<{ node: PracticeNode, questions: Question[] }> {
     // This would typically involve fetching metadata then questions
     // For now, using legacy logic
     if (id.startsWith('quiz-') || mode === 'QUIZ') {
@@ -175,15 +191,15 @@ export async function getNodeSessionData(id: string, mode: PracticeMode): Promis
         }));
         return { node, questions };
     } else {
-        // JLPT logic
-        const mockConfig = mockExamConfigs.find(e => e.id === id);
-        if (mockConfig) {
-            const node = mapExamToNode(mockConfig);
-            // We'd need the generateMockQuestions logic here or imported
-            const questions = await import('@/data/mockPractice').then(m => m.getQuestionsForExam(id));
-            return { node, questions };
+        // JLPT logic (System or User Exams)
+        try {
+            const exam = await jlptService.getExam(id);
+            const node = mapExamToNode(exam.config || exam);
+            return { node, questions: exam.questions };
+        } catch (e) {
+            console.error("Failed to fetch exam session data:", e);
+            throw new Error('Exam not found');
         }
-        throw new Error('Node not found');
     }
 }
 
@@ -199,6 +215,14 @@ export async function saveAttempt(attempt: PracticeAttempt): Promise<void> {
         });
         await quizService.submitQuiz(attempt.nodeId, quizAnswers);
     } else {
-        jlptService.saveLocalAttempt(attempt as any);
+        await jlptService.saveAttempt(attempt as any);
     }
 }
+
+export const practiceService = {
+    getNodes,
+    getNodeSessionData,
+    saveAttempt,
+    mapExamToNode,
+    mapQuizToNode
+};
