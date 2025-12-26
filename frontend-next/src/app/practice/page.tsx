@@ -16,7 +16,8 @@ import { FilterState, PracticeNode } from "@/types/practice";
 import * as practiceService from "@/services/practiceService";
 import { SearchNexus } from "@/components/shared/SearchNexus";
 import { SearchNexusState, FilterGroup } from "@/types/search";
-import { InformativeLoginCard, CreateButton, PageHeader, ViewModeToggle, CreateContentPanel, ListingCard } from "@/components/shared";
+import { InformativeLoginCard, CreateButton, PageHeader, ViewModeToggle, CreateContentPanel, ListingCard, RetrievalModal } from "@/components/shared";
+import { Download } from "lucide-react";
 import type { ViewMode } from "@/components/shared";
 import { useUser } from "@/context/UserContext";
 import { useGlobalAuth } from "@/context/GlobalAuthContext";
@@ -31,6 +32,7 @@ export default function PracticeHubPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [viewMode, setViewMode] = useState<ViewMode>('LIST');
     const [isCreatePanelOpen, setIsCreatePanelOpen] = useState(false);
+    const [isRetrievalOpen, setIsRetrievalOpen] = useState(false);
 
     const [searchState, setSearchState] = useState<SearchNexusState>({
         query: "",
@@ -38,20 +40,22 @@ export default function PracticeHubPage() {
             mode: ['ALL'],
             level: ['ALL'],
             skill: ['ALL'],
-            access: ['PUBLIC']
+            access: ['ALL']
         },
-        activeTab: 'PUBLIC'
+        activeTab: 'ALL'
     });
     const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
     const filterGroups: FilterGroup[] = [
         {
             id: 'access',
-            label: 'Access',
+            label: 'Scope',
             type: 'SINGLE',
             options: [
-                { id: 'PUBLIC', label: 'Public Portal', icon: <Globe size={12} /> },
-                { id: 'PERSONAL', label: 'My Trials', icon: <UserIcon size={12} /> }
+                { id: 'ALL', label: 'All', icon: <Layers size={14} /> },
+                { id: 'GLOBAL', label: 'Official', icon: <ShieldCheck size={14} className="text-primary-strong" /> },
+                { id: 'PUBLIC', label: 'Public', icon: <Globe size={14} /> },
+                { id: 'PRIVATE', label: 'Personal', icon: <UserIcon size={14} /> }
             ]
         },
         {
@@ -75,19 +79,12 @@ export default function PracticeHubPage() {
             const apiFilters: FilterState = {
                 mode: (searchState.activeFilters.mode?.[0] || 'ALL') as any,
                 level: (searchState.activeFilters.level?.[0] || 'ALL') as any,
-                visibility: searchState.activeTab === 'PUBLIC' ? undefined : 'private'
+                access: (searchState.activeFilters.access?.[0] || 'ALL') as any
             } as any;
 
             const { nodes: fetchedNodes } = await practiceService.getNodes(apiFilters, !!user);
 
             let filtered = fetchedNodes;
-
-            // Filter by Access tab logic
-            if (searchState.activeTab === 'PUBLIC') {
-                filtered = filtered.filter(n => n.tags?.visibility !== 'private');
-            } else {
-                filtered = filtered.filter(n => n.tags?.visibility === 'private');
-            }
 
             // Search
             if (searchState.query.trim()) {
@@ -117,21 +114,13 @@ export default function PracticeHubPage() {
     const handleSearchChange = (newState: SearchNexusState) => {
         const accessFilter = newState.activeFilters.access?.[0];
 
-        if (accessFilter && accessFilter !== searchState.activeTab) {
-            if (accessFilter === 'PERSONAL' && !user) {
-                setShowLoginPrompt(true);
-                return;
-            }
-            newState.activeTab = accessFilter as 'PUBLIC' | 'PERSONAL';
-        } else if (newState.activeTab !== searchState.activeTab) {
-            newState.activeFilters = {
-                ...newState.activeFilters,
-                access: [newState.activeTab]
-            };
+        if (accessFilter === 'PRIVATE' && !user) {
+            setShowLoginPrompt(true);
+            return; // Don't update state
         }
 
         setSearchState(newState);
-        if (newState.activeTab === 'PUBLIC') setShowLoginPrompt(false);
+        if (accessFilter !== 'PRIVATE') setShowLoginPrompt(false);
     };
 
     const handleCreateClick = () => {
@@ -151,7 +140,7 @@ export default function PracticeHubPage() {
             await practiceService.createNode({
                 title: data.title || "New Protocol",
                 description: data.description || "Custom training sequence",
-                visibility: data.visibility || 'private',
+                isPublic: data.visibility === 'public' || data.visibility === 'global',
                 mode: (searchState.activeFilters.mode?.[0] !== 'ALL' ? searchState.activeFilters.mode?.[0] : 'QUIZ') as any,
                 level: (searchState.activeFilters.level?.[0] !== 'ALL' ? searchState.activeFilters.level?.[0] : 'N3') as any,
                 skills: ['VOCABULARY'],
@@ -183,6 +172,13 @@ export default function PracticeHubPage() {
                 rightContent={
                     <>
                         <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
+                        <button
+                            onClick={() => setIsRetrievalOpen(true)}
+                            className="w-10 h-10 rounded-xl bg-neutral-white border border-neutral-gray/20 flex items-center justify-center text-neutral-ink hover:text-primary-strong hover:border-primary-strong transition-all"
+                            title="Join by Registry ID"
+                        >
+                            <Download size={20} />
+                        </button>
                         <CreateButton label="Create Protocol" onClick={handleCreateClick} />
                     </>
                 }
@@ -221,8 +217,8 @@ export default function PracticeHubPage() {
                                 badge={{ label: node.tags?.level || node.level }}
                                 metadata={[
                                     { label: 'Questions', value: node.stats.questionCount, icon: <Layers size={14} /> },
-                                    ...(node.tags?.visibility === 'global' ? [{ label: 'Official', value: 'Verified', icon: <ShieldCheck size={14} className="text-primary-strong" /> }] : []),
-                                    ...(node.creatorName && node.tags?.visibility !== 'global' ? [{ label: 'By', value: node.creatorName, icon: <UserIcon size={14} /> }] : [])
+                                    ...(node.isPublic ? [{ label: 'Official', value: 'Verified', icon: <ShieldCheck size={14} className="text-primary-strong" /> }] : []),
+                                    ...((node as any).creatorName && !node.isPublic ? [{ label: 'By', value: (node as any).creatorName, icon: <UserIcon size={14} /> }] : [])
                                 ]}
                                 onClick={() => handleStartNode(node.id)}
                             />
@@ -241,7 +237,7 @@ export default function PracticeHubPage() {
                 )}
 
                 {/* Personalization Gate */}
-                {searchState.activeTab === 'PERSONAL' && !user && (
+                {searchState.activeFilters.access?.[0] === 'PRIVATE' && !user && (
                     <div className="mt-12">
                         <InformativeLoginCard
                             title="Personal Practice Ledger"
@@ -264,6 +260,12 @@ export default function PracticeHubPage() {
                 onClose={() => setIsCreatePanelOpen(false)}
                 type="PRACTICE"
                 onSave={handleSaveContent}
+            />
+
+            <RetrievalModal
+                isOpen={isRetrievalOpen}
+                onClose={() => setIsRetrievalOpen(false)}
+                type="PRACTICE"
             />
         </div>
     );

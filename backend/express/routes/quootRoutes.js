@@ -26,20 +26,29 @@ router.get('/arenas', optionalAuth, async (req, res) => {
             visibilityFilters.push({ visibility: 'private', userId });
         }
 
-        query.$or = visibilityFilters;
+        if (visibility === 'global') {
+            query.visibility = 'global';
+        } else if (visibility === 'public') {
+            query.visibility = 'public';
+        } else if (visibility === 'private') {
+            if (!req.user) return res.status(200).json([]);
+            query.visibility = 'private';
+            query.userId = req.user.id || req.user.userId;
+        } else {
+            // Default (ALL)
+            const visibilityFilters = [
+                { visibility: 'global' },
+                { visibility: 'public' }
+            ];
+            if (req.user) {
+                const userId = req.user.id || req.user.userId;
+                visibilityFilters.push({ visibility: 'private', userId });
+            }
+            query.$or = visibilityFilters;
+        }
 
         if (level && level !== 'ALL') {
             query.level = level;
-        }
-
-        // Specific visibility filter if requested (e.g., just my private ones)
-        if (visibility && ['global', 'public', 'private'].includes(visibility)) {
-            if (visibility === 'private') {
-                if (!req.user) return res.status(200).json([]);
-                query = { visibility: 'private', userId: req.user.id || req.user.userId };
-            } else {
-                query = { visibility };
-            }
         }
 
         const arenas = await QuootArena.find(query).sort({ visibility: 1, createdAt: -1 }).lean();

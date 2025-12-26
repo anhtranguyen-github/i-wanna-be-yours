@@ -2,8 +2,12 @@ import { authFetch } from '@/lib/authFetch';
 
 const API_BASE = '/e-api/v1/quoot';
 
-export async function fetchQuootArenas() {
-    const response = await authFetch(`${API_BASE}/arenas`);
+export async function fetchQuootArenas(filters?: { level?: string; access?: string }) {
+    const params = new URLSearchParams();
+    if (filters?.level && filters.level !== 'ALL') params.append('level', filters.level);
+    if (filters?.access && filters.access !== 'ALL') params.append('visibility', filters.access.toLowerCase());
+
+    const response = await authFetch(`${API_BASE}/arenas?${params.toString()}`);
     if (!response.ok) throw new Error('Failed to fetch quoot arenas');
     return response.json();
 }

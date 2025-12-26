@@ -20,19 +20,29 @@ router.get('/sets', optionalAuth, async (req, res) => {
             visibilityFilters.push({ visibility: 'private', userId });
         }
 
-        query.$or = visibilityFilters;
+        if (visibility === 'global') {
+            query.visibility = 'global';
+        } else if (visibility === 'public') {
+            query.visibility = 'public';
+        } else if (visibility === 'private') {
+            if (!req.user) return res.status(200).json([]);
+            query.visibility = 'private';
+            query.userId = req.user.id || req.user.userId;
+        } else {
+            // Default (ALL)
+            const visibilityFilters = [
+                { visibility: 'global' },
+                { visibility: 'public' }
+            ];
+            if (req.user) {
+                const userId = req.user.id || req.user.userId;
+                visibilityFilters.push({ visibility: 'private', userId });
+            }
+            query.$or = visibilityFilters;
+        }
 
         if (level && level !== 'ALL') {
             query.level = level;
-        }
-
-        if (visibility && ['global', 'public', 'private'].includes(visibility)) {
-            if (visibility === 'private') {
-                if (!req.user) return res.status(200).json([]);
-                query = { visibility: 'private', userId: req.user.id || req.user.userId };
-            } else {
-                query = { visibility };
-            }
         }
 
         const sets = await FlashcardSet.find(query).sort({ visibility: 1, createdAt: -1 }).lean();
@@ -84,10 +94,28 @@ router.get('/sets/:id', optionalAuth, async (req, res) => {
  */
 router.get('/study/due', optionalAuth, async (req, res) => {
     try {
-        const query = { visibility: 'global' };
+        const { deckId } = req.query;
+        let query = {};
+
+        if (deckId) {
+            query._id = deckId;
+        }
+
+        const visibilityFilters = [
+            { visibility: 'global' },
+            { visibility: 'public' }
+        ];
+
         if (req.user) {
-            query.visibility = { $in: ['global', 'private'] };
-            query.userId = req.user.id || req.user.userId;
+            const userId = req.user.id || req.user.userId;
+            visibilityFilters.push({ visibility: 'private', userId });
+        }
+
+        // Combine deckId with visibility check
+        if (query._id) {
+            query = { $and: [{ _id: deckId }, { $or: visibilityFilters }] };
+        } else {
+            query.$or = visibilityFilters;
         }
 
         const sets = await FlashcardSet.find(query).limit(5).lean();

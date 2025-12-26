@@ -23,11 +23,9 @@ export async function getNodes(
     try {
         const params = new URLSearchParams();
 
-        // Determine public vs personal
-        if (filters.access === 'PERSONAL' && isAuthenticated) {
-            // Fetching personal nodes - don't add is_public
-        } else {
-            params.append('is_public', 'true');
+        // Visibility filter
+        if (filters.access && filters.access !== 'ALL') {
+            params.append('visibility', filters.access.toLowerCase());
         }
 
         // Add filters

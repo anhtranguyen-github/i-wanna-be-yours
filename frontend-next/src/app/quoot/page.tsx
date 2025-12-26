@@ -9,8 +9,10 @@ import {
     Globe,
     Zap,
     User as UserIcon,
-    ShieldCheck
+    ShieldCheck,
+    Download
 } from "lucide-react";
+import { RetrievalModal } from "@/components/shared";
 import { SearchNexus } from "@/components/shared/SearchNexus";
 import { SearchNexusState, FilterGroup } from "@/types/search";
 import { InformativeLoginCard, CreateButton, PageHeader, ViewModeToggle, CreateContentPanel, ListingCard } from "@/components/shared";
@@ -50,22 +52,25 @@ export default function GamePage() {
     const [searchState, setSearchState] = useState<SearchNexusState>({
         query: "",
         activeFilters: {
-            access: ['PUBLIC']
+            access: ['ALL']
         },
-        activeTab: 'PUBLIC'
+        activeTab: 'ALL'
     });
     const [showLoginPrompt, setShowLoginPrompt] = useState(false);
     const [viewMode, setViewMode] = useState<ViewMode>('GRID');
     const [isCreatePanelOpen, setIsCreatePanelOpen] = useState(false);
+    const [isRetrievalOpen, setIsRetrievalOpen] = useState(false);
 
     const filterGroups: FilterGroup[] = [
         {
             id: 'access',
-            label: 'Access',
+            label: 'Scope',
             type: 'SINGLE',
             options: [
-                { id: 'PUBLIC', label: 'Public Arenas', icon: <Globe size={12} /> },
-                { id: 'PERSONAL', label: 'My Arenas', icon: <UserIcon size={12} /> }
+                { id: 'ALL', label: 'All', icon: <Layers size={14} /> },
+                { id: 'GLOBAL', label: 'Official', icon: <ShieldCheck size={14} className="text-primary-strong" /> },
+                { id: 'PUBLIC', label: 'Public', icon: <Globe size={14} /> },
+                { id: 'PRIVATE', label: 'Personal', icon: <UserIcon size={14} /> }
             ]
         },
         {
@@ -89,7 +94,11 @@ export default function GamePage() {
     const loadArenas = async () => {
         setIsLoading(true);
         try {
-            const fetchedArenas = await fetchQuootArenas();
+            const apiFilters = {
+                level: searchState.activeFilters.level?.[0],
+                access: searchState.activeFilters.access?.[0]
+            };
+            const fetchedArenas = await fetchQuootArenas(apiFilters);
             const mappedArenas: QuootArena[] = fetchedArenas.map((a: any) => ({
                 id: a.id,
                 title: a.title,
@@ -105,34 +114,18 @@ export default function GamePage() {
             setArenas(mappedArenas);
         } catch (err) {
             console.error("Failed to load quoot arenas:", err);
+            setArenas([]); // clear on error or keep previous? clear for now
         } finally {
             setIsLoading(false);
         }
     };
 
     useEffect(() => {
-        if (searchState.activeTab === 'PUBLIC' || user) {
-            loadArenas();
-        } else {
-            setArenas([]);
-        }
-    }, [searchState.activeTab, user]);
+        loadArenas();
+    }, [searchState.activeFilters, user]);
 
     const filteredArenas = useMemo(() => {
         let result = [...arenas];
-
-        // Filter by Access tab
-        if (searchState.activeTab === 'PUBLIC') {
-            result = result.filter(a => a.visibility !== 'private');
-        } else {
-            result = result.filter(a => a.visibility === 'private');
-        }
-
-        // Filter by tags/level
-        const selectedLevels = searchState.activeFilters.level || [];
-        if (selectedLevels.length > 0) {
-            result = result.filter(a => a.level && selectedLevels.includes(a.level));
-        }
 
         // Search
         if (searchState.query) {
@@ -144,26 +137,18 @@ export default function GamePage() {
         }
 
         return result;
-    }, [arenas, searchState.query, searchState.activeFilters.level, searchState.activeTab]);
+    }, [arenas, searchState.query]);
 
     const handleSearchChange = (newState: SearchNexusState) => {
         const accessFilter = newState.activeFilters.access?.[0];
 
-        if (accessFilter && accessFilter !== searchState.activeTab) {
-            if (accessFilter === 'PERSONAL' && !user) {
-                setShowLoginPrompt(true);
-                return;
-            }
-            newState.activeTab = accessFilter as 'PUBLIC' | 'PERSONAL';
-        } else if (newState.activeTab !== searchState.activeTab) {
-            newState.activeFilters = {
-                ...newState.activeFilters,
-                access: [newState.activeTab]
-            };
+        if (accessFilter === 'PRIVATE' && !user) {
+            setShowLoginPrompt(true);
+            return;
         }
 
         setSearchState(newState);
-        if (newState.activeTab === 'PUBLIC') setShowLoginPrompt(false);
+        if (accessFilter !== 'PRIVATE') setShowLoginPrompt(false);
     };
 
     const handleArenaSelect = (arenaId: string) => {
@@ -218,6 +203,13 @@ export default function GamePage() {
                 rightContent={
                     <>
                         <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
+                        <button
+                            onClick={() => setIsRetrievalOpen(true)}
+                            className="w-10 h-10 rounded-xl bg-neutral-white/20 border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-all"
+                            title="Join by Registry ID"
+                        >
+                            <Download size={20} />
+                        </button>
                         <CreateButton label="Create Arena" onClick={handleCreateClick} />
                     </>
                 }
@@ -273,7 +265,7 @@ export default function GamePage() {
                 </section>
 
                 {/* Personalization Gate */}
-                {searchState.activeTab === 'PERSONAL' && !user && (
+                {searchState.activeFilters.access?.[0] === 'PRIVATE' && !user && (
                     <div className="mt-20">
                         <InformativeLoginCard
                             title="Your Personal Armory"
@@ -296,6 +288,12 @@ export default function GamePage() {
                 onClose={() => setIsCreatePanelOpen(false)}
                 type="QUOOT"
                 onSave={handleSaveContent}
+            />
+
+            <RetrievalModal
+                isOpen={isRetrievalOpen}
+                onClose={() => setIsRetrievalOpen(false)}
+                type="QUOOT"
             />
         </div>
     );

@@ -35,19 +35,30 @@ router.get('/nodes', optionalAuth, async (req, res) => {
             visibilityFilters.push({ visibility: 'private', userId });
         }
 
-        query.$or = visibilityFilters;
+        if (visibilityFilter === 'global') {
+            query.visibility = 'global';
+        } else if (visibilityFilter === 'public') {
+            query.visibility = 'public';
+        } else if (visibilityFilter === 'private') {
+            if (!req.user) return res.status(200).json({ nodes: [], total: 0 });
+            query.visibility = 'private';
+            query.userId = req.user.id || req.user.userId;
+        } else {
+            // Default (ALL)
+            const visibilityFilters = [
+                { visibility: 'global' },
+                { visibility: 'public' }
+            ];
+            if (req.user) {
+                const userId = req.user.id || req.user.userId;
+                visibilityFilters.push({ visibility: 'private', userId });
+            }
+            query.$or = visibilityFilters;
+        }
 
         if (level && level !== 'ALL') query.level = level;
         if (mode && mode !== 'ALL') query.mode = mode;
 
-        if (visibilityFilter && ['global', 'public', 'private'].includes(visibilityFilter)) {
-            if (visibilityFilter === 'private') {
-                if (!req.user) return res.status(200).json({ nodes: [], total: 0 });
-                query = { visibility: 'private', userId: req.user.id || req.user.userId };
-            } else {
-                query = { visibility: visibilityFilter };
-            }
-        }
 
         const [nodes, total] = await Promise.all([
             PracticeNode.find(query)

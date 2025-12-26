@@ -14,7 +14,7 @@ export type FilterGroup = {
 export type SearchNexusState = {
     query: string;
     activeFilters: Record<string, string[]>;
-    activeTab: 'PUBLIC' | 'PERSONAL';
+    activeTab: 'PUBLIC' | 'PERSONAL' | 'ALL';
 };
 
 export interface SearchNexusProps {

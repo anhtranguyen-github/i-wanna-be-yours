@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import {
     Plus,
     Layers,
@@ -11,8 +12,10 @@ import {
     Globe,
     User as UserIcon,
     ArrowRightLeft,
-    ShieldCheck
+    ShieldCheck,
+    Download
 } from 'lucide-react';
+import { RetrievalModal } from '@/components/shared';
 import { SearchNexus } from '@/components/shared/SearchNexus';
 import { SearchNexusState, FilterGroup } from '@/types/search';
 import { useUser } from '@/context/UserContext';
@@ -33,6 +36,7 @@ interface FlashcardSet {
 }
 
 export default function FlashcardsMenu() {
+    const router = useRouter();
     const { user } = useUser();
     const { openAuth } = useGlobalAuth();
 
@@ -42,18 +46,24 @@ export default function FlashcardsMenu() {
     const [searchState, setSearchState] = useState<SearchNexusState>({
         query: "",
         activeFilters: {
-            access: ['PUBLIC']
+            level: ['ALL'],
+            access: ['ALL']
         },
-        activeTab: 'PUBLIC'
+        activeTab: 'ALL'
     });
     const [showLoginPrompt, setShowLoginPrompt] = useState(false);
     const [viewMode, setViewMode] = useState<ViewMode>('GRID');
     const [isCreatePanelOpen, setIsCreatePanelOpen] = useState(false);
+    const [isRetrievalOpen, setIsRetrievalOpen] = useState(false);
 
     const loadSets = async () => {
         setIsLoading(true);
         try {
-            const fetched = await fetchFlashcardSets();
+            const apiFilters = {
+                level: searchState.activeFilters.level?.[0],
+                access: searchState.activeFilters.access?.[0]
+            };
+            const fetched = await fetchFlashcardSets(apiFilters);
             const mappedSets: FlashcardSet[] = fetched.map((s: any) => ({
                 id: s.id,
                 title: s.title,
@@ -74,28 +84,13 @@ export default function FlashcardsMenu() {
     };
 
     useEffect(() => {
-        if (searchState.activeTab === 'PUBLIC' || user) {
-            loadSets();
-        } else {
-            setSets([]);
-        }
-    }, [searchState.activeTab, user]);
+        loadSets();
+    }, [searchState.activeFilters, user]);
 
     const filteredSets = useMemo(() => {
         let result = [...sets];
 
-        // Filter by Access tab
-        if (searchState.activeTab === 'PUBLIC') {
-            result = result.filter(s => s.visibility !== 'private');
-        } else {
-            result = result.filter(s => s.visibility === 'private');
-        }
-
-        const selectedLevels = searchState.activeFilters.level || [];
-        if (selectedLevels.length > 0) {
-            result = result.filter(s => s.level && selectedLevels.includes(s.level));
-        }
-
+        // Client-side search only
         if (searchState.query.trim()) {
             const query = searchState.query.toLowerCase();
             result = result.filter(s =>
@@ -106,17 +101,19 @@ export default function FlashcardsMenu() {
         }
 
         return result;
-    }, [sets, searchState.query, searchState.activeFilters, searchState.activeTab]);
+    }, [sets, searchState.query]);
 
 
     const filterGroups: FilterGroup[] = [
         {
             id: 'access',
-            label: 'Access',
+            label: 'Scope',
             type: 'SINGLE',
             options: [
-                { id: 'PUBLIC', label: 'Public Sets', icon: <Globe size={12} /> },
-                { id: 'PERSONAL', label: 'My Sets', icon: <UserIcon size={12} /> }
+                { id: 'ALL', label: 'All', icon: <Layers size={14} /> },
+                { id: 'GLOBAL', label: 'Official', icon: <ShieldCheck size={14} className="text-primary-strong" /> },
+                { id: 'PUBLIC', label: 'Public', icon: <Globe size={14} /> },
+                { id: 'PRIVATE', label: 'Personal', icon: <UserIcon size={14} /> }
             ]
         },
         {
@@ -136,21 +133,13 @@ export default function FlashcardsMenu() {
     const handleSearchChange = (newState: SearchNexusState) => {
         const accessFilter = newState.activeFilters.access?.[0];
 
-        if (accessFilter && accessFilter !== searchState.activeTab) {
-            if (accessFilter === 'PERSONAL' && !user) {
-                setShowLoginPrompt(true);
-                return;
-            }
-            newState.activeTab = accessFilter as 'PUBLIC' | 'PERSONAL';
-        } else if (newState.activeTab !== searchState.activeTab) {
-            newState.activeFilters = {
-                ...newState.activeFilters,
-                access: [newState.activeTab]
-            };
+        if (accessFilter === 'PRIVATE' && !user) {
+            setShowLoginPrompt(true);
+            return;
         }
 
         setSearchState(newState);
-        if (newState.activeTab === 'PUBLIC') setShowLoginPrompt(false);
+        if (accessFilter !== 'PRIVATE') setShowLoginPrompt(false);
     };
 
     const handleCreateClick = () => {
@@ -202,6 +191,13 @@ export default function FlashcardsMenu() {
                 rightContent={
                     <>
                         <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
+                        <button
+                            onClick={() => setIsRetrievalOpen(true)}
+                            className="w-10 h-10 rounded-xl bg-neutral-white/20 border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-all"
+                            title="Join by Registry ID"
+                        >
+                            <Download size={20} />
+                        </button>
                         <CreateButton label="Create Set" onClick={handleCreateClick} />
                     </>
                 }
@@ -240,7 +236,7 @@ export default function FlashcardsMenu() {
                                     ...(set.creatorName && set.visibility !== 'global' ? [{ label: 'By', value: set.creatorName, icon: <UserIcon size={14} /> }] : [])
                                 ]}
                                 badge={set.level ? { label: set.level } : undefined}
-                                onClick={() => {/* handle navigate */ }}
+                                onClick={() => router.push(`/flashcards/study?deckId=${set.id}`)}
                             />
                         ))}
                     </div>
@@ -251,7 +247,7 @@ export default function FlashcardsMenu() {
                 )}
 
                 {/* Personalization Gate */}
-                {searchState.activeTab === 'PERSONAL' && !user && (
+                {searchState.activeFilters.access?.[0] === 'PRIVATE' && !user && (
                     <div className="mt-12">
                         <InformativeLoginCard
                             title="Your Personal Vault"
@@ -274,6 +270,12 @@ export default function FlashcardsMenu() {
                 onClose={() => setIsCreatePanelOpen(false)}
                 type="FLASHCARDS"
                 onSave={handleSaveContent}
+            />
+
+            <RetrievalModal
+                isOpen={isRetrievalOpen}
+                onClose={() => setIsRetrievalOpen(false)}
+                type="FLASHCARD"
             />
         </div>
     );

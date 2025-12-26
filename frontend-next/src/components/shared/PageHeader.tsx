@@ -42,9 +42,9 @@ export function PageHeader({
     }
 
     return (
-        <>
-            {/* Sticky Header Bar */}
-            <header className="bg-neutral-white/95 backdrop-blur-sm border-b border-neutral-gray/20 px-6 py-4 sticky top-0 z-50">
+        <div className="sticky top-0 z-40 w-full">
+            {/* Header Bar */}
+            <header className="bg-neutral-white/95 backdrop-blur-sm border-b border-neutral-gray/20 px-6 py-4">
                 <div className="max-w-6xl mx-auto">
                     {/* Back Button (Above) */}
                     {backHref && backPosition === 'above' && (
@@ -92,14 +92,14 @@ export function PageHeader({
                 </div>
             </header>
 
-            {/* Expandable Children Area (NOT sticky - filters expand here) */}
+            {/* Expandable Children Area (Sticky with Header) */}
             {children && (
-                <div className="bg-neutral-beige/30 px-6 py-4 border-b border-neutral-gray/10">
+                <div className="bg-neutral-white/90 backdrop-blur-md px-6 py-4 border-b border-neutral-gray/10">
                     <div className="max-w-6xl mx-auto">
                         {children}
                     </div>
                 </div>
             )}
-        </>
+        </div>
     );
 }
