@@ -183,8 +183,8 @@ export default function FlashcardsMenu() {
                 description: data.description || "Created via Hanachan AI",
                 level: (searchState.activeFilters.level?.[0] !== 'ALL' ? searchState.activeFilters.level?.[0] : 'N3') as any,
                 cards: data.items?.map((item: any) => ({
-                    front: item.term || item.kanji,
-                    back: item.definition || item.meaning || "",
+                    front: item.front || item.term || item.kanji || "",
+                    back: item.back || item.definition || item.meaning || "",
                     reading: item.reading || item.hiragana || "",
                     mnemonic: item.mnemonic || ""
                 })),

@@ -173,9 +173,12 @@ export default function PracticeHubPage() {
                 level: (searchState.activeFilters.level?.[0] !== 'ALL' ? searchState.activeFilters.level?.[0] : 'N3') as any,
                 skills: (searchState.activeFilters.skill?.[0] !== 'ALL' ? [searchState.activeFilters.skill?.[0]] : ['VOCABULARY']) as any,
                 questions: data.items?.map((item: any, i: number) => ({
-                    content: item.question || item.term || "",
-                    options: item.options?.map((opt: any, oi: number) => ({ id: `o-${oi}`, text: opt })) || [],
-                    correctOptionId: item.correctOptionId || "o-0",
+                    content: item.question || item.front || item.term || "",
+                    options: item.options?.map((opt: any, oi: number) => ({
+                        id: `o-${oi}`,
+                        text: opt
+                    })) || [],
+                    correctOptionId: (item.correctIndex !== undefined) ? `o-${item.correctIndex}` : (item.correctOptionId || "o-0"),
                     explanation: item.explanation || ""
                 })) || [],
                 isPublic: false

@@ -37,17 +37,33 @@ export function CreateContentPanel({ isOpen, onClose, type, onSave }: CreateCont
     const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    // New Structured Manual State
+    const [manualItems, setManualItems] = useState<any[]>([]);
+    const [currentItem, setCurrentItem] = useState<any>({
+        front: "", back: "", reading: "", mnemonic: "",
+        question: "", options: ["", "", "", ""], correctIndex: 0, explanation: ""
+    });
+
     // Reset state when opening
     useEffect(() => {
         if (isOpen) {
             setPrompt("");
             setJsonInput("");
             setManualInput("");
+            setManualItems([]);
+            resetCurrentItem();
             setGeneratedContent(null);
             setError(null);
             setIsPreviewMode(false);
         }
     }, [isOpen]);
+
+    const resetCurrentItem = () => {
+        setCurrentItem({
+            front: "", back: "", reading: "", mnemonic: "",
+            question: "", options: ["", "", "", ""], correctIndex: 0, explanation: ""
+        });
+    };
 
     if (!isOpen) return null;
 
@@ -93,7 +109,7 @@ export function CreateContentPanel({ isOpen, onClose, type, onSave }: CreateCont
         }
     };
 
-    const handleParseManual = () => {
+    const handleParseManualText = () => {
         setError(null);
         try {
             const lines = manualInput.split('\n').filter(l => l.trim());
@@ -109,12 +125,49 @@ export function CreateContentPanel({ isOpen, onClose, type, onSave }: CreateCont
 
             setGeneratedContent({
                 title: "New " + type.charAt(0).toUpperCase() + type.slice(1).toLowerCase() + " Deck",
-                content: items
+                items: items
             });
             setIsPreviewMode(true);
         } catch (err: any) {
             setError(err.message);
         }
+    };
+
+    const handleAddItem = () => {
+        const item = { ...currentItem };
+
+        // Basic Validation
+        if (type === 'PRACTICE') {
+            if (!item.question || item.options.some((o: string) => !o.trim())) {
+                setError("Please fill in question and all options");
+                return;
+            }
+        } else {
+            if (!item.front || !item.back) {
+                setError("Term and Definition are required");
+                return;
+            }
+        }
+
+        setManualItems([...manualItems, item]);
+        resetCurrentItem();
+        setError(null);
+    };
+
+    const removeItem = (index: number) => {
+        setManualItems(manualItems.filter((_, i) => i !== index));
+    };
+
+    const handleFinalizeManual = () => {
+        if (manualItems.length === 0) {
+            setError("Add at least one item first");
+            return;
+        }
+        setGeneratedContent({
+            title: `Custom ${type} Creation`,
+            items: manualItems
+        });
+        setIsPreviewMode(true);
     };
 
     const handleValidateJSON = () => {
@@ -240,27 +293,146 @@ export function CreateContentPanel({ isOpen, onClose, type, onSave }: CreateCont
 
                             {mode === 'MANUAL' && (
                                 <div className="space-y-6">
-                                    <div className="flex items-center justify-between">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-neutral-ink/40">Raw Input</label>
-                                        <div className="flex bg-white rounded-lg p-1 border border-neutral-gray/10">
-                                            <SeparatorBtn active={manualSeparator === 'pipe'} onClick={() => setManualSeparator('pipe')}>|</SeparatorBtn>
-                                            <SeparatorBtn active={manualSeparator === 'arrow'} onClick={() => setManualSeparator('arrow')}>→</SeparatorBtn>
-                                            <SeparatorBtn active={manualSeparator === 'comma'} onClick={() => setManualSeparator('comma')}>,</SeparatorBtn>
-                                        </div>
+                                    <div className="bg-white border border-neutral-gray/20 rounded-2xl p-6 space-y-4">
+                                        <h4 className="text-[10px] font-black uppercase tracking-widest text-primary-strong">New Entry</h4>
+
+                                        {/* Activity-specific form fields */}
+                                        {type === 'PRACTICE' ? (
+                                            <div className="space-y-4">
+                                                <input
+                                                    className="w-full bg-neutral-beige/30 border-b border-neutral-gray/20 p-2 font-bold outline-none"
+                                                    placeholder="Question Content"
+                                                    value={currentItem.question}
+                                                    onChange={e => setCurrentItem({ ...currentItem, question: e.target.value })}
+                                                />
+                                                <div className="grid grid-cols-2 gap-2">
+                                                    {currentItem.options.map((opt: string, idx: number) => (
+                                                        <div key={idx} className="flex items-center gap-2">
+                                                            <input
+                                                                type="radio"
+                                                                name="correct"
+                                                                checked={currentItem.correctIndex === idx}
+                                                                onChange={() => setCurrentItem({ ...currentItem, correctIndex: idx })}
+                                                            />
+                                                            <input
+                                                                className="flex-1 bg-neutral-beige/10 border border-neutral-gray/10 p-2 text-sm font-bold rounded-lg"
+                                                                placeholder={`Option ${idx + 1}`}
+                                                                value={opt}
+                                                                onChange={e => {
+                                                                    const newOpts = [...currentItem.options];
+                                                                    newOpts[idx] = e.target.value;
+                                                                    setCurrentItem({ ...currentItem, options: newOpts });
+                                                                }}
+                                                            />
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                                <textarea
+                                                    className="w-full h-20 bg-neutral-beige/10 border border-neutral-gray/10 p-2 text-xs font-medium rounded-lg"
+                                                    placeholder="Explanation (Optional)"
+                                                    value={currentItem.explanation}
+                                                    onChange={e => setCurrentItem({ ...currentItem, explanation: e.target.value })}
+                                                />
+                                            </div>
+                                        ) : (
+                                            <div className="space-y-4">
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <input
+                                                        className="w-full bg-neutral-beige/30 border-b border-neutral-gray/20 p-2 font-bold outline-none"
+                                                        placeholder="Front (Term/Kanji)"
+                                                        value={currentItem.front}
+                                                        onChange={e => setCurrentItem({ ...currentItem, front: e.target.value })}
+                                                    />
+                                                    <input
+                                                        className="w-full bg-neutral-beige/30 border-b border-neutral-gray/20 p-2 font-bold outline-none"
+                                                        placeholder="Back (Meaning)"
+                                                        value={currentItem.back}
+                                                        onChange={e => setCurrentItem({ ...currentItem, back: e.target.value })}
+                                                    />
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <input
+                                                        className="w-full bg-neutral-beige/10 border border-neutral-gray/10 p-2 text-sm rounded-lg"
+                                                        placeholder="Reading/Furigana"
+                                                        value={currentItem.reading}
+                                                        onChange={e => setCurrentItem({ ...currentItem, reading: e.target.value })}
+                                                    />
+                                                    {type === 'FLASHCARDS' && (
+                                                        <input
+                                                            className="w-full bg-neutral-beige/10 border border-neutral-gray/10 p-2 text-sm rounded-lg"
+                                                            placeholder="Mnemonic (Optional)"
+                                                            value={currentItem.mnemonic}
+                                                            onChange={e => setCurrentItem({ ...currentItem, mnemonic: e.target.value })}
+                                                        />
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        <button
+                                            onClick={handleAddItem}
+                                            className="w-full py-2 bg-neutral-ink text-white rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-primary-strong transition-all"
+                                        >
+                                            <Plus size={14} /> Add to Collection
+                                        </button>
                                     </div>
-                                    <textarea
-                                        className="w-full h-80 bg-white border border-neutral-gray/20 rounded-2xl p-6 font-bold focus:border-primary-strong outline-none transition-all placeholder:text-neutral-gray/40"
-                                        placeholder={manualSeparator === 'pipe' ? "Term | Definition" : manualSeparator === 'arrow' ? "Term -> Definition" : "Term, Definition"}
-                                        value={manualInput}
-                                        onChange={(e) => setManualInput(e.target.value)}
-                                    />
-                                    <button
-                                        onClick={handleParseManual}
-                                        disabled={!manualInput.trim()}
-                                        className="w-full py-4 bg-neutral-ink text-white rounded-2xl font-black uppercase tracking-widest hover:bg-primary-strong transition-all disabled:opacity-50"
-                                    >
-                                        Parse & Preview
-                                    </button>
+
+                                    {/* Items List */}
+                                    {manualItems.length > 0 && (
+                                        <div className="space-y-4">
+                                            <div className="flex items-center justify-between">
+                                                <h4 className="text-[10px] font-black uppercase tracking-widest text-neutral-ink/40">Ready to Finalize ({manualItems.length} items)</h4>
+                                                <button onClick={() => setManualItems([])} className="text-[10px] font-black text-red-500 uppercase">Clear All</button>
+                                            </div>
+                                            <div className="max-h-60 overflow-y-auto space-y-2 pr-2">
+                                                {manualItems.map((item, idx) => (
+                                                    <div key={idx} className="bg-white p-3 rounded-xl border border-neutral-gray/10 flex items-center justify-between group">
+                                                        <div className="flex-1 min-w-0">
+                                                            <div className="font-bold text-sm truncate">{item.front || item.question}</div>
+                                                            <div className="text-[10px] text-neutral-ink/40 truncate">{item.back || item.options?.join(', ')}</div>
+                                                        </div>
+                                                        <button
+                                                            onClick={() => removeItem(idx)}
+                                                            className="p-2 text-neutral-ink/20 hover:text-red-500 transition-colors"
+                                                        >
+                                                            <Trash2 size={14} />
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            <button
+                                                onClick={handleFinalizeManual}
+                                                className="w-full py-4 bg-primary-strong text-white rounded-2xl font-black uppercase tracking-widest hover:bg-neutral-ink shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-3"
+                                            >
+                                                Finalize {manualItems.length > 1 ? `${manualItems.length} Items` : '1 Item'}
+                                            </button>
+                                        </div>
+                                    )}
+
+                                    {/* Text-based parsing fallback */}
+                                    <div className="pt-8 border-t border-neutral-gray/10">
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-neutral-ink/20 mb-4 text-center">Or paste bulk list</p>
+                                        <div className="flex items-center justify-between mb-4">
+                                            <div className="flex bg-white rounded-lg p-1 border border-neutral-gray/10">
+                                                <SeparatorBtn active={manualSeparator === 'pipe'} onClick={() => setManualSeparator('pipe')}>|</SeparatorBtn>
+                                                <SeparatorBtn active={manualSeparator === 'arrow'} onClick={() => setManualSeparator('arrow')}>→</SeparatorBtn>
+                                                <SeparatorBtn active={manualSeparator === 'comma'} onClick={() => setManualSeparator('comma')}>,</SeparatorBtn>
+                                            </div>
+                                        </div>
+                                        <textarea
+                                            className="w-full h-32 bg-white/50 border border-neutral-gray/10 rounded-2xl p-4 text-sm font-medium focus:border-primary-strong outline-none transition-all placeholder:text-neutral-gray/40"
+                                            placeholder={manualSeparator === 'pipe' ? "Term | Definition" : manualSeparator === 'arrow' ? "Term -> Definition" : "Term, Definition"}
+                                            value={manualInput}
+                                            onChange={(e) => setManualInput(e.target.value)}
+                                        />
+                                        <button
+                                            onClick={handleParseManualText}
+                                            disabled={!manualInput.trim()}
+                                            className="mt-4 w-full py-2 bg-neutral-white border border-neutral-gray/20 text-neutral-ink rounded-xl text-[10px] font-black uppercase tracking-widest hover:border-primary-strong transition-all disabled:opacity-50"
+                                        >
+                                            Parse Text List
+                                        </button>
+                                    </div>
                                 </div>
                             )}
                         </div>
@@ -290,9 +462,10 @@ export function CreateContentPanel({ isOpen, onClose, type, onSave }: CreateCont
                                             <div className="w-8 h-8 rounded-lg bg-neutral-beige flex items-center justify-center shrink-0 text-[10px] font-black">
                                                 {i + 1}
                                             </div>
-                                            <div>
-                                                <div className="font-black text-neutral-ink">{item.term || item.title || item.question}</div>
-                                                <div className="text-sm font-bold text-neutral-ink/60">{item.definition || item.answer}</div>
+                                            <div className="flex-1">
+                                                <div className="font-black text-neutral-ink">{item.front || item.question || item.term || item.title}</div>
+                                                <div className="text-sm font-bold text-neutral-ink/60">{item.back || (item.options ? item.options[item.correctIndex] : item.definition || item.answer)}</div>
+                                                {(item.reading || item.reading) && <div className="text-[10px] text-primary-strong mt-1 font-black">{item.reading}</div>}
                                             </div>
                                         </div>
                                     ))}
