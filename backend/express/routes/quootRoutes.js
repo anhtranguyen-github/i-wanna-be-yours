@@ -54,4 +54,44 @@ router.get('/decks/:id', optionalAuth, async (req, res) => {
     }
 });
 
+/**
+ * POST /quoot/decks
+ * Create a new custom quoot deck
+ */
+router.post('/decks', verifyJWT, async (req, res) => {
+    try {
+        const userId = req.user.id || req.user.userId;
+        const { title, description, level, icon, cards } = req.body;
+
+        if (!title || !cards || !Array.isArray(cards)) {
+            return res.status(400).json({ error: 'Title and cards are required' });
+        }
+
+        const deck = new QuootDeck({
+            title,
+            description: description || '',
+            level: level || 'N3',
+            icon: icon || '⚔️',
+            isPublic: false, // User created decks are private by default
+            userId,
+            cards: cards.map(c => ({
+                front: c.front,
+                back: c.back,
+                reading: c.reading || '',
+                type: c.type || 'vocabulary'
+            }))
+        });
+
+        await deck.save();
+
+        res.status(201).json({
+            id: deck._id.toString(),
+            message: 'Quoot deck created successfully'
+        });
+    } catch (err) {
+        console.error('Create Quoot Deck Error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 module.exports = router;
