@@ -402,13 +402,13 @@ export default function LearningDashboardPage() {
                                 <QuickAction
                                     label="Flashcards"
                                     icon={<SparklesIcon className="w-full h-full" />}
-                                    href="/flashcards"
+                                    href="/activity?tab=GAMES"
                                     color="hsl(var(--primary))"
                                 />
                                 <QuickAction
-                                    label="Quiz"
+                                    label="Practice"
                                     icon={<ChartBarIcon className="w-full h-full" />}
-                                    href="/practice"
+                                    href="/activity?tab=PRACTICE"
                                     color="hsl(var(--grammar))"
                                 />
                                 <QuickAction

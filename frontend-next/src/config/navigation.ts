@@ -1,11 +1,10 @@
 import {
     MessageCircle,
     Wrench,
-    Gamepad2,
+    Zap,
     Library,
     BookOpen,
     CalendarDays,
-    GraduationCap,
     Settings,
     User,
     LucideIcon
@@ -32,32 +31,21 @@ export const NAV_CONFIG: NavSection[] = [
         matchPaths: ['/chat'],
     },
     {
-        id: 'tools',
-        label: 'Tools',
-        href: '/tools',
-        icon: Wrench,
-        matchPaths: ['/tools', '/vocabulary-map'],
-    },
-    {
-        id: 'game',
-        label: 'Game',
-        href: '/game',
-        icon: Gamepad2,
-        matchPaths: ['/game', '/flashcards', '/quoot'],
-    },
-    {
-        id: 'library',
-        label: 'Library',
-        href: '/library',
-        icon: Library,
-        matchPaths: ['/library', '/downloads', '/knowledge-base'],
-    },
-    {
-        id: 'dictionary',
-        label: 'Dictionary',
-        href: '/dictionary',
-        icon: BookOpen,
-        matchPaths: ['/dictionary', '/grammarpoint'],
+        id: 'activity',
+        label: 'Activity',
+        href: '/activity',
+        icon: Zap,
+        matchPaths: [
+            '/activity',
+            '/game',
+            '/practice',
+            '/flashcards',
+            '/quoot',
+            '/jlpt',
+            '/quiz',
+            '/session',
+            '/result'
+        ],
     },
     {
         id: 'study-plan',
@@ -67,20 +55,25 @@ export const NAV_CONFIG: NavSection[] = [
         matchPaths: ['/study-plan'],
     },
     {
-        id: 'practice',
-        label: 'Practice',
-        href: '/practice',
-        icon: GraduationCap,
-        matchPaths: [
-            '/practice',
-            '/jlpt',
-            '/quiz',
-            '/kanji-dashboard',
-            // Example of explicit child routes that might not share the prefix
-            // Add more as discovered in the codebase
-            /^\/exam\//,
-            /^\/results\//
-        ],
+        id: 'tools',
+        label: 'Tools',
+        href: '/tools',
+        icon: Wrench,
+        matchPaths: ['/tools', '/vocabulary-map'],
+    },
+    {
+        id: 'dictionary',
+        label: 'Dictionary',
+        href: '/dictionary',
+        icon: BookOpen,
+        matchPaths: ['/dictionary', '/grammarpoint'],
+    },
+    {
+        id: 'library',
+        label: 'Library',
+        href: '/library',
+        icon: Library,
+        matchPaths: ['/library', '/downloads', '/knowledge-base'],
     },
 ];
 

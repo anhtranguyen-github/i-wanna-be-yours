@@ -1,10 +1,6 @@
 "use client";
 
-/**
- * Games Hub - Central page for all Hanabira games
- * Links to: Quoot, Flashcards, Songify, etc.
- */
-
+import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import {
     Gamepad2,
@@ -13,6 +9,7 @@ import {
     ChevronRight,
     Sparkles
 } from "lucide-react";
+import { PageHeader } from "@/components/shared";
 
 // =============================================================================
 // GAME CARDS DATA
@@ -96,8 +93,6 @@ function GameCard({ game }: { game: typeof games[0] }) {
     );
 }
 
-import { PageHeader } from "@/components/shared";
-
 // =============================================================================
 // MAIN PAGE
 // =============================================================================
@@ -115,8 +110,6 @@ export default function GamesHubPage() {
 
             {/* Games Grid */}
             <main className="max-w-6xl mx-auto px-6 py-12">
-                {/* Content Removed */}
-
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {games.map((game) => (
                         <GameCard key={game.id} game={game} />
