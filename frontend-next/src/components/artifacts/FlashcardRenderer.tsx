@@ -21,32 +21,32 @@ export function FlashcardRenderer({ artifact }: FlashcardRendererProps) {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                     <div className="p-4 bg-muted rounded-xl text-center">
-                        <div className="flex items-center justify-center mb-2"><Layers size={20} className="text-muted-foreground" /></div>
+                        <div className="flex items-center justify-center mb-2"><Layers size={20} className="text-neutral-ink" /></div>
                         <div className="text-2xl font-bold text-foreground">{cards.length}</div>
-                        <div className="text-xs text-muted-foreground font-bold">Cards</div>
+                        <div className="text-xs text-neutral-ink font-bold">Cards</div>
                     </div>
                     <div className="p-4 bg-muted rounded-xl text-center">
-                        <div className="text-2xl font-bold text-muted-foreground">--</div>
-                        <div className="text-xs text-muted-foreground font-bold">Retention</div>
+                        <div className="text-2xl font-bold text-neutral-ink">--</div>
+                        <div className="text-xs text-neutral-ink font-bold">Retention</div>
                     </div>
                 </div>
             </div>
 
             {/* Cards List */}
             <div className="space-y-3">
-                <h3 className="text-sm font-bold text-muted-foreground px-1">Cards Preview</h3>
+                <h3 className="text-sm font-bold text-neutral-ink px-1">Cards Preview</h3>
                 {cards.length === 0 ? (
-                    <div className="text-muted-foreground text-center py-8 bg-card rounded-2xl border border-border">No cards in this deck.</div>
+                    <div className="text-neutral-ink text-center py-8 bg-card rounded-2xl border border-border">No cards in this deck.</div>
                 ) : cards.map((card: any, idx: number) => (
                     <div key={idx} className="bg-card rounded-xl border border-border hover:border-primary/40 p-4 flex items-center justify-between transition-colors">
                         <div className="flex items-center gap-4">
-                            <div className="w-8 h-8 bg-muted rounded-lg flex items-center justify-center text-xs font-bold text-muted-foreground">{idx + 1}</div>
+                            <div className="w-8 h-8 bg-muted rounded-lg flex items-center justify-center text-xs font-bold text-neutral-ink">{idx + 1}</div>
                             <div>
                                 <p className="font-jp text-lg font-bold text-foreground">{card.front || card.word}</p>
-                                <p className="text-sm text-muted-foreground">{card.back || card.meaning || card.definition}</p>
+                                <p className="text-sm text-neutral-ink">{card.back || card.meaning || card.definition}</p>
                             </div>
                         </div>
-                        <button className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors">
+                        <button className="p-2 text-neutral-ink hover:text-primary hover:bg-primary/10 rounded-lg transition-colors">
                             <Edit3 size={16} />
                         </button>
                     </div>

@@ -28,7 +28,7 @@ export const ToolKitShowcase = () => {
                 {[...tools, ...tools].map((tool, i) => (
                     <div
                         key={i}
-                        className="inline-flex items-center gap-4 bg-white px-8 py-6 rounded-3xl border border-slate-100 shadow-xl shadow-primary/5 hover:border-primary/30 transition-all cursor-default group"
+                        className="inline-flex items-center gap-4 bg-white px-8 py-6 rounded-3xl border border-slate-100  shadow-primary/5 hover:border-primary/30 transition-all cursor-default group"
                     >
                         <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
                             <tool.icon size={24} />

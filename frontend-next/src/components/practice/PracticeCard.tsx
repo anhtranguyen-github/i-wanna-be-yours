@@ -21,7 +21,7 @@ export default function PracticeCard({ config, onStart }: PracticeCardProps) {
 
     return (
         <div
-            className="group bg-neutral-white rounded-[2rem] border border-neutral-gray/20 p-8 shadow-md hover:shadow-2xl transition-all duration-500 cursor-pointer flex flex-col h-full relative overflow-hidden"
+            className="group bg-neutral-white rounded-[2rem] border border-neutral-gray/20 p-8 hover:border-primary-strong transition-all duration-300 cursor-pointer flex flex-col h-full relative overflow-hidden"
             onClick={() => onStart(config.id)}
         >
             <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-primary/10 transition-colors" />
@@ -36,14 +36,14 @@ export default function PracticeCard({ config, onStart }: PracticeCardProps) {
                         {config.title}
                     </h3>
                 </div>
-                <div className="w-12 h-12 bg-neutral-beige/50 rounded-2xl flex items-center justify-center text-neutral-ink group-hover:bg-neutral-white border border-neutral-gray/20 transition-all shadow-inner">
+                <div className="w-12 h-12 bg-neutral-beige/50 rounded-2xl flex items-center justify-center text-neutral-ink group-hover:bg-neutral-white border border-neutral-gray/20 transition-all">
                     <FileText size={24} />
                 </div>
             </div>
 
             {/* Description */}
             {config.description && (
-                <p className="text-sm text-neutral-ink font-medium mb-6 line-clamp-2 relative z-10 leading-relaxed opacity-90">
+                <p className="text-sm text-neutral-ink font-bold mb-6 line-clamp-2 relative z-10 leading-relaxed">
                     {config.description}
                 </p>
             )}
@@ -61,7 +61,7 @@ export default function PracticeCard({ config, onStart }: PracticeCardProps) {
             </div>
 
             {/* Meta */}
-            <div className="flex items-center gap-5 text-[10px] font-black uppercase tracking-[0.15em] text-neutral-ink mb-8 mt-auto relative z-10 opacity-70">
+            <div className="flex items-center gap-5 text-[10px] font-black uppercase tracking-[0.15em] text-neutral-ink mb-8 mt-auto relative z-10">
                 <span className="flex items-center gap-2">
                     <FileText size={14} className="text-primary-strong" />
                     {config.stats?.questionCount || (config as any).questionCount} Questions
@@ -77,7 +77,7 @@ export default function PracticeCard({ config, onStart }: PracticeCardProps) {
             {/* Start Button */}
             <button
                 onClick={(e) => { e.stopPropagation(); onStart(config.id); }}
-                className="w-full flex items-center justify-center gap-3 py-4 bg-neutral-ink text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-primary-strong transition-all duration-300 shadow-xl shadow-neutral-ink/10 font-display active:scale-[0.98]"
+                className="w-full flex items-center justify-center gap-3 py-4 bg-neutral-ink text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-primary-strong transition-all duration-300 font-display active:scale-[0.98]"
             >
                 <Play size={16} className="fill-current" />
                 Initiate Protocol

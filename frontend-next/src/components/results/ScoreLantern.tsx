@@ -72,7 +72,7 @@ export function ScoreLantern({ score, label = "Mastery Score" }: ScoreLanternPro
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1 }}
-                className="mt-6 text-[11px] font-black uppercase tracking-[0.4em] text-neutral-ink/30"
+                className="mt-6 text-[11px] font-black uppercase tracking-[0.4em] text-neutral-ink"
             >
                 {label}
             </motion.p>

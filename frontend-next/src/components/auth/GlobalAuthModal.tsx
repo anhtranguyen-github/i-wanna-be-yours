@@ -98,8 +98,8 @@ export default function GlobalAuthModal() {
             onClick={handleBackdropClick}
         >
 
-            {/* 
-               Big Modal Container 
+            {/*
+               Big Modal Container
                Size: Max-w-5xl (Large), split screen layout
             */}
             <div
@@ -110,7 +110,7 @@ export default function GlobalAuthModal() {
                 {/* Close Button (Absolute) */}
                 <button
                     onClick={closeAuth}
-                    className="absolute top-6 right-6 z-20 p-2.5 rounded-xl bg-card border border-border/50 text-muted-foreground hover:text-primary transition-all  hover: active:scale-90"
+                    className="absolute top-6 right-6 z-20 p-2.5 rounded-xl bg-card border border-border/50 text-neutral-ink hover:text-primary transition-all  hover: active:scale-90"
                 >
                     <X size={20} />
                 </button>
@@ -135,7 +135,7 @@ export default function GlobalAuthModal() {
                             {displayTitle}
                         </h2>
 
-                        <p className="text-lg text-muted-foreground mb-12 leading-relaxed font-bold">
+                        <p className="text-lg text-neutral-ink mb-12 leading-relaxed font-bold">
                             {displayDescription}
                         </p>
 
@@ -145,7 +145,7 @@ export default function GlobalAuthModal() {
                                     <div className="mt-1 p-1 rounded-full group-hover:bg-primary/10 transition-colors">
                                         <CheckCircle size={18} className="text-primary group- transition-transform" />
                                     </div>
-                                    <span className="text-sm font-bold text-foreground/70 group-hover:text-foreground transition-colors leading-relaxed">{benefit}</span>
+                                    <span className="text-sm font-bold text-neutral-ink group-hover:text-foreground transition-colors leading-relaxed">{benefit}</span>
                                 </div>
                             ))}
                         </div>
@@ -165,7 +165,7 @@ export default function GlobalAuthModal() {
                             <h2 className="text-3xl font-display font-black text-foreground mb-3 tracking-tight">
                                 {displayTitle}
                             </h2>
-                            <p className="text-muted-foreground text-sm font-bold">
+                            <p className="text-neutral-ink text-sm font-bold">
                                 {displayDescription}
                             </p>
                         </div>

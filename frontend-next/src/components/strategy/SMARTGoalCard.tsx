@@ -40,8 +40,8 @@ export function SMARTGoalCard({ goal, onClick, className }: SMARTGoalCardProps) 
         <div
             className={cn(
                 'relative rounded-2xl bg-neutral-white border border-neutral-gray/20 font-display',
-                'shadow-sm hover:shadow-2xl transition-all duration-500',
-                'cursor-pointer group overflow-hidden shadow-md',
+                ' hover: transition-all duration-500',
+                'cursor-pointer group overflow-hidden ',
                 className
             )}
             onClick={onClick}

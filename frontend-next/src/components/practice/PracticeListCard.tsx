@@ -41,15 +41,15 @@ export default function PracticeListCard({ node, onStart }: PracticeListCardProp
 
     return (
         <div
-            className="group relative bg-neutral-white border border-neutral-gray/20 rounded-[1.5rem] p-5 hover:shadow-xl hover:border-primary/30 transition-all duration-300 cursor-pointer flex items-center gap-6"
+            className="group relative bg-neutral-white border border-neutral-gray/20 rounded-[1.5rem] p-5 hover:border-primary-strong transition-all duration-300 cursor-pointer flex items-center gap-6"
             onClick={() => !isPremium && onStart(node.id)}
         >
             {/* Left: Identity Badge */}
             <div className={`
-                flex-shrink-0 w-16 h-16 rounded-2xl flex flex-col items-center justify-center border-2 shadow-sm
+                flex-shrink-0 w-16 h-16 rounded-2xl flex flex-col items-center justify-center border-2
                 ${levelColors[tags.level] || levelColors.ALL}
             `}>
-                <span className="text-[10px] font-black uppercase tracking-tighter opacity-80 leading-none mb-1">JLPT</span>
+                <span className="text-[10px] font-black uppercase tracking-tighter leading-none mb-1">JLPT</span>
                 <span className="text-xl font-black font-display leading-none">{tags.level}</span>
             </div>
 
@@ -63,22 +63,22 @@ export default function PracticeListCard({ node, onStart }: PracticeListCardProp
                         {node.title}
                     </h3>
                     {isCompleted && (
-                        <CheckCircle2 size={16} className={isPassed ? "text-primary-leaf" : "text-neutral-ink/40"} />
+                        <CheckCircle2 size={16} className={isPassed ? "text-primary-leaf" : "text-neutral-ink"} />
                     )}
                 </div>
 
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[10px] font-black uppercase tracking-widest text-neutral-ink/60">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[10px] font-black uppercase tracking-widest text-neutral-ink">
                     <span className="flex items-center gap-1.5">
-                        <FileText size={12} className="text-primary-strong/70" />
+                        <FileText size={12} className="text-primary-strong" />
                         {stats.questionCount} Units
                     </span>
                     {(stats.timeLimitMinutes || stats.timeLimitSeconds) && (
                         <span className="flex items-center gap-1.5">
-                            <Clock size={12} className="text-primary-sky/70" />
+                            <Clock size={12} className="text-primary-sky" />
                             {stats.timeLimitMinutes || Math.floor((stats.timeLimitSeconds || 0) / 60)} Min
                         </span>
                     )}
-                    <span className="px-2 py-0.5 bg-neutral-beige rounded text-neutral-ink/80 border border-neutral-gray/10">
+                    <span className="px-2 py-0.5 bg-neutral-beige rounded text-neutral-ink border border-neutral-gray/10">
                         {(tags.skills?.[0] || node.mode).toLowerCase()}
                     </span>
                     {tags.isStrict && (
@@ -91,7 +91,7 @@ export default function PracticeListCard({ node, onStart }: PracticeListCardProp
             <div className="flex flex-col items-end gap-2 pr-2">
                 {personalData && personalData.attemptCount > 0 && (
                     <div className="text-right">
-                        <p className="text-[9px] font-black text-neutral-ink/40 uppercase tracking-widest">Best Result</p>
+                        <p className="text-[9px] font-black text-neutral-ink uppercase tracking-widest">Best Result</p>
                         <p className={`text-xl font-black font-display ${isPassed ? "text-primary-leaf" : "text-neutral-ink"}`}>
                             {personalData.bestScore}%
                         </p>
@@ -100,13 +100,13 @@ export default function PracticeListCard({ node, onStart }: PracticeListCardProp
 
                 <div className="flex items-center">
                     {isPremium ? (
-                        <div className="flex items-center gap-2 text-neutral-ink/40">
+                        <div className="flex items-center gap-2 text-neutral-ink">
                             <Lock size={16} />
                             <span className="text-[10px] font-black uppercase tracking-widest">Locked</span>
                         </div>
                     ) : (
                         <button
-                            className="p-3 bg-neutral-beige text-neutral-ink rounded-xl group-hover:bg-primary-strong group-hover:text-white transition-all shadow-sm active:scale-95"
+                            className="p-3 bg-neutral-beige text-neutral-ink rounded-xl group-hover:bg-primary-strong group-hover:text-white transition-all active:scale-95"
                             onClick={(e) => { e.stopPropagation(); onStart(node.id); }}
                         >
                             <Play size={18} className="fill-current" />
@@ -116,7 +116,7 @@ export default function PracticeListCard({ node, onStart }: PracticeListCardProp
             </div>
 
             {/* Active Highlight Line */}
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-primary rounded-r-full opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-primary-strong rounded-r-full opacity-0 group-hover:opacity-100 transition-opacity" />
         </div>
     );
 }

@@ -40,10 +40,10 @@ export function ChatRightSidebar() {
     // COLLAPSED STATE
     if (rightSidebar === 'collapsed') {
         return (
-            <div className="flex flex-col items-center py-4 h-full border-l border-neutral-gray/20 bg-secondary shadow-inner">
+            <div className="flex flex-col items-center py-4 h-full border-l border-neutral-gray/20 bg-secondary ">
                 <button
                     onClick={() => setRightSidebar('minimized')}
-                    className="p-2.5 rounded-2xl hover:bg-muted text-muted-foreground transition-all active:scale-95"
+                    className="p-2.5 rounded-2xl hover:bg-muted text-neutral-ink transition-all active:scale-95"
                     title="Open sidebar"
                 >
                     <PanelRightOpen size={20} />
@@ -62,7 +62,7 @@ export function ChatRightSidebar() {
                     <div className="flex gap-1">
                         <button
                             onClick={() => setRightSidebar('collapsed')}
-                            className="p-2 rounded-2xl hover:bg-muted text-muted-foreground transition-all active:scale-95"
+                            className="p-2 rounded-2xl hover:bg-muted text-neutral-ink transition-all active:scale-95"
                             title="Close"
                         >
                             <PanelRightClose size={18} />
@@ -92,7 +92,7 @@ export function ChatRightSidebar() {
                         {!isLoading && displayArtifacts.length === 0 && (
                             <div className="text-center py-12 px-4">
                                 <FileText size={40} className="mx-auto text-neutral-ink mb-3" />
-                                <p className="text-sm font-bold text-muted-foreground">
+                                <p className="text-sm font-bold text-neutral-ink">
                                     No resources yet. Let&apos;s create some together!
                                 </p>
                             </div>
@@ -103,7 +103,7 @@ export function ChatRightSidebar() {
                             <button
                                 key={artifact.id}
                                 onClick={() => openArtifact(artifact)}
-                                className="w-full flex items-center gap-4 p-4 rounded-2xl bg-neutral-white border border-neutral-gray/20 hover:border-primary/40 shadow-sm hover:shadow-xl transition-all group text-left relative overflow-hidden"
+                                className="w-full flex items-center gap-4 p-4 rounded-2xl bg-neutral-white border border-neutral-gray/20 hover:border-primary/40  hover: transition-all group text-left relative overflow-hidden"
                             >
                                 <div className="w-12 h-12 rounded-xl bg-muted/50 border border-border flex items-center justify-center group-hover:border-primary/20 transition-colors ">
                                     <ArtifactIcon type={artifact.type} />
@@ -112,14 +112,14 @@ export function ChatRightSidebar() {
                                     <h4 className="text-sm font-black text-foreground truncate group-hover:text-primary transition-colors font-display">
                                         {artifact.title}
                                     </h4>
-                                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+                                    <p className="text-[10px] font-bold text-neutral-ink uppercase tracking-widest flex items-center gap-2">
                                         {formatArtifactType(artifact.type)}
                                         {artifact.metadata?.status === 'new' && (
                                             <span className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(var(--primary),0.5)]" />
                                         )}
                                     </p>
                                 </div>
-                                <ChevronLeft size={18} className="text-muted-foreground group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all transform group-hover:-translate-x-1" />
+                                <ChevronLeft size={18} className="text-neutral-ink group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all transform group-hover:-translate-x-1" />
                             </button>
                         ))}
                     </div>
@@ -132,11 +132,11 @@ export function ChatRightSidebar() {
     return (
         <div className="flex flex-col h-full border-l border-neutral-gray/30 bg-neutral-white relative z-20 shadow-[-10px_0_30px_rgba(0,0,0,0.05)]">
             {/* Window Header */}
-            <div className="flex items-center justify-between px-6 py-5 border-b border-neutral-gray/20 bg-neutral-beige shadow-sm">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-neutral-gray/20 bg-neutral-beige ">
                 <div className="flex items-center gap-4">
                     <button
                         onClick={() => setRightSidebar('minimized')}
-                        className="p-2 rounded-2xl hover:bg-muted text-muted-foreground transition-all active:scale-95"
+                        className="p-2 rounded-2xl hover:bg-muted text-neutral-ink transition-all active:scale-95"
                         title="Back to list"
                     >
                         <ChevronRight size={22} />
@@ -148,18 +148,18 @@ export function ChatRightSidebar() {
                             </div>
                             <div>
                                 <h3 className="font-display font-black text-foreground leading-tight line-clamp-1 truncate tracking-tight">{activeArtifact.title}</h3>
-                                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">{formatArtifactType(activeArtifact.type)} Viewer</p>
+                                <p className="text-[10px] font-black text-neutral-ink uppercase tracking-[0.2em]">{formatArtifactType(activeArtifact.type)} Viewer</p>
                             </div>
                         </div>
                     )}
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <button className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-primary-strong text-white text-[10px] font-black uppercase tracking-widest hover:opacity-90 transition-all active:scale-95 font-display shadow-lg shadow-primary/20">
+                    <button className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-primary-strong text-white text-[10px] font-black uppercase tracking-widest hover:opacity-90 transition-all active:scale-95 font-display  shadow-primary/20">
                         <Save size={18} />
                         Save
                     </button>
-                    <button className="p-2.5 rounded-2xl hover:bg-muted text-muted-foreground transition-all active:scale-95">
+                    <button className="p-2.5 rounded-2xl hover:bg-muted text-neutral-ink transition-all active:scale-95">
                         <MoreHorizontal size={22} />
                     </button>
                     <div className="w-px h-8 bg-border mx-1" />
@@ -168,7 +168,7 @@ export function ChatRightSidebar() {
                             setRightSidebar('minimized');
                             setActiveArtifact(null);
                         }}
-                        className="p-2.5 rounded-2xl hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-all active:scale-95"
+                        className="p-2.5 rounded-2xl hover:bg-destructive/10 text-neutral-ink hover:text-destructive transition-all active:scale-95"
                         title="Close Viewer"
                     >
                         <X size={22} />
@@ -224,7 +224,7 @@ function ArtifactIcon({ type }: { type: string }) {
         note: <FileText size={18} className="text-accent" />,
         mindmap: <BrainCircuit size={18} className="text-kanji" />,
     };
-    return icons[type] || <FileText size={18} className="text-muted-foreground" />;
+    return icons[type] || <FileText size={18} className="text-neutral-ink" />;
 }
 
 function formatArtifactType(type: string): string {

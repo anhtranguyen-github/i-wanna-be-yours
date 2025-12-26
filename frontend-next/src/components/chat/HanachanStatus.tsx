@@ -10,7 +10,7 @@ interface HanachanStatusProps {
 
 export function HanachanStatus({ status }: HanachanStatusProps) {
     return (
-        <div className="flex items-center gap-4 px-6 py-2 bg-neutral-white/50 backdrop-blur-md border border-neutral-gray/10 rounded-full shadow-sm">
+        <div className="flex items-center gap-4 px-6 py-2 bg-neutral-white/50 backdrop-blur-md border border-neutral-gray/10 rounded-full ">
             <div className="relative">
                 <div className={`w-3 h-3 rounded-full ${status === 'READY' ? 'bg-emerald-500' :
                         status === 'THINKING' ? 'bg-amber-500' :

@@ -27,7 +27,7 @@ export const TabNavigator = ({ activeTab, onTabChange }: TabNavigatorProps) => {
                         className={`
                             group flex items-center justify-center gap-2 px-6 py-2.5 rounded-full transition-all border-2
                             ${isActive
-                                ? 'bg-white border-brand-blue/30 text-brand-blue shadow-sm ring-4 ring-brand-blue/5'
+                                ? 'bg-white border-brand-blue/30 text-brand-blue  ring-4 ring-brand-blue/5'
                                 : 'bg-transparent border-transparent text-neutral-ink hover:text-slate-700 hover:bg-slate-100'}
                         `}
                     >

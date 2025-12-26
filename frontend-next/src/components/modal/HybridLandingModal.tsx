@@ -53,13 +53,13 @@ export function HybridLandingModal({ isOpen, onClose }: HybridLandingModalProps)
 
             {/* Modal Container - wider, anchored to bottom */}
             <div
-                className="relative w-full max-w-6xl max-h-[90vh] bg-white rounded-t-3xl shadow-2xl overflow-hidden flex flex-col animate-slideUp cursor-default"
+                className="relative w-full max-w-6xl max-h-[90vh] bg-white rounded-t-3xl  overflow-hidden flex flex-col animate-slideUp cursor-default"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Close Button - Fixed position */}
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 z-20 p-2.5 rounded-full bg-white/90 hover:bg-white text-neutral-ink hover:text-slate-700 transition-colors shadow-lg border border-slate-200"
+                    className="absolute top-4 right-4 z-20 p-2.5 rounded-full bg-white/90 hover:bg-white text-neutral-ink hover:text-slate-700 transition-colors  border border-slate-200"
                     aria-label="Close modal"
                 >
                     <X size={20} />
@@ -206,7 +206,7 @@ export function HybridLandingModal({ isOpen, onClose }: HybridLandingModalProps)
                             <p className="opacity-90 mb-5">Join thousands mastering Japanese with hanachan.</p>
                             <button
                                 onClick={onClose}
-                                className="px-6 py-3 bg-white text-brand-green font-bold rounded-xl hover:bg-slate-100 transition-colors shadow-lg"
+                                className="px-6 py-3 bg-white text-brand-green font-bold rounded-xl hover:bg-slate-100 transition-colors "
                             >
                                 Start Learning Free →
                             </button>

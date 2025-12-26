@@ -1,6 +1,6 @@
 /**
  * ChatInput Component
- * 
+ *
  * The main chat input area with attachment support and action buttons.
  */
 
@@ -88,7 +88,7 @@ export function ChatInput({
             {attachedFiles.length > 0 && (
                 <div className="flex gap-2 overflow-x-auto mb-3 pb-2 scrollbar-thin scrollbar-thumb-slate-200">
                     {attachedFiles.map(file => (
-                        <div key={file.id} className="relative flex items-center gap-2 bg-slate-50 px-3 py-2 rounded-xl border border-slate-200 shadow-sm min-w-[160px] max-w-[240px] group">
+                        <div key={file.id} className="relative flex items-center gap-2 bg-slate-50 px-3 py-2 rounded-xl border border-slate-200  min-w-[160px] max-w-[240px] group">
                             <div className="w-8 h-8 bg-white rounded-lg border border-slate-100 flex items-center justify-center flex-shrink-0">
                                 {file.file?.type.startsWith('image/') ? (
                                     <span className="text-xs">🖼️</span>

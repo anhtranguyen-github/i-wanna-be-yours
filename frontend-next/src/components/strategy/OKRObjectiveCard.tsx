@@ -31,7 +31,7 @@ export function OKRObjectiveCard({ okr, onClick, className }: OKRObjectiveCardPr
             <div
                 className={cn(
                     'rounded-2xl bg-neutral-white border border-neutral-gray/20',
-                    'shadow-sm hover:shadow-2xl transition-all duration-500 shadow-md font-display',
+                    ' hover: transition-all duration-500  font-display',
                     'overflow-hidden',
                     className
                 )}

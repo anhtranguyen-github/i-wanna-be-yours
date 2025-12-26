@@ -8,7 +8,7 @@ interface VocabCardProps {
 
 export const VocabCard = ({ data }: VocabCardProps) => {
     return (
-        <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all">
+        <div className="bg-white border border-slate-100 rounded-2xl p-6  hover: transition-all">
             <div className="flex justify-between items-start mb-4">
                 <div>
                     <h3 className="text-3xl font-bold font-jp text-neutral-ink">{data.head}</h3>
@@ -51,9 +51,9 @@ interface KanjiCardProps {
 
 export const KanjiCard = ({ data }: KanjiCardProps) => {
     return (
-        <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm">
+        <div className="bg-white border border-slate-100 rounded-2xl p-6 ">
             <div className="flex gap-6">
-                <div className="w-24 h-24 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-inner">
+                <div className="w-24 h-24 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center flex-shrink-0 ">
                     <span className="text-5xl font-jp font-bold text-brand-dark">{data.head}</span>
                 </div>
                 <div className="flex-1 space-y-3">
@@ -85,7 +85,7 @@ interface GrammarCardProps {
 
 export const GrammarCard = ({ data }: GrammarCardProps) => {
     return (
-        <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm hover:border-brand-green/30 transition-all">
+        <div className="bg-white border border-slate-100 rounded-2xl p-6  hover:border-brand-green/30 transition-all">
             <div className="flex items-center gap-3 mb-4">
                 <div className="p-2 bg-brand-green/10 text-brand-green rounded-xl">
                     <BookOpen size={20} />
@@ -109,7 +109,7 @@ interface SentenceCardProps {
 
 export const SentenceCard = ({ data }: SentenceCardProps) => {
     return (
-        <div className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all group">
+        <div className="bg-white border border-slate-100 rounded-2xl p-5  hover: transition-all group">
             <div className="flex gap-4">
                 <div className="mt-1 flex-shrink-0">
                     <MessageSquare size={18} className="text-slate-300 group-hover:text-brand-green transition-colors" />

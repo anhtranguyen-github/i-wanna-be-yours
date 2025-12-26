@@ -195,7 +195,7 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
             {/* Header / Sub-nav Area */}
             <div className="px-6 py-3 bg-white/40 backdrop-blur-xl border-b border-neutral-gray/10 flex items-center justify-between sticky top-0 z-20">
                 <div className="flex items-center gap-4">
-                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-neutral-ink/30 font-display">
+                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-neutral-ink font-display">
                         Neural Channel 1.0
                     </span>
                 </div>
@@ -203,7 +203,7 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
                 <HanachanStatus status={chatStatus} />
 
                 <div className="hidden md:flex items-center gap-4">
-                    <div className="text-[9px] font-black uppercase tracking-widest text-neutral-ink/40">
+                    <div className="text-[9px] font-black uppercase tracking-widest text-neutral-ink">
                         Protocol: Sakura-V1
                     </div>
                 </div>

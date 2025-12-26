@@ -1,6 +1,6 @@
 /**
  * ChatConversationContext
- * 
+ *
  * Dedicated context for conversation-related state.
  * Split from ChatLayoutContext to reduce re-renders.
  */

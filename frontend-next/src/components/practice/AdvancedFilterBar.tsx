@@ -45,7 +45,7 @@ export default function AdvancedFilterBar({
     return (
         <div className="space-y-4">
             {/* Top Bar: Primary Navigation & Search */}
-            <div className="flex flex-wrap items-end gap-6 bg-neutral-white/50 p-6 rounded-[2rem] border border-neutral-gray/10 shadow-sm backdrop-blur-sm">
+            <div className="flex flex-wrap items-end gap-6 bg-neutral-white/50 p-6 rounded-[2rem] border border-neutral-gray/10  backdrop-blur-sm">
 
                 {/* Search Lab */}
                 <div className="flex-1 min-w-[300px] relative">
@@ -57,7 +57,7 @@ export default function AdvancedFilterBar({
                             value={searchQuery}
                             onChange={(e) => onSearchChange(e.target.value)}
                             placeholder="Find specific protocol..."
-                            className="w-full bg-neutral-white border border-neutral-gray/20 rounded-2xl py-4 pl-14 pr-6 text-sm font-black text-neutral-ink focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all shadow-inner"
+                            className="w-full bg-neutral-white border border-neutral-gray/20 rounded-2xl py-4 pl-14 pr-6 text-sm font-black text-neutral-ink focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all "
                         />
                         {searchQuery && (
                             <button
@@ -76,7 +76,7 @@ export default function AdvancedFilterBar({
                     <select
                         value={filters.level}
                         onChange={(e) => updateFilter({ level: e.target.value as any })}
-                        className="appearance-none w-full bg-neutral-white border border-neutral-gray/20 rounded-2xl px-6 py-4 pr-12 text-sm font-black text-neutral-ink cursor-pointer hover:border-primary focus:outline-none transition-all shadow-sm font-display uppercase tracking-wider"
+                        className="appearance-none w-full bg-neutral-white border border-neutral-gray/20 rounded-2xl px-6 py-4 pr-12 text-sm font-black text-neutral-ink cursor-pointer hover:border-primary focus:outline-none transition-all  font-display uppercase tracking-wider"
                     >
                         {levels.map((level) => (
                             <option key={level} value={level}>{level === "ALL" ? "Global Level" : `JLPT ${level}`}</option>
@@ -91,7 +91,7 @@ export default function AdvancedFilterBar({
                     <select
                         value={filters.skill}
                         onChange={(e) => updateFilter({ skill: e.target.value as any })}
-                        className="appearance-none w-full bg-neutral-white border border-neutral-gray/20 rounded-2xl px-6 py-4 pr-12 text-sm font-black text-neutral-ink cursor-pointer hover:border-primary focus:outline-none transition-all shadow-sm font-display uppercase tracking-wider"
+                        className="appearance-none w-full bg-neutral-white border border-neutral-gray/20 rounded-2xl px-6 py-4 pr-12 text-sm font-black text-neutral-ink cursor-pointer hover:border-primary focus:outline-none transition-all  font-display uppercase tracking-wider"
                     >
                         {skills.map((skill) => (
                             <option key={skill} value={skill}>{skill === "ALL" ? "All Domains" : skill.charAt(0) + skill.slice(1).toLowerCase()}</option>
@@ -106,8 +106,8 @@ export default function AdvancedFilterBar({
                     className={`
                         h-[58px] px-6 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] flex items-center gap-3 transition-all border
                         ${isAdvancedOpen
-                            ? "bg-neutral-ink text-white border-neutral-ink shadow-lg"
-                            : "bg-neutral-white text-neutral-ink border-neutral-gray/20 hover:border-primary shadow-sm"}
+                            ? "bg-neutral-ink text-white border-neutral-ink "
+                            : "bg-neutral-white text-neutral-ink border-neutral-gray/20 hover:border-primary "}
                     `}
                 >
                     <Sliders size={18} />
@@ -133,7 +133,7 @@ export default function AdvancedFilterBar({
                                         className={`
                                             flex items-center gap-3 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all
                                             ${filters.mode === mode.value
-                                                ? "bg-primary-strong text-white shadow-md scale-[1.02]"
+                                                ? "bg-primary-strong text-white  scale-[1.02]"
                                                 : "bg-neutral-white text-neutral-ink hover:bg-neutral-beige"}
                                         `}
                                     >
@@ -162,7 +162,7 @@ export default function AdvancedFilterBar({
                                         className={`
                                             px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-left transition-all
                                             ${filters.timing === t.value
-                                                ? "bg-primary-sky text-white shadow-md"
+                                                ? "bg-primary-sky text-white "
                                                 : "bg-neutral-white text-neutral-ink hover:bg-neutral-beige"}
                                         `}
                                     >
@@ -191,7 +191,7 @@ export default function AdvancedFilterBar({
                                         className={`
                                             px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-left transition-all
                                             ${filters.origin === o.value
-                                                ? "bg-primary-leaf text-white shadow-md"
+                                                ? "bg-primary-leaf text-white "
                                                 : "bg-neutral-white text-neutral-ink hover:bg-neutral-beige"}
                                         `}
                                     >
@@ -220,7 +220,7 @@ export default function AdvancedFilterBar({
                                         className={`
                                             px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-left transition-all
                                             ${filters.status === s.value
-                                                ? "bg-accent text-white shadow-md"
+                                                ? "bg-accent text-white "
                                                 : "bg-neutral-white text-neutral-ink hover:bg-neutral-beige"}
                                         `}
                                     >

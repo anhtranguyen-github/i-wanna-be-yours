@@ -30,7 +30,7 @@ export function ExamPreview({ questions }: ExamPreviewProps) {
 
             <div className="space-y-4">
                 {questions.map((q, idx) => (
-                    <div key={q.id} className="p-4 bg-white border border-slate-200 rounded-xl shadow-sm">
+                    <div key={q.id} className="p-4 bg-white border border-slate-200 rounded-xl ">
                         <div className="flex items-start justify-between mb-3">
                             <span className="px-2 py-1 bg-slate-100 text-slate-600 text-[10px] font-bold rounded uppercase tracking-wider">
                                 {q.tags.skills?.[0] || 'VOCABULARY'} • {q.tags.level}

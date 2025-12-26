@@ -1,6 +1,6 @@
 /**
  * MessageList Component
- * 
+ *
  * Displays the list of chat messages with auto-scroll.
  */
 

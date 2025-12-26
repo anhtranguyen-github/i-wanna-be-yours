@@ -105,7 +105,7 @@ export function StudyPlanDashboard() {
 
     useEffect(() => {
         if (!userLoading && !user) {
-            // In the merged view, we don't redirect to login here, 
+            // In the merged view, we don't redirect to login here,
             // the parent will handle showing the landing page.
             return;
         }
@@ -323,10 +323,10 @@ export function StudyPlanDashboard() {
 
     return (
         <div className="min-h-screen bg-secondary pb-12">
-            <div className="bg-neutral-white border-b border-neutral-gray/30 sticky top-16 z-20 shadow-sm">
+            <div className="bg-neutral-white border-b border-neutral-gray/30 sticky top-16 z-20 ">
                 <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
-                        <div className="p-3 bg-neutral-beige border border-neutral-gray/20 rounded-2xl shadow-inner text-primary-strong flex items-center justify-center">
+                        <div className="p-3 bg-neutral-beige border border-neutral-gray/20 rounded-2xl  text-primary-strong flex items-center justify-center">
                             <Zap size={24} className="fill-primary-strong text-primary-strong" />
                         </div>
                         <div>
@@ -352,7 +352,7 @@ export function StudyPlanDashboard() {
                                 onClick={() => setActiveTab(tab.id as DashboardTab)}
                                 className={`
                                     flex items-center gap-2 px-5 py-2.5 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all whitespace-nowrap font-display
-                                    ${activeTab === tab.id ? 'bg-neutral-white text-primary-strong shadow-md border border-neutral-gray/10' : 'text-neutral-ink hover:text-neutral-ink'}
+                                    ${activeTab === tab.id ? 'bg-neutral-white text-primary-strong  border border-neutral-gray/10' : 'text-neutral-ink hover:text-neutral-ink'}
                                 `}
                             >
                                 <tab.icon size={16} />
@@ -362,7 +362,7 @@ export function StudyPlanDashboard() {
                     </div>
 
                     <div className="flex items-center gap-2">
-                        <button onClick={() => setShowContextModal(true)} className="flex items-center gap-2 px-5 py-2.5 bg-primary-sky/20 text-primary-sky font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-primary-sky/30 transition-colors font-display shadow-sm">
+                        <button onClick={() => setShowContextModal(true)} className="flex items-center gap-2 px-5 py-2.5 bg-primary-sky/20 text-primary-sky font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-primary-sky/30 transition-colors font-display ">
                             <Brain size={16} /> Check-in
                         </button>
                     </div>
@@ -372,7 +372,7 @@ export function StudyPlanDashboard() {
             <main className="max-w-7xl mx-auto px-6 py-8">
                 {activeTab === 'STRATEGY' && (
                     <div className="space-y-8 animate-fadeIn">
-                        <div className="relative overflow-hidden bg-primary-strong rounded-[2.5rem] p-10 md:p-14 text-white shadow-2xl shadow-primary/30">
+                        <div className="relative overflow-hidden bg-primary-strong rounded-[2.5rem] p-10 md:p-14 text-white  shadow-primary/30">
                             <div className="absolute top-0 right-0 w-96 h-96 bg-white/20 rounded-full blur-[100px] -mr-48 -mt-48" />
                             <div className="relative z-10 grid lg:grid-cols-12 gap-12 items-center">
                                 <div className="lg:col-span-8 space-y-8">
@@ -383,7 +383,7 @@ export function StudyPlanDashboard() {
                                         {Math.round(plan.overall_progress_percent) < 10 ? <>The Journey <span className="opacity-60 italic">Begins Today.</span></> : <>Your Momentum is <span className="opacity-60 italic">Building.</span></>}
                                     </h2>
                                     <div className="flex flex-wrap gap-5 pt-4">
-                                        <button onClick={() => setActiveTab('TASKS')} className="px-10 py-5 bg-neutral-white text-neutral-ink rounded-[1.5rem] font-black transition-all flex items-center gap-4 shadow-2xl active:scale-95 group font-display uppercase tracking-widest text-xs">
+                                        <button onClick={() => setActiveTab('TASKS')} className="px-10 py-5 bg-neutral-white text-neutral-ink rounded-[1.5rem] font-black transition-all flex items-center gap-4  active:scale-95 group font-display uppercase tracking-widest text-xs">
                                             Resume Study <ArrowRight size={22} className="group-hover:translate-x-1.5 transition-transform" />
                                         </button>
                                     </div>
@@ -424,14 +424,14 @@ export function StudyPlanDashboard() {
                 {activeTab === 'TASKS' && (
                     <div className="grid lg:grid-cols-12 gap-8 animate-fadeIn">
                         <div className="lg:col-span-8">
-                            <div className="bg-neutral-white rounded-[2.5rem] border border-neutral-gray/20 p-10 shadow-lg">
+                            <div className="bg-neutral-white rounded-[2.5rem] border border-neutral-gray/20 p-10 ">
                                 <h2 className="text-xs font-black text-neutral-ink flex items-center gap-4 mb-10 font-display uppercase tracking-[0.2em]">
                                     <BookOpen className="text-primary-strong" /> Today&apos;s Tactical Board
                                 </h2>
                                 <div className="space-y-6">
                                     {tasks.map((task, idx) => (
-                                        <div key={task.id || idx} className={`p-8 rounded-[2rem] border-2 flex items-center gap-8 transition-all ${task.status === 'completed' ? 'bg-neutral-beige/50 border-transparent opacity-60' : 'bg-neutral-white border-neutral-gray/20 shadow-sm hover:border-primary/30'}`}>
-                                            <button onClick={() => task.id && handleTaskComplete(task.id)} disabled={task.status === 'completed'} className={`w-16 h-16 rounded-[1.25rem] flex items-center justify-center shrink-0 shadow-inner transition-all ${task.status === 'completed' ? 'bg-primary-strong text-white' : 'bg-neutral-beige text-neutral-gray hover:text-primary-strong'}`}>
+                                        <div key={task.id || idx} className={`p-8 rounded-[2rem] border-2 flex items-center gap-8 transition-all ${task.status === 'completed' ? 'bg-neutral-beige/50 border-transparent opacity-60' : 'bg-neutral-white border-neutral-gray/20  hover:border-primary/30'}`}>
+                                            <button onClick={() => task.id && handleTaskComplete(task.id)} disabled={task.status === 'completed'} className={`w-16 h-16 rounded-[1.25rem] flex items-center justify-center shrink-0  transition-all ${task.status === 'completed' ? 'bg-primary-strong text-white' : 'bg-neutral-beige text-neutral-gray hover:text-primary-strong'}`}>
                                                 {task.status === 'completed' ? <CheckCircle2 size={32} /> : <Play size={28} className="translate-x-0.5" />}
                                             </button>
                                             <div className="flex-1 min-w-0">
@@ -448,7 +448,7 @@ export function StudyPlanDashboard() {
 
                 {activeTab === 'PERFORMANCE' && (
                     <div className="grid lg:grid-cols-12 gap-8 animate-fadeIn">
-                        <div className="lg:col-span-12 bg-neutral-white rounded-[2.5rem] border border-neutral-gray/20 p-10 shadow-lg">
+                        <div className="lg:col-span-12 bg-neutral-white rounded-[2.5rem] border border-neutral-gray/20 p-10 ">
                             <h2 className="text-[10px] font-black text-neutral-ink flex items-center gap-4 mb-10 font-display uppercase tracking-[0.2em]"><PieChart className="text-primary-strong" /> Performance Vault</h2>
                             <div className="h-[300px] w-full">
                                 <ResponsiveContainer width="100%" height="100%">
@@ -479,15 +479,15 @@ function NoPlanView({ user, openAuth }: { user: any, openAuth: any }) {
                 <h1 className="text-4xl font-black text-neutral-ink font-display tracking-tight">Strategic Intelligence</h1>
                 <p className="text-xl text-neutral-ink font-medium font-display">You don&apos;t have an active study plan yet. Let&apos;s build your roadmap.</p>
                 <div className="grid md:grid-cols-2 gap-8 mt-12">
-                    <div className="clay-card p-10 bg-white border border-slate-100 shadow-xl shadow-primary/5 group hover:border-primary transition-all">
+                    <div className="clay-card p-10 bg-white border border-slate-100  shadow-primary/5 group hover:border-primary transition-all">
                         <Target size={48} className="text-primary mx-auto mb-6 group-hover:scale-110 transition-transform" />
                         <h2 className="text-2xl font-black text-neutral-ink mb-4 font-display uppercase tracking-widest text-xs">New Plan</h2>
-                        <Link href="/study-plan/setup" className="btnPrimary w-full py-4 text-center block bg-primary text-white font-black rounded-2xl shadow-lg shadow-primary/20">Create Study Plan</Link>
+                        <Link href="/study-plan/setup" className="btnPrimary w-full py-4 text-center block bg-primary text-white font-black rounded-2xl  shadow-primary/20">Create Study Plan</Link>
                     </div>
-                    <div className="clay-card p-10 bg-slate-900 text-white shadow-2xl group hover:shadow-primary/10 transition-all">
+                    <div className="clay-card p-10 bg-slate-900 text-white  group hover:shadow-primary/10 transition-all">
                         <Lock size={48} className="text-primary mx-auto mb-6 group-hover:scale-110 transition-transform" />
                         <h2 className="text-2xl font-black mb-4 font-display uppercase tracking-widest text-xs">Sync Data</h2>
-                        <button onClick={() => openAuth('REGISTER')} className="w-full py-4 bg-white text-neutral-ink rounded-2xl font-black shadow-lg">Log In</button>
+                        <button onClick={() => openAuth('REGISTER')} className="w-full py-4 bg-white text-neutral-ink rounded-2xl font-black ">Log In</button>
                     </div>
                 </div>
             </div>

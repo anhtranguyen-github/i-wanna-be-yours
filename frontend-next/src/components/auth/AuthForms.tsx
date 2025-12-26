@@ -80,7 +80,7 @@ export default function AuthForms({ initialMode = 'LOGIN', onSuccess, hideHeader
                     <h2 className="text-4xl font-display font-black text-foreground mb-3 tracking-tight">
                         {isLogin ? 'Welcome Back' : 'Start Your Journey'}
                     </h2>
-                    <p className="text-muted-foreground font-bold text-sm">
+                    <p className="text-neutral-ink font-bold text-sm">
                         {isLogin ? 'Continue where you left off' : 'Join a community of Japanese learners'}
                     </p>
                 </div>
@@ -94,7 +94,7 @@ export default function AuthForms({ initialMode = 'LOGIN', onSuccess, hideHeader
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
-                    <label className="block text-[10px] font-black font-display uppercase tracking-widest text-muted-foreground ml-1">Email Address</label>
+                    <label className="block text-[10px] font-black font-display uppercase tracking-widest text-neutral-ink ml-1">Email Address</label>
                     <input
                         type="email"
                         value={email}
@@ -105,7 +105,7 @@ export default function AuthForms({ initialMode = 'LOGIN', onSuccess, hideHeader
                     />
                 </div>
                 <div className="space-y-2">
-                    <label className="block text-[10px] font-black font-display uppercase tracking-widest text-muted-foreground ml-1">Password</label>
+                    <label className="block text-[10px] font-black font-display uppercase tracking-widest text-neutral-ink ml-1">Password</label>
                     <input
                         type="password"
                         value={password}
@@ -133,7 +133,7 @@ export default function AuthForms({ initialMode = 'LOGIN', onSuccess, hideHeader
                         setIsLogin(!isLogin);
                         setError('');
                     }}
-                    className="text-[10px] font-black font-display uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors duration-300"
+                    className="text-[10px] font-black font-display uppercase tracking-widest text-neutral-ink hover:text-primary transition-colors duration-300"
                 >
                     {isLogin ? (
                         <>

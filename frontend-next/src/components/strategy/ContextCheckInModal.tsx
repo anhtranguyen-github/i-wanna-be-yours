@@ -163,7 +163,7 @@ export function ContextCheckInModal({
                 [&::-webkit-slider-thumb]:h-6
                 [&::-webkit-slider-thumb]:rounded-full
                 [&::-webkit-slider-thumb]:bg-amber-500
-                [&::-webkit-slider-thumb]:shadow-md
+                [&::-webkit-slider-thumb]:
                 [&::-webkit-slider-thumb]:cursor-pointer
                 [&::-webkit-slider-thumb]:border-2
                 [&::-webkit-slider-thumb]:border-white"

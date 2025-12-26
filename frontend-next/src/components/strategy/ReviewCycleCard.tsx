@@ -30,7 +30,7 @@ export function ReviewCycleCard({ review, onViewDetails, className }: ReviewCycl
         <div
             className={cn(
                 'rounded-2xl bg-white border border-slate-100',
-                'shadow-sm hover:shadow-lg transition-all duration-300',
+                ' hover: transition-all duration-300',
                 'overflow-hidden',
                 className
             )}

@@ -18,7 +18,7 @@ export function AnalysisBlock({ feedback }: AnalysisBlockProps) {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 1.5 }}
-            className="bg-neutral-ink text-white p-10 rounded-[3rem] shadow-2xl relative overflow-hidden group"
+            className="bg-neutral-ink text-white p-10 rounded-[3rem]  relative overflow-hidden group"
         >
             <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-[100px] -mr-48 -mt-48 pointer-events-none" />
 

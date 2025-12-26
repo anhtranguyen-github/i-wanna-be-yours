@@ -37,7 +37,7 @@ export function PlanCheckoutModal({
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             <div className="absolute inset-0 bg-brand-dark/40 backdrop-blur-md" onClick={onClose} />
 
-            <div className="relative w-full max-w-xl bg-white rounded-[2.5rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+            <div className="relative w-full max-w-xl bg-white rounded-[2.5rem]  overflow-hidden animate-in fade-in zoom-in duration-300">
                 {/* Header Decoration */}
                 <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-r from-brand-salmon to-brand-sky opacity-10" />
 
@@ -50,7 +50,7 @@ export function PlanCheckoutModal({
                     </button>
 
                     <div className="text-center mb-10">
-                        <div className="inline-flex items-center justify-center w-20 h-20 bg-brand-salmon/20 text-brand-salmon rounded-3xl mb-6 shadow-xl shadow-brand-salmon/10">
+                        <div className="inline-flex items-center justify-center w-20 h-20 bg-brand-salmon/20 text-brand-salmon rounded-3xl mb-6  shadow-brand-salmon/10">
                             <Rocket size={40} className="animate-bounce" />
                         </div>
                         <h2 className="text-3xl font-black text-brand-dark tracking-tight mb-2">Ready to Blast Off? 🚀</h2>
@@ -118,7 +118,7 @@ export function PlanCheckoutModal({
                             <p className="text-xs font-black text-brand-sky uppercase tracking-widest mb-3">Primary Training Focus</p>
                             <div className="flex flex-wrap gap-2">
                                 {planSummary.focusAreas.map(area => (
-                                    <span key={area} className="px-3 py-1 bg-white text-brand-sky border border-brand-sky/20 rounded-full text-xs font-black capitalize shadow-sm">
+                                    <span key={area} className="px-3 py-1 bg-white text-brand-sky border border-brand-sky/20 rounded-full text-xs font-black capitalize ">
                                         {area}
                                     </span>
                                 ))}
@@ -130,7 +130,7 @@ export function PlanCheckoutModal({
                         <button
                             onClick={onConfirm}
                             disabled={loading}
-                            className="w-full btnPrimary py-5 rounded-[1.5rem] flex items-center justify-center gap-3 text-lg group overflow-hidden relative shadow-2xl shadow-brand-salmon/20"
+                            className="w-full btnPrimary py-5 rounded-[1.5rem] flex items-center justify-center gap-3 text-lg group overflow-hidden relative  shadow-brand-salmon/20"
                         >
                             <div className="absolute inset-0 bg-white/10 translate-x-full group-hover:translate-x-0 transition-transform duration-500" />
                             {loading ? (

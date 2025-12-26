@@ -102,7 +102,7 @@ export function MasteredItemsModal({
 
                 {/* Sensei Briefing Section */}
                 {safeItems.length > 0 ? (
-                    <div className="bg-brand-dark rounded-2xl p-5 text-white relative overflow-hidden shadow-xl shadow-brand-dark/20">
+                    <div className="bg-brand-dark rounded-2xl p-5 text-white relative overflow-hidden  shadow-brand-dark/20">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-brand-salmon/20 rounded-full blur-3xl opacity-50" />
                         <div className="absolute bottom-0 left-0 w-24 h-24 bg-brand-sky/10 rounded-full blur-2xl opacity-30" />
 
@@ -184,7 +184,7 @@ export function MasteredItemsModal({
                 {filteredItems.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {filteredItems.map((item) => (
-                            <div key={item.id} className="group flex flex-col p-4 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-brand-salmon/20 transition-all">
+                            <div key={item.id} className="group flex flex-col p-4 bg-white rounded-2xl border border-slate-100  hover: hover:border-brand-salmon/20 transition-all">
                                 <div className="flex items-start justify-between mb-3">
                                     <div className="flex items-center gap-3">
                                         <div className="p-2 bg-slate-50 rounded-lg group-hover:bg-brand-salmon/5 transition-colors">
@@ -240,7 +240,7 @@ export function MasteredItemsModal({
                                         {/* Action Dot Indicator */}
                                         <div className={cn(
                                             "w-2 h-2 rounded-full relative z-10",
-                                            item.performance === 'low' ? "bg-red-500 animate-pulse shadow-lg shadow-red-500/50" :
+                                            item.performance === 'low' ? "bg-red-500 animate-pulse  shadow-red-500/50" :
                                                 item.status === 'learning' ? "bg-indigo-400" :
                                                     "bg-emerald-400"
                                         )} />
@@ -280,7 +280,7 @@ export function MasteredItemsModal({
                             {current === 0 && safeItems.length === 0 && (
                                 <button
                                     onClick={onClose}
-                                    className="px-8 py-3 bg-brand-salmon text-white rounded-xl font-black hover:bg-brand-salmon/90 transition-all shadow-lg shadow-brand-salmon/20"
+                                    className="px-8 py-3 bg-brand-salmon text-white rounded-xl font-black hover:bg-brand-salmon/90 transition-all  shadow-brand-salmon/20"
                                 >
                                     Begin Level N{category.charAt(category.length - 1)} Study
                                 </button>

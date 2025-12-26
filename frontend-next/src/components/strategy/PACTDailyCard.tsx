@@ -50,8 +50,8 @@ export function PACTDailyCard({
     return (
         <div
             className={cn(
-                'rounded-3xl bg-neutral-white border border-neutral-gray/20 font-display shadow-md',
-                'shadow-sm hover:shadow-2xl transition-all duration-500',
+                'rounded-3xl bg-neutral-white border border-neutral-gray/20 font-display ',
+                ' hover: transition-all duration-500',
                 'overflow-hidden',
                 className
             )}

@@ -1,6 +1,6 @@
 /**
  * VirtualizedMessageList Component
- * 
+ *
  * A performance-optimized message list using virtualization.
  * Only renders visible messages to handle 100+ messages smoothly.
  */

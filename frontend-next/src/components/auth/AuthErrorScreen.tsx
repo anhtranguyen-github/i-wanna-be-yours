@@ -36,7 +36,7 @@ export function AuthErrorScreen({
         <div className="flex flex-col items-center justify-center min-h-[60vh] px-6 py-12">
             {/* Icon */}
             <div className="relative mb-6">
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center shadow-lg">
+                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center ">
                     <ShieldAlert size={48} className="text-amber-500" />
                 </div>
                 {errorCode && (
@@ -61,7 +61,7 @@ export function AuthErrorScreen({
                 {/* Primary: Login Button */}
                 <button
                     onClick={handleLogin}
-                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-brand-green text-white font-semibold rounded-xl hover:bg-brand-green/90 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95"
+                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-brand-green text-white font-semibold rounded-xl hover:bg-brand-green/90 transition-all duration-200  hover: active:scale-95"
                 >
                     <LogIn size={20} />
                     Log In

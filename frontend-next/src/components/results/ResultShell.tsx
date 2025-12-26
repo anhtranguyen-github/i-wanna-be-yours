@@ -30,16 +30,16 @@ export function ResultShell({ result, onRetry, customActions, children }: Result
                 <div className="flex items-center justify-between mb-16">
                     <Link
                         href="/dashboard"
-                        className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-neutral-ink/40 hover:text-primary-strong transition-all group"
+                        className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-neutral-ink hover:text-primary-strong transition-all group"
                     >
                         <Home size={16} />
                         Back to Command Center
                     </Link>
                     <div className="flex items-center gap-4">
-                        <button className="p-4 bg-neutral-white border border-neutral-gray/10 rounded-2xl text-neutral-ink/60 hover:text-primary-strong transition-all shadow-sm">
+                        <button className="p-4 bg-neutral-white border border-neutral-gray/10 rounded-2xl text-neutral-ink hover:text-primary-strong transition-all ">
                             <Share2 size={20} />
                         </button>
-                        <button className="p-4 bg-primary-strong text-white rounded-2xl flex items-center gap-3 font-black text-[10px] uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-all">
+                        <button className="p-4 bg-primary-strong text-white rounded-2xl flex items-center gap-3 font-black text-[10px] uppercase tracking-widest  shadow-primary/20 hover:scale-105 transition-all">
                             <Trophy size={20} />
                             Save Protocol
                         </button>
@@ -65,7 +65,7 @@ export function ResultShell({ result, onRetry, customActions, children }: Result
                         {/* Achievements Row */}
                         {result.achievements.length > 0 && (
                             <section className="space-y-8">
-                                <h4 className="text-[11px] font-black text-neutral-ink/30 uppercase tracking-[0.4em] flex items-center gap-4">
+                                <h4 className="text-[11px] font-black text-neutral-ink uppercase tracking-[0.4em] flex items-center gap-4">
                                     Achievements Unlocked
                                     <div className="flex-1 h-[1px] bg-neutral-gray/10" />
                                 </h4>
@@ -76,14 +76,14 @@ export function ResultShell({ result, onRetry, customActions, children }: Result
                                             initial={{ scale: 0.9, opacity: 0 }}
                                             animate={{ scale: 1, opacity: 1 }}
                                             transition={{ delay: 2 + (i * 0.1) }}
-                                            className="p-6 bg-neutral-white border border-neutral-gray/10 rounded-[2rem] flex items-center gap-6 shadow-sm group hover:border-secondary/40 transition-all"
+                                            className="p-6 bg-neutral-white border border-neutral-gray/10 rounded-[2rem] flex items-center gap-6  group hover:border-secondary/40 transition-all"
                                         >
                                             <div className={`w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 ${achievement.rarity === 'LEGENDARY' ? 'bg-amber-100 text-amber-500' : 'bg-primary/10 text-primary-strong'}`}>
                                                 <achievement.icon size={32} />
                                             </div>
                                             <div>
                                                 <h5 className="text-lg font-black text-neutral-ink">{achievement.title}</h5>
-                                                <p className="text-xs font-bold text-neutral-ink/40">{achievement.description}</p>
+                                                <p className="text-xs font-bold text-neutral-ink">{achievement.description}</p>
                                             </div>
                                         </motion.div>
                                     ))}
@@ -96,7 +96,7 @@ export function ResultShell({ result, onRetry, customActions, children }: Result
                             {onRetry && (
                                 <button
                                     onClick={onRetry}
-                                    className="px-10 py-5 bg-neutral-white border-2 border-neutral-gray/10 text-neutral-ink rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] flex items-center gap-3 hover:border-primary-strong/40 transition-all active:scale-95 shadow-lg shadow-neutral-ink/5"
+                                    className="px-10 py-5 bg-neutral-white border-2 border-neutral-gray/10 text-neutral-ink rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] flex items-center gap-3 hover:border-primary-strong/40 transition-all active:scale-95  shadow-neutral-ink/5"
                                 >
                                     <RotateCcw size={20} />
                                     Retry Protocol
@@ -105,7 +105,7 @@ export function ResultShell({ result, onRetry, customActions, children }: Result
                             {customActions}
                             <Link
                                 href="/practice"
-                                className="px-10 py-5 bg-primary-strong text-white rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] flex items-center gap-3 hover:scale-105 transition-all shadow-xl shadow-primary/20"
+                                className="px-10 py-5 bg-primary-strong text-white rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] flex items-center gap-3 hover:scale-105 transition-all  shadow-primary/20"
                             >
                                 Next Objective
                                 <ArrowRight size={20} />

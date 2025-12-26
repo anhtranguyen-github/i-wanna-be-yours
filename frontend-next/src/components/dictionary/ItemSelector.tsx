@@ -26,7 +26,7 @@ export const ItemSelector = ({ items, selectedId, onSelect }: ItemSelectorProps)
                     className={`
                         flex-shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-all
                         ${selectedId === item.id
-                            ? 'bg-brand-dark text-white shadow-md transform scale-105'
+                            ? 'bg-brand-dark text-white  transform scale-105'
                             : 'bg-slate-50 text-neutral-ink hover:bg-slate-100 border border-slate-200'}
                     `}
                 >

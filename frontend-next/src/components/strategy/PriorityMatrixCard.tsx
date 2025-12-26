@@ -73,7 +73,7 @@ export function PriorityMatrixCard({
         <div
             className={cn(
                 'rounded-2xl bg-white border border-slate-100',
-                'shadow-sm overflow-hidden',
+                ' overflow-hidden',
                 className
             )}
         >
@@ -194,7 +194,7 @@ export function PriorityMatrixCard({
                                         onClick={() => onItemClick?.(item)}
                                         className={cn(
                                             'w-full text-left p-2 rounded-lg border transition-all duration-200',
-                                            'hover:shadow-sm',
+                                            'hover:',
                                             config.lightBg,
                                             config.border
                                         )}
@@ -236,7 +236,7 @@ export function PriorityMatrixCard({
 
             {coachExplainer && (
                 <div className="p-5 bg-primary/5 border-t border-slate-50 flex gap-3 items-start group hover:bg-primary/10 transition-colors">
-                    <div className="bg-white p-1.5 rounded-lg shadow-sm">
+                    <div className="bg-white p-1.5 rounded-lg ">
                         <Brain size={16} className="text-primary" />
                     </div>
                     <p className="text-xs font-bold text-slate-600 leading-relaxed italic">

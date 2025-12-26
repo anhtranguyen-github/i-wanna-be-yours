@@ -32,7 +32,7 @@ export default function FilterBar({
                 <select
                     value={selectedLevel}
                     onChange={(e) => onLevelChange(e.target.value as JLPTLevel | "ALL")}
-                    className="appearance-none w-full bg-neutral-white border border-neutral-gray/30 rounded-2xl px-5 py-3 pr-12 text-xs font-black text-neutral-ink cursor-pointer hover:border-primary-strong/50 focus:outline-none focus:border-primary-strong focus:ring-4 focus:ring-primary/10 transition-all font-display shadow-sm"
+                    className="appearance-none w-full bg-neutral-white border border-neutral-gray/30 rounded-2xl px-5 py-3 pr-12 text-xs font-black text-neutral-ink cursor-pointer hover:border-primary-strong focus:outline-none focus:border-primary-strong transition-all font-display"
                 >
                     <option value="ALL">All Levels</option>
                     {levels.filter((l) => l !== "ALL").map((level) => (
@@ -50,8 +50,8 @@ export default function FilterBar({
                     onChange={(e) => onSkillChange(e.target.value as SkillType | "ALL")}
                     disabled={isSkillDisabled}
                     className={`
-                        appearance-none w-full bg-neutral-white border border-neutral-gray/30 rounded-2xl px-5 py-3 pr-12 text-xs font-black cursor-pointer focus:outline-none focus:border-primary-strong focus:ring-4 focus:ring-primary/10 transition-all font-display shadow-sm
-                        ${isSkillDisabled ? "opacity-30 cursor-not-allowed text-neutral-ink" : "text-neutral-ink hover:border-primary-strong/50"}
+                        appearance-none w-full bg-neutral-white border border-neutral-gray/30 rounded-2xl px-5 py-3 pr-12 text-xs font-black cursor-pointer focus:outline-none focus:border-primary-strong transition-all font-display
+                        ${isSkillDisabled ? "opacity-30 cursor-not-allowed text-neutral-ink" : "text-neutral-ink hover:border-primary-strong"}
                     `}
                 >
                     <option value="ALL">All Skills</option>
@@ -64,3 +64,4 @@ export default function FilterBar({
         </div>
     );
 }
+

@@ -31,7 +31,7 @@ export const Navbar = () => {
                     </Link>
                     <Link
                         href="/chat"
-                        className="bg-slate-900 hover:bg-black text-white px-8 py-3.5 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0"
+                        className="bg-slate-900 hover:bg-black text-white px-8 py-3.5 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all hover: hover:-translate-y-0.5 active:translate-y-0"
                     >
                         Command Center
                     </Link>

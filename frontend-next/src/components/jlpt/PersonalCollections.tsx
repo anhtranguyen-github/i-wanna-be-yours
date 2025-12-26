@@ -46,7 +46,7 @@ export function PersonalCollections({
                         onClick={() => setActiveTab(tab.id)}
                         className={`flex-1 flex items-center justify-center gap-3 py-3.5 px-6 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all font-display ${activeTab === tab.id
                             ? 'bg-card text-primary  border border-border/50'
-                            : 'text-muted-foreground hover:text-foreground'
+                            : 'text-neutral-ink hover:text-foreground'
                             }`}
                     >
                         {tab.icon}
@@ -54,7 +54,7 @@ export function PersonalCollections({
                         {tab.count > 0 && (
                             <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-black ${activeTab === tab.id
                                 ? 'bg-primary text-primary-foreground '
-                                : 'bg-muted text-muted-foreground'
+                                : 'bg-muted text-neutral-ink'
                                 }`}>
                                 {tab.count}
                             </span>

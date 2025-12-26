@@ -161,7 +161,7 @@ export function CreateExamModal({ isOpen, onClose, onExamCreated }: CreateExamMo
                         </div>
                         <div>
                             <h2 className="text-xl font-black text-foreground font-display tracking-tight">Create New Exam</h2>
-                            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Manual Setup & AI Synthesis</p>
+                            <p className="text-xs font-bold text-neutral-ink uppercase tracking-widest">Manual Setup & AI Synthesis</p>
                         </div>
                     </div>
 
@@ -185,7 +185,7 @@ export function CreateExamModal({ isOpen, onClose, onExamCreated }: CreateExamMo
                         </button>
                         <button
                             onClick={handleClose}
-                            className="p-3 hover:bg-muted rounded-xl transition-all text-muted-foreground hover:text-foreground active:scale-95  bg-card border border-border/50"
+                            className="p-3 hover:bg-muted rounded-xl transition-all text-neutral-ink hover:text-foreground active:scale-95  bg-card border border-border/50"
                         >
                             <X size={20} />
                         </button>
@@ -206,7 +206,7 @@ export function CreateExamModal({ isOpen, onClose, onExamCreated }: CreateExamMo
                         onClick={() => setActiveTab('config')}
                         className={`flex-1 py-4 text-[10px] font-black uppercase tracking-widest font-display transition-all ${activeTab === 'config'
                             ? 'text-primary border-b-2 border-primary bg-primary/5'
-                            : 'text-muted-foreground hover:text-foreground'
+                            : 'text-neutral-ink hover:text-foreground'
                             }`}
                     >
                         Configuration
@@ -215,7 +215,7 @@ export function CreateExamModal({ isOpen, onClose, onExamCreated }: CreateExamMo
                         onClick={() => setActiveTab('chat')}
                         className={`flex-1 py-4 text-[10px] font-black uppercase tracking-widest font-display transition-all ${activeTab === 'chat'
                             ? 'text-primary border-b-2 border-primary bg-primary/5'
-                            : 'text-muted-foreground hover:text-foreground'
+                            : 'text-neutral-ink hover:text-foreground'
                             }`}
                     >
                         AI Assistant

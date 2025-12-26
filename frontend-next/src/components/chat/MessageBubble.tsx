@@ -1,6 +1,6 @@
 /**
  * MessageBubble Component
- * 
+ *
  * Displays a single chat message with user/assistant styling,
  * artifact cards, and action buttons.
  */
@@ -86,7 +86,7 @@ function MessageBubbleComponent({ message, onOpenArtifact }: MessageBubbleProps)
                             <button
                                 key={artifact.id}
                                 onClick={() => onOpenArtifact(artifact)}
-                                className="w-full flex items-center gap-3 p-3 rounded-xl bg-white border border-slate-200 hover:border-brand-green/30 hover:shadow-md transition-all group text-left"
+                                className="w-full flex items-center gap-3 p-3 rounded-xl bg-white border border-slate-200 hover:border-brand-green/30 hover: transition-all group text-left"
                             >
                                 <div className="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center group-hover:bg-brand-green/10 transition-colors">
                                     <ArtifactIconSmall type={artifact.type} />
