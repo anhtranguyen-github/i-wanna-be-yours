@@ -3,5 +3,8 @@ export { InformativeLoginCard } from './InformativeLoginCard';
 export { CreateButton } from './CreateButton';
 export { CTAButton } from './CTAButton';
 export { FeatureIconGrid, defaultFeatures, modalFeatures } from './FeatureIconGrid';
+export { PageHeader } from './PageHeader';
+export { ViewModeToggle } from './ViewModeToggle';
 export type { FeatureItem } from './FeatureIconGrid';
 export type { CTAButtonProps } from './CTAButton';
+export type { ViewMode } from './ViewModeToggle';
