@@ -15,7 +15,8 @@ import {
     Star, Volume2, VolumeX
 } from "lucide-react";
 import { ResultShell } from "@/components/results/ResultShell";
-import { processQuootResult } from "@/utils/resultProcessor";
+import { quootService } from "@/services/quootService";
+import { mapResultIcons } from "@/utils/resultProcessor";
 import {
     generateOptions,
     shuffleArray
@@ -285,6 +286,7 @@ export default function QuootSessionPage() {
         });
         setCountdown(3);
         setSelectedOption(null);
+        setUnifiedResult(null);
         // Re-shuffle cards
         if (config.shuffleCards) {
             setCards(prev => shuffleArray(prev));
@@ -395,9 +397,38 @@ export default function QuootSessionPage() {
         );
     }
 
+    const [unifiedResult, setUnifiedResult] = useState<any>(null);
+
+    // Submission logic
+    useEffect(() => {
+        if (gameState.status === 'RESULTS' || gameState.status === 'GAME_OVER') {
+            const submitFinish = async () => {
+                try {
+                    const response = await quootService.submitQuootResult(deck.id, {
+                        score: gameState.score,
+                        correctCount: gameState.correctCount,
+                        maxStreak: gameState.maxStreak,
+                        totalCards: cards.length
+                    });
+                    setUnifiedResult(mapResultIcons(response.result));
+                } catch (err) {
+                    console.error("Failed to submit quoot result:", err);
+                }
+            };
+            submitFinish();
+        }
+    }, [gameState.status, deck?.id, gameState.score, gameState.correctCount, gameState.maxStreak, cards.length]);
+
     // Results / Game Over screen
     if (gameState.status === 'RESULTS' || gameState.status === 'GAME_OVER') {
-        const unifiedResult = processQuootResult(deck, gameState, cards);
+        if (!unifiedResult) {
+            return (
+                <div className="min-h-screen bg-neutral-beige/20 flex flex-col items-center justify-center">
+                    <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-4" />
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-ink/60">Finalizing Score...</p>
+                </div>
+            );
+        }
 
         return (
             <ResultShell
@@ -406,9 +437,9 @@ export default function QuootSessionPage() {
                 customActions={
                     <button
                         onClick={() => router.push('/quoot')}
-                        className="px-10 py-5 bg-neutral-white border-2 border-neutral-gray/10 text-neutral-ink rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] flex items-center gap-3 hover:border-primary-strong/40 transition-all  shadow-neutral-ink/5"
+                        className="h-16 px-10 bg-neutral-white border-2 border-neutral-gray/10 text-neutral-ink rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] flex items-center gap-3 hover:border-primary-strong/30 hover:bg-neutral-beige/10 transition-all active:scale-95 shadow-sm"
                     >
-                        <Home size={20} />
+                        <Home size={20} className="text-primary-strong" />
                         Exit Arena
                     </button>
                 }
