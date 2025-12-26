@@ -90,6 +90,14 @@ app.use("/e-api/v1/quoot", quootRoutes);
 const flashcardRoutes = require("./routes/flashcardRoutes");
 app.use("/e-api/v1/flashcards", flashcardRoutes);
 
+// --- User Routes ---
+const userRoutes = require("./routes/userRoutes");
+app.use("/e-api/v1/users", userRoutes);
+
+// --- Record Routes ---
+const recordRoutes = require("./routes/recordRoutes");
+app.use("/e-api/v1/records", recordRoutes);
+
 // --- Flask Proxy ---
 // Route all /e-api/v1/f/ requests to the Flask service on port 5100
 app.use("/e-api/v1/f", verifyJWT, createProxyMiddleware({

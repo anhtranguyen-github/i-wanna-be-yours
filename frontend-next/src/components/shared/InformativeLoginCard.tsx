@@ -9,7 +9,7 @@ interface InformativeLoginCardProps {
     icon: LucideIcon;
     previewImage?: string;
     benefits: string[];
-    flowType?: 'PRACTICE' | 'CHAT' | 'FLASHCARDS' | 'DICTIONARY';
+    flowType?: 'PRACTICE' | 'CHAT' | 'FLASHCARDS' | 'DICTIONARY' | 'QUOOT';
 }
 
 export function InformativeLoginCard({
