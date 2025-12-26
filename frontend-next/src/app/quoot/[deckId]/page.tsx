@@ -17,12 +17,10 @@ import {
 import { ResultShell } from "@/components/results/ResultShell";
 import { processQuootResult } from "@/utils/resultProcessor";
 import {
-    getQuootDeck,
-    getQuootCards,
     generateOptions,
-    shuffleArray,
-    mockQuootDecks
-} from "@/data/mockQuoot";
+    shuffleArray
+} from "@/utils/gameUtils";
+import { fetchDeckById } from "@/services/deckService";
 import {
     QuootDeck,
     QuootCard,
@@ -110,15 +108,39 @@ export default function QuootSessionPage() {
         if (!deckId) return;
 
         const loadData = async () => {
-            const deckData = getQuootDeck(deckId);
-            const cardsData = getQuootCards(deckId);
+            setLoading(true);
+            try {
+                const deckData = await fetchDeckById(deckId);
 
-            if (deckData && cardsData.length > 0) {
-                setDeck(deckData);
-                // Shuffle cards if configured
-                setCards(config.shuffleCards ? shuffleArray(cardsData) : cardsData);
+                if (deckData) {
+                    const mappedDeck: QuootDeck = {
+                        id: deckData._id,
+                        title: deckData.title,
+                        description: deckData.description || "",
+                        cardCount: deckData.cards?.length || 0,
+                        level: deckData.level as any,
+                        category: (deckData.tags?.[0] as any) || 'VOCABULARY',
+                        coverEmoji: deckData.icon || '📚',
+                        coverColor: 'bg-primary/20',
+                        isPublic: true
+                    };
+
+                    const mappedCards: QuootCard[] = deckData.cards.map(c => ({
+                        id: c._id,
+                        front: c.front,
+                        back: c.back,
+                        furigana: c.sub_detail,
+                        wrongOptions: c.extra_data?.wrongOptions || []
+                    }));
+
+                    setDeck(mappedDeck);
+                    setCards(config.shuffleCards ? shuffleArray(mappedCards) : mappedCards);
+                }
+            } catch (err) {
+                console.error("Failed to load quoot deck:", err);
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);
         };
 
         loadData();
@@ -265,7 +287,7 @@ export default function QuootSessionPage() {
         setSelectedOption(null);
         // Re-shuffle cards
         if (config.shuffleCards) {
-            setCards(shuffleArray(getQuootCards(deckId)));
+            setCards(prev => shuffleArray(prev));
         }
     };
 
@@ -279,7 +301,7 @@ export default function QuootSessionPage() {
         return (
             <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-6">
                 <Loader2 className="w-16 h-16 animate-spin text-primary" />
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground font-display">
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-ink font-display">
                     Loading deck...
                 </p>
             </div>
@@ -313,7 +335,7 @@ export default function QuootSessionPage() {
 
                     <button
                         onClick={() => router.push('/quoot')}
-                        className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-foreground mb-8"
+                        className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-neutral-ink hover:text-foreground mb-8"
                     >
                         <ArrowLeft size={16} />
                         Back
@@ -326,7 +348,7 @@ export default function QuootSessionPage() {
                         <h1 className="text-3xl font-black text-foreground font-display tracking-tight mb-2">
                             {deck.title}
                         </h1>
-                        <p className="text-muted-foreground font-bold">{deck.cardCount} cards</p>
+                        <p className="text-neutral-ink font-bold">{deck.cardCount} cards</p>
                     </div>
 
                     {/* Mode Badges */}
@@ -339,7 +361,7 @@ export default function QuootSessionPage() {
                             {config.mode === 'SPEED' && <><Zap size={12} className="inline mr-1" /> Speed Mode</>}
                             {config.mode === 'DAILY_CHALLENGE' && <><Trophy size={12} className="inline mr-1" /> Daily</>}
                         </span>
-                        <span className="px-4 py-2 bg-muted rounded-full text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                        <span className="px-4 py-2 bg-muted rounded-full text-[10px] font-black uppercase tracking-widest text-neutral-ink">
                             <Clock size={12} className="inline mr-1" /> {config.timePerCardSeconds}s
                         </span>
                     </div>
@@ -365,7 +387,7 @@ export default function QuootSessionPage() {
                     <div className="text-9xl font-black text-primary font-display mb-4">
                         {countdown || 'GO!'}
                     </div>
-                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground font-display">
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-ink font-display">
                         Get Ready
                     </p>
                 </div>
@@ -384,7 +406,7 @@ export default function QuootSessionPage() {
                 customActions={
                     <button
                         onClick={() => router.push('/quoot')}
-                        className="px-10 py-5 bg-neutral-white border-2 border-neutral-gray/10 text-neutral-ink rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] flex items-center gap-3 hover:border-primary-strong/40 transition-all shadow-lg shadow-neutral-ink/5"
+                        className="px-10 py-5 bg-neutral-white border-2 border-neutral-gray/10 text-neutral-ink rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] flex items-center gap-3 hover:border-primary-strong/40 transition-all  shadow-neutral-ink/5"
                     >
                         <Home size={20} />
                         Exit Arena
@@ -404,7 +426,7 @@ export default function QuootSessionPage() {
             {/* Header */}
             <header className="bg-card border-b border-border px-6 py-4 sticky top-0 z-50">
                 <div className="max-w-4xl mx-auto flex items-center justify-between">
-                    <button onClick={() => router.push('/quoot')} className="text-muted-foreground hover:text-foreground">
+                    <button onClick={() => router.push('/quoot')} className="text-neutral-ink hover:text-foreground">
                         <ArrowLeft size={24} />
                     </button>
 
@@ -417,7 +439,7 @@ export default function QuootSessionPage() {
                                     <Heart
                                         key={i}
                                         size={20}
-                                        className={i < gameState.lives ? 'text-rose-500 fill-rose-500' : 'text-muted-foreground/30'}
+                                        className={i < gameState.lives ? 'text-rose-500 fill-rose-500' : 'text-neutral-ink'}
                                     />
                                 ))}
                             </div>
@@ -435,7 +457,7 @@ export default function QuootSessionPage() {
                     {/* Score */}
                     <div className="text-right">
                         <div className="text-2xl font-black text-foreground font-display">{gameState.score.toLocaleString()}</div>
-                        <div className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Points</div>
+                        <div className="text-[9px] font-black uppercase tracking-widest text-neutral-ink">Points</div>
                     </div>
                 </div>
             </header>
@@ -454,18 +476,18 @@ export default function QuootSessionPage() {
                     <div className="max-w-2xl w-full">
                         {/* Progress */}
                         <div className="text-center mb-6">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground font-display">
+                            <span className="text-[10px] font-black uppercase tracking-widest text-neutral-ink font-display">
                                 Card {gameState.currentIndex + 1} of {cards.length}
                             </span>
                         </div>
 
                         {/* Card Front (Question) */}
-                        <div className="bg-card rounded-[2rem] border border-border p-10 mb-8 text-center shadow-lg">
+                        <div className="bg-card rounded-[2rem] border border-border p-10 mb-8 text-center ">
                             <p className="text-4xl md:text-5xl font-black text-foreground font-jp mb-4">
                                 {currentCard.front}
                             </p>
                             {currentCard.furigana && (
-                                <p className="text-xl text-muted-foreground font-jp">
+                                <p className="text-xl text-neutral-ink font-jp">
                                     {currentCard.furigana}
                                 </p>
                             )}
@@ -496,7 +518,7 @@ export default function QuootSessionPage() {
                                                 w-10 h-10 rounded-xl flex items-center justify-center font-black font-display
                                                 ${isCorrect ? 'bg-primary text-primary-foreground' : ''}
                                                 ${isWrong ? 'bg-destructive text-destructive-foreground' : ''}
-                                                ${!isCorrect && !isWrong ? 'bg-muted text-muted-foreground' : ''}
+                                                ${!isCorrect && !isWrong ? 'bg-muted text-neutral-ink' : ''}
                                             `}>
                                                 {isCorrect ? <CheckCircle2 size={20} /> : isWrong ? <XCircle size={20} /> : String.fromCharCode(65 + idx)}
                                             </span>
