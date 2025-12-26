@@ -183,29 +183,41 @@ class DeckModule:
         # --------------------------------------------------------------------------
         @app.route("/v1/decks", methods=["GET"])
         def get_all_decks():
+            db_host = "express-db" if self.env == "prod" else "localhost"
+            uri = f"mongodb://{db_host}:27017/zenRelationshipsAutomated"
+            
+            client = MongoClient(uri)
+            db = client["zenRelationshipsAutomated"]
+            
             decks = []
             
             # 1. Essential Verbs Gen
             for i, part in enumerate(VOCAB_LEVELS):
-                decks.append({
-                    "_id": f"vocab-essential-{part}",
-                    "title": f"Essential Verbs Vol. {i+1}",
-                    "description": "Core 600 Essential Japanese Verbs.",
-                    "tags": ["vocabulary", "verbs", "essential", "beginner"],
-                    "level": "Beginner",
-                    "icon": "book",
-                })
+                count = db["words"].count_documents({"p_tag": "essential_600_verbs", "s_tag": part})
+                if count > 0:
+                    decks.append({
+                        "_id": f"vocab-essential-{part}",
+                        "title": f"Essential Verbs Vol. {i+1}",
+                        "description": "Core 600 Essential Japanese Verbs.",
+                        "tags": ["vocabulary", "verbs", "essential", "beginner"],
+                        "level": "Beginner",
+                        "icon": "book",
+                        "cardCount": count
+                    })
                 
             # 2. Suru Verbs Gen
             for i, part in enumerate(SURU_LEVELS):
-                decks.append({
-                    "_id": f"vocab-suru-{part}",
-                    "title": f"Suru Verbs Vol. {i+1}",
-                    "description": "Essential する-verbs.",
-                    "tags": ["vocabulary", "suru-verbs", "intermediate"],
-                    "level": "Intermediate",
-                    "icon": "book",
-                })
+                count = db["words"].count_documents({"p_tag": "suru_essential_600_verbs", "s_tag": part})
+                if count > 0:
+                    decks.append({
+                        "_id": f"vocab-suru-{part}",
+                        "title": f"Suru Verbs Vol. {i+1}",
+                        "description": "Essential する-verbs.",
+                        "tags": ["vocabulary", "suru-verbs", "intermediate"],
+                        "level": "Intermediate",
+                        "icon": "book",
+                        "cardCount": count
+                    })
             
             return jsonify(decks), 200
 

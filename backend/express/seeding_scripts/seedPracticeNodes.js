@@ -8,7 +8,7 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/hanabira';
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/zenRelationshipsAutomated';
 
 // Define schema inline for standalone script
 const QuestionSchema = new mongoose.Schema({
