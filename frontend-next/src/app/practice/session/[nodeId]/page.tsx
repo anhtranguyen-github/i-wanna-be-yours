@@ -111,31 +111,31 @@ export default function UnifiedSessionPage() {
         if (index >= 0 && index < questions.length) setCurrentIndex(index);
     };
 
-    const handleSubmit = useCallback(() => {
+    const handleSubmit = useCallback(async () => {
         setIsSubmitted(true);
         setShowSubmitConfirm(false);
         setIsRedirecting(true);
 
-        // Save session results for the results page
         try {
-            const sessionResult = {
+            const timeTakenSeconds = node?.stats.timeLimitMinutes
+                ? (node.stats.timeLimitMinutes * 60 - timeRemaining)
+                : 0;
+
+            const response = await practiceService.saveAttempt({
                 nodeId,
                 answers,
-                timestamp: new Date().toISOString(),
-                timeSpentSeconds: node?.stats.timeLimitMinutes
-                    ? (node.stats.timeLimitMinutes * 60 - timeRemaining)
-                    : 0
-            };
-            localStorage.setItem(`last_practice_session`, JSON.stringify(sessionResult));
-            localStorage.setItem(`practice_session_${nodeId}`, JSON.stringify(sessionResult));
+                timeTakenSeconds,
+                // Add any other required fields for PracticeAttempt type if necessary
+            } as any);
+
+            // Redirect to results page with the attempt ID
+            // This ensures we fetch the data specifically for this attempt from the backend
+            router.push(`/practice/result/${nodeId}?attemptId=${response.attemptId}`);
         } catch (e) {
             console.error("Failed to save practice results:", e);
-        }
-
-        // Redirect after a short delay for feedback
-        setTimeout(() => {
+            // Fallback redirect if backend fails, though result page might error
             router.push(`/practice/result/${nodeId}`);
-        }, 1200);
+        }
     }, [nodeId, router, answers, node, timeRemaining]);
 
     const handleViewResults = () => {

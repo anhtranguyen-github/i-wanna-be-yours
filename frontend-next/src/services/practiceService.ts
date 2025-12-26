@@ -125,10 +125,7 @@ export async function getNodeSessionData(id: string): Promise<{ node: PracticeNo
  */
 export async function saveAttempt(attempt: PracticeAttempt): Promise<{
     attemptId: string;
-    score: number;
-    maxScore: number;
-    percentage: number;
-    status: string;
+    result: any;
 }> {
     const response = await authFetch(`${API_BASE}/nodes/${attempt.nodeId}/submit`, {
         method: 'POST',
@@ -148,6 +145,17 @@ export async function saveAttempt(attempt: PracticeAttempt): Promise<{
         throw new Error('Failed to save attempt');
     }
 
+    return response.json();
+}
+
+/**
+ * Get a specific attempt's unified result
+ */
+export async function getAttemptResult(attemptId: string): Promise<any> {
+    const response = await authFetch(`${API_BASE}/attempts/${attemptId}`);
+    if (!response.ok) {
+        throw new Error('Failed to fetch attempt result');
+    }
     return response.json();
 }
 
@@ -215,6 +223,7 @@ export const practiceService = {
     getNodes,
     getNodeSessionData,
     saveAttempt,
+    getAttemptResult,
     getAttempts,
     createNode,
     deleteNode
