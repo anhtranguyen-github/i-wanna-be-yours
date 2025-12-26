@@ -115,7 +115,7 @@ export function ExpandableSection({
                     {children}
                     {coachExplainer && (
                         <div className="mt-6 p-4 bg-brand-sky/5 rounded-2xl border border-brand-sky/10 flex gap-3 items-start group hover:bg-brand-sky/10 transition-colors">
-                            <div className="bg-white p-1.5 rounded-lg shadow-sm">
+                            <div className="bg-white p-1.5 rounded-lg ">
                                 <Brain size={16} className="text-brand-sky" />
                             </div>
                             <p className="text-xs font-bold text-slate-600 leading-relaxed italic">

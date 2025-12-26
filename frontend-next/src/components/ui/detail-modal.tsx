@@ -95,7 +95,7 @@ export function DetailModal({
             {/* Modal Content */}
             <div
                 className={cn(
-                    'relative w-full bg-white rounded-2xl shadow-2xl overflow-hidden',
+                    'relative w-full bg-white rounded-2xl  overflow-hidden',
                     'transform transition-all duration-300 ease-out',
                     visible ? 'scale-100 translate-y-0' : 'scale-95 translate-y-4',
                     sizeClasses[size],

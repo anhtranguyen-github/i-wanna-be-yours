@@ -63,7 +63,7 @@ export function StatCard({
         <div
             className={cn(
                 'relative rounded-2xl bg-neutral-white border border-neutral-gray/20',
-                'shadow-sm hover:shadow-xl transition-all duration-300',
+                ' hover: transition-all duration-300',
                 sizeClasses[size],
                 isClickable && 'cursor-pointer hover:border-primary/40 group',
                 className
