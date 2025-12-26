@@ -12,7 +12,7 @@ export default function Footer() {
             <Link href="/" className="text-2xl font-black font-display text-brand-salmon">
               hanachan.org
             </Link>
-            <p className="mt-4 text-sm text-slate-500 leading-relaxed">
+            <p className="mt-4 text-sm text-neutral-ink leading-relaxed">
               The open-source platform to master Japanese & Korean.
               Self-hostable, free, and community-driven.
             </p>
@@ -32,7 +32,7 @@ export default function Footer() {
           {/* Product */}
           <div className="flex flex-col gap-4">
             <h4 className="font-bold text-slate-700">Product</h4>
-            <div className="flex flex-col gap-2 text-sm text-slate-500">
+            <div className="flex flex-col gap-2 text-sm text-neutral-ink">
               <Link href="/features" className="hover:text-brand-salmon transition-colors">Features</Link>
               <Link href="/pricing" className="hover:text-brand-salmon transition-colors">Pricing</Link>
               <Link href="/roadmap" className="hover:text-brand-salmon transition-colors">Roadmap</Link>
@@ -43,7 +43,7 @@ export default function Footer() {
           {/* Company/Legal */}
           <div className="flex flex-col gap-4">
             <h4 className="font-bold text-slate-700">Legal</h4>
-            <div className="flex flex-col gap-2 text-sm text-slate-500">
+            <div className="flex flex-col gap-2 text-sm text-neutral-ink">
               <Link href="/privacy-policy" className="hover:text-brand-salmon transition-colors">Privacy Policy</Link>
               <Link href="/terms-of-service" className="hover:text-brand-salmon transition-colors">Terms of Service</Link>
               <Link href="/about" className="hover:text-brand-salmon transition-colors">About Us</Link>
@@ -51,7 +51,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center text-sm text-slate-400">
+        <div className="pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center text-sm text-neutral-ink">
           <CurrentYear />
           <div className="flex items-center gap-4 mt-4 md:mt-0">
             <span>Made with 🌸 in Tokyo</span>
@@ -63,7 +63,7 @@ export default function Footer() {
 }
 
 const SocialLink = ({ href, icon, label }: { href: string, icon: React.ReactNode, label: string }) => (
-  <a href={href} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-brand-salmon hover:scale-110 transition-all p-2 bg-slate-50 rounded-lg" aria-label={label}>
+  <a href={href} target="_blank" rel="noopener noreferrer" className="text-neutral-ink hover:text-brand-salmon hover:scale-110 transition-all p-2 bg-slate-50 rounded-lg" aria-label={label}>
     {icon}
   </a>
 );

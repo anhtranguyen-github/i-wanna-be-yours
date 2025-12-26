@@ -184,7 +184,7 @@ const GrammarCard: React.FC<GrammarCardProps> = (props) => {
   };
 
   return (
-    <div className="p-6 text-gray-100">
+    <div className="p-6 text-neutral-ink">
 
       {/* Short Explanation */}
       <div className="mb-6 bg-white/5 p-4 rounded-lg border border-white/5">
@@ -220,7 +220,7 @@ const GrammarCard: React.FC<GrammarCardProps> = (props) => {
                 <div className="text-xs text-white/40 italic mb-1">
                   {example.romaji}
                 </div>
-                <div className="text-sm text-gray-300">
+                <div className="text-sm text-neutral-ink">
                   {example.en}
                 </div>
               </div>
@@ -232,7 +232,7 @@ const GrammarCard: React.FC<GrammarCardProps> = (props) => {
       {props.long_explanation && (
         <div className="mt-6 pt-6 border-t border-white/10">
           <div className="text-xs uppercase tracking-widest text-white/50 mb-2 font-bold">Detailed Note</div>
-          <div className="text-sm text-gray-400 leading-relaxed max-h-40 overflow-y-auto custom-scrollbar pr-2">
+          <div className="text-sm text-neutral-ink leading-relaxed max-h-40 overflow-y-auto custom-scrollbar pr-2">
             {props.long_explanation}
           </div>
         </div>

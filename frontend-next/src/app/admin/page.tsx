@@ -87,8 +87,8 @@ export default function AdminDashboard() {
     return (
         <div className="space-y-8">
             <div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
-                <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">Overview of system performance and user activity.</p>
+                <h1 className="text-3xl font-bold text-neutral-ink dark:text-white">Dashboard</h1>
+                <p className="mt-2 text-sm text-neutral-ink dark:text-neutral-ink">Overview of system performance and user activity.</p>
             </div>
 
             {/* Stats Grid */}
@@ -99,12 +99,12 @@ export default function AdminDashboard() {
                             <div className="absolute rounded-md bg-rose-500 p-3">
                                 <item.icon className="h-6 w-6 text-white" aria-hidden="true" />
                             </div>
-                            <p className="ml-16 truncate text-sm font-medium text-gray-500 dark:text-gray-400">{item.name}</p>
+                            <p className="ml-16 truncate text-sm font-medium text-neutral-ink dark:text-neutral-ink">{item.name}</p>
                         </dt>
                         <dd className="ml-16 flex items-baseline pb-1 sm:pb-7">
-                            <p className="text-2xl font-semibold text-gray-900 dark:text-white">{item.value}</p>
+                            <p className="text-2xl font-semibold text-neutral-ink dark:text-white">{item.value}</p>
                             <p
-                                className={`ml-2 flex items-baseline text-sm font-semibold ${item.changeType === 'increase' ? 'text-green-600' : item.changeType === 'decrease' ? 'text-red-600' : 'text-gray-500'
+                                className={`ml-2 flex items-baseline text-sm font-semibold ${item.changeType === 'increase' ? 'text-green-600' : item.changeType === 'decrease' ? 'text-red-600' : 'text-neutral-ink'
                                     }`}
                             >
                                 {item.change}
@@ -118,7 +118,7 @@ export default function AdminDashboard() {
                 {/* User List */}
                 <div className="lg:col-span-2 bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
                     <div className="px-4 py-5 sm:px-6 flex justify-between items-center border-b border-gray-200 dark:border-gray-700">
-                        <h3 className="text-lg font-medium leading-6 text-gray-900 dark:text-white">Recent Users</h3>
+                        <h3 className="text-lg font-medium leading-6 text-neutral-ink dark:text-white">Recent Users</h3>
                         <button className="text-sm text-rose-500 hover:text-rose-600 font-medium">View all</button>
                     </div>
                     <ul role="list" className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -126,21 +126,21 @@ export default function AdminDashboard() {
                             <li key={user.id} className="px-4 py-4 sm:px-6 hover:bg-gray-50 dark:hover:bg-gray-750 transition duration-150 ease-in-out">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center min-w-0 gap-x-4">
-                                        <div className="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-400 font-bold">
+                                        <div className="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-neutral-ink dark:text-neutral-ink font-bold">
                                             {user.name.charAt(0)}
                                         </div>
                                         <div className="min-w-0 flex-auto">
-                                            <p className="text-sm font-semibold leading-6 text-gray-900 dark:text-white">{user.name}</p>
-                                            <p className="mt-1 truncate text-xs leading-5 text-gray-500 dark:text-gray-400">{user.email}</p>
+                                            <p className="text-sm font-semibold leading-6 text-neutral-ink dark:text-white">{user.name}</p>
+                                            <p className="mt-1 truncate text-xs leading-5 text-neutral-ink dark:text-neutral-ink">{user.email}</p>
                                         </div>
                                     </div>
                                     <div className="hidden sm:flex sm:flex-col sm:items-end">
-                                        <p className="text-sm leading-6 text-gray-900 dark:text-white">{user.role}</p>
+                                        <p className="text-sm leading-6 text-neutral-ink dark:text-white">{user.role}</p>
                                         <div className="mt-1 flex items-center gap-x-1.5">
                                             <div className={`flex-none rounded-full p-1 ${user.status === 'active' ? 'bg-emerald-500/20' : 'bg-gray-500/20'}`}>
                                                 <div className={`h-1.5 w-1.5 rounded-full ${user.status === 'active' ? 'bg-emerald-500' : 'bg-gray-500'}`} />
                                             </div>
-                                            <p className="text-xs leading-5 text-gray-500 dark:text-gray-400">{user.status}</p>
+                                            <p className="text-xs leading-5 text-neutral-ink dark:text-neutral-ink">{user.status}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -152,7 +152,7 @@ export default function AdminDashboard() {
                 {/* System Health */}
                 <div className="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
                     <div className="px-4 py-5 sm:px-6 border-b border-gray-200 dark:border-gray-700">
-                        <h3 className="text-lg font-medium leading-6 text-gray-900 dark:text-white">System Health</h3>
+                        <h3 className="text-lg font-medium leading-6 text-neutral-ink dark:text-white">System Health</h3>
                     </div>
                     <div className="px-4 py-5 sm:p-6 space-y-6">
                         {health.map((item) => (
@@ -166,8 +166,8 @@ export default function AdminDashboard() {
                                         <AlertCircle className="h-5 w-5 text-red-500 mr-3" />
                                     )}
                                     <div>
-                                        <p className="text-sm font-medium text-gray-900 dark:text-white">{item.service}</p>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400">Uptime: {item.uptime}</p>
+                                        <p className="text-sm font-medium text-neutral-ink dark:text-white">{item.service}</p>
+                                        <p className="text-xs text-neutral-ink dark:text-neutral-ink">Uptime: {item.uptime}</p>
                                     </div>
                                 </div>
                                 <span className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${item.status === 'operational'

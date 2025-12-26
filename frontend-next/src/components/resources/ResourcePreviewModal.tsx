@@ -75,7 +75,7 @@ export function ResourcePreviewModal({
         >
             {/* Modal */}
             <div
-                className="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col m-4 overflow-hidden animate-in fade-in zoom-in duration-200 cursor-default"
+                className="relative bg-white rounded-2xl  w-full max-w-2xl max-h-[80vh] flex flex-col m-4 overflow-hidden animate-in fade-in zoom-in duration-200 cursor-default"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
@@ -86,7 +86,7 @@ export function ResourcePreviewModal({
                             <h2 className="font-semibold text-brand-dark truncate max-w-md">
                                 {resource.title}
                             </h2>
-                            <p className="text-xs text-slate-500">
+                            <p className="text-xs text-neutral-ink">
                                 {resource.type} • {formatFileSize(resource.fileSize)}
                             </p>
                         </div>
@@ -95,7 +95,7 @@ export function ResourcePreviewModal({
                         onClick={onClose}
                         className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
                     >
-                        <X size={20} className="text-slate-500" />
+                        <X size={20} className="text-neutral-ink" />
                     </button>
                 </div>
 
@@ -108,10 +108,10 @@ export function ResourcePreviewModal({
                             className="max-w-full max-h-full object-contain rounded-lg shadow"
                         />
                     ) : (
-                        <div className="bg-white rounded-lg p-8 shadow-sm text-center flex flex-col items-center">
+                        <div className="bg-white rounded-lg p-8  text-center flex flex-col items-center">
                             <FileText size={48} className="text-slate-300 mb-4" />
                             <p className="text-slate-600 mb-2">Preview not available for this file type.</p>
-                            <p className="text-xs text-slate-400">Please download or view on full page.</p>
+                            <p className="text-xs text-neutral-ink">Please download or view on full page.</p>
                         </div>
                     )}
                 </div>

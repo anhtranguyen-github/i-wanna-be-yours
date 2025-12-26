@@ -143,7 +143,7 @@ function SettingsContent() {
             <div className="min-h-screen bg-gradient-to-br from-slate-50 to-brand-cream/30 py-12">
                 <div className="container mx-auto px-6 max-w-2xl text-center">
                     <div className="clay-card p-12">
-                        <Settings className="w-16 h-16 mx-auto mb-6 text-gray-300" />
+                        <Settings className="w-16 h-16 mx-auto mb-6 text-neutral-ink" />
                         <h2 className="text-2xl font-black text-brand-dark mb-4">
                             No Study Plan Found
                         </h2>
@@ -165,7 +165,7 @@ function SettingsContent() {
                 {/* Back Link */}
                 <Link
                     href={`/study-plan/dashboard?plan=${plan.id}`}
-                    className="inline-flex items-center gap-2 text-gray-500 hover:text-brand-dark transition-colors font-bold mb-6"
+                    className="inline-flex items-center gap-2 text-neutral-ink hover:text-brand-dark transition-colors font-bold mb-6"
                 >
                     <ChevronLeft size={20} />
                     Back to Dashboard
@@ -176,7 +176,7 @@ function SettingsContent() {
                     <Settings className="w-10 h-10 text-brand-salmon" />
                     <div>
                         <h1 className="text-2xl font-black text-brand-dark">Plan Settings</h1>
-                        <p className="text-gray-500">
+                        <p className="text-neutral-ink">
                             {plan.target_level} • {plan.status === 'active' ? 'Active' : 'Paused'}
                         </p>
                     </div>
@@ -203,7 +203,7 @@ function SettingsContent() {
 
                     <div className="grid sm:grid-cols-2 gap-4">
                         <div className="p-4 bg-gray-50 rounded-xl">
-                            <div className="text-sm text-gray-500 mb-1">Target Level</div>
+                            <div className="text-sm text-neutral-ink mb-1">Target Level</div>
                             <div className="flex items-center gap-2">
                                 <div
                                     className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm font-bold"
@@ -216,9 +216,9 @@ function SettingsContent() {
                         </div>
 
                         <div className="p-4 bg-gray-50 rounded-xl">
-                            <div className="text-sm text-gray-500 mb-1">Exam Date</div>
+                            <div className="text-sm text-neutral-ink mb-1">Exam Date</div>
                             <div className="flex items-center gap-2">
-                                <Calendar size={18} className="text-gray-400" />
+                                <Calendar size={18} className="text-neutral-ink" />
                                 <span className="font-bold text-brand-dark">
                                     {new Date(plan.exam_date).toLocaleDateString('en-US', {
                                         month: 'long',
@@ -230,15 +230,15 @@ function SettingsContent() {
                         </div>
 
                         <div className="p-4 bg-gray-50 rounded-xl">
-                            <div className="text-sm text-gray-500 mb-1">Days Remaining</div>
+                            <div className="text-sm text-neutral-ink mb-1">Days Remaining</div>
                             <div className="flex items-center gap-2">
-                                <Target size={18} className="text-gray-400" />
+                                <Target size={18} className="text-neutral-ink" />
                                 <span className="font-bold text-brand-dark">{plan.days_remaining} days</span>
                             </div>
                         </div>
 
                         <div className="p-4 bg-gray-50 rounded-xl">
-                            <div className="text-sm text-gray-500 mb-1">Progress</div>
+                            <div className="text-sm text-neutral-ink mb-1">Progress</div>
                             <div className="flex items-center gap-2">
                                 <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
                                     <div
@@ -258,7 +258,7 @@ function SettingsContent() {
 
                     {/* Daily Study Time */}
                     <div className="mb-6">
-                        <label className="block text-sm font-bold text-gray-600 mb-3">
+                        <label className="block text-sm font-bold text-neutral-ink mb-3">
                             <Clock size={16} className="inline mr-2" />
                             Daily study time
                         </label>
@@ -271,7 +271,7 @@ function SettingsContent() {
                                         py-3 rounded-xl font-bold transition-all text-sm
                                         ${dailyMinutes === mins
                                             ? 'bg-brand-salmon text-white'
-                                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                            : 'bg-gray-100 text-neutral-ink hover:bg-gray-200'
                                         }
                                     `}
                                 >
@@ -283,7 +283,7 @@ function SettingsContent() {
 
                     {/* Study Days Per Week */}
                     <div className="mb-6">
-                        <label className="block text-sm font-bold text-gray-600 mb-3">
+                        <label className="block text-sm font-bold text-neutral-ink mb-3">
                             <Calendar size={16} className="inline mr-2" />
                             Days per week
                         </label>
@@ -296,7 +296,7 @@ function SettingsContent() {
                                         py-3 rounded-xl font-bold transition-all
                                         ${studyDays === days
                                             ? 'bg-brand-salmon text-white'
-                                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                            : 'bg-gray-100 text-neutral-ink hover:bg-gray-200'
                                         }
                                     `}
                                 >
@@ -308,7 +308,7 @@ function SettingsContent() {
 
                     {/* Focus Areas */}
                     <div className="mb-6">
-                        <label className="block text-sm font-bold text-gray-600 mb-3">
+                        <label className="block text-sm font-bold text-neutral-ink mb-3">
                             <Target size={16} className="inline mr-2" />
                             Focus areas
                         </label>
@@ -321,7 +321,7 @@ function SettingsContent() {
                                         px-4 py-2 rounded-full font-bold text-sm transition-all capitalize
                                         ${focusAreas.includes(area)
                                             ? 'bg-brand-sky text-white'
-                                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                            : 'bg-gray-100 text-neutral-ink hover:bg-gray-200'
                                         }
                                     `}
                                 >
@@ -333,7 +333,7 @@ function SettingsContent() {
 
                     {/* Estimated weekly hours */}
                     <div className="p-4 bg-gray-50 rounded-xl mb-6">
-                        <div className="text-sm text-gray-500 mb-1">Weekly study time:</div>
+                        <div className="text-sm text-neutral-ink mb-1">Weekly study time:</div>
                         <div className="text-2xl font-black text-brand-dark">
                             {Math.round((dailyMinutes * studyDays) / 60 * 10) / 10} hours/week
                         </div>
@@ -370,7 +370,7 @@ function SettingsContent() {
                                 <h3 className="font-bold text-brand-dark">
                                     {plan.status === 'active' ? 'Pause Plan' : 'Resume Plan'}
                                 </h3>
-                                <p className="text-sm text-gray-500">
+                                <p className="text-sm text-neutral-ink">
                                     {plan.status === 'active'
                                         ? 'Temporarily pause your study plan'
                                         : 'Resume your paused study plan'
@@ -422,7 +422,7 @@ function SettingsContent() {
                                 <div className="flex gap-2">
                                     <button
                                         onClick={() => setShowDeleteConfirm(false)}
-                                        className="px-4 py-2 rounded-xl font-bold bg-gray-200 text-gray-600 hover:bg-gray-300 transition-all"
+                                        className="px-4 py-2 rounded-xl font-bold bg-gray-200 text-neutral-ink hover:bg-gray-300 transition-all"
                                     >
                                         Cancel
                                     </button>

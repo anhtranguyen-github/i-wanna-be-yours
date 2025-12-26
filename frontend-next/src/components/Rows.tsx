@@ -57,16 +57,16 @@ const Rows: React.FC<Props> = async ({ p_dashboardId, s_dashboardId }) => {
                     <h1 className="text-2xl font-medium leading-tight">
                       {word.vocabulary_original}
                     </h1>
-                    <p className="text-sm text-gray-500 mb-1">
+                    <p className="text-sm text-neutral-ink mb-1">
                       {word.vocabulary_simplified}
                     </p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-neutral-ink">
                       {word.vocabulary_english}
                     </p>
                   </div>
                 </div>
                 <div className="absolute top-4 right-4 md:relative md:top-auto md:right-auto md:flex-grow">
-                  <p className="text-sm text-gray-500 text-right">
+                  <p className="text-sm text-neutral-ink text-right">
                     {word.word_type}
                   </p>
                 </div>
@@ -90,13 +90,13 @@ const Rows: React.FC<Props> = async ({ p_dashboardId, s_dashboardId }) => {
                           <h1 className="text-lg font-medium leading-tight">
                             {sentence.sentence_original}
                           </h1>
-                          <p className="text-sm text-gray-500 mb-1">
+                          <p className="text-sm text-neutral-ink mb-1">
                             {sentence.sentence_simplified}
                           </p>
-                          <p className="text-sm text-gray-500 mb-1">
+                          <p className="text-sm text-neutral-ink mb-1">
                             {sentence.sentence_romaji}
                           </p>
-                          <p className="text-sm text-gray-500">
+                          <p className="text-sm text-neutral-ink">
                             {sentence.sentence_english}
                           </p>
                         </div>

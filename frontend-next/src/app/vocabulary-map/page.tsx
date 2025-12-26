@@ -130,7 +130,7 @@ const VocabularyMap = () => {
         }
       ]
     };
-  
+
     // Recursive function to convert nested vocabulary data into nodes
     const mapVocabularyToNodes = (vocabData, parentId = null) => {
       const node = {
@@ -141,7 +141,7 @@ const VocabularyMap = () => {
         position: { x: 0, y: 0 },
         parent: parentId
       };
-  
+
       const nodes = [node];
       if (vocabData.children) {
         vocabData.children.forEach((child) => {
@@ -149,10 +149,10 @@ const VocabularyMap = () => {
           nodes.push(...childNodes);
         });
       }
-  
+
       return nodes;
     };
-  
+
     // Recursive function to convert nested vocabulary data into edges
     const mapVocabularyToEdges = (vocabData) => {
       const edges = [];
@@ -170,18 +170,18 @@ const VocabularyMap = () => {
       }
       return edges;
     };
-  
+
     const initialNodes = mapVocabularyToNodes(data);
     const initialEdges = mapVocabularyToEdges(data);
-  
+
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  
+
     const onConnect = useCallback(
       (params) => setEdges((eds) => addEdge(params, eds)),
       [setEdges]
     );
-  
+
     const onNodeDragStop = useCallback(
       (event, node) => {
         setNodes((nds) =>
@@ -194,25 +194,25 @@ const VocabularyMap = () => {
       },
       [setNodes]
     );
-  
+
     useEffect(() => {
       const g = new dagre.graphlib.Graph();
       g.setGraph({});
       g.setDefaultEdgeLabel(() => ({}));
-  
+
       // Adding nodes to graph
       nodes.forEach((node) => {
         g.setNode(node.id, { width: 172, height: 180 });  // Increase height for readability
       });
-  
+
       // Adding edges to graph
       edges.forEach((edge) => {
         g.setEdge(edge.source, edge.target);
       });
-  
+
       // Perform layout
       dagre.layout(g);
-  
+
       // Check if node positions need to be updated
       const updatedNodes = nodes.map((node) => {
         const nodeWithPosition = g.node(node.id);
@@ -221,17 +221,17 @@ const VocabularyMap = () => {
         }
         return node;
       });
-  
+
       // Only update nodes if there are any changes
       const hasPositionChanged = updatedNodes.some((node, index) => {
         return node.position.x !== nodes[index].position.x || node.position.y !== nodes[index].position.y;
       });
-  
+
       if (hasPositionChanged) {
         setNodes(updatedNodes);
       }
     }, [nodes, edges, setNodes]);
-  
+
     return (
       <div style={{ width: '100%', height: '500px' }}>
         <ReactFlow
@@ -250,6 +250,5 @@ const VocabularyMap = () => {
       </div>
     );
   };
-  
+
 //  export default VocabularyMap;
-  

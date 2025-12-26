@@ -18,8 +18,8 @@ export const ToolKitShowcase = () => {
             <div className="max-w-7xl mx-auto px-6 mb-16">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h2 className="text-3xl font-black text-slate-900 font-display">THE INTELLIGENCE KIT</h2>
-                        <p className="text-slate-500 font-medium">Professional-grade utilities at your fingertips.</p>
+                        <h2 className="text-3xl font-black text-neutral-ink font-display">THE INTELLIGENCE KIT</h2>
+                        <p className="text-neutral-ink font-medium">Professional-grade utilities at your fingertips.</p>
                     </div>
                 </div>
             </div>
@@ -28,12 +28,12 @@ export const ToolKitShowcase = () => {
                 {[...tools, ...tools].map((tool, i) => (
                     <div
                         key={i}
-                        className="inline-flex items-center gap-4 bg-white px-8 py-6 rounded-3xl border border-slate-100 shadow-xl shadow-primary/5 hover:border-primary/30 transition-all cursor-default group"
+                        className="inline-flex items-center gap-4 bg-white px-8 py-6 rounded-3xl border border-slate-100  shadow-primary/5 hover:border-primary/30 transition-all cursor-default group"
                     >
                         <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
                             <tool.icon size={24} />
                         </div>
-                        <span className="text-xl font-black text-slate-800 tracking-tight">{tool.name}</span>
+                        <span className="text-xl font-black text-neutral-ink tracking-tight">{tool.name}</span>
                     </div>
                 ))}
             </div>

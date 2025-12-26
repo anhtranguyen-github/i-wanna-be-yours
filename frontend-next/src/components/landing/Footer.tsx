@@ -13,7 +13,7 @@ export const Footer = () => {
                         </div>
                         <span className="text-2xl font-black font-display tracking-tight uppercase tracking-widest text-lg">Hanachan</span>
                     </div>
-                    <p className="text-slate-400 font-medium max-w-sm leading-relaxed">
+                    <p className="text-neutral-ink font-medium max-w-sm leading-relaxed">
                         A high-fidelity linguistic intelligence system designed for the serious student of Japanese mastery.
                     </p>
                     <div className="flex gap-4">
@@ -44,7 +44,7 @@ export const Footer = () => {
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-black uppercase tracking-widest text-slate-500">
+            <div className="max-w-7xl mx-auto mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-black uppercase tracking-widest text-neutral-ink">
                 <p>© 2025 Hanachan Intelligence. All operations secured.</p>
                 <div className="flex gap-8">
                     <Link href="#" className="hover:text-primary transition-colors">Privacy Protocol</Link>
@@ -56,11 +56,11 @@ export const Footer = () => {
 };
 
 const FooterLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
-    <Link href={href} className="text-sm font-medium text-slate-400 hover:text-white transition-colors">{children}</Link>
+    <Link href={href} className="text-sm font-medium text-neutral-ink hover:text-white transition-colors">{children}</Link>
 );
 
 const SocialLink = ({ href, icon }: { href: string; icon: React.ReactNode }) => (
-    <Link href={href} className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-slate-400 hover:bg-primary hover:text-white transition-all">
+    <Link href={href} className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-neutral-ink hover:bg-primary hover:text-white transition-all">
         {icon}
     </Link>
 );

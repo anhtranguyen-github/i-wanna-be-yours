@@ -57,7 +57,7 @@ const ThinkingBlock = ({ content }: { content: string }) => {
             </button>
 
             {isOpen && (
-                <div className="p-3 bg-white dark:bg-gray-900 text-xs text-gray-500 dark:text-gray-400 font-mono whitespace-pre-wrap border-t border-indigo-100 dark:border-indigo-800/50 animate-in slide-in-from-top-2 duration-200">
+                <div className="p-3 bg-white dark:bg-gray-900 text-xs text-neutral-ink dark:text-neutral-ink font-mono whitespace-pre-wrap border-t border-indigo-100 dark:border-indigo-800/50 animate-in slide-in-from-top-2 duration-200">
                     {content || <span className="animate-pulse">Thinking...</span>}
                 </div>
             )}

@@ -92,7 +92,7 @@ export default function PlanHealthCard({ planId, compact = false }: PlanHealthPr
         return (
             <div className={`clay-card p-6 ${compact ? '' : 'mb-6'}`}>
                 <div className="flex items-center justify-center py-4">
-                    <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
+                    <Loader2 className="w-6 h-6 animate-spin text-neutral-ink" />
                 </div>
             </div>
         );
@@ -112,7 +112,7 @@ export default function PlanHealthCard({ planId, compact = false }: PlanHealthPr
                     <StatusIcon className={config.color} size={24} />
                     <div>
                         <div className={`font-bold ${config.color}`}>{config.label}</div>
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-neutral-ink">
                             {health.actual_progress.toFixed(0)}% complete
                         </div>
                     </div>
@@ -134,7 +134,7 @@ export default function PlanHealthCard({ planId, compact = false }: PlanHealthPr
                             <h3 className={`text-lg font-black ${config.color}`}>
                                 {config.label}
                             </h3>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-sm text-neutral-ink">
                                 {health.actual_progress.toFixed(0)}% vs {health.expected_progress.toFixed(0)}% expected
                             </p>
                         </div>
@@ -145,7 +145,7 @@ export default function PlanHealthCard({ planId, compact = false }: PlanHealthPr
                         className="p-2 rounded-lg hover:bg-white/50 transition-colors"
                         title="Refresh"
                     >
-                        <RefreshCw size={18} className="text-gray-400" />
+                        <RefreshCw size={18} className="text-neutral-ink" />
                     </button>
                 </div>
 
@@ -168,7 +168,7 @@ export default function PlanHealthCard({ planId, compact = false }: PlanHealthPr
                             style={{ width: `${health.actual_progress}%` }}
                         />
                     </div>
-                    <div className="flex justify-between text-xs mt-1 text-gray-500">
+                    <div className="flex justify-between text-xs mt-1 text-neutral-ink">
                         <span>Actual: {health.actual_progress.toFixed(0)}%</span>
                         <span>Expected: {health.expected_progress.toFixed(0)}%</span>
                     </div>
@@ -179,7 +179,7 @@ export default function PlanHealthCard({ planId, compact = false }: PlanHealthPr
             <div className="p-5 bg-white">
                 <button
                     onClick={() => setExpanded(!expanded)}
-                    className="w-full flex items-center justify-between text-sm font-bold text-gray-600 hover:text-brand-dark transition-colors"
+                    className="w-full flex items-center justify-between text-sm font-bold text-neutral-ink hover:text-brand-dark transition-colors"
                 >
                     <span>Recommendations ({health.recommendations.length})</span>
                     {expanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
@@ -192,7 +192,7 @@ export default function PlanHealthCard({ planId, compact = false }: PlanHealthPr
                                 key={idx}
                                 className="p-3 bg-gray-50 rounded-xl text-sm"
                             >
-                                <span className="text-gray-700">{rec.message}</span>
+                                <span className="text-neutral-ink">{rec.message}</span>
                             </div>
                         ))}
 

@@ -3,9 +3,9 @@ import { ChevronRightIcon } from "@heroicons/react/20/solid";
 import Image from "next/image";
 import Link from "next/link";
 
-import hanachan_text_parser_tokenization from "@public/img/screenshots/hanachan_text_parser_tokenization.png";
-import hanachan_youtube_parser from "@public/img/screenshots/hanachan_youtube_parser.png";
-import hanachan_grammar_graph from "@public/img/screenshots/hanachan_grammar_graph.png";
+import hanachan_text_parser_tokenization from "../../../public/img/screenshots/hanabira_text_parser_tokenization.png";
+import hanachan_youtube_parser from "../../../public/img/screenshots/hanabira_youtube_parser.png";
+import hanachan_grammar_graph from "../../../public/img/screenshots/hanabira_grammar_graph.png";
 
 import EmailForm from "@/components/EmailForm";
 import { FeatureIconGrid, defaultFeatures } from "@/components/shared/FeatureIconGrid";
@@ -48,15 +48,15 @@ export default function LandingPage() {
                                 </h1>
 
                                 <div className="mt-6 space-y-2">
-                                    <h2 className="text-2xl font-bold tracking-tight text-gray-500">
+                                    <h2 className="text-2xl font-bold tracking-tight text-neutral-ink">
                                         日本語理解への道
                                     </h2>
-                                    <h2 className="text-2xl font-bold tracking-tight text-gray-500">
+                                    <h2 className="text-2xl font-bold tracking-tight text-neutral-ink">
                                         한국어 이해를 위한 길입니다
                                     </h2>
                                 </div>
 
-                                <p className="mt-6 text-xl text-gray-600 font-medium">
+                                <p className="mt-6 text-xl text-neutral-ink font-medium">
                                     Prepare for JLPT/TOPIK with hanachan.org. Free, Open-Source, and Self-Hostable.
                                 </p>
 
@@ -121,7 +121,7 @@ export default function LandingPage() {
                     <div className="container mx-auto px-4">
                         <div className="text-center max-w-3xl mx-auto mb-16">
                             <h2 className="text-4xl font-display font-bold text-brand-dark mb-4">Deep Dive into Learning</h2>
-                            <p className="text-xl text-gray-600">Explore our advanced tools designed to make Japanese immersion effective and fun.</p>
+                            <p className="text-xl text-neutral-ink">Explore our advanced tools designed to make Japanese immersion effective and fun.</p>
                         </div>
 
                         {/* Feature 1: Text Parser */}
@@ -131,7 +131,7 @@ export default function LandingPage() {
                                     <DocumentChartBarIcon className="h-8 w-8 text-white" />
                                 </div>
                                 <h3 className="text-3xl font-display font-bold text-brand-dark mb-4">Master Japanese Texts</h3>
-                                <p className="text-lg text-gray-600 mb-6">
+                                <p className="text-lg text-neutral-ink mb-6">
                                     Input any Japanese text and get instant tokenization, dictionary lookups, and grammar analysis. Perfect for reading practice.
                                 </p>
                                 <CTAButton variant="primary" href="/tools/text-parser">
@@ -150,7 +150,7 @@ export default function LandingPage() {
                                     <InboxIcon className="h-8 w-8 text-white" />
                                 </div>
                                 <h3 className="text-3xl font-display font-bold text-brand-dark mb-4">YouTube Immersion</h3>
-                                <p className="text-lg text-gray-600 mb-6">
+                                <p className="text-lg text-neutral-ink mb-6">
                                     Learn directly from your favorite YouTubers. Parse subtitles, click words for definitions, and save them for review.
                                 </p>
                                 <CTAButton variant="primary" href="/tools/text-parser/youtube">
@@ -169,7 +169,7 @@ export default function LandingPage() {
                                     <ArrowUturnLeftIcon className="h-8 w-8 text-white" />
                                 </div>
                                 <h3 className="text-3xl font-display font-bold text-brand-dark mb-4">Visual Grammar Graphs</h3>
-                                <p className="text-lg text-gray-600 mb-6">
+                                <p className="text-lg text-neutral-ink mb-6">
                                     Don't just read grammar—see it! Our AI-powered graphs visualize sentence structures to help you understand complex syntax.
                                 </p>
                                 <CTAButton variant="primary" href="/tools/grammar-graph">

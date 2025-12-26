@@ -1,190 +1,280 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
-import Link from "next/link";
-import { useUser } from "@/context/UserContext";
-import { Layers, Search, BookOpen, User as UserIcon, Filter, Brain, Compass, Loader2 } from "lucide-react";
-import { getPersonalDecks, DeckDefinition, getTagsByType, getTagById, searchDecks } from "./decks-data";
-import { LoginPromptCard } from "@/components/auth";
-import { fetchAllDecks } from "@/services/deckService";
+import React, { useState, useMemo, useEffect } from 'react';
+import {
+    Plus,
+    Layers,
+    History,
+    Star,
+    ArrowRight,
+    MoreVertical,
+    Globe,
+    User as UserIcon,
+    ArrowRightLeft,
+    ShieldCheck
+} from 'lucide-react';
+import { SearchNexus } from '@/components/shared/SearchNexus';
+import { SearchNexusState, FilterGroup } from '@/types/search';
+import { useUser } from '@/context/UserContext';
+import { useGlobalAuth } from '@/context/GlobalAuthContext';
+import { CreateButton, InformativeLoginCard, PageHeader, ViewModeToggle, CreateContentPanel, ListingCard } from '@/components/shared';
+import type { ViewMode } from '@/components/shared';
+import { fetchFlashcardSets, createFlashcardSet } from '@/services/flashcardService';
+
+interface FlashcardSet {
+    id: string;
+    title: string;
+    description: string;
+    cardCount: number;
+    level?: string;
+    tags: string[];
+    visibility?: 'global' | 'public' | 'private';
+    creatorName?: string;
+}
 
 export default function FlashcardsMenu() {
     const { user } = useUser();
-    const [activeTab, setActiveTab] = useState<'public' | 'personal'>('public');
-    const [searchTerm, setSearchTerm] = useState("");
-    const [selectedTags, setSelectedTags] = useState<string[]>([]);
-    const [showAllFilters, setShowAllFilters] = useState(false);
-    const [publicDecks, setPublicDecks] = useState<DeckDefinition[]>([]);
-    const [loading, setLoading] = useState(false);
+    const { openAuth } = useGlobalAuth();
 
-    useEffect(() => {
-        setLoading(true);
-        fetchAllDecks().then(decks => {
-            const mappedDecks: DeckDefinition[] = decks.map(d => ({
-                id: d._id,
-                title: d.title,
-                description: d.description || "",
-                tags: d.tags,
-                actionLink: `/flashcards/details?id=${d._id}`
+    const [sets, setSets] = useState<FlashcardSet[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    const [searchState, setSearchState] = useState<SearchNexusState>({
+        query: "",
+        activeFilters: {
+            access: ['PUBLIC']
+        },
+        activeTab: 'PUBLIC'
+    });
+    const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+    const [viewMode, setViewMode] = useState<ViewMode>('GRID');
+    const [isCreatePanelOpen, setIsCreatePanelOpen] = useState(false);
+
+    const loadSets = async () => {
+        setIsLoading(true);
+        try {
+            const fetched = await fetchFlashcardSets();
+            const mappedSets: FlashcardSet[] = fetched.map((s: any) => ({
+                id: s.id,
+                title: s.title,
+                description: s.description || "",
+                cardCount: s.cardCount || 0,
+                level: s.level,
+                tags: s.tags || [],
+                visibility: s.visibility,
+                creatorName: s.creatorName
             }));
-            setPublicDecks(mappedDecks);
-            setLoading(false);
-        }).catch(err => { console.error("Failed to load decks", err); setLoading(false); });
-    }, []);
-
-    const personalDecks = useMemo(() => getPersonalDecks(), []);
-    const currentList = activeTab === 'public' ? publicDecks : personalDecks;
-
-    const filteredDecks = useMemo(() => {
-        let result = currentList;
-        if (selectedTags.length > 0) result = result.filter(deck => selectedTags.some(tagId => deck.tags.includes(tagId)));
-        if (searchTerm.trim()) result = searchDecks(result, searchTerm);
-        return result;
-    }, [currentList, selectedTags, searchTerm]);
-
-    const toggleTag = (tagId: string) => {
-        setSelectedTags(prev => prev.includes(tagId) ? prev.filter(t => t !== tagId) : [...prev, tagId]);
+            setSets(mappedSets);
+        } catch (err) {
+            console.error("Failed to load flashcard sets:", err);
+            setSets([]);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    const clearFilters = () => { setSelectedTags([]); setSearchTerm(""); };
+    useEffect(() => {
+        if (searchState.activeTab === 'PUBLIC' || user) {
+            loadSets();
+        } else {
+            setSets([]);
+        }
+    }, [searchState.activeTab, user]);
+
+    const filteredSets = useMemo(() => {
+        let result = [...sets];
+
+        // Filter by Access tab
+        if (searchState.activeTab === 'PUBLIC') {
+            result = result.filter(s => s.visibility !== 'private');
+        } else {
+            result = result.filter(s => s.visibility === 'private');
+        }
+
+        const selectedLevels = searchState.activeFilters.level || [];
+        if (selectedLevels.length > 0) {
+            result = result.filter(s => s.level && selectedLevels.includes(s.level));
+        }
+
+        if (searchState.query.trim()) {
+            const query = searchState.query.toLowerCase();
+            result = result.filter(s =>
+                s.title.toLowerCase().includes(query) ||
+                s.description.toLowerCase().includes(query) ||
+                s.tags.some(tag => tag.toLowerCase().includes(query))
+            );
+        }
+
+        return result;
+    }, [sets, searchState.query, searchState.activeFilters, searchState.activeTab]);
+
+
+    const filterGroups: FilterGroup[] = [
+        {
+            id: 'access',
+            label: 'Access',
+            type: 'SINGLE',
+            options: [
+                { id: 'PUBLIC', label: 'Public Sets', icon: <Globe size={12} /> },
+                { id: 'PERSONAL', label: 'My Sets', icon: <UserIcon size={12} /> }
+            ]
+        },
+        {
+            id: 'level',
+            label: 'JLPT Level',
+            type: 'MULTI',
+            options: [
+                { id: 'N5', label: 'N5' },
+                { id: 'N4', label: 'N4' },
+                { id: 'N3', label: 'N3' },
+                { id: 'N2', label: 'N2' },
+                { id: 'N1', label: 'N1' }
+            ]
+        }
+    ];
+
+    const handleSearchChange = (newState: SearchNexusState) => {
+        const accessFilter = newState.activeFilters.access?.[0];
+
+        if (accessFilter && accessFilter !== searchState.activeTab) {
+            if (accessFilter === 'PERSONAL' && !user) {
+                setShowLoginPrompt(true);
+                return;
+            }
+            newState.activeTab = accessFilter as 'PUBLIC' | 'PERSONAL';
+        } else if (newState.activeTab !== searchState.activeTab) {
+            newState.activeFilters = {
+                ...newState.activeFilters,
+                access: [newState.activeTab]
+            };
+        }
+
+        setSearchState(newState);
+        if (newState.activeTab === 'PUBLIC') setShowLoginPrompt(false);
+    };
+
+    const handleCreateClick = () => {
+        if (!user) {
+            openAuth('LOGIN', {
+                flowType: 'FLASHCARDS',
+                title: 'Master Spaced Repetition',
+                description: 'Sign in to create your own personalized sets and master them using Hanapita SRS.'
+            });
+        } else {
+            setIsCreatePanelOpen(true);
+        }
+    };
+
+    const handleSaveContent = async (data: any) => {
+        try {
+            await createFlashcardSet({
+                title: data.title || "New Set",
+                description: data.description || "Created via Hanachan AI",
+                visibility: data.visibility || 'private',
+                level: (searchState.activeFilters.level?.[0] !== 'ALL' ? searchState.activeFilters.level?.[0] : 'N3') as any,
+                cards: data.items?.map((item: any) => ({
+                    front: item.front || item.term || item.kanji || "",
+                    back: item.back || item.definition || item.meaning || "",
+                    reading: item.reading || item.hiragana || "",
+                    mnemonic: item.mnemonic || ""
+                })),
+                tags: ['personal']
+            });
+            await loadSets();
+            setIsCreatePanelOpen(false);
+        } catch (err) {
+            console.error("Failed to save flashcard set:", err);
+            throw err;
+        }
+    };
 
     return (
-        <div className="min-h-screen bg-background pb-24">
+        <div className="min-h-screen bg-neutral-beige/20 pb-24">
             {/* Header */}
-            <header className="bg-card border-b border-border px-6 py-8 sticky top-0 z-50">
-                <div className="max-w-6xl mx-auto">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
-                        <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-secondary rounded-xl flex items-center justify-center">
-                                <Brain size={24} className="text-secondary-foreground" />
-                            </div>
-                            <div>
-                                <h1 className="text-2xl font-bold text-foreground font-display">Flashcards</h1>
-                                <p className="text-sm text-muted-foreground">Spaced repetition for mastery</p>
-                            </div>
-                        </div>
+            <PageHeader
+                title="Flashcards"
+                subtitle="Master vocabulary through spaced repetition"
+                icon={<Layers size={24} className="text-white" />}
+                iconBgColor="bg-primary-strong"
+                backHref="/activity"
+                backLabel="Back"
+                backPosition="inline"
+                rightContent={
+                    <>
+                        <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
+                        <CreateButton label="Create Set" onClick={handleCreateClick} />
+                    </>
+                }
+            >
+                <SearchNexus
+                    placeholder="Search flashcard sets..."
+                    groups={filterGroups}
+                    state={searchState}
+                    onChange={handleSearchChange}
+                    onPersonalTabAttempt={() => setShowLoginPrompt(true)}
+                    isLoggedIn={!!user}
+                    variant="minimal"
+                    showSwitches={false}
+                />
+            </PageHeader>
 
-                        {/* Tabs */}
-                        <div className="flex p-1 bg-muted rounded-xl">
-                            <button onClick={() => { setActiveTab('public'); clearFilters(); }} className={`px-5 py-2 rounded-lg text-sm font-bold transition-colors ${activeTab === 'public' ? 'bg-card text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
-                                Public Library
-                            </button>
-                            <button onClick={() => { setActiveTab('personal'); clearFilters(); }} className={`px-5 py-2 rounded-lg text-sm font-bold transition-colors ${activeTab === 'personal' ? 'bg-card text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
-                                My Collection
-                            </button>
-                        </div>
-                    </div>
 
-                    {/* Search and Filters */}
-                    <div className="flex flex-col md:flex-row gap-3">
-                        <div className="flex-1 relative">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
-                            <input
-                                type="text"
-                                placeholder="Search decks..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-11 pr-4 py-3 bg-muted rounded-xl border-none focus:outline-none focus:ring-2 focus:ring-primary/20"
+            {/* Main Content */}
+            <main className="max-w-6xl mx-auto px-6 py-12">
+                {filteredSets.length > 0 ? (
+                    <div className={viewMode === 'GRID'
+                        ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                        : "flex flex-col gap-4"
+                    }>
+                        {filteredSets.map((set) => (
+                            <ListingCard
+                                key={set.id}
+                                title={set.title}
+                                description={set.description}
+                                icon={<Layers size={24} />}
+                                iconBgColor="bg-neutral-beige/50"
+                                viewMode={viewMode}
+                                metadata={[
+                                    { label: 'Cards', value: set.cardCount || 0, icon: <Layers size={14} className="text-primary-strong" /> },
+                                    ...(set.visibility === 'global' ? [{ label: 'Official', value: 'Verified', icon: <ShieldCheck size={14} className="text-primary-strong" /> }] : []),
+                                    ...(set.creatorName && set.visibility !== 'global' ? [{ label: 'By', value: set.creatorName, icon: <UserIcon size={14} /> }] : [])
+                                ]}
+                                badge={set.level ? { label: set.level } : undefined}
+                                onClick={() => {/* handle navigate */ }}
                             />
-                        </div>
-                        <button
-                            onClick={() => setShowAllFilters(!showAllFilters)}
-                            className={`px-5 py-3 rounded-xl font-bold text-sm flex items-center gap-2 transition-colors ${showAllFilters || selectedTags.length > 0 ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:text-foreground'}`}
-                        >
-                            <Filter size={16} />
-                            Filter
-                            {selectedTags.length > 0 && <span className="w-5 h-5 bg-background/20 rounded-full flex items-center justify-center text-xs">{selectedTags.length}</span>}
-                        </button>
+                        ))}
                     </div>
-
-                    {/* Filter Panel */}
-                    {showAllFilters && activeTab === 'public' && (
-                        <div className="mt-6 bg-muted rounded-2xl p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <FilterSection label="Categories" tags={getTagsByType('category').filter(t => t.id !== 'personal')} selected={selectedTags} toggle={toggleTag} />
-                            <FilterSection label="JLPT Level" tags={getTagsByType('level')} selected={selectedTags} toggle={toggleTag} />
-                            <FilterSection label="Skill" tags={getTagsByType('skill')} selected={selectedTags} toggle={toggleTag} />
-                        </div>
-                    )}
-                </div>
-            </header>
-
-            <main className="max-w-6xl mx-auto px-6 py-8">
-                {activeTab === 'personal' && !user && (
-                    <div className="py-12">
-                        <LoginPromptCard title="Sign in for Personal Decks" message="Create an account to build and manage your own flashcard decks." icon={<UserIcon size={40} className="text-muted-foreground" />} />
+                ) : (
+                    <div className="text-center py-20 bg-neutral-white border border-neutral-gray/20 rounded-[2rem]">
+                        <p className="text-neutral-ink font-black uppercase tracking-widest">No sets found matching your parameters</p>
                     </div>
                 )}
 
-                {loading ? (
-                    <div className="flex flex-col items-center justify-center py-20">
-                        <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
-                        <p className="text-muted-foreground">Loading decks...</p>
-                    </div>
-                ) : (activeTab === 'public' || (activeTab === 'personal' && user)) && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {filteredDecks.length > 0 ? (
-                            filteredDecks.map((deck) => <DeckCard key={deck.id} deck={deck} />)
-                        ) : (
-                            <div className="col-span-full py-20 text-center">
-                                <div className="w-16 h-16 bg-muted rounded-2xl flex items-center justify-center mx-auto mb-4">
-                                    <Compass size={32} className="text-muted-foreground" />
-                                </div>
-                                <h3 className="text-lg font-bold text-foreground mb-2">No decks found</h3>
-                                <button onClick={clearFilters} className="text-sm text-primary hover:underline font-bold">Clear filters</button>
-                            </div>
-                        )}
+                {/* Personalization Gate */}
+                {searchState.activeTab === 'PERSONAL' && !user && (
+                    <div className="mt-12">
+                        <InformativeLoginCard
+                            title="Your Personal Vault"
+                            description="Sign in to create custom sets, track your SRS progress, and bookmark community resources for personal study."
+                            icon={Layers}
+                            benefits={[
+                                "Create Unlimited Custom Sets",
+                                "Spaced Repetition Tracking (SRS)",
+                                "Priority Search Results",
+                                "Synchronization Across Devices"
+                            ]}
+                            flowType="FLASHCARDS"
+                        />
                     </div>
                 )}
             </main>
-        </div>
-    );
-}
 
-function FilterSection({ label, tags, selected, toggle }: any) {
-    return (
-        <div>
-            <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-3">{label}</h4>
-            <div className="flex flex-wrap gap-2">
-                {tags.map((tag: any) => (
-                    <button key={tag.id} onClick={() => toggle(tag.id)} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${selected.includes(tag.id) ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground border border-border hover:text-foreground'}`}>
-                        {tag.label}
-                    </button>
-                ))}
-            </div>
-        </div>
-    );
-}
-
-function DeckCard({ deck }: { deck: DeckDefinition }) {
-    let Icon = BookOpen;
-    let colorClass = "bg-primary/10 text-primary";
-
-    if (deck.tags.includes('kanji')) { colorClass = "bg-red-50 text-red-600"; }
-    else if (deck.tags.includes('grammar')) { Icon = Layers; colorClass = "bg-secondary text-secondary-foreground"; }
-    else if (deck.tags.includes('personal')) { Icon = UserIcon; colorClass = "bg-muted text-foreground"; }
-
-    const levelTag = deck.tags.find(t => ['n1', 'n2', 'n3', 'n4', 'n5'].includes(t));
-    const tagInfo = levelTag ? getTagById(levelTag) : null;
-
-    return (
-        <div className="bg-card rounded-2xl border border-border p-6 hover:border-primary/40 transition-colors flex flex-col h-full">
-            <div className="flex items-start justify-between mb-4">
-                <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${colorClass}`}>
-                    <Icon size={22} />
-                </div>
-                {tagInfo && <span className="text-xs font-bold text-muted-foreground">{tagInfo.label}</span>}
-            </div>
-
-            <h3 className="text-lg font-bold text-foreground mb-2">{deck.title}</h3>
-            <p className="text-sm text-muted-foreground mb-6 flex-grow line-clamp-2">{deck.description}</p>
-
-            {deck.actionLink ? (
-                <Link href={deck.actionLink} className="block w-full text-center py-3 bg-foreground text-background rounded-xl font-bold text-sm hover:bg-foreground/90 transition-colors">
-                    Open Deck
-                </Link>
-            ) : deck.component ? (
-                <div className="w-full">{deck.component}</div>
-            ) : null}
+            <CreateContentPanel
+                isOpen={isCreatePanelOpen}
+                onClose={() => setIsCreatePanelOpen(false)}
+                type="FLASHCARDS"
+                onSave={handleSaveContent}
+            />
         </div>
     );
 }

@@ -106,9 +106,9 @@ function VideoSection({ title, videos, onDelete, icon, defaultOpen = true }: Vid
             {icon}
           </div>
           {title}
-          <span className="text-xs font-black text-muted-foreground/40 uppercase tracking-widest ml-2">({videos.length})</span>
+          <span className="text-xs font-black text-neutral-ink uppercase tracking-widest ml-2">({videos.length})</span>
         </span>
-        <ChevronDown className={`w-6 h-6 text-muted-foreground transition-transform duration-500 ${isOpen ? "rotate-180" : ""}`} />
+        <ChevronDown className={`w-6 h-6 text-neutral-ink transition-transform duration-500 ${isOpen ? "rotate-180" : ""}`} />
       </button>
 
       {isOpen && (
@@ -127,7 +127,7 @@ function VideoSection({ title, videos, onDelete, icon, defaultOpen = true }: Vid
                 </div>
                 <div className="p-6">
                   <h3 className="text-sm font-black text-foreground mb-2 line-clamp-2 font-display leading-tight group-hover:text-primary transition-colors">{video.title}</h3>
-                  <p className="text-xs font-bold text-muted-foreground line-clamp-2 leading-relaxed">{video.description}</p>
+                  <p className="text-xs font-bold text-neutral-ink line-clamp-2 leading-relaxed">{video.description}</p>
                 </div>
               </Link>
               {onDelete && (
@@ -221,7 +221,7 @@ export default function PodcastsPage() {
             <h1 className="text-4xl md:text-5xl font-black text-foreground mb-3 font-display tracking-tight">
               Podcasts & <span className="text-primary">Videos</span>
             </h1>
-            <p className="text-muted-foreground font-bold text-sm">Japanese listening practice from YouTube</p>
+            <p className="text-neutral-ink font-bold text-sm">Japanese listening practice from YouTube</p>
           </div>
           <button
             onClick={() => {
@@ -248,34 +248,34 @@ export default function PodcastsPage() {
             <h2 className="text-2xl font-black text-foreground mb-8 font-display">Add Custom YouTube Video</h2>
             <form onSubmit={handleSubmit} className="space-y-8">
               <div className="space-y-3">
-                <label className="block text-[10px] font-black text-muted-foreground/50 uppercase tracking-[0.2em] font-display ml-4">YouTube URL</label>
+                <label className="block text-[10px] font-black text-neutral-ink uppercase tracking-[0.2em] font-display ml-4">YouTube URL</label>
                 <input
                   type="text"
                   value={newVideo.url}
                   onChange={(e) => setNewVideo({ ...newVideo, url: e.target.value })}
-                  className="w-full p-6 bg-muted/30 border-none rounded-2xl focus:ring-4 focus:ring-primary/10 font-bold placeholder:text-muted-foreground/30 "
+                  className="w-full p-6 bg-muted/30 border-none rounded-2xl focus:ring-4 focus:ring-primary/10 font-bold placeholder:text-neutral-ink "
                   placeholder="https://www.youtube.com/watch?v=..."
                   required
                 />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-3">
-                  <label className="block text-[10px] font-black text-muted-foreground/50 uppercase tracking-[0.2em] font-display ml-4">Title (optional)</label>
+                  <label className="block text-[10px] font-black text-neutral-ink uppercase tracking-[0.2em] font-display ml-4">Title (optional)</label>
                   <input
                     type="text"
                     value={newVideo.customTitle}
                     onChange={(e) => setNewVideo({ ...newVideo, customTitle: e.target.value })}
-                    className="w-full p-6 bg-muted/30 border-none rounded-2xl focus:ring-4 focus:ring-primary/10 font-bold placeholder:text-muted-foreground/30 "
+                    className="w-full p-6 bg-muted/30 border-none rounded-2xl focus:ring-4 focus:ring-primary/10 font-bold placeholder:text-neutral-ink "
                     placeholder="Custom title"
                   />
                 </div>
                 <div className="space-y-3">
-                  <label className="block text-[10px] font-black text-muted-foreground/50 uppercase tracking-[0.2em] font-display ml-4">Description (optional)</label>
+                  <label className="block text-[10px] font-black text-neutral-ink uppercase tracking-[0.2em] font-display ml-4">Description (optional)</label>
                   <input
                     type="text"
                     value={newVideo.customDescription}
                     onChange={(e) => setNewVideo({ ...newVideo, customDescription: e.target.value })}
-                    className="w-full p-6 bg-muted/30 border-none rounded-2xl focus:ring-4 focus:ring-primary/10 font-bold placeholder:text-muted-foreground/30 "
+                    className="w-full p-6 bg-muted/30 border-none rounded-2xl focus:ring-4 focus:ring-primary/10 font-bold placeholder:text-neutral-ink "
                     placeholder="Short description"
                   />
                 </div>
@@ -284,7 +284,7 @@ export default function PodcastsPage() {
                 <button type="submit" className="px-10 py-4 bg-primary text-primary-foreground font-black rounded-2xl hover:opacity-90  font-display uppercase tracking-widest text-xs">
                   Add Video
                 </button>
-                <button type="button" onClick={() => setShowAddForm(false)} className="px-10 py-4 bg-muted text-muted-foreground font-black rounded-2xl hover:bg-muted/80 font-display uppercase tracking-widest text-xs">
+                <button type="button" onClick={() => setShowAddForm(false)} className="px-10 py-4 bg-muted text-neutral-ink font-black rounded-2xl hover:bg-muted/80 font-display uppercase tracking-widest text-xs">
                   Cancel
                 </button>
               </div>
@@ -304,7 +304,7 @@ export default function PodcastsPage() {
 
         {/* Recommended Channels */}
         <div className="bg-card p-8 rounded-2xl border border-border ">
-          <h2 className="text-[10px] font-black text-muted-foreground/50 uppercase tracking-[0.2em] mb-6 font-display ml-2">Recommended YouTube Channels</h2>
+          <h2 className="text-[10px] font-black text-neutral-ink uppercase tracking-[0.2em] mb-6 font-display ml-2">Recommended YouTube Channels</h2>
           <div className="flex flex-wrap gap-3">
             {youtubeChannels.map((channel) => (
               <a
@@ -312,7 +312,7 @@ export default function PodcastsPage() {
                 href={channel.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-5 py-2 bg-muted/50 text-muted-foreground text-xs font-black rounded-full hover:bg-primary hover:text-white transition-all font-display uppercase tracking-widest "
+                className="px-5 py-2 bg-muted/50 text-neutral-ink text-xs font-black rounded-full hover:bg-primary hover:text-white transition-all font-display uppercase tracking-widest "
               >
                 {channel.name}
               </a>

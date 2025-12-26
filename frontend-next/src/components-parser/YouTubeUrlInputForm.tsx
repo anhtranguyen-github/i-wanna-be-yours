@@ -54,7 +54,7 @@ const YouTubeUrlInputForm: React.FC<YouTubeUrlInputFormProps> = ({ inputUrl, set
   return (
     <div className="flex justify-center gap-4 pt-5">
       <div className="max-w-lg w-full">
-        <div className="flex items-center border border-gray-300 rounded bg-white text-gray-800">
+        <div className="flex items-center border border-gray-300 rounded bg-white text-neutral-ink">
           <span className="px-3 py-2 bg-gray-200 border-r border-gray-300">URL</span>
           <input
             type="text"

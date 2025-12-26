@@ -57,15 +57,15 @@ export function StatCard({
     };
 
     const TrendIcon = trend === 'up' ? TrendingUp : trend === 'down' ? TrendingDown : Minus;
-    const trendColor = trend === 'up' ? 'text-emerald-500' : trend === 'down' ? 'text-red-500' : 'text-slate-400';
+    const trendColor = trend === 'up' ? 'text-emerald-500' : trend === 'down' ? 'text-red-500' : 'text-neutral-ink';
 
     return (
         <div
             className={cn(
-                'relative rounded-2xl bg-white border border-slate-100',
-                'shadow-sm hover:shadow-md transition-all duration-300',
+                'relative rounded-2xl bg-neutral-white border border-neutral-gray/20',
+                ' hover: transition-all duration-300',
                 sizeClasses[size],
-                isClickable && 'cursor-pointer hover:border-primary/30 group',
+                isClickable && 'cursor-pointer hover:border-primary/40 group',
                 className
             )}
             onClick={onClick}
@@ -97,17 +97,17 @@ export function StatCard({
             </div>
 
             {/* Label */}
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">
+            <p className="text-[10px] font-black text-neutral-ink/90 uppercase tracking-[0.2em] mb-1 font-display">
                 {label}
             </p>
 
             {/* Value */}
             <div className="flex items-baseline gap-1">
-                <span className={cn('font-black text-slate-900', valueSizes[size])}>
+                <span className={cn('font-black text-neutral-ink font-display', valueSizes[size])}>
                     {value}
                 </span>
                 {unit && (
-                    <span className="text-sm font-medium text-slate-400">{unit}</span>
+                    <span className="text-sm font-medium text-neutral-ink">{unit}</span>
                 )}
             </div>
 

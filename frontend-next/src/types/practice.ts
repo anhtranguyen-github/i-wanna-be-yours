@@ -1,5 +1,5 @@
 // =============================================================================
-// JLPT Practice Platform - Type Definitions
+// Hanabira Practice Nexus - Unified Type Definitions
 // =============================================================================
 
 // --- Core Enums & Types ---
@@ -16,7 +16,59 @@ export type DisplayMode = 'FOCUS' | 'SCROLL';
 
 export type TimerMode = 'UNLIMITED' | 'JLPT_STANDARD' | 'CUSTOM';
 
-// --- Question Types ---
+export type ProtocolOrigin = 'system' | 'chatbot' | 'manual' | 'ai';
+
+// --- Unified Metadata & Tags ---
+
+export interface PracticeTags {
+    level: JLPTLevel | 'ALL';
+    skills: SkillType[];
+    category?: string; // e.g. "Kanj", "Particles"
+    origin: ProtocolOrigin;
+    isStrict?: boolean; // For strict timing enforcement
+    timerMode?: TimerMode;
+}
+
+export interface PracticeStats {
+    questionCount: number;
+    timeLimitMinutes?: number;
+    timeLimitSeconds?: number;
+    estimatedTimeMinutes?: number;
+}
+
+export interface PersonalData {
+    hasCompleted: boolean;
+    bestScore?: number;
+    lastAttemptedAt?: string;
+    attemptCount: number;
+    status: 'NEW' | 'PASSED' | 'FAILED' | 'IN_PROGRESS';
+}
+
+// --- Unified Practice Node (Base for Quizzes/Exams) ---
+
+export interface PracticeNode {
+    id: string;
+    title: string;
+    description: string;
+    // Unified Backend structure
+    mode: Exclude<PracticeMode, 'ALL'>;
+    level: JLPTLevel;
+    skills: SkillType[];
+    isPublic: boolean;
+    tags?: PracticeTags;
+    stats: PracticeStats;
+
+    // Personalization (for logged-in users)
+    personalData?: PersonalData;
+
+    // For Multi-segment Exams (Standard JLPT)
+    segments?: ExamSegment[];
+
+    // Guest access
+    isPremium?: boolean;
+}
+
+// --- Question Types (Cognitive Units) ---
 
 export interface QuestionOption {
     id: string;
@@ -24,6 +76,9 @@ export interface QuestionOption {
     isCorrect?: boolean; // Only revealed after submission
 }
 
+/**
+ * Formerly Question, now evolving towards CognitiveUnit
+ */
 export interface Question {
     id: string;
     type: 'MULTIPLE_CHOICE' | 'READING_PASSAGE' | 'LISTENING';
@@ -33,57 +88,41 @@ export interface Question {
     options: QuestionOption[];
     correctOptionId: string;
     explanation: string;
-    tags: {
-        level: JLPTLevel;
-        skill: SkillType;
-        topic?: string;
-        difficulty?: number; // 1-5
-    };
+    tags: PracticeTags;
 }
 
-// --- Exam/Quiz Configuration ---
+// --- Specific Implementations ---
 
-export interface ExamConfig {
+export interface ExamSegment {
     id: string;
-    mode: Exclude<PracticeMode, 'ALL'>;
-    title: string;
-    description: string;
-    level: JLPTLevel;
+    title: string; // e.g. "Language Knowledge"
     skills: SkillType[];
-    questionCount: number;
-    timerMode: TimerMode;
-    timeLimitMinutes?: number; // For JLPT_STANDARD or CUSTOM
-    sections?: ExamSection[]; // For FULL_EXAM only
-}
-
-export interface ExamSection {
-    id: string;
-    name: string;
-    skill: SkillType;
     questionCount: number;
     timeLimitMinutes: number;
     breakAfterMinutes?: number;
+    questions?: Question[];
 }
 
 // --- Session State ---
 
 export interface UserAnswer {
     questionId: string;
-    selectedOptionId: string | null;
+    selectedOptionId: string | string[] | null;
     timeSpentSeconds: number;
 }
 
 export interface ExamSession {
     id: string;
-    examId: string;
-    examConfig: ExamConfig;
+    nodeId: string; // References PracticeNode id
+    node: PracticeNode;
     questions: Question[];
-    answers: Map<string, UserAnswer> | Record<string, UserAnswer>;
-    flaggedQuestions: Set<string> | string[];
+    answers: Record<string, UserAnswer>;
+    flaggedQuestions: string[];
     currentQuestionIndex: number;
-    currentSectionIndex?: number; // For FULL_EXAM
+    currentSegmentIndex?: number;
     displayMode: DisplayMode;
-    startedAt: Date | string;
+    status: 'INTRO' | 'TESTING' | 'BREAK' | 'TRANSITION' | 'COMPLETED';
+    startedAt: string;
     timeRemainingSeconds: number;
     isSubmitted: boolean;
     isPaused: boolean;
@@ -92,22 +131,6 @@ export interface ExamSession {
 
 // --- Results ---
 
-export interface ExamResult {
-    sessionId: string;
-    examId: string;
-    examTitle: string;
-    level: JLPTLevel;
-    totalQuestions: number;
-    correctAnswers: number;
-    incorrectAnswers: number;
-    unansweredQuestions: number;
-    scorePercentage: number;
-    timeTakenSeconds: number;
-    skillBreakdown: SkillBreakdown[];
-    submittedAt: Date | string;
-    passed: boolean;
-}
-
 export interface SkillBreakdown {
     skill: SkillType;
     totalQuestions: number;
@@ -115,28 +138,13 @@ export interface SkillBreakdown {
     percentage: number;
 }
 
-// --- UI Props ---
-
-export interface PracticeCardProps {
-    config: ExamConfig;
-    onStart: (examId: string) => void;
-}
-
-export interface FilterState {
-    mode: PracticeMode;
-    level: JLPTLevel | 'ALL';
-    skill: SkillType | 'ALL';
-}
-
-// --- Personal Collections ---
-
-export interface ExamAttempt {
+export interface PracticeAttempt {
     id: string;
     userId?: string;
-    examId: string;
-    examTitle: string;
-    examMode: Exclude<PracticeMode, 'ALL'>;
-    level: JLPTLevel;
+    nodeId: string;
+    nodeTitle: string;
+    mode: Exclude<PracticeMode, 'ALL'>;
+    tags: PracticeTags;
 
     // Results
     totalQuestions: number;
@@ -147,33 +155,54 @@ export interface ExamAttempt {
     passed: boolean;
 
     // Timing
-    startedAt: Date | string;
-    completedAt: Date | string;
+    startedAt: string;
+    completedAt: string;
     timeTakenSeconds: number;
 
     // Details
     skillBreakdown: SkillBreakdown[];
     answers: Record<string, UserAnswer>;
+    weakItems?: WeakItem[];
 }
+
+export interface WeakItem {
+    id: string | null; // e.g. flashcard_id
+    learningPoint: string;
+    type: string;
+}
+
+// --- Legacy Compatibility (Aliasing) ---
+export type ExamConfig = PracticeNode;
+export type ExamAttempt = PracticeAttempt;
+export type ExamResult = PracticeAttempt;
 
 export interface UserCreatedExam {
     id: string;
     userId: string;
-
-    // Config
-    config: ExamConfig;
+    config: PracticeNode;
     questions: Question[];
-
-    // Metadata
-    origin: 'manual' | 'chatbot';
-    createdAt: Date | string;
-    updatedAt: Date | string;
-
-    // Visibility
-    isPublic: boolean;
-    shareUrl?: string;
-
-    // Stats
+    createdAt: string;
+    updatedAt: string;
     timesAttempted: number;
+    isPublic: boolean;
     averageScore?: number;
+}
+
+// --- Filter State ---
+
+export interface FilterState {
+    mode: PracticeMode;
+    level: JLPTLevel | 'ALL';
+    skill: SkillType | 'ALL';
+    timing?: 'ALL' | 'TIMED' | 'UNLIMITED';
+    status?: 'ALL' | 'COMPLETED' | 'IN_PROGRESS' | 'NEVER_ATTEMPTED';
+    origin?: 'ALL' | ProtocolOrigin;
+    access?: 'PUBLIC' | 'PERSONAL';
+}
+
+// --- UI Props ---
+
+export interface PracticeCardProps {
+    node: PracticeNode;
+    onStart: (id: string) => void;
 }

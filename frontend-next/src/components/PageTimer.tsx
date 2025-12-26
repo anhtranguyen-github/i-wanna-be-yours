@@ -103,11 +103,11 @@ const PageTimer = () => {
 return (
     <div>
         <div className="border-t border-gray-200 py-4">
-          <p className="text-xs text-gray-600">
-            <span className="font-bold text-gray-800">All Time:</span> {formatTotalTime(seconds)}
+          <p className="text-xs text-neutral-ink">
+            <span className="font-bold text-neutral-ink">All Time:</span> {formatTotalTime(seconds)}
           </p>
-          <p className="text-xs text-gray-600 mt-2">
-            <span className="font-bold text-gray-800">Today:</span> {formatTodayTime(todaySeconds)}
+          <p className="text-xs text-neutral-ink mt-2">
+            <span className="font-bold text-neutral-ink">Today:</span> {formatTodayTime(todaySeconds)}
           </p>
       </div>
     </div>

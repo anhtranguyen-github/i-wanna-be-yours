@@ -8,75 +8,55 @@
 
 @layer base {
   :root {
-    /* Sakura Zen (Modern/Clean) Theme */
-    --background: 40 30% 98%;
-    /* #FFFDF8 Rice Paper */
-    --foreground: 210 30% 20%;
-    /* #1E293B Ink Navy */
+    /* OFFICIAL HANABIRA.ORG DESIGN SYSTEM PALETTE */
+    --background: 28 100% 96%;
+    /* S-01 Warm Cream: #FFF1E6 */
+    --foreground: 0 0% 29%;
+    /* N-04 Ink Gray: #4A4A4A */
 
-    --card: 0 0% 100%;
-    /* #FFFFFF Pure White */
-    --card-foreground: 210 30% 20%;
+    --card: 60 25% 98%;
+    /* N-01 Rice White: #FAFAF7 */
+    --card-foreground: 0 0% 29%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 210 30% 20%;
+    --popover: 60 25% 98%;
+    --popover-foreground: 0 0% 29%;
 
-    --primary: 142 71% 45%;
-    /* #22C55E Matcha Green */
-    --primary-foreground: 0 0% 100%;
+    --primary: 345 77% 83%;
+    /* P-01 Sakura Pink: #F6B1C3 */
+    --primary-foreground: 0 0% 29%;
 
-    --secondary: 350 85% 90%;
-    /* #FEE2E2 Sakura Pink */
-    --secondary-foreground: 210 30% 20%;
+    --secondary: 20 25% 90%;
+    /* N-02 Paper Beige: #EFE6D8 */
+    --secondary-foreground: 0 0% 29%;
 
-    --muted: 210 20% 96%;
-    /* #F1F5F9 Cloud Gray */
-    --muted-foreground: 215 16% 47%;
+    --muted: 20 25% 90%;
+    --muted-foreground: 0 0% 29%;
+    /* N-04 Ink Gray (Black equivalent): #4A4A4A */
 
-    --accent: 45 90% 60%;
-    /* #F59F0B Yuzu Orange */
-    --accent-foreground: 210 30% 20%;
+    --accent: 45 97% 48%;
+    /* A-02 Golden Sun: #F2B705 */
+    --accent-foreground: 0 0% 29%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 8 70% 53%;
+    /* A-01 Torii Red: #D94A38 */
+    --destructive-foreground: 60 25% 98%;
 
-    --border: 210 20% 90%;
-    /* Subtle border */
-    --input: 210 20% 90%;
-    --ring: 142 71% 45%;
-    /* Matcha Green ring */
+    --border: 0 0% 29%;
+    /* N-04 Ink Gray (Black equivalent) */
+    --input: 0 0% 29%;
+    --ring: 345 77% 83%;
 
-    --radius: 1.5rem;
-    /* 24px - Consistent with 'clay' rounding */
+    --radius: 0.75rem;
 
-    /* Chart Colors */
-    --chart-1: 142 71% 45%;
-    /* Matcha */
-    --chart-2: 350 85% 90%;
-    /* Sakura */
-    --chart-3: 45 90% 60%;
-    /* Yuzu */
-    --chart-4: 200 80% 60%;
-    /* Sky */
-    --chart-5: 280 60% 60%;
-    /* Wisteria */
-
-    /* Sidebar - Clean Zen */
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 210 30% 20%;
-    --sidebar-primary: 142 71% 45%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 350 85% 90%;
-    --sidebar-accent-foreground: 142 71% 45%;
-    /* Matcha text on Sakura bg */
-    --sidebar-border: 210 20% 94%;
-    --sidebar-ring: 142 71% 45%;
-
-    /* Knowledge Base Specifics (Consolidated) */
-    --kanji: 27 87% 60%;
+    /* Semantic Categories (Refined) */
+    --kanji: 8 70% 53%;
+    /* Torii Red */
     --grammar: 221 83% 53%;
-    --vocab: 142 71% 45%;
-    --reading: 330 80% 60%;
+    /* Indigo */
+    --vocab: 148 37% 67%;
+    /* Leaf Green */
+    --reading: 345 77% 83%;
+    /* Sakura Pink */
   }
 
   /* No dark mode per user request "Modern, Plain, Clean" often favors light/warm foundations */
@@ -150,4 +130,99 @@
 
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Chat UI Animations */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes messageAppear {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slideInRight {
+  animation: slideInRight 0.3s ease-out forwards;
+}
+
+.animate-slideInLeft {
+  animation: slideInLeft 0.3s ease-out forwards;
+}
+
+.animate-messageAppear {
+  animation: messageAppear 0.25s ease-out forwards;
+}
+
+/* Chat sidebar transitions */
+.chat-sidebar-transition {
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.2s ease-out;
+}
+
+/* Smooth content fade for sidebar state changes */
+.sidebar-content-fade {
+  transition: opacity 0.2s ease-out;
+}
+
+/* Artifact card hover effect */
+.artifact-card {
+  transition: transform 0.2s ease-out,
+    box-shadow 0.2s ease-out,
+    border-color 0.2s ease-out;
+}
+
+.artifact-card:hover {
+  transform: translateY(-2px);
+}
+
+/* Message bubble animations */
+.message-bubble {
+  animation: messageAppear 0.25s ease-out forwards;
+}
+
+/* Loading dots animation improvement */
+@keyframes bounceDot {
+
+  0%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+
+  40% {
+    transform: translateY(-6px);
+  }
+}
+
+.loading-dot {
+  animation: bounceDot 1.4s ease-in-out infinite;
 }

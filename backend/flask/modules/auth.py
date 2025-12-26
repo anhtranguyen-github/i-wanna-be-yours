@@ -19,17 +19,17 @@ def login_required(f):
             token = request.cookies.get("accessToken")
 
         if not token:
-            return jsonify({"error": "Token is missing"}), 401
+            return jsonify({"code": "UNAUTHORIZED", "error": "Token is missing"}), 401
 
         try:
             payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
             request.user = payload
         except jwt.ExpiredSignatureError:
-            return jsonify({"error": "Token has expired"}), 401
+            return jsonify({"code": "TOKEN_EXPIRED", "error": "Token has expired"}), 401
         except jwt.InvalidTokenError:
-            return jsonify({"error": "Invalid token"}), 401
+            return jsonify({"code": "TOKEN_INVALID", "error": "Invalid token"}), 401
         except Exception as e:
-            return jsonify({"error": "Authentication failed"}), 401
+            return jsonify({"code": "AUTH_FAILED", "error": "Authentication failed"}), 401
 
         return f(*args, **kwargs)
     return decorated
@@ -39,6 +39,6 @@ def admin_required(f):
     @login_required
     def decorated(*args, **kwargs):
         if request.user.get("role") != "admin":
-            return jsonify({"error": "Admin role required"}), 403
+            return jsonify({"code": "FORBIDDEN", "error": "Admin role required"}), 403
         return f(*args, **kwargs)
     return decorated

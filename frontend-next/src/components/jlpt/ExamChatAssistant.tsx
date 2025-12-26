@@ -71,8 +71,8 @@ export function ExamChatAssistant({
                 explanation: `This tests your understanding of ${skill.toLowerCase()} at the ${level} level.`,
                 tags: {
                     level,
-                    skill,
-                    difficulty: Math.floor(Math.random() * 3) + 2,
+                    skills: [skill],
+                    origin: 'ai',
                 },
             });
         }
@@ -218,14 +218,14 @@ export function ExamChatAssistant({
                         className={`flex gap-3 ${message.role === 'user' ? 'flex-row-reverse' : ''}`}
                     >
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${message.role === 'assistant'
-                                ? 'bg-gradient-to-br from-emerald-400 to-teal-500 text-white'
-                                : 'bg-slate-200 text-slate-600'
+                            ? 'bg-gradient-to-br from-emerald-400 to-teal-500 text-white'
+                            : 'bg-slate-200 text-slate-600'
                             }`}>
                             {message.role === 'assistant' ? <Bot size={16} /> : <User size={16} />}
                         </div>
                         <div className={`max-w-[80%] p-4 rounded-2xl ${message.role === 'assistant'
-                                ? 'bg-white border border-slate-200 text-slate-700'
-                                : 'bg-brand-green text-white'
+                            ? 'bg-white border border-slate-200 text-slate-700'
+                            : 'bg-brand-green text-white'
                             }`}>
                             <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                         </div>
@@ -238,7 +238,7 @@ export function ExamChatAssistant({
                             <Bot size={16} />
                         </div>
                         <div className="bg-white border border-slate-200 rounded-2xl p-4">
-                            <Loader2 size={16} className="animate-spin text-slate-400" />
+                            <Loader2 size={16} className="animate-spin text-neutral-ink" />
                         </div>
                     </div>
                 )}
@@ -249,8 +249,8 @@ export function ExamChatAssistant({
             {/* Quick Prompts */}
             <div className="px-4 py-2 border-t border-slate-200 bg-white">
                 <div className="flex items-center gap-2 mb-2">
-                    <Wand2 size={14} className="text-slate-400" />
-                    <span className="text-xs text-slate-500">Quick prompts:</span>
+                    <Wand2 size={14} className="text-neutral-ink" />
+                    <span className="text-xs text-neutral-ink">Quick prompts:</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
                     {QUICK_PROMPTS.map((prompt, idx) => (

@@ -254,17 +254,17 @@ const CreateReadingFlashcard: React.FC<CreateReadingFlashcardProps> = ({
 
   return (
     <div className="bg-white p-4 shadow-md rounded-md text-black w-full max-w-lg mx-auto">
-      <h1 className="text-base font-semibold text-gray-900 mb-2">Sentence Mining - Flashcard Creation</h1>
+      <h1 className="text-base font-semibold text-neutral-ink mb-2">Sentence Mining - Flashcard Creation</h1>
 
       <div className="space-y-2">
         <div className="grid grid-cols-2 gap-2">
-          <div className="text-xs text-gray-900 font-medium">Clicked Word:</div>
+          <div className="text-xs text-neutral-ink font-medium">Clicked Word:</div>
           <div className="text-sm text-gray-700">{word || "None"}</div>
 
-          <div className="text-xs text-gray-900 font-medium">Clicked WordDictForm:</div>
+          <div className="text-xs text-neutral-ink font-medium">Clicked WordDictForm:</div>
           <div className="text-sm text-gray-700">{wordDictForm || "None"}</div>
 
-          <div className="text-xs text-gray-900 font-medium">Word Sentence:</div>
+          <div className="text-xs text-neutral-ink font-medium">Word Sentence:</div>
           <div className="text-sm text-gray-700 col-span-1">
             {sentence && sentence.length > 0
               ? sentence.map((word, index) => (
@@ -275,7 +275,7 @@ const CreateReadingFlashcard: React.FC<CreateReadingFlashcardProps> = ({
 
           {translatedText && (
             <>
-              <div className="text-sm text-gray-900 font-medium">Translated Text</div>
+              <div className="text-sm text-neutral-ink font-medium">Translated Text</div>
               <div className="text-sm text-gray-700 col-span-1">
                 {translatedText}
                 <button
@@ -329,20 +329,20 @@ const CreateReadingFlashcard: React.FC<CreateReadingFlashcardProps> = ({
 
           {romaji && (
             <>
-              <div className="text-xs text-gray-900 font-medium">Sentence Romaji/Hiragana:</div>
+              <div className="text-xs text-neutral-ink font-medium">Sentence Romaji/Hiragana:</div>
               <div className="text-sm text-gray-700 col-span-1">{romaji}</div>
             </>
           )}
 
           {vocabularyData && (
             <>
-              <div className="text-xs text-gray-900 font-medium">Vocabulary Japanese:</div>
+              <div className="text-xs text-neutral-ink font-medium">Vocabulary Japanese:</div>
               <div className="text-sm text-gray-700 col-span-1">{vocabularyData.original}</div>
 
-              <div className="text-xs text-gray-900 font-medium">Vocabulary Simplified:</div>
+              <div className="text-xs text-neutral-ink font-medium">Vocabulary Simplified:</div>
               <div className="text-sm text-gray-700 col-span-1">{vocabularyData.hiragana}</div>
 
-              <div className="text-xs text-gray-900 font-medium">Vocabulary English:</div>
+              <div className="text-xs text-neutral-ink font-medium">Vocabulary English:</div>
               <div className="text-sm text-gray-700 col-span-1">{vocabularyData.englishTranslations.join(", ")}</div>
             </>
           )}

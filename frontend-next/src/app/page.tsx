@@ -7,7 +7,7 @@ import { Footer } from '@/components/landing/Footer';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#F8FAFC] font-nunito selection:bg-primary/20 selection:text-primary overflow-x-hidden">
+    <div className="min-h-screen bg-secondary font-nunito selection:bg-primary/20 selection:text-primary overflow-x-hidden">
       <Navbar />
       <Hero />
       <FeatureGrid />

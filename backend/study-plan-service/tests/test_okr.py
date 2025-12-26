@@ -21,9 +21,8 @@ def mock_env():
     mastery.register_routes(app)
     
     # Setup OKR
-    okr = OKRModule(mastery)
-    okr.client = client
-    okr.db = client["flaskStudyPlanDB"]
+    okr = OKRModule(mastery, client=client)
+    # Re-assigning collections just in case, though constructor now handles it
     okr.objectives = okr.db["okr_objectives"]
     okr.register_routes(app)
     

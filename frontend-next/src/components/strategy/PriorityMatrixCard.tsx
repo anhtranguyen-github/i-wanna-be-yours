@@ -73,7 +73,7 @@ export function PriorityMatrixCard({
         <div
             className={cn(
                 'rounded-2xl bg-white border border-slate-100',
-                'shadow-sm overflow-hidden',
+                ' overflow-hidden',
                 className
             )}
         >
@@ -82,14 +82,14 @@ export function PriorityMatrixCard({
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <AlertTriangle size={20} className="text-slate-700" />
-                        <h3 className="font-bold text-lg text-slate-900">Priority Matrix</h3>
+                        <h3 className="font-bold text-lg text-neutral-ink">Priority Matrix</h3>
                         <InfoTooltip
                             title={HELP_CONTENT.priority_matrix.title}
                             content={HELP_CONTENT.priority_matrix.content}
                             iconSize={14}
                         />
                     </div>
-                    <div className="flex items-center gap-2 text-xs text-slate-500">
+                    <div className="flex items-center gap-2 text-xs text-neutral-ink">
                         <span>Today&apos;s Focus:</span>
                         <span className={cn(
                             'px-2 py-0.5 rounded-full font-semibold',
@@ -105,7 +105,7 @@ export function PriorityMatrixCard({
                 {/* Time Allocation Bar */}
                 <div className="mt-4">
                     <div className="flex items-center gap-1 mb-1">
-                        <span className="text-xs text-slate-500">Recommended Time Allocation</span>
+                        <span className="text-xs text-neutral-ink">Recommended Time Allocation</span>
                     </div>
                     <div className="h-3 rounded-full overflow-hidden flex">
                         <div
@@ -132,7 +132,7 @@ export function PriorityMatrixCard({
 
             {/* Skills Overview */}
             <div className="p-5 border-b border-slate-100 bg-slate-50">
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">
+                <p className="text-xs font-semibold text-neutral-ink uppercase tracking-wide mb-3">
                     Skill Priorities
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -194,16 +194,16 @@ export function PriorityMatrixCard({
                                         onClick={() => onItemClick?.(item)}
                                         className={cn(
                                             'w-full text-left p-2 rounded-lg border transition-all duration-200',
-                                            'hover:shadow-sm',
+                                            'hover:',
                                             config.lightBg,
                                             config.border
                                         )}
                                     >
-                                        <p className="text-xs font-medium text-slate-900 truncate">
+                                        <p className="text-xs font-medium text-neutral-ink truncate">
                                             {item.title}
                                         </p>
                                         <div className="flex items-center justify-between mt-1">
-                                            <span className="text-[10px] text-slate-500 capitalize">
+                                            <span className="text-[10px] text-neutral-ink capitalize">
                                                 {item.content_type}
                                             </span>
                                             {item.error_count_last_7_days > 0 && (
@@ -236,7 +236,7 @@ export function PriorityMatrixCard({
 
             {coachExplainer && (
                 <div className="p-5 bg-primary/5 border-t border-slate-50 flex gap-3 items-start group hover:bg-primary/10 transition-colors">
-                    <div className="bg-white p-1.5 rounded-lg shadow-sm">
+                    <div className="bg-white p-1.5 rounded-lg ">
                         <Brain size={16} className="text-primary" />
                     </div>
                     <p className="text-xs font-bold text-slate-600 leading-relaxed italic">

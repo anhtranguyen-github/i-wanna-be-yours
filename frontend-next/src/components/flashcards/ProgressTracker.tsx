@@ -25,17 +25,17 @@ export function ProgressBar({ current, total, reviewed, className = "" }: Progre
                 />
                 {/* Current position indicator */}
                 <div
-                    className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white border-2 border-brand-green rounded-full shadow-sm transition-all duration-300"
+                    className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white border-2 border-brand-green rounded-full  transition-all duration-300"
                     style={{ left: `calc(${(current / total) * 100}% - 6px)` }}
                 />
             </div>
 
             {/* Stats row */}
             <div className="flex items-center justify-between text-xs">
-                <span className="text-gray-500 dark:text-gray-400">
-                    Card <span className="font-bold text-gray-700 dark:text-gray-200">{current + 1}</span> of {total}
+                <span className="text-neutral-ink dark:text-neutral-ink">
+                    Card <span className="font-bold text-neutral-ink dark:text-neutral-ink">{current + 1}</span> of {total}
                 </span>
-                <span className="text-gray-500 dark:text-gray-400">
+                <span className="text-neutral-ink dark:text-neutral-ink">
                     <span className="font-bold text-brand-green">{reviewed}</span> reviewed
                 </span>
             </div>
@@ -57,15 +57,15 @@ export function SessionStats({ reviewed, easy, medium, hard }: SessionStatsProps
         <div className="flex items-center gap-3 text-xs">
             <div className="flex items-center gap-1">
                 <span className="w-2 h-2 rounded-full bg-green-500" />
-                <span className="text-gray-600 dark:text-gray-400">{easy}</span>
+                <span className="text-neutral-ink dark:text-neutral-ink">{easy}</span>
             </div>
             <div className="flex items-center gap-1">
                 <span className="w-2 h-2 rounded-full bg-yellow-500" />
-                <span className="text-gray-600 dark:text-gray-400">{medium}</span>
+                <span className="text-neutral-ink dark:text-neutral-ink">{medium}</span>
             </div>
             <div className="flex items-center gap-1">
                 <span className="w-2 h-2 rounded-full bg-red-500" />
-                <span className="text-gray-600 dark:text-gray-400">{hard}</span>
+                <span className="text-neutral-ink dark:text-neutral-ink">{hard}</span>
             </div>
         </div>
     );
@@ -117,7 +117,7 @@ export function CompletionScreen({
         <div className="flex flex-col items-center justify-center h-full text-center p-6 space-y-6">
             {/* Trophy animation */}
             <div className="relative">
-                <div className="w-24 h-24 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center shadow-lg animate-pulse">
+                <div className="w-24 h-24 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center  animate-pulse">
                     <Trophy className="w-12 h-12 text-white" />
                 </div>
                 <div className="absolute -top-2 -right-2">
@@ -127,10 +127,10 @@ export function CompletionScreen({
 
             {/* Completion message */}
             <div className="space-y-2">
-                <h2 className="text-2xl sm:text-3xl font-black text-gray-800 dark:text-white">
+                <h2 className="text-2xl sm:text-3xl font-black text-neutral-ink dark:text-white">
                     {emoji} Deck Complete!
                 </h2>
-                <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
+                <p className="text-neutral-ink dark:text-neutral-ink text-sm sm:text-base">
                     You&apos;ve reviewed all <span className="font-bold text-brand-green">{totalCards}</span> cards in {deckTitle}
                 </p>
             </div>
@@ -138,8 +138,8 @@ export function CompletionScreen({
             {/* Mastery meter */}
             <div className="w-full max-w-xs space-y-2">
                 <div className="flex justify-between text-xs font-bold">
-                    <span className="text-gray-500">Mastery</span>
-                    <span className={`${masteryScore >= 60 ? 'text-brand-green' : 'text-gray-600'}`}>
+                    <span className="text-neutral-ink">Mastery</span>
+                    <span className={`${masteryScore >= 60 ? 'text-brand-green' : 'text-neutral-ink'}`}>
                         {masteryScore}%
                     </span>
                 </div>
@@ -153,26 +153,26 @@ export function CompletionScreen({
                         style={{ width: `${masteryScore}%` }}
                     />
                 </div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">{message}</p>
+                <p className="text-sm text-neutral-ink dark:text-neutral-ink">{message}</p>
             </div>
 
             {/* Session breakdown */}
             <div className="bg-gray-100 dark:bg-gray-800 rounded-2xl p-4 w-full max-w-xs">
-                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
+                <h3 className="text-xs font-bold text-neutral-ink uppercase tracking-wider mb-3">
                     Session Summary
                 </h3>
                 <div className="grid grid-cols-3 gap-4">
                     <div className="text-center">
                         <div className="text-2xl font-black text-green-500">{easy}</div>
-                        <div className="text-xs text-gray-500">Easy</div>
+                        <div className="text-xs text-neutral-ink">Easy</div>
                     </div>
                     <div className="text-center">
                         <div className="text-2xl font-black text-yellow-500">{medium}</div>
-                        <div className="text-xs text-gray-500">Medium</div>
+                        <div className="text-xs text-neutral-ink">Medium</div>
                     </div>
                     <div className="text-center">
                         <div className="text-2xl font-black text-red-500">{hard}</div>
-                        <div className="text-xs text-gray-500">Hard</div>
+                        <div className="text-xs text-neutral-ink">Hard</div>
                     </div>
                 </div>
             </div>
@@ -181,14 +181,14 @@ export function CompletionScreen({
             <div className="flex flex-col sm:flex-row gap-3 w-full max-w-xs">
                 <button
                     onClick={onRestart}
-                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-brand-green hover:bg-green-500 text-white font-bold rounded-xl shadow-lg transition-colors"
+                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-brand-green hover:bg-green-500 text-white font-bold rounded-xl  transition-colors"
                 >
                     <RotateCcw size={18} />
                     Study Again
                 </button>
                 <button
                     onClick={onClose}
-                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-bold rounded-xl transition-colors"
+                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-neutral-ink dark:text-neutral-ink font-bold rounded-xl transition-colors"
                 >
                     Done
                     <ArrowRight size={18} />

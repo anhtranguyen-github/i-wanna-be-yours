@@ -30,7 +30,7 @@ export function TrustBadges() {
                         ))}
                     </div>
                     {/* Label */}
-                    <span className="text-xs text-slate-500 font-medium">{badge.name}</span>
+                    <span className="text-xs text-neutral-ink font-medium">{badge.name}</span>
                     <span className="text-xs text-brand-dark font-bold">{badge.rating}</span>
                 </div>
             ))}

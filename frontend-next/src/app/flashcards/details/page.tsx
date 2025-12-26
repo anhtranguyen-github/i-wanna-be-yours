@@ -111,27 +111,27 @@ const EditModal: React.FC<{
                 <div className="flex justify-between items-center relative z-10">
                     <h3 className="text-2xl font-black text-foreground font-display tracking-tight italic">Triage <span className="text-primary italic-none not-italic">Node</span></h3>
                     <button onClick={onClose} className="p-2 hover:bg-muted rounded-xl transition-all">
-                        <X size={24} className="text-muted-foreground" />
+                        <X size={24} className="text-neutral-ink" />
                     </button>
                 </div>
 
                 <div className="space-y-6 relative z-10">
                     <div>
-                        <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground font-display mb-2 ml-1">Spectral Front (Word)</label>
+                        <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-neutral-ink font-display mb-2 ml-1">Spectral Front (Word)</label>
                         <input className="w-full px-6 py-4 bg-muted/30 border border-border/50 rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary/30 transition-all font-jp font-bold"
                             value={formData.vocabulary_original}
                             onChange={e => setFormData({ ...formData, vocabulary_original: e.target.value })}
                         />
                     </div>
                     <div>
-                        <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground font-display mb-2 ml-1">Logic Pattern (Reading)</label>
+                        <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-neutral-ink font-display mb-2 ml-1">Logic Pattern (Reading)</label>
                         <input className="w-full px-6 py-4 bg-muted/30 border border-border/50 rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary/30 transition-all font-jp font-bold"
                             value={formData.vocabulary_simplified}
                             onChange={e => setFormData({ ...formData, vocabulary_simplified: e.target.value })}
                         />
                     </div>
                     <div>
-                        <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground font-display mb-2 ml-1">Semantic Bridge (Meaning)</label>
+                        <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-neutral-ink font-display mb-2 ml-1">Semantic Bridge (Meaning)</label>
                         <input className="w-full px-6 py-4 bg-muted/30 border border-border/50 rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary/30 transition-all font-bold"
                             value={formData.vocabulary_english}
                             onChange={e => setFormData({ ...formData, vocabulary_english: e.target.value })}
@@ -140,7 +140,7 @@ const EditModal: React.FC<{
                 </div>
 
                 <div className="flex justify-end pt-6 gap-4 relative z-10">
-                    <button onClick={onClose} className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-foreground font-display transition-colors">Cancel</button>
+                    <button onClick={onClose} className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-neutral-ink hover:text-foreground font-display transition-colors">Cancel</button>
                     <button onClick={() => onSave(formData)} className="px-10 py-4 bg-primary text-primary-foreground font-black font-display text-[10px] uppercase tracking-widest rounded-2xl  hover:opacity-95 transition-all">Submit Calibration</button>
                 </div>
             </div>
@@ -156,7 +156,7 @@ const SentenceSection: React.FC<{ sentences: Sentence[] }> = ({ sentences }) => 
 
     if (!sentences || sentences.length === 0) {
         return (
-            <div className="p-8 text-center text-muted-foreground/30 text-xs font-black uppercase tracking-widest font-display italic">
+            <div className="p-8 text-center text-neutral-ink text-xs font-black uppercase tracking-widest font-display italic">
                 No active contexts identified.
             </div>
         );
@@ -164,11 +164,11 @@ const SentenceSection: React.FC<{ sentences: Sentence[] }> = ({ sentences }) => 
 
     return (
         <div className="space-y-6">
-            <div className="text-[9px] font-black text-muted-foreground/40 uppercase tracking-[0.3em] font-display text-center mb-6">
+            <div className="text-[9px] font-black text-neutral-ink uppercase tracking-[0.3em] font-display text-center mb-6">
                 Operational Contexts
             </div>
             {sentences.map((sentence, index) => (
-                <div key={index} className="group/s bg-slate-50/50 p-6 rounded-[2rem] border border-slate-100 hover:border-primary/30 hover:bg-white transition-all duration-500 shadow-sm hover:shadow-md">
+                <div key={index} className="group/s bg-slate-50/50 p-6 rounded-[2rem] border border-slate-100 hover:border-primary/30 hover:bg-white transition-all duration-500  hover:">
                     <div className="flex items-start gap-6">
                         <button
                             onClick={() => playSentenceAudio(sentence.sentence_audio)}
@@ -178,10 +178,10 @@ const SentenceSection: React.FC<{ sentences: Sentence[] }> = ({ sentences }) => 
                             <Volume2 size={24} />
                         </button>
                         <div className="flex-grow pt-1">
-                            <div className="text-2xl font-jp font-bold text-slate-900 leading-[1.6] tracking-tight group-hover/s:text-primary transition-colors">
+                            <div className="text-2xl font-jp font-bold text-neutral-ink leading-[1.6] tracking-tight group-hover/s:text-primary transition-colors">
                                 {sentence.sentence_original}
                             </div>
-                            <div className="text-sm font-bold text-slate-500 mt-4 italic tracking-tight leading-relaxed">
+                            <div className="text-sm font-bold text-neutral-ink mt-4 italic tracking-tight leading-relaxed">
                                 {sentence.sentence_english || "Semantic gap detected."}
                             </div>
                         </div>
@@ -312,7 +312,7 @@ export default function FlashcardDeckPage() {
     if (loading) return (
         <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-6">
             <Loader2 className="w-12 h-12 animate-spin text-primary opacity-20" />
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40 font-display">Accessing Synaptic Registry...</p>
+            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-ink font-display">Accessing Synaptic Registry...</p>
         </div>
     );
 
@@ -327,7 +327,7 @@ export default function FlashcardDeckPage() {
     );
 
     if (!displayQuestions.length) return (
-        <div className="min-h-screen bg-background flex flex-col items-center justify-center text-center p-8 italic font-bold text-muted-foreground opacity-40">
+        <div className="min-h-screen bg-background flex flex-col items-center justify-center text-center p-8 italic font-bold text-neutral-ink opacity-40">
             Synaptic cluster is currently devoid of logic nodes.
         </div>
     );
@@ -344,13 +344,13 @@ export default function FlashcardDeckPage() {
                 <div className="max-w-5xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-8">
                     <div className="flex items-center gap-6 group">
                         <Link href="/flashcards" className="w-14 h-14 bg-muted hover:bg-card border border-border/30 rounded-2xl flex items-center justify-center transition-all  active:scale-90 group/back">
-                            <ArrowLeft size={24} className="text-muted-foreground group-hover/back:text-primary transition-colors" />
+                            <ArrowLeft size={24} className="text-neutral-ink group-hover/back:text-primary transition-colors" />
                         </Link>
                         <div>
                             <h1 className="text-4xl font-black text-foreground font-display tracking-tight leading-none mb-2 italic">
                                 {deck.title}
                             </h1>
-                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40 font-display">
+                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-ink font-display">
                                 Registry: {displayQuestions.length} Active Nodes // Tier: {deck.tags.find(t => t.startsWith('n'))?.toUpperCase() || 'X'}
                             </p>
                         </div>
@@ -359,13 +359,13 @@ export default function FlashcardDeckPage() {
                     <div className="flex p-1.5 bg-muted/40 rounded-[2rem] border border-border/30 ">
                         <button
                             onClick={() => setSettings(s => ({ ...s, mode: 'basic' }))}
-                            className={`px-8 py-3 rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest font-display transition-all duration-500 ${settings.mode === 'basic' ? 'bg-card text-foreground ' : 'text-muted-foreground/50 hover:text-foreground'}`}
+                            className={`px-8 py-3 rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest font-display transition-all duration-500 ${settings.mode === 'basic' ? 'bg-card text-foreground ' : 'text-neutral-ink hover:text-foreground'}`}
                         >
                             Static Scan
                         </button>
                         <button
                             onClick={() => setSettings(s => ({ ...s, mode: 'learn' }))}
-                            className={`px-8 py-3 rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest font-display transition-all duration-500 ${settings.mode === 'learn' ? 'bg-primary text-primary-foreground ' : 'text-muted-foreground/50 hover:text-foreground'}`}
+                            className={`px-8 py-3 rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest font-display transition-all duration-500 ${settings.mode === 'learn' ? 'bg-primary text-primary-foreground ' : 'text-neutral-ink hover:text-foreground'}`}
                         >
                             Neural Study
                         </button>
@@ -387,9 +387,9 @@ export default function FlashcardDeckPage() {
                             <div className="absolute inset-0 backface-hidden bg-white rounded-[4rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-slate-100 p-16 flex flex-col items-center justify-center transition-all duration-500 group-hover:border-primary/30 group-hover:shadow-primary/5 overflow-hidden">
                                 <div className="absolute top-0 right-0 w-80 h-80 bg-primary/5 rounded-full blur-[90px] -translate-y-1/2 translate-x-1/2 group-hover:bg-primary/10 transition-colors" />
 
-                                <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-12 font-display italic group-hover:text-primary transition-colors">Spectral Signature</div>
+                                <div className="text-[10px] font-black text-neutral-ink uppercase tracking-[0.4em] mb-12 font-display italic group-hover:text-primary transition-colors">Spectral Signature</div>
 
-                                <div className={`font-black text-slate-900 text-center leading-none tracking-tighter italic ${isKanji ? 'text-[10rem] font-jp' : 'text-7xl md:text-8xl'}`}>
+                                <div className={`font-black text-neutral-ink text-center leading-none tracking-tighter italic ${isKanji ? 'text-[10rem] font-jp' : 'text-7xl md:text-8xl'}`}>
                                     {isKanji ? currentQuestion.kanji : currentQuestion.vocabulary_original}
                                 </div>
 
@@ -404,10 +404,10 @@ export default function FlashcardDeckPage() {
                                 <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none" />
 
                                 <div className="bg-slate-50/50 p-12 border-b border-slate-100 text-center relative z-10 transition-colors group-hover/back:bg-white">
-                                    <div className="text-4xl md:text-5xl font-black font-display text-slate-900 leading-tight tracking-tight mb-4 italic">
+                                    <div className="text-4xl md:text-5xl font-black font-display text-neutral-ink leading-tight tracking-tight mb-4 italic">
                                         {isKanji ? currentQuestion.kanji : currentQuestion.vocabulary_simplified}
                                     </div>
-                                    <div className="text-lg md:text-xl font-bold text-slate-500 italic tracking-tight">
+                                    <div className="text-lg md:text-xl font-bold text-neutral-ink italic tracking-tight">
                                         {isKanji ? currentQuestion.reading : currentQuestion.vocabulary_english}
                                     </div>
                                     {isKanji && <div className="text-sm font-black text-primary uppercase tracking-[0.2em] mt-6 font-display italic">{currentQuestion.translation}</div>}
@@ -418,12 +418,12 @@ export default function FlashcardDeckPage() {
                                         <div className="h-full flex flex-col items-center justify-center text-center space-y-8 animate-in fade-in zoom-in-95 duration-700">
                                             <div className="text-[9px] font-black text-slate-300 uppercase tracking-[0.4em] font-display">Compound Pattern</div>
                                             <div className="p-10 bg-slate-50 border border-slate-100 rounded-[2.5rem] w-full max-w-sm">
-                                                <div className="text-4xl font-jp font-black text-slate-900 mb-4 tracking-tighter italic">{currentQuestion.exampleWord}</div>
-                                                <div className="text-lg font-bold text-slate-500 italic">{currentQuestion.exampleReading}</div>
+                                                <div className="text-4xl font-jp font-black text-neutral-ink mb-4 tracking-tighter italic">{currentQuestion.exampleWord}</div>
+                                                <div className="text-lg font-bold text-neutral-ink italic">{currentQuestion.exampleReading}</div>
                                             </div>
                                         </div>
                                     ) : (
-                                        <div className="text-slate-900">
+                                        <div className="text-neutral-ink">
                                             <SentenceSection sentences={currentQuestion.sentences} />
                                         </div>
                                     )}
@@ -431,7 +431,7 @@ export default function FlashcardDeckPage() {
 
                                 <button
                                     onClick={(e) => { e.stopPropagation(); playAudio(isKanji ? currentQuestion.audio : currentQuestion.vocabulary_audio); }}
-                                    className="p-8 border-t border-slate-100 flex items-center justify-center gap-4 text-slate-400 hover:text-primary transition-all font-display font-black text-[10px] uppercase tracking-[0.3em] italic bg-slate-50/50 hover:bg-white"
+                                    className="p-8 border-t border-slate-100 flex items-center justify-center gap-4 text-neutral-ink hover:text-primary transition-all font-display font-black text-[10px] uppercase tracking-[0.3em] italic bg-slate-50/50 hover:bg-white"
                                 >
                                     <Volume2 size={20} /> Listen to Frequency
                                 </button>
@@ -442,16 +442,16 @@ export default function FlashcardDeckPage() {
                     {/* Matrix Controls */}
                     <div className="max-w-2xl mx-auto w-full space-y-12">
                         <div className="flex items-center justify-between gap-8 px-4">
-                            <button onClick={handlePrev} className="w-20 h-20 bg-card rounded-[2rem] border border-border/50 flex items-center justify-center text-muted-foreground/30 hover:text-primary hover:border-primary/20 transition-all  active:scale-90 group/prev">
+                            <button onClick={handlePrev} className="w-20 h-20 bg-card rounded-[2rem] border border-border/50 flex items-center justify-center text-neutral-ink hover:text-primary hover:border-primary/20 transition-all  active:scale-90 group/prev">
                                 <ArrowLeft size={32} className="group-hover:-translate-x-1 transition-transform" />
                             </button>
 
                             <div className="flex flex-col items-center text-center">
                                 <div className="text-3xl font-black text-foreground font-display leading-none mb-1 italic group-hover:text-primary transition-colors">{currentQuestionIndex + 1}</div>
-                                <div className="text-[9px] font-black text-muted-foreground/30 uppercase tracking-[0.3em] font-display">Current Node</div>
+                                <div className="text-[9px] font-black text-neutral-ink uppercase tracking-[0.3em] font-display">Current Node</div>
                             </div>
 
-                            <button onClick={handleNext} className="w-20 h-20 bg-card rounded-[2rem] border border-border/50 flex items-center justify-center text-muted-foreground/30 hover:text-primary hover:border-primary/20 transition-all  active:scale-90 group/next">
+                            <button onClick={handleNext} className="w-20 h-20 bg-card rounded-[2rem] border border-border/50 flex items-center justify-center text-neutral-ink hover:text-primary hover:border-primary/20 transition-all  active:scale-90 group/next">
                                 <ArrowRight size={32} className="group-hover:translate-x-1 transition-transform" />
                             </button>
                         </div>
@@ -460,7 +460,7 @@ export default function FlashcardDeckPage() {
                         <div className="pt-10 border-t border-border/20">
                             <button
                                 onClick={() => setShowTerms(!showTerms)}
-                                className="w-full py-6 flex items-center justify-center gap-4 text-muted-foreground/40 hover:text-primary transition-all font-display font-black text-[10px] uppercase tracking-[0.25em] italic bg-card/30 rounded-[2rem] border border-border/10  hover:border-primary/10"
+                                className="w-full py-6 flex items-center justify-center gap-4 text-neutral-ink hover:text-primary transition-all font-display font-black text-[10px] uppercase tracking-[0.25em] italic bg-card/30 rounded-[2rem] border border-border/10  hover:border-primary/10"
                             >
                                 <List size={20} />
                                 {showTerms ? "Retract Index Matrix" : "Expand Cluster Index"}
@@ -477,14 +477,14 @@ export default function FlashcardDeckPage() {
                                                 {isKanji ? q.kanji : q.vocabulary_original}
                                             </div>
                                             <div className="flex-1">
-                                                <div className="text-[10px] font-black text-muted-foreground/20 uppercase tracking-widest font-display mb-1">Logic Mapping</div>
-                                                <div className="font-bold text-foreground/70 italic text-lg leading-none">
+                                                <div className="text-[10px] font-black text-neutral-ink uppercase tracking-widest font-display mb-1">Logic Mapping</div>
+                                                <div className="font-bold text-neutral-ink italic text-lg leading-none">
                                                     {isKanji ? q.reading : q.vocabulary_simplified}
                                                 </div>
                                             </div>
                                             <div className="flex-1 text-right">
-                                                <div className="text-[10px] font-black text-muted-foreground/20 uppercase tracking-widest font-display mb-1">Semantic Bridge</div>
-                                                <div className="font-bold text-muted-foreground italic leading-none truncate max-w-[150px]">
+                                                <div className="text-[10px] font-black text-neutral-ink uppercase tracking-widest font-display mb-1">Semantic Bridge</div>
+                                                <div className="font-bold text-neutral-ink italic leading-none truncate max-w-[150px]">
                                                     {isKanji ? q.translation : q.vocabulary_english}
                                                 </div>
                                             </div>
@@ -494,7 +494,7 @@ export default function FlashcardDeckPage() {
                                                     setEditingQuestion(q);
                                                     setIsEditOpen(true);
                                                 }}
-                                                className="w-12 h-12 rounded-[1.25rem] bg-muted/50 border border-border/30 text-muted-foreground/30 hover:text-primary hover:border-primary/20 hover:bg-card flex items-center justify-center transition-all  active:scale-90"
+                                                className="w-12 h-12 rounded-[1.25rem] bg-muted/50 border border-border/30 text-neutral-ink hover:text-primary hover:border-primary/20 hover:bg-card flex items-center justify-center transition-all  active:scale-90"
                                             >
                                                 <Pen size={18} />
                                             </button>

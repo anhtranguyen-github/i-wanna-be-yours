@@ -66,14 +66,14 @@ export function ResourceUploader({ onClose, onUploadComplete }: ResourceUploader
             <div className="relative bg-card rounded-2xl  border border-border w-full max-w-lg p-10 m-4 animate-in fade-in zoom-in duration-300">
                 <div className="flex justify-between items-center mb-8">
                     <h3 className="text-2xl font-black text-foreground font-display">Upload Resource</h3>
-                    <button onClick={onClose} className="text-muted-foreground/40 hover:text-foreground hover:bg-muted p-2 rounded-xl transition-all">
+                    <button onClick={onClose} className="text-neutral-ink hover:text-foreground hover:bg-muted p-2 rounded-xl transition-all">
                         <X size={24} />
                     </button>
                 </div>
 
                 <div
                     className={`
-                        border-2 border-dashed rounded-2xl p-12 text-center transition-all duration-300 cursor-pointer 
+                        border-2 border-dashed rounded-2xl p-12 text-center transition-all duration-300 cursor-pointer
                         ${isDragging ? 'border-primary bg-primary/5 scale-[0.98]' : 'border-border hover:border-primary/50 hover:bg-muted/30'}
                     `}
                     onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
@@ -96,7 +96,7 @@ export function ResourceUploader({ onClose, onUploadComplete }: ResourceUploader
                     {isUploading ? (
                         <div className="flex flex-col items-center py-6">
                             <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
-                            <p className="text-xs font-black text-muted-foreground uppercase tracking-widest font-display">Uploading...</p>
+                            <p className="text-xs font-black text-neutral-ink uppercase tracking-widest font-display">Uploading...</p>
                         </div>
                     ) : (
                         <div className="flex flex-col items-center py-6">
@@ -104,7 +104,7 @@ export function ResourceUploader({ onClose, onUploadComplete }: ResourceUploader
                                 <Upload className="text-primary" size={32} />
                             </div>
                             <p className="text-lg font-black text-foreground mb-2 font-display">Click to upload or drag & drop</p>
-                            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest leading-relaxed">PDF, DOCX, TXT, Images (max 50MB)</p>
+                            <p className="text-xs font-bold text-neutral-ink uppercase tracking-widest leading-relaxed">PDF, DOCX, TXT, Images (max 50MB)</p>
                         </div>
                     )}
                 </div>

@@ -77,7 +77,7 @@ export function ExpandableSection({
                     )}
                     <div className="text-left">
                         <div className="flex items-center gap-2">
-                            <h3 className="font-bold text-slate-900">{title}</h3>
+                            <h3 className="font-bold text-neutral-ink">{title}</h3>
                             {badge !== undefined && (
                                 <span className={cn('px-2 py-0.5 rounded-full text-xs font-semibold', badgeColors[badgeColor])}>
                                     {badge}
@@ -92,7 +92,7 @@ export function ExpandableSection({
                             )}
                         </div>
                         {subtitle && (
-                            <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>
+                            <p className="text-xs text-neutral-ink mt-0.5">{subtitle}</p>
                         )}
                     </div>
                 </div>
@@ -100,7 +100,7 @@ export function ExpandableSection({
                 <ChevronDown
                     size={20}
                     className={cn(
-                        'text-slate-400 transition-transform duration-300',
+                        'text-neutral-ink transition-transform duration-300',
                         isOpen && 'rotate-180'
                     )}
                 />
@@ -115,7 +115,7 @@ export function ExpandableSection({
                     {children}
                     {coachExplainer && (
                         <div className="mt-6 p-4 bg-brand-sky/5 rounded-2xl border border-brand-sky/10 flex gap-3 items-start group hover:bg-brand-sky/10 transition-colors">
-                            <div className="bg-white p-1.5 rounded-lg shadow-sm">
+                            <div className="bg-white p-1.5 rounded-lg ">
                                 <Brain size={16} className="text-brand-sky" />
                             </div>
                             <p className="text-xs font-bold text-slate-600 leading-relaxed italic">

@@ -28,86 +28,48 @@ const config: Config = {
 				'1000': '1000px'
 			},
 			colors: {
-				vibrant: {
-					blue: '#87CEEB', // Sky Blue
-					cyan: '#AEEEEE', // Pale Turquoise
-					pink: '#FA8072', // Salmon
-					purple: '#B39DDB', // Pastel Purple
-					yellow: '#FDFD96', // Pastel Yellow
-					green: '#50C878', // Emerald
-					orange: '#FFB347',
-				},
-				brand: {
-					cream: '#FFFBF0',
-					green: '#38D468', // Primary Green
-					dark: '#2C3E50',  // Deep Slate/Navy (Text)
-					blue: '#87CEEB',  // Keep as is or update if needed
-					peach: '#FDC5D0', // Pink
-					indigo: '#4F46E5',
-					softBlue: '#E3F5F7', // Surface
-					orange: '#FDC5D0',
-					salmon: '#38D468', // RE-MAPPED to Primary Green for instant theming
-					sky: '#FDC5D0', // RE-MAPPED to Secondary Pink
-					emerald: '#38D468',
-					white: '#FFFFFF',
-					surface: '#E3F5F7' // New surface color
-				},
-				'primary-cta': '#38D468', // Green
-				'secondary-cta': '#FDC5D0', // Pink
-				'text-primary': '#2C3E50', // Navy
-				'text-dark': '#2C3E50',
-				'bg-canvas': '#FFFFFF', // White
+				// PRIMARY COLORS
 				primary: {
-					DEFAULT: '#FA8072', // Salmon
-					foreground: '#FFFFFF'
+					DEFAULT: '#F6B1C3', // P-01 Sakura Pink
+					foreground: '#4A4A4A', // N-04 Ink Gray
+					strong: '#E67A8A',    // P-02 Deep Sakura
+					leaf: '#8FC8A9',      // P-03 Leaf Green
+					sky: '#8ECDE6',       // P-04 Sky Blue
 				},
+				// SECONDARY COLORS
 				secondary: {
-					DEFAULT: '#87CEEB', // Sky Blue
-					foreground: '#FFFFFF'
+					DEFAULT: '#FFF1E6', // S-01 Warm Cream
+					yellow: '#F6E7A3',  // S-02 Soft Yellow
+					lavender: '#C8B6E2',// S-03 Lavender Mist
+					coral: '#F2A1A1',   // S-04 Light Coral
 				},
+				// NEUTRAL COLORS
+				neutral: {
+					white: '#FAFAF7',   // N-01 Rice White
+					beige: '#EFE6D8',   // N-02 Paper Beige
+					gray: '#4A4A4A',    // N-04 Ink Gray (Black equivalent)
+					ink: '#4A4A4A',     // N-04 Ink Gray
+					night: '#2E2E2E',   // N-05 Night Ink
+				},
+				// ACCENT COLORS
 				accent: {
-					DEFAULT: '#50C878', // Emerald
-					foreground: '#FFFFFF'
+					DEFAULT: '#F2B705', // A-02 Golden Sun
+					red: '#D94A38',     // A-01 Torii Red
+					jade: '#2FAE9E',    // A-03 Jade Green
+					shadow: '#B85C7A',  // A-04 Sakura Shadow
 				},
-				green: '#50C878',
-				background: 'hsl(var(--background))',
-				foreground: 'hsl(var(--foreground))',
+				// SHADCN COMPATIBILITY WRAPPERS
+				background: '#FFF1E6', // S-01
+				foreground: '#4A4A4A', // N-04
 				card: {
-					DEFAULT: 'hsl(var(--card))',
-					foreground: 'hsl(var(--card-foreground))'
-				},
-				popover: {
-					DEFAULT: 'hsl(var(--popover))',
-					foreground: 'hsl(var(--popover-foreground))'
+					DEFAULT: '#FAFAF7', // N-01
+					foreground: '#4A4A4A'
 				},
 				muted: {
-					DEFAULT: 'hsl(var(--muted))',
-					foreground: 'hsl(var(--muted-foreground))'
+					DEFAULT: '#EFE6D8', // N-02
+					foreground: '#4A4A4A' // N-04 Ink Gray
 				},
-				destructive: {
-					DEFAULT: 'hsl(var(--destructive))',
-					foreground: 'hsl(var(--destructive-foreground))'
-				},
-				border: 'hsl(var(--border))',
-				input: 'hsl(var(--input))',
-				ring: 'hsl(var(--ring))',
-				chart: {
-					'1': 'hsl(var(--chart-1))',
-					'2': 'hsl(var(--chart-2))',
-					'3': 'hsl(var(--chart-3))',
-					'4': 'hsl(var(--chart-4))',
-					'5': 'hsl(var(--chart-5))'
-				},
-				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
-					foreground: 'hsl(var(--sidebar-foreground))',
-					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-					accent: 'hsl(var(--sidebar-accent))',
-					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
-				}
+				border: '#4A4A4A', // N-04 Ink Gray
 			},
 			gridTemplateColumns: {
 				listItem: '35px 1fr',

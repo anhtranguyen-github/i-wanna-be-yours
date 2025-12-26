@@ -8,7 +8,7 @@ export default function Home() {
   return (
 <>
       <CategoriesHeader />
-      
+
       {/* JLPT N3 Overall Content */}
       <Category
         img={japanese6000}
@@ -18,10 +18,10 @@ export default function Home() {
         courses="22"
         series="5"
         des="
-        Master Japanese with our focused JLPT N5-N1 course, designed to strengthen your 
-        vocabulary, grammar, and kanji knowledge. 
-        Dive into straightforward lessons that make learning enjoyable. 
-        Improve your language skills and gain confidence as you tackle our JLPT learning materials. 
+        Master Japanese with our focused JLPT N5-N1 course, designed to strengthen your
+        vocabulary, grammar, and kanji knowledge.
+        Dive into straightforward lessons that make learning enjoyable.
+        Improve your language skills and gain confidence as you tackle our JLPT learning materials.
         Join our course now and start your exciting Japanese learning adventure!"
       />
 

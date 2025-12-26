@@ -2,6 +2,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const { createProxyMiddleware } = require('http-proxy-middleware');
+const { verifyJWT } = require('./middleware/auth');
 
 const { connectDB } = require("./config/db");
 const { wordRoutes } = require("./routes/wordRoutes");
@@ -62,11 +64,7 @@ const limiter = rateLimit({
 });
 app.use("/e-api/", limiter);
 
-let corsOptions = {
-  origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : "http://localhost:3000",
-  credentials: true,
-};
-
+const corsOptions = require("./config/cors");
 app.use(cors(corsOptions));
 
 // connect to DB before we expose our API Express endpoints
@@ -76,9 +74,37 @@ connectDB();
 const authRoutes = require("./routes/authRoutes");
 app.use("/e-api/v1/auth", authRoutes);
 
-// --- JLPT Routes ---
-const jlptRoutes = require("./routes/jlptRoutes");
-app.use("/e-api/v1/jlpt", jlptRoutes);
+// --- JLPT Routes (Deprecated - use practiceRoutes) ---
+// const jlptRoutes = require("./routes/jlptRoutes");
+// app.use("/e-api/v1/jlpt", jlptRoutes);
+
+// --- Practice Routes (Unified) ---
+const practiceRoutes = require("./routes/practiceRoutes");
+app.use("/e-api/v1/practice", practiceRoutes);
+
+// --- Quoot Routes (Dedicated) ---
+const quootRoutes = require("./routes/quootRoutes");
+app.use("/e-api/v1/quoot", quootRoutes);
+
+// --- Flashcard Routes (Dedicated) ---
+const flashcardRoutes = require("./routes/flashcardRoutes");
+app.use("/e-api/v1/flashcards", flashcardRoutes);
+
+// --- Flask Proxy ---
+// Route all /e-api/v1/f/ requests to the Flask service on port 5100
+app.use("/e-api/v1/f", verifyJWT, createProxyMiddleware({
+  target: 'http://localhost:5100',
+  changeOrigin: true,
+  pathRewrite: {
+    '^/e-api/v1/f': '', // remove /e-api/v1/f from the path
+  },
+  onProxyReq: (proxyReq, req, res) => {
+    // We can inject additional headers if needed
+    if (req.user) {
+      proxyReq.setHeader('X-User-ID', req.user.id || req.user.userId);
+    }
+  }
+}));
 
 // ---------------- Function Definitions ------------------ //
 const getAllWords = async (req, res) => {

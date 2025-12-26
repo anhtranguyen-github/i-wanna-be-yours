@@ -9,77 +9,76 @@ const routes = [
         description: "Listen to Japanese podcasts and videos.",
         href: "/library/podcasts",
         icon: <Headphones className="w-6 h-6" />,
-        color: "bg-blue-50 text-blue-600"
+        color: "bg-primary-sky/20 text-primary-sky"
     },
     {
         title: "Reading",
         description: "Japanese short stories with translations.",
         href: "/library/reading",
         icon: <BookOpen className="w-6 h-6" />,
-        color: "bg-primary/10 text-primary"
+        color: "bg-primary/20 text-primary-strong"
     },
     {
         title: "Mnemonics",
         description: "Memory aids for Kanji and vocabulary.",
         href: "/library/mnemonics",
         icon: <Brain className="w-6 h-6" />,
-        color: "bg-accent/10 text-accent"
+        color: "bg-primary-leaf/20 text-primary-leaf"
     },
     {
         title: "Grammar Library",
         description: "Comprehensive JLPT grammar patterns.",
         href: "/library/grammar",
         icon: <BookOpen className="w-6 h-6" />,
-        color: "bg-secondary text-secondary-foreground"
+        color: "bg-secondary-lavender/20 text-secondary-lavender"
     },
     {
         title: "Vocabulary",
         description: "Essential words for all JLPT levels.",
         href: "/library/vocabulary",
         icon: <BookOpen className="w-6 h-6" />,
-        color: "bg-teal-50 text-teal-600"
+        color: "bg-accent-jade/20 text-accent-jade"
     },
     {
         title: "Kanji",
         description: "Master kanji and their readings.",
         href: "/library/kanji",
         icon: <span className="text-xl font-jp font-bold">漢</span>,
-        color: "bg-red-50 text-red-600"
+        color: "bg-accent-red/20 text-accent-red"
     },
     {
         title: "Resources & Assets",
         description: "Your uploaded files and materials.",
         href: "/library/resources",
         icon: <FileText className="w-6 h-6" />,
-        color: "bg-indigo-50 text-indigo-600"
+        color: "bg-primary-sky/20 text-primary-sky"
     },
 ];
 
+import { PageHeader } from "@/components/shared";
+
 export default function LibraryPage() {
     return (
-        <div className="min-h-screen bg-background pb-24">
-            <header className="bg-card border-b border-border px-6 py-8">
-                <div className="max-w-6xl mx-auto flex items-center gap-4">
-                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                        <Library className="w-6 h-6 text-primary" />
-                    </div>
-                    <div>
-                        <h1 className="text-3xl font-bold text-foreground font-display">Library</h1>
-                        <p className="text-muted-foreground">Browse your learning resources</p>
-                    </div>
-                </div>
-            </header>
+        <div className="min-h-screen bg-neutral-beige/20 pb-24">
+            <PageHeader
+                title="Library"
+                subtitle="Browse your learning resources"
+                icon={<Library className="w-6 h-6 text-white" />}
+                iconBgColor="bg-neutral-ink"
+            />
 
-            <main className="max-w-6xl mx-auto px-6 py-8">
+            <main className="max-w-6xl mx-auto px-6 py-12">
+                {/* Content Removed */}
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {routes.map((route) => (
                         <Link key={route.href} href={route.href}>
-                            <div className="bg-card rounded-2xl border border-border p-6 hover:border-primary/40 transition-colors h-full flex flex-col items-center text-center cursor-pointer">
-                                <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-4 ${route.color}`}>
+                            <div className="bg-neutral-white rounded-[2rem] border border-neutral-gray/20 p-8 hover:border-primary-strong transition-all h-full flex flex-col items-center text-center cursor-pointer group">
+                                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500 ${route.color}`}>
                                     {route.icon}
                                 </div>
-                                <h2 className="text-lg font-bold text-foreground mb-2">{route.title}</h2>
-                                <p className="text-sm text-muted-foreground">{route.description}</p>
+                                <h2 className="text-xl font-black text-neutral-ink mb-3 font-display group-hover:text-primary-strong transition-colors">{route.title}</h2>
+                                <p className="text-sm text-neutral-ink leading-relaxed font-bold opacity-60">{route.description}</p>
                             </div>
                         </Link>
                     ))}

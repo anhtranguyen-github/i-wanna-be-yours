@@ -63,7 +63,7 @@ const ReadingComponent: React.FC<ReadingComponentProps> = ({ data }) => {
         <div className="space-y-4">
           <h1 className="text-4xl md:text-5xl font-black text-foreground font-display leading-tight">{data.title}</h1>
           <div className="space-y-1">
-            <p className="text-xs font-black text-muted-foreground uppercase tracking-widest font-display">{data.titleRomaji}</p>
+            <p className="text-xs font-black text-neutral-ink uppercase tracking-widest font-display">{data.titleRomaji}</p>
             <p className="text-2xl font-bold text-reading font-jp">{data.titleJp}</p>
           </div>
         </div>
@@ -103,7 +103,7 @@ const ReadingComponent: React.FC<ReadingComponentProps> = ({ data }) => {
             key={tab.key}
             className={`flex-1 min-w-[100px] px-6 py-3 text-[10px] font-black uppercase tracking-widest transition-all font-display rounded-xl ${activeTab === tab.key
               ? "bg-card text-reading "
-              : "text-muted-foreground hover:text-foreground"
+              : "text-neutral-ink hover:text-foreground"
               }`}
             onClick={() => setActiveTab(tab.key)}
           >
@@ -130,7 +130,7 @@ const ReadingComponent: React.FC<ReadingComponentProps> = ({ data }) => {
         {activeTab === "romanizedText" && (
           <div className="space-y-6 py-4">
             {data.romanizedText.map((text, index) => (
-              <p key={index} className="text-lg font-bold text-muted-foreground leading-relaxed italic">
+              <p key={index} className="text-lg font-bold text-neutral-ink leading-relaxed italic">
                 {text}
               </p>
             ))}
@@ -158,10 +158,10 @@ const ReadingComponent: React.FC<ReadingComponentProps> = ({ data }) => {
               </div>
             </div>
             <div className="bg-muted/20 p-8 rounded-2xl border border-border/50">
-              <h2 className="text-xs font-black text-muted-foreground/50 uppercase tracking-[0.2em] font-display mb-6">Translation</h2>
+              <h2 className="text-xs font-black text-neutral-ink uppercase tracking-[0.2em] font-display mb-6">Translation</h2>
               <div className="space-y-4">
                 {data.englishTranslation.map((paragraph, index) => (
-                  <p key={index} className="text-lg font-bold text-muted-foreground leading-relaxed">{paragraph}</p>
+                  <p key={index} className="text-lg font-bold text-neutral-ink leading-relaxed">{paragraph}</p>
                 ))}
               </div>
             </div>

@@ -12,11 +12,11 @@ export interface CTAButtonProps {
     fullWidth?: boolean;
 }
 
-export function CTAButton({ 
-    variant = 'primary', 
-    href, 
-    onClick, 
-    children, 
+export function CTAButton({
+    variant = 'primary',
+    href,
+    onClick,
+    children,
     className = '',
     fullWidth = false
 }: CTAButtonProps) {
@@ -29,8 +29,8 @@ export function CTAButton({
     const variantStyles = {
         primary: `
             px-8 py-4 bg-brand-green text-white text-lg
-            hover:bg-brand-green/90 hover:scale-[1.02]
-            shadow-lg shadow-brand-green/25
+            hover:bg-brand-green/90
+            border border-brand-green
         `,
         secondary: `
             px-6 py-3 bg-transparent text-slate-600

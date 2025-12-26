@@ -40,6 +40,9 @@ class MockAgent:
         
         metadata_ack = "Hanachan has successfully received and parsed metadata for:\n" + "\n".join(metadata_ack_items) if metadata_ack_items else ""
 
+        lower_prompt = prompt.lower()
+        no_artifacts = context_config.get("no_artifacts", False) or "no artifact" in lower_prompt
+
         if creation_intent:
             # Use the content creator to generate response
             # Pass resources context to content creator if needed (future improvement)
@@ -57,7 +60,7 @@ class MockAgent:
                 "content": content,
                 "tasks": [],
                 "suggestions": creation_response.get("suggestions", []),
-                "artifacts": creation_response.get("artifacts", [])
+                "artifacts": [] if no_artifacts else creation_response.get("artifacts", [])
             }
         
         # =====================================================================
@@ -134,10 +137,9 @@ class MockAgent:
         suggestions = []
         artifacts = []
         
-        lower_prompt = prompt.lower()
-        
         # Add study plan artifacts first if any
-        artifacts.extend(study_artifacts)
+        if not no_artifacts:
+            artifacts.extend(study_artifacts)
         
         # Add study-specific suggestions
         if study_intent:
@@ -158,8 +160,11 @@ class MockAgent:
 ### 🔧 DEBUG MODE ACTIVE
 All artifact types generated for UI testing:
 """
-                # Generate ALL sample artifacts for testing
-                artifacts = self._get_all_sample_artifacts()
+                if not no_artifacts:
+                    # Generate ALL sample artifacts for testing
+                    artifacts = self._get_all_sample_artifacts()
+                else:
+                    debug_content += "\n*(Artifact generation disabled via 'no artifact' instruction/config)*\n"
                 
                 suggestions = [
                     {"text": "Test flashcard single"},
@@ -168,29 +173,15 @@ All artifact types generated for UI testing:
                     {"text": "Test save to library"}
                 ]
             else:
-                # Normal suggestions
-                suggestions.append({"text": "Create N5 vocabulary flashcards"})
-                suggestions.append({"text": "Make a grammar quiz for N4"})
-                suggestions.append({"text": "Generate an N3 practice exam"})
-                
-                # Add sample debug artifacts
-                tasks.append({
-                    "title": "Debug Task",
-                    "description": "Verify system logs for detailed error tracking.",
-                    "status": "pending"
-                })
-                
-                artifacts.append({
-                    "type": "task",
-                    "title": "System Check Task",
-                    "data": {
-                        "task": {
-                            "title": "Debug Task",
-                            "description": "Verify system logs for detailed error tracking.",
-                            "status": "pending"
-                        }
-                    }
-                })
+                # Normal suggestions if no intent detected
+                # Only add if it's not a 'no artifact' request
+                if not no_artifacts:
+                    suggestions.append({"text": "Create N5 vocabulary flashcards"})
+                    suggestions.append({"text": "Make a grammar quiz for N4"})
+                    
+                # NO DEFAULT ARTIFACTS HERE. 
+                # This prevents clutter during normal conversation.
+                pass
 
         return {
             "content": debug_content,

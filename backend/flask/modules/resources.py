@@ -9,6 +9,8 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 from werkzeug.utils import secure_filename
 from modules.auth import login_required
+from modules.security import file_security_check
+from modules.validation import validate_request, ResourceUploadSchema, ResourceUpdateSchema
 
 class ResourcesModule:
     """
@@ -66,22 +68,16 @@ class ResourcesModule:
         Save uploaded file to disk with unique name.
         Returns dict with filePath, fileSize, mimeType, extension.
         """
-        # Validate
         if not file or file.filename == '':
             raise ValueError("No file provided")
         
-        if not self.is_allowed_file(file.filename):
-            raise ValueError("File type not allowed")
+        # Security checks are now handled by FileSecurityMiddleware
+        # We only need to save the file and return info.
         
-        # Check size (reading from stream might be tricky if we want to reset pointer, 
-        # usually flask file storage handles this, but let's trust content-length or handle exceptions)
-        # Using seek/tell on spooled file
+        # Check size for storage info (stream handle should be at 0)
         file.seek(0, os.SEEK_END)
         size = file.tell()
         file.seek(0)
-        
-        if size > self.max_file_size:
-            raise ValueError(f"File too large. Max size: {self.max_file_size / 1024 / 1024}MB")
         
         # Generate unique filename
         file_ext = file.filename.rsplit('.', 1)[1].lower()
@@ -116,6 +112,8 @@ class ResourcesModule:
         
         @app.route("/v1/resources/upload", methods=["POST"])
         @login_required
+        @file_security_check
+        @validate_request(ResourceUploadSchema)
         def upload_resource():
             user_id = request.user.get("userId") or request.user.get("id")
             try:
@@ -123,11 +121,9 @@ class ResourcesModule:
                     return jsonify({"error": "No file provided"}), 400
                 
                 file = request.files['file']
-                tags = request.form.getlist('tags') or [] # Handles x-www-form-urlencoded if multiple tags
-                # If passing JSON via form field, might need parsing. 
-                # Assuming simple form fields for tags: tags=a&tags=b
-                
-                description = request.form.get('description', '')
+                validated_data = request.validated_data
+                tags = validated_data.get('tags') or []
+                description = validated_data.get('description', '')
                 
                 # Save file to disk
                 file_info = self.save_file(file)
@@ -265,10 +261,11 @@ class ResourcesModule:
         
         @app.route("/v1/resources/<id>", methods=["PUT"])
         @login_required
+        @validate_request(ResourceUpdateSchema)
         def update_resource(id):
             user_id = request.user.get("userId") or request.user.get("id")
             try:
-                data = request.json or {}
+                data = request.validated_data
                 
                 update_fields = {"updatedAt": datetime.now(timezone.utc)}
                 if "title" in data:

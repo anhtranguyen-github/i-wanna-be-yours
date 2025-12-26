@@ -36,9 +36,17 @@ limiter = Limiter(
     storage_uri="memory://",
 )
 
-# CORS: Tighten origins
-allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
-CORS(app, resources={r"/*": {"origins": allowed_origins}}, supports_credentials=True)
+# CORS: Standardized Configuration
+from config.cors import get_cors_config
+cors_config = get_cors_config()
+CORS(app, resources={r"/*": {
+    "origins": cors_config["origins"],
+    "methods": cors_config["methods"],
+    "allow_headers": cors_config["allow_headers"],
+    "expose_headers": cors_config["expose_headers"],
+    "supports_credentials": cors_config["supports_credentials"],
+    "max_age": cors_config["max_age"]
+}})
 
 # Database configuration
 mongo_uri = os.getenv("MONGO_URI_FLASK", "mongodb://localhost:27017/flaskFlashcardDB")
@@ -85,10 +93,10 @@ from modules.library import LibraryTexts
 library_texts_module = LibraryTexts()
 library_texts_module.register_routes(app)
 
-# -- quiz -- #
-from modules.quiz import QuizModule
-quiz_module = QuizModule()
-quiz_module.register_routes(app)
+# -- quiz (Unified into Express practiceRoutes) -- #
+# from modules.quiz import QuizModule
+# quiz_module = QuizModule()
+# quiz_module.register_routes(app)
 
 # -- decks -- #
 from modules.decks import DeckModule

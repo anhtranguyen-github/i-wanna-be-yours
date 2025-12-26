@@ -19,8 +19,8 @@ const PlayAudioButton: React.FC<PlayAudioButtonProps> = ({ audioSrc, ariaLabel =
 
   // Assuming the FontAwesome icon's size is close to 24x24 pixels, adjust as needed
   return (
-    <button 
-      className="mr-2 inline-flex justify-center items-center w-5 h-5" 
+    <button
+      className="mr-2 inline-flex justify-center items-center w-5 h-5"
       onClick={handlePlayAudio}
       style={{ minWidth: '5px', minHeight: '5px' }} // Ensure button has a minimum size
       aria-label={ariaLabel}

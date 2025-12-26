@@ -56,17 +56,17 @@ export function SMARTGoalDetailModal({ isOpen, onClose, goal }: SMARTGoalDetailM
                     <div className="flex-1">
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <p className="text-xs text-slate-500 uppercase tracking-wide">Days Remaining</p>
+                                <p className="text-xs text-neutral-ink uppercase tracking-wide">Days Remaining</p>
                                 <p className={cn(
                                     'text-2xl font-bold',
-                                    daysRemaining <= 7 ? 'text-red-600' : daysRemaining <= 30 ? 'text-amber-600' : 'text-slate-900'
+                                    daysRemaining <= 7 ? 'text-red-600' : daysRemaining <= 30 ? 'text-amber-600' : 'text-neutral-ink'
                                 )}>
                                     {daysRemaining > 0 ? daysRemaining : 'Overdue'}
                                 </p>
                             </div>
                             <div>
                                 <div className="flex items-center gap-1">
-                                    <p className="text-xs text-slate-500 uppercase tracking-wide">AI Confidence</p>
+                                    <p className="text-xs text-neutral-ink uppercase tracking-wide">AI Confidence</p>
                                     <InfoTooltip
                                         title={HELP_CONTENT.ai_confidence.title}
                                         content={HELP_CONTENT.ai_confidence.content}
@@ -75,15 +75,15 @@ export function SMARTGoalDetailModal({ isOpen, onClose, goal }: SMARTGoalDetailM
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <Sparkles size={18} className="text-amber-500" />
-                                    <p className="text-2xl font-bold text-slate-900">{goal.ai_confidence_score}%</p>
+                                    <p className="text-2xl font-bold text-neutral-ink">{goal.ai_confidence_score}%</p>
                                 </div>
                             </div>
                             <div>
-                                <p className="text-xs text-slate-500 uppercase tracking-wide">Baseline</p>
+                                <p className="text-xs text-neutral-ink uppercase tracking-wide">Baseline</p>
                                 <p className="text-lg font-semibold text-slate-600">{(goal.baseline_score ?? 0)}%</p>
                             </div>
                             <div>
-                                <p className="text-xs text-slate-500 uppercase tracking-wide">Target</p>
+                                <p className="text-xs text-neutral-ink uppercase tracking-wide">Target</p>
                                 <p className="text-lg font-semibold text-emerald-600">{(goal.target_score ?? 100)}%</p>
                             </div>
                         </div>
@@ -110,7 +110,7 @@ export function SMARTGoalDetailModal({ isOpen, onClose, goal }: SMARTGoalDetailM
                                 )}
                             >
                                 <div className="flex items-center gap-2 mb-1">
-                                    <p className="font-semibold text-slate-900">{dim.label}</p>
+                                    <p className="font-semibold text-neutral-ink">{dim.label}</p>
                                     <InfoTooltip
                                         title={HELP_CONTENT[dim.helpKey]?.title || dim.label}
                                         content={HELP_CONTENT[dim.helpKey]?.content || ''}
@@ -146,9 +146,9 @@ export function SMARTGoalDetailModal({ isOpen, onClose, goal }: SMARTGoalDetailM
                                             ) : (
                                                 <Circle size={18} className="text-slate-300" />
                                             )}
-                                            <p className="font-semibold text-slate-900">{criterion.label}</p>
+                                            <p className="font-semibold text-neutral-ink">{criterion.label}</p>
                                         </div>
-                                        <span className="text-sm font-medium text-slate-500">
+                                        <span className="text-sm font-medium text-neutral-ink">
                                             Weight: {Math.round(criterion.weight * 100)}%
                                         </span>
                                     </div>
@@ -164,7 +164,7 @@ export function SMARTGoalDetailModal({ isOpen, onClose, goal }: SMARTGoalDetailM
                                                 />
                                             </div>
                                         </div>
-                                        <span className="text-sm font-bold text-slate-900 min-w-[100px] text-right">
+                                        <span className="text-sm font-bold text-neutral-ink min-w-[100px] text-right">
                                             {criterion.current_value} / {criterion.target_value} {criterion.unit}
                                         </span>
                                     </div>
@@ -188,7 +188,7 @@ export function SMARTGoalDetailModal({ isOpen, onClose, goal }: SMARTGoalDetailM
                             {linkedOKRs.map((okr) => (
                                 <div key={okr.id} className="p-4 bg-white border border-slate-100 rounded-xl">
                                     <div className="flex items-center justify-between mb-2">
-                                        <p className="font-semibold text-slate-900">{okr.objective}</p>
+                                        <p className="font-semibold text-neutral-ink">{okr.objective}</p>
                                         <span className={cn(
                                             'px-2 py-0.5 rounded-full text-xs font-semibold',
                                             okr.risk_level === 'low' ? 'bg-emerald-50 text-emerald-700' :
@@ -205,7 +205,7 @@ export function SMARTGoalDetailModal({ isOpen, onClose, goal }: SMARTGoalDetailM
                                                 style={{ width: `${okr.progress}%` }}
                                             />
                                         </div>
-                                        <span className="text-sm font-bold text-slate-900">{okr.progress}%</span>
+                                        <span className="text-sm font-bold text-neutral-ink">{okr.progress}%</span>
                                     </div>
                                 </div>
                             ))}

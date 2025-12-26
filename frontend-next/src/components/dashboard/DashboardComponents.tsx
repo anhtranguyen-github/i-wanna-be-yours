@@ -1,6 +1,6 @@
 /**
  * Dashboard Components
- * 
+ *
  * Reusable components for displaying learning progress and statistics.
  */
 
@@ -51,7 +51,7 @@ export function ProgressRing({
                     stroke="currentColor"
                     strokeWidth={strokeWidth}
                     fill="none"
-                    className="text-gray-200 dark:text-gray-700"
+                    className="text-neutral-ink dark:text-neutral-ink"
                 />
                 <circle
                     cx={size / 2}
@@ -70,12 +70,12 @@ export function ProgressRing({
                 {children || (
                     <>
                         {showPercentage && (
-                            <span className="text-2xl font-bold text-gray-900 dark:text-white">
+                            <span className="text-2xl font-bold text-neutral-ink dark:text-white">
                                 {Math.round(progress)}%
                             </span>
                         )}
                         {label && (
-                            <span className="text-xs text-gray-500 dark:text-gray-400">{label}</span>
+                            <span className="text-xs text-neutral-ink dark:text-neutral-ink">{label}</span>
                         )}
                     </>
                 )}
@@ -114,12 +114,12 @@ export function StatCard({ title, value, icon, trend, color = "#4CAF50", descrip
 
             <div className="flex items-start justify-between">
                 <div>
-                    <p className="text-sm font-bold text-muted-foreground mb-1 uppercase tracking-tight font-display">
+                    <p className="text-sm font-bold text-neutral-ink mb-1 uppercase tracking-tight font-display">
                         {title}
                     </p>
                     <p className="text-3xl font-display font-black text-foreground">{value}</p>
                     {description && (
-                        <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{description}</p>
+                        <p className="text-xs text-neutral-ink dark:text-neutral-ink mt-1">{description}</p>
                     )}
                     {trend !== undefined && (
                         <div className="flex items-center mt-2">
@@ -199,7 +199,7 @@ export function MiniStreak({ current, message }: MiniStreakProps) {
     return (
         <div className="flex items-center gap-2">
             <StreakBadge streak={current} size="sm" />
-            <span className="text-sm text-gray-600 dark:text-gray-400">
+            <span className="text-sm text-neutral-ink dark:text-neutral-ink">
                 {message || defaultMessage}
             </span>
         </div>
@@ -231,7 +231,7 @@ export function StreakDisplay({ current, longest }: StreakDisplayProps) {
                 <span className="text-7xl font-black text-foreground font-display leading-none">
                     {current}
                 </span>
-                <span className="text-xs font-black text-muted-foreground uppercase tracking-widest font-display pb-2">
+                <span className="text-xs font-black text-neutral-ink uppercase tracking-widest font-display pb-2">
                     Days Running
                 </span>
             </div>
@@ -241,7 +241,7 @@ export function StreakDisplay({ current, longest }: StreakDisplayProps) {
                     <TrophyIcon className="w-6 h-6" />
                 </div>
                 <div className="flex-1">
-                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest font-display">
+                    <p className="text-[10px] font-black text-neutral-ink uppercase tracking-widest font-display">
                         Longest Streak
                     </p>
                     <p className="text-lg font-black text-foreground font-display">
@@ -250,7 +250,7 @@ export function StreakDisplay({ current, longest }: StreakDisplayProps) {
                 </div>
             </div>
 
-            <p className="mt-8 text-sm font-bold text-muted-foreground leading-relaxed">
+            <p className="mt-8 text-sm font-bold text-neutral-ink leading-relaxed">
                 Study every day to keep your streak alive and build your mastery!
             </p>
         </div>
@@ -282,7 +282,7 @@ export function AchievementBadge({ achievement, size = 'md', showLabel = false }
         >
             <span className={sizeClasses[size]}>{achievement.icon}</span>
             {showLabel && (
-                <span className="text-xs text-gray-600 dark:text-gray-400 text-center max-w-[60px] truncate">
+                <span className="text-xs text-neutral-ink dark:text-neutral-ink text-center max-w-[60px] truncate">
                     {achievement.name}
                 </span>
             )}
@@ -315,8 +315,8 @@ export function WeeklyProgressBar({
         <div className="space-y-1">
             {showLabel && (
                 <div className="flex justify-between text-sm">
-                    <span className="text-gray-600 dark:text-gray-400">{label}</span>
-                    <span className="text-gray-900 dark:text-white font-medium">
+                    <span className="text-neutral-ink dark:text-neutral-ink">{label}</span>
+                    <span className="text-neutral-ink dark:text-white font-medium">
                         {current}/{target}
                     </span>
                 </div>
@@ -348,12 +348,12 @@ export function ProgressSummaryMini({ progress, variant = 'compact' }: ProgressS
             <div className="flex items-center gap-4 text-sm">
                 <MiniStreak current={progress.current_streak} />
                 <div className="flex items-center gap-1">
-                    <span className="font-semibold text-gray-900 dark:text-white">{progress.vocabulary_mastered}</span>
-                    <span className="text-gray-500">words</span>
+                    <span className="font-semibold text-neutral-ink dark:text-white">{progress.vocabulary_mastered}</span>
+                    <span className="text-neutral-ink">words</span>
                 </div>
                 <div className="flex items-center gap-1">
-                    <span className="font-semibold text-gray-900 dark:text-white">{progress.kanji_mastered}</span>
-                    <span className="text-gray-500">kanji</span>
+                    <span className="font-semibold text-neutral-ink dark:text-white">{progress.kanji_mastered}</span>
+                    <span className="text-neutral-ink">kanji</span>
                 </div>
             </div>
         );
@@ -366,22 +366,22 @@ export function ProgressSummaryMini({ progress, variant = 'compact' }: ProgressS
             </div>
             <div className="grid grid-cols-3 gap-4 text-center">
                 <div>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                    <p className="text-2xl font-bold text-neutral-ink dark:text-white">
                         {progress.vocabulary_mastered}
                     </p>
-                    <p className="text-xs text-gray-500">Vocab</p>
+                    <p className="text-xs text-neutral-ink">Vocab</p>
                 </div>
                 <div>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                    <p className="text-2xl font-bold text-neutral-ink dark:text-white">
                         {progress.kanji_mastered}
                     </p>
-                    <p className="text-xs text-gray-500">Kanji</p>
+                    <p className="text-xs text-neutral-ink">Kanji</p>
                 </div>
                 <div>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                    <p className="text-2xl font-bold text-neutral-ink dark:text-white">
                         {progress.grammar_points_learned}
                     </p>
-                    <p className="text-xs text-gray-500">Grammar</p>
+                    <p className="text-xs text-neutral-ink">Grammar</p>
                 </div>
             </div>
         </div>

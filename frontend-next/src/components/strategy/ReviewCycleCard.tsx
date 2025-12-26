@@ -30,7 +30,7 @@ export function ReviewCycleCard({ review, onViewDetails, className }: ReviewCycl
         <div
             className={cn(
                 'rounded-2xl bg-white border border-slate-100',
-                'shadow-sm hover:shadow-lg transition-all duration-300',
+                ' hover: transition-all duration-300',
                 'overflow-hidden',
                 className
             )}
@@ -43,7 +43,7 @@ export function ReviewCycleCard({ review, onViewDetails, className }: ReviewCycl
                         <h3 className={cn('font-bold capitalize', config.text)}>
                             {review.cycle_type} Review
                         </h3>
-                        <p className="text-xs text-slate-500">
+                        <p className="text-xs text-neutral-ink">
                             {new Date(review.period_start).toLocaleDateString()} - {new Date(review.period_end).toLocaleDateString()}
                         </p>
                     </div>
@@ -83,7 +83,7 @@ export function ReviewCycleCard({ review, onViewDetails, className }: ReviewCycl
 
             {/* Priority Distribution */}
             <div className="px-5 pb-4">
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Priority Queue</p>
+                <p className="text-xs font-semibold text-neutral-ink uppercase tracking-wide mb-2">Priority Queue</p>
                 <div className="flex h-3 rounded-full overflow-hidden">
                     <div
                         className="bg-red-500"
@@ -98,7 +98,7 @@ export function ReviewCycleCard({ review, onViewDetails, className }: ReviewCycl
                         style={{ width: `${(metrics.green_items_count / (metrics.red_items_count + metrics.yellow_items_count + metrics.green_items_count)) * 100}%` }}
                     />
                 </div>
-                <div className="flex justify-between mt-1 text-[10px] text-slate-400">
+                <div className="flex justify-between mt-1 text-[10px] text-neutral-ink">
                     <span>{metrics.red_items_count} RED</span>
                     <span>{metrics.yellow_items_count} YELLOW</span>
                     <span>{metrics.green_items_count} GREEN</span>
@@ -140,7 +140,7 @@ export function ReviewCycleCard({ review, onViewDetails, className }: ReviewCycl
             {/* Next Cycle Goals */}
             {review.next_cycle_goals.length > 0 && (
                 <div className="px-4 py-3 bg-slate-50 border-t border-slate-100">
-                    <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-1">
+                    <p className="text-xs font-semibold text-neutral-ink uppercase tracking-wide mb-2 flex items-center gap-1">
                         <Target size={12} />
                         Next Cycle Goals
                     </p>
@@ -180,20 +180,20 @@ interface MetricBoxProps {
 
 function MetricBox({ label, value, subtext, trend, highlight, icon }: MetricBoxProps) {
     const TrendIcon = trend === 'up' ? TrendingUp : trend === 'down' ? TrendingDown : Minus;
-    const trendColor = trend === 'up' ? 'text-emerald-500' : trend === 'down' ? 'text-red-500' : 'text-slate-400';
+    const trendColor = trend === 'up' ? 'text-emerald-500' : trend === 'down' ? 'text-red-500' : 'text-neutral-ink';
 
     return (
         <div className="text-center">
-            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-1">{label}</p>
+            <p className="text-[10px] font-semibold text-neutral-ink uppercase tracking-wide mb-1">{label}</p>
             <div className="flex items-center justify-center gap-1">
-                <p className={cn('text-lg font-black', highlight ? 'text-emerald-600' : 'text-slate-900')}>
+                <p className={cn('text-lg font-black', highlight ? 'text-emerald-600' : 'text-neutral-ink')}>
                     {value}
                 </p>
                 {icon}
                 {trend && <TrendIcon size={14} className={trendColor} />}
             </div>
             {subtext && (
-                <p className="text-[10px] text-slate-400 mt-0.5">{subtext}</p>
+                <p className="text-[10px] text-neutral-ink mt-0.5">{subtext}</p>
             )}
         </div>
     );

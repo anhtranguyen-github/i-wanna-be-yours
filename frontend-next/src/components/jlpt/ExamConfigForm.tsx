@@ -92,7 +92,7 @@ export function ExamConfigForm({ formState, onUpdate, generatedQuestionsCount }:
                             <div className={`text-sm font-bold ${formState.mode === mode.value ? 'text-brand-green' : 'text-slate-700'}`}>
                                 {mode.label}
                             </div>
-                            <div className="text-xs text-slate-500 mt-1">{mode.description}</div>
+                            <div className="text-xs text-neutral-ink mt-1">{mode.description}</div>
                         </button>
                     ))}
                 </div>
@@ -207,7 +207,7 @@ export function ExamConfigForm({ formState, onUpdate, generatedQuestionsCount }:
                                     placeholder="30"
                                     className="w-24 px-3 py-2 border border-slate-200 rounded-lg text-center"
                                 />
-                                <span className="text-sm text-slate-500">minutes</span>
+                                <span className="text-sm text-neutral-ink">minutes</span>
                             </div>
                         </div>
                     )}
@@ -228,7 +228,7 @@ export function ExamConfigForm({ formState, onUpdate, generatedQuestionsCount }:
                             <Users size={16} />
                             Make Public
                         </div>
-                        <div className="text-xs text-slate-500">Allow others to take this exam</div>
+                        <div className="text-xs text-neutral-ink">Allow others to take this exam</div>
                     </div>
                 </label>
             </div>

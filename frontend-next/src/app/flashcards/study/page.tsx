@@ -72,7 +72,7 @@ export default function StudyPage() {
                     <Loader2 className="w-16 h-16 animate-spin text-secondary opacity-20" />
                     <Brain className="absolute inset-0 m-auto w-6 h-6 text-secondary animate-pulse" />
                 </div>
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40 font-display">Initializing Synaptic Array...</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-ink font-display">Initializing Synaptic Array...</p>
             </div>
         );
     }
@@ -91,18 +91,18 @@ export default function StudyPage() {
                     Session <span className="text-secondary italic-none not-italic">Synchronized</span>
                 </h1>
 
-                <p className="text-muted-foreground font-bold italic mb-12 max-w-md leading-relaxed tracking-tight">
+                <p className="text-neutral-ink font-bold italic mb-12 max-w-md leading-relaxed tracking-tight">
                     All currently due neural nodes have been successfully reinforced. Cognitive integrity is optimal.
                 </p>
 
                 <div className="grid grid-cols-2 gap-6 w-full max-w-sm mb-12">
                     <div className="bg-muted/30 rounded-3xl p-6 border border-border/20 ">
                         <div className="text-2xl font-black text-secondary font-display mb-1">{queue.length}</div>
-                        <div className="text-[9px] font-black text-muted-foreground/50 uppercase tracking-widest font-display">Recall Nodes</div>
+                        <div className="text-[9px] font-black text-neutral-ink uppercase tracking-widest font-display">Recall Nodes</div>
                     </div>
                     <div className="bg-muted/30 rounded-3xl p-6 border border-border/20 ">
                         <div className="text-2xl font-black text-foreground font-display mb-1">100%</div>
-                        <div className="text-[9px] font-black text-muted-foreground/50 uppercase tracking-widest font-display">Throughput</div>
+                        <div className="text-[9px] font-black text-neutral-ink uppercase tracking-widest font-display">Throughput</div>
                     </div>
                 </div>
 
@@ -120,11 +120,11 @@ export default function StudyPage() {
     if (queue.length === 0) {
         return (
             <div className="min-h-screen bg-background flex flex-col items-center justify-center p-8 text-center selection:bg-secondary/20">
-                <div className="w-32 h-32 bg-muted text-muted-foreground/30 rounded-[2.5rem] flex items-center justify-center mb-8  border border-border/20">
+                <div className="w-32 h-32 bg-muted text-neutral-ink rounded-[2.5rem] flex items-center justify-center mb-8  border border-border/20">
                     <Sparkles size={48} />
                 </div>
                 <h1 className="text-3xl font-black text-foreground font-display tracking-tight mb-4 italic">Neural Quiessence</h1>
-                <p className="text-muted-foreground font-bold italic mb-12 max-w-md">No pending nodes require immediate reinforcement at this cycle.</p>
+                <p className="text-neutral-ink font-bold italic mb-12 max-w-md">No pending nodes require immediate reinforcement at this cycle.</p>
                 <Link
                     href="/flashcards"
                     className="px-10 py-5 bg-card border border-border/50 text-foreground rounded-2xl font-black font-display text-[10px] uppercase tracking-widest  hover:border-secondary/30 hover:text-secondary transition-all active:scale-95"
@@ -136,13 +136,11 @@ export default function StudyPage() {
     }
 
     const currentCard = queue[currentIndex];
-    const content = currentCard.content || {};
-
-    const frontText = content.front || content.kanji || content.vocabulary_original || content.title || "???";
-    const backText = content.back || content.meaning || content.english_meaning || "???";
+    const frontText = currentCard.front || currentCard.content?.front || currentCard.kanji || "???";
+    const backText = currentCard.back || currentCard.content?.back || currentCard.meaning || "???";
     const backDisplay = Array.isArray(backText) ? backText.join(", ") : backText;
 
-    const typeLabel = currentCard.card_type === "PERSONAL" ? "Private" : (content.p_tag || "Global");
+    const typeLabel = currentCard.card_type === "PERSONAL" ? "Private" : "Global";
     const deckLabel = currentCard.deck_name || "General";
 
     return (
@@ -153,7 +151,7 @@ export default function StudyPage() {
                     href="/flashcards"
                     className="group w-12 h-12 bg-muted/50 hover:bg-card border border-border/30 rounded-2xl flex items-center justify-center transition-all  active:scale-90"
                 >
-                    <X size={20} className="text-muted-foreground group-hover:text-destructive transition-colors" />
+                    <X size={20} className="text-neutral-ink group-hover:text-destructive transition-colors" />
                 </Link>
 
                 <div className="flex-1 mx-12 flex flex-col gap-3">
@@ -167,7 +165,7 @@ export default function StudyPage() {
 
                 <div className="text-right">
                     <div className="text-2xl font-black text-foreground font-display leading-none mb-1 italic">{currentIndex + 1}</div>
-                    <div className="text-[9px] font-black text-muted-foreground/30 uppercase tracking-widest font-display">Node Index</div>
+                    <div className="text-[9px] font-black text-neutral-ink uppercase tracking-widest font-display">Node Index</div>
                 </div>
             </header>
 
@@ -187,7 +185,7 @@ export default function StudyPage() {
                                 <span className="px-4 py-1.5 bg-muted rounded-xl text-[9px] font-black uppercase tracking-widest text-secondary font-display  border border-secondary/10 italic">
                                     {typeLabel}
                                 </span>
-                                <span className="px-4 py-1.5 bg-muted/50 border border-border/20 rounded-xl text-[9px] font-black uppercase tracking-widest text-muted-foreground/40 font-display italic">
+                                <span className="px-4 py-1.5 bg-muted/50 border border-border/20 rounded-xl text-[9px] font-black uppercase tracking-widest text-neutral-ink font-display italic">
                                     {deckLabel}
                                 </span>
                             </div>
@@ -198,7 +196,7 @@ export default function StudyPage() {
                                 </div>
                             </div>
 
-                            <div className="mt-auto flex items-center gap-3 text-muted-foreground/20 font-black font-display uppercase tracking-[0.3em] text-[10px] italic group-hover:text-secondary/40 transition-colors">
+                            <div className="mt-auto flex items-center gap-3 text-neutral-ink font-black font-display uppercase tracking-[0.3em] text-[10px] italic group-hover:text-secondary/40 transition-colors">
                                 <RotateCcw size={16} className="group-hover:rotate-180 transition-transform duration-700" />
                                 <span>Execute Reveal</span>
                             </div>
@@ -214,9 +212,9 @@ export default function StudyPage() {
                                     {backDisplay}
                                 </div>
 
-                                {content.reading && (
+                                {currentCard.reading && (
                                     <div className="px-10 py-4 bg-background/10 rounded-[2rem]  border border-background/20  group-hover/back:border-secondary/30 transition-all duration-500">
-                                        <span className="text-secondary font-jp text-3xl font-black">{content.reading}</span>
+                                        <span className="text-secondary font-jp text-3xl font-black">{currentCard.reading}</span>
                                     </div>
                                 )}
                             </div>

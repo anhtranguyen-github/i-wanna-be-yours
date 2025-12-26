@@ -92,7 +92,7 @@ export function ContextCheckInModal({
                     <button
                         type="button"
                         onClick={onClose}
-                        className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
+                        className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-neutral-ink transition-colors"
                     >
                         Skip
                     </button>
@@ -111,7 +111,7 @@ export function ContextCheckInModal({
                 <div>
                     <div className="flex items-center gap-2 mb-3">
                         <Moon size={18} className="text-indigo-500" />
-                        <label className="text-sm font-semibold text-slate-900">Sleep Quality</label>
+                        <label className="text-sm font-semibold text-neutral-ink">Sleep Quality</label>
                         <InfoTooltip
                             title={HELP_CONTENT.context_sleep.title}
                             content={HELP_CONTENT.context_sleep.content}
@@ -142,13 +142,13 @@ export function ContextCheckInModal({
                 <div>
                     <div className="flex items-center gap-2 mb-3">
                         <Zap size={18} className="text-amber-500" />
-                        <label className="text-sm font-semibold text-slate-900">Energy Level</label>
+                        <label className="text-sm font-semibold text-neutral-ink">Energy Level</label>
                         <InfoTooltip
                             title={HELP_CONTENT.context_energy.title}
                             content={HELP_CONTENT.context_energy.content}
                             iconSize={12}
                         />
-                        <span className="ml-auto text-lg font-bold text-slate-900">{energyLevel}/10</span>
+                        <span className="ml-auto text-lg font-bold text-neutral-ink">{energyLevel}/10</span>
                     </div>
                     <div className="relative">
                         <input
@@ -163,14 +163,14 @@ export function ContextCheckInModal({
                 [&::-webkit-slider-thumb]:h-6
                 [&::-webkit-slider-thumb]:rounded-full
                 [&::-webkit-slider-thumb]:bg-amber-500
-                [&::-webkit-slider-thumb]:shadow-md
+                [&::-webkit-slider-thumb]:
                 [&::-webkit-slider-thumb]:cursor-pointer
                 [&::-webkit-slider-thumb]:border-2
                 [&::-webkit-slider-thumb]:border-white"
                         />
                         <div className="flex justify-between mt-1">
-                            <span className="text-[10px] text-slate-400">😴 Low</span>
-                            <span className="text-[10px] text-slate-400">⚡ High</span>
+                            <span className="text-[10px] text-neutral-ink">😴 Low</span>
+                            <span className="text-[10px] text-neutral-ink">⚡ High</span>
                         </div>
                     </div>
                 </div>
@@ -179,7 +179,7 @@ export function ContextCheckInModal({
                 <div>
                     <div className="flex items-center gap-2 mb-3">
                         <Brain size={18} className="text-blue-500" />
-                        <label className="text-sm font-semibold text-slate-900">Current Mood</label>
+                        <label className="text-sm font-semibold text-neutral-ink">Current Mood</label>
                         <InfoTooltip
                             title={HELP_CONTENT.context_mood.title}
                             content={HELP_CONTENT.context_mood.content}
@@ -210,7 +210,7 @@ export function ContextCheckInModal({
                 <div>
                     <div className="flex items-center gap-2 mb-3">
                         <Coffee size={18} className="text-rose-500" />
-                        <label className="text-sm font-semibold text-slate-900">Stress Level</label>
+                        <label className="text-sm font-semibold text-neutral-ink">Stress Level</label>
                         <InfoTooltip
                             title={HELP_CONTENT.context_stress.title}
                             content={HELP_CONTENT.context_stress.content}

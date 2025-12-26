@@ -12,7 +12,7 @@ export default function LearningText() {
       </h2>
 
 
-      <div className="text-xs max-w-8xl mx-auto bg-white shadow-md rounded-md p-6">
+      <div className="text-xs max-w-8xl mx-auto bg-white  rounded-md p-6">
         <p className="mb-4">
           This is a highly experimental approach to learning vocabulary, where
           we use AI to generate songs from example sentences. The idea is to
@@ -61,11 +61,11 @@ export default function LearningText() {
 
 
 
-        {/* <div className="bg-gray-100 p-4 rounded-md shadow-inner mt-5">
+        {/* <div className="bg-gray-100 p-4 rounded-md  mt-5">
           <h2 className="text-xl font-semibold mb-4">
             Example Vocabulary: `貧しい / 가난한`
           </h2>
-          <p className="text-gray-700 mb-4">
+          <p className="text-neutral-ink mb-4">
             Below is an example of an AI-generated song created using the
             sentences we explored earlier. This song uses sentences about the
             word <strong>貧しい</strong> (mazushii) in Japanese and{" "}
@@ -88,11 +88,11 @@ export default function LearningText() {
 
 
 
-        <div className="bg-gray-100 p-6 rounded-md shadow-inner mt-5">
+        <div className="bg-gray-100 p-6 rounded-md  mt-5">
           <h2 className="text-xl font-semibold mb-4">
             Example Vocabulary: `貧しい / 가난한`
           </h2>
-          <p className="text-gray-700 mb-4">
+          <p className="text-neutral-ink mb-4">
             Below is an example of an AI-generated song created using the
             sentences we explored earlier. This song uses sentences about the word <strong>貧しい</strong> (mazushii) in Japanese and{" "}
             <strong>가난한</strong> (ganahan) in Korean to craft lyrics:
@@ -203,7 +203,7 @@ export default function LearningText() {
         {/* Japanese Section */}
         <div className="mb-8">
           <h2 className="text-2xl font-semibold mb-4 text-center">Japanese</h2>
-          <p className="text-gray-700 text-center mb-4">
+          <p className="text-neutral-ink text-center mb-4">
             Learning Word: <strong>貧しい</strong>
           </p>
           <table className="w-full border border-gray-300 text-sm md:text-base">
@@ -229,7 +229,7 @@ export default function LearningText() {
         {/* Korean Section */}
         <div>
           <h2 className="text-2xl font-semibold mb-4 text-center">Korean</h2>
-          <p className="text-gray-700 text-center mb-4">
+          <p className="text-neutral-ink text-center mb-4">
             Learning Word: <strong>가난한</strong>
           </p>
           <table className="w-full border border-gray-300 text-sm md:text-base">

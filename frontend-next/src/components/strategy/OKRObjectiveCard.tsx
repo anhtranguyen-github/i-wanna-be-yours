@@ -30,15 +30,15 @@ export function OKRObjectiveCard({ okr, onClick, className }: OKRObjectiveCardPr
         <>
             <div
                 className={cn(
-                    'rounded-2xl bg-white border border-slate-100',
-                    'shadow-sm hover:shadow-lg transition-all duration-300',
+                    'rounded-2xl bg-neutral-white border border-neutral-gray/20',
+                    ' hover: transition-all duration-500  font-display',
                     'overflow-hidden',
                     className
                 )}
             >
                 {/* Header - Opens SMART Detail Modal */}
                 <div
-                    className="p-5 cursor-zoom-in group/header transition-colors hover:bg-slate-50/50"
+                    className="p-6 cursor-zoom-in group/header transition-all hover:bg-neutral-beige/30"
                     onClick={onClick}
                     role="button"
                     tabIndex={0}
@@ -67,18 +67,18 @@ export function OKRObjectiveCard({ okr, onClick, className }: OKRObjectiveCardPr
                                     iconSize={12}
                                 />
                             </div>
-                            <h3 className="font-bold text-lg text-slate-900 group-hover:text-primary transition-colors">
+                            <h3 className="font-black text-xl text-neutral-ink group-hover:text-primary-strong transition-colors font-display">
                                 {okr.objective}
                             </h3>
                             {okr.description && (
-                                <p className="text-sm text-slate-500 mt-1 line-clamp-2">{okr.description}</p>
+                                <p className="text-sm text-neutral-ink mt-1 line-clamp-2">{okr.description}</p>
                             )}
                         </div>
 
                         <div className="flex flex-col items-end gap-2">
                             <div className="text-right">
-                                <p className="text-3xl font-black text-slate-900">{okr.progress}%</p>
-                                <p className="text-xs text-slate-500">Complete</p>
+                                <p className="text-3xl font-black text-neutral-ink font-display">{okr.progress}%</p>
+                                <p className="text-[10px] text-neutral-ink font-black uppercase tracking-widest">Complete</p>
                             </div>
                             <ChevronRight
                                 size={16}
@@ -102,10 +102,10 @@ export function OKRObjectiveCard({ okr, onClick, className }: OKRObjectiveCardPr
                 </div>
 
                 {/* Key Results */}
-                <div className="border-t border-slate-100">
-                    <div className="px-5 py-3 bg-slate-50 flex items-center justify-between">
+                <div className="border-t border-neutral-gray/10">
+                    <div className="px-6 py-4 bg-neutral-beige/50 flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                            <p className="text-xs font-semibold text-neutral-ink uppercase tracking-wide">
                                 Key Results
                             </p>
                             <InfoTooltip
@@ -114,7 +114,7 @@ export function OKRObjectiveCard({ okr, onClick, className }: OKRObjectiveCardPr
                                 iconSize={10}
                             />
                         </div>
-                        <span className="text-xs font-medium text-slate-400">
+                        <span className="text-xs font-medium text-neutral-ink">
                             {okr.keyResults.filter(kr => (kr.current / kr.target) >= 1).length}/{okr.keyResults.length} complete
                         </span>
                     </div>
@@ -191,7 +191,7 @@ function KeyResultRow({ keyResult, onViewItems }: KeyResultRowProps) {
                         )}
                         <span className={cn(
                             'text-sm font-medium truncate group-hover/row:text-primary transition-colors',
-                            isComplete ? 'text-slate-500 line-through' : 'text-slate-900'
+                            isComplete ? 'text-neutral-ink line-through' : 'text-neutral-ink'
                         )}>
                             {keyResult.title}
                         </span>
@@ -218,10 +218,10 @@ function KeyResultRow({ keyResult, onViewItems }: KeyResultRowProps) {
                         variant="minimal"
                     />
                     <div className="flex flex-col items-end">
-                        <span className="text-sm font-black text-slate-900">
+                        <span className="text-sm font-black text-neutral-ink">
                             {keyResult.current}/{keyResult.target}
                         </span>
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
+                        <span className="text-[10px] font-bold text-neutral-ink uppercase tracking-tighter">
                             {keyResult.unit}
                         </span>
                     </div>

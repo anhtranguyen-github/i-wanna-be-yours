@@ -6,7 +6,7 @@ interface GrammarBreadcrumbProps {
 
 const GrammarBreadcrumb: React.FC<GrammarBreadcrumbProps> = ({ decodedTitle }) => {
   return (
-    <nav className="mb-6 text-gray-700" aria-label="breadcrumb">
+    <nav className="mb-6 text-neutral-ink" aria-label="breadcrumb">
       <ol className="list-reset flex">
         <li>
           <a href="/" className="text-blue-600 hover:text-blue-800 font-semibold">
@@ -24,7 +24,7 @@ const GrammarBreadcrumb: React.FC<GrammarBreadcrumbProps> = ({ decodedTitle }) =
         <li>
           <span className="mx-2">›</span>
         </li>
-        <li className="text-gray-500">{decodedTitle}</li>
+        <li className="text-neutral-ink">{decodedTitle}</li>
       </ol>
     </nav>
   );

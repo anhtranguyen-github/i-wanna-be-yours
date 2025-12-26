@@ -10,7 +10,7 @@ export const BaseNode = React.forwardRef<
     className={cn(
       "rounded-md border bg-card p-5 text-card-foreground",
       className,
-      selected ? "border-muted-foreground shadow-lg" : "",
+      selected ? "border-muted-foreground " : "",
       "hover:ring-1",
     )}
     {...props}

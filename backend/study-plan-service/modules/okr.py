@@ -12,11 +12,18 @@ from flask import Blueprint, request, jsonify
 from pymongo import MongoClient
 from bson import ObjectId
 import math
+from typing import Dict, List, Optional, Any, Union
+
+def ensure_aware(dt):
+    if dt is None: return None
+    if dt.tzinfo is None:
+        return dt.replace(tzinfo=timezone.utc)
+    return dt
 
 class OKRModule:
-    def __init__(self, mastery_module, mongo_uri: str = "mongodb://localhost:27017/"):
+    def __init__(self, mastery_module, mongo_uri: str = "mongodb://localhost:27017/", client: Optional[MongoClient] = None):
         self.logger = logging.getLogger(__name__)
-        self.client = MongoClient(mongo_uri)
+        self.client = client or MongoClient(mongo_uri)
         self.db = self.client["flaskStudyPlanDB"]
         self.mastery = mastery_module
         
@@ -27,7 +34,10 @@ class OKRModule:
         self.jmdict_db = self.client["jmdictDatabase"]
         self.grammar_db = self.client["zenRelationshipsAutomated"]
         
-        self._create_indexes()
+        if not isinstance(self.client, MongoClient) or self.client.address is not None:
+             # Only create indexes if it's a real client or mongomock client that supports it
+             # mongomock address is usually None or dummy
+             self._create_indexes()
 
     def _create_indexes(self):
         try:
@@ -58,6 +68,10 @@ class OKRModule:
         # Update history
         now = datetime.now(timezone.utc)
         history = kr.get("history", [])
+        # Ensure old history dates are aware
+        for h in history:
+            h["date"] = ensure_aware(h["date"])
+            
         history.append({"date": now, "value": current})
         # Keep last 10 entries for velocity
         if len(history) > 10: history = history[-10:]
@@ -86,11 +100,11 @@ class OKRModule:
         return kr
 
     def assess_risk(self, okr: Dict[str, Any]) -> str:
-        deadline = okr.get("deadline")
+        deadline = ensure_aware(okr.get("deadline"))
         if not deadline: return "low"
         
         now = datetime.now(timezone.utc)
-        created = okr.get("created_at") or now
+        created = ensure_aware(okr.get("created_at")) or now
         total_days = (deadline - created).days or 1
         days_passed = (now - created).days
         

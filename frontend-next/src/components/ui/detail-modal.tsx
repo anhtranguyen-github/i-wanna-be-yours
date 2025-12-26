@@ -95,7 +95,7 @@ export function DetailModal({
             {/* Modal Content */}
             <div
                 className={cn(
-                    'relative w-full bg-white rounded-2xl shadow-2xl overflow-hidden',
+                    'relative w-full bg-white rounded-2xl  overflow-hidden',
                     'transform transition-all duration-300 ease-out',
                     visible ? 'scale-100 translate-y-0' : 'scale-95 translate-y-4',
                     sizeClasses[size],
@@ -106,18 +106,18 @@ export function DetailModal({
                 {/* Header */}
                 <div className="flex items-start justify-between p-6 border-b border-slate-100">
                     <div>
-                        <h2 id="modal-title" className="text-xl font-black text-slate-900">
+                        <h2 id="modal-title" className="text-xl font-black text-neutral-ink">
                             {title}
                         </h2>
                         {subtitle && (
-                            <p className="text-sm text-slate-500 mt-1">{subtitle}</p>
+                            <p className="text-sm text-neutral-ink mt-1">{subtitle}</p>
                         )}
                     </div>
                     <button
                         type="button"
                         onClick={onClose}
                         className={cn(
-                            'p-2 rounded-xl text-slate-400',
+                            'p-2 rounded-xl text-neutral-ink',
                             'hover:text-slate-600 hover:bg-slate-100',
                             'transition-colors duration-200',
                             'focus:outline-none focus:ring-2 focus:ring-brand-salmon/20'

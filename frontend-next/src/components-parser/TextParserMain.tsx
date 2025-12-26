@@ -188,13 +188,13 @@ export default function TextParserMain({ initialMode = 'text' }: TextParserMainP
             {/* HEADER */}
             <div className="max-w-7xl mx-auto mb-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
-                    <h1 className="text-4xl font-black text-slate-900 font-display tracking-tight uppercase tracking-[0.1em]">
+                    <h1 className="text-4xl font-black text-neutral-ink font-display tracking-tight uppercase tracking-[0.1em]">
                         Text <span className="text-primary">Parser</span>
                     </h1>
-                    <p className="text-slate-500 mt-2 font-medium">Advanced Reading Intelligence & Linguistic Analysis</p>
+                    <p className="text-neutral-ink mt-2 font-medium">Advanced Reading Intelligence & Linguistic Analysis</p>
                 </div>
                 {userId && (
-                    <div className="px-6 py-2.5 bg-white rounded-2xl border border-slate-200 font-bold text-[10px] uppercase tracking-[0.2em] text-slate-400 shadow-sm flex items-center gap-2">
+                    <div className="px-6 py-2.5 bg-white rounded-2xl border border-slate-200 font-bold text-[10px] uppercase tracking-[0.2em] text-neutral-ink shadow-sm flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                         Intelligence Agent: {userId}
                     </div>
@@ -211,13 +211,13 @@ export default function TextParserMain({ initialMode = 'text' }: TextParserMainP
                         <div className="flex bg-slate-50/50 p-2 gap-2">
                             <button
                                 onClick={() => setParserMode('text')}
-                                className={`flex-1 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all ${parserMode === 'text' ? 'bg-white text-slate-900 shadow-md ring-1 ring-slate-200' : 'text-slate-400 hover:text-slate-600 hover:bg-white/50'}`}
+                                className={`flex-1 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all ${parserMode === 'text' ? 'bg-white text-neutral-ink shadow-md ring-1 ring-slate-200' : 'text-neutral-ink hover:text-slate-600 hover:bg-white/50'}`}
                             >
                                 Custom Lexicon
                             </button>
                             <button
                                 onClick={() => setParserMode('youtube')}
-                                className={`flex-1 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all ${parserMode === 'youtube' ? 'bg-white text-slate-900 shadow-md ring-1 ring-slate-200' : 'text-slate-400 hover:text-slate-600 hover:bg-white/50'}`}
+                                className={`flex-1 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all ${parserMode === 'youtube' ? 'bg-white text-neutral-ink shadow-md ring-1 ring-slate-200' : 'text-neutral-ink hover:text-slate-600 hover:bg-white/50'}`}
                             >
                                 YouTube Intelligence
                             </button>
@@ -235,7 +235,7 @@ export default function TextParserMain({ initialMode = 'text' }: TextParserMainP
                                         <textarea
                                             value={inputText}
                                             onChange={handleInputChange}
-                                            className="relative w-full h-64 p-8 rounded-[2rem] bg-white border border-slate-100 text-lg font-jp focus:outline-none focus:ring-0 focus:border-primary/30 transition-all resize-y shadow-inner text-slate-800"
+                                            className="relative w-full h-64 p-8 rounded-[2rem] bg-white border border-slate-100 text-lg font-jp focus:outline-none focus:ring-0 focus:border-primary/30 transition-all resize-y shadow-inner text-neutral-ink"
                                             placeholder="Paste Japanese text for deep analysis..."
                                         />
                                     </div>

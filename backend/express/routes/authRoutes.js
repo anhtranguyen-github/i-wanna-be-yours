@@ -5,6 +5,7 @@ const { User } = require('../models/User');
 const { Session } = require('../models/Session');
 const { hashPassword, verifyPassword, createAccessToken, createRefreshToken } = require('../utils/auth');
 const rateLimit = require('express-rate-limit');
+const { validateRequest, authSchema, logoutSchema } = require('../middleware/validation');
 
 // --- Rate Limiters ---
 const authLimiter = rateLimit({
@@ -15,21 +16,10 @@ const authLimiter = rateLimit({
     legacyHeaders: false,
 });
 
-// --- Sanitization ---
-const sanitizeInput = (req, res, next) => {
-    if (req.body) {
-        if (typeof req.body.email !== 'undefined' && typeof req.body.email !== 'string') {
-            req.body.email = String(req.body.email);
-        }
-        if (typeof req.body.refreshToken !== 'undefined' && typeof req.body.refreshToken !== 'string') {
-            req.body.refreshToken = String(req.body.refreshToken);
-        }
-    }
-    next();
-};
+// Manual sanitization removed. Using Zod validation instead.
 
 // POST /auth/register
-router.post('/register', authLimiter, sanitizeInput, async (req, res) => {
+router.post('/register', authLimiter, validateRequest(authSchema), async (req, res) => {
     try {
         const { email, password } = req.body;
 
@@ -59,7 +49,7 @@ router.post('/register', authLimiter, sanitizeInput, async (req, res) => {
 });
 
 // POST /auth/login
-router.post('/login', authLimiter, sanitizeInput, async (req, res) => {
+router.post('/login', authLimiter, validateRequest(authSchema), async (req, res) => {
     try {
         const { email, password } = req.body;
         if (!email || !password) {
@@ -107,7 +97,7 @@ router.post('/login', authLimiter, sanitizeInput, async (req, res) => {
 });
 
 // POST /auth/logout
-router.post('/logout', sanitizeInput, async (req, res) => {
+router.post('/logout', validateRequest(logoutSchema), async (req, res) => {
     try {
         const { refreshToken } = req.body;
         if (refreshToken) {

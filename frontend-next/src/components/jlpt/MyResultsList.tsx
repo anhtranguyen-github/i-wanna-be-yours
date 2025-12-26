@@ -23,7 +23,7 @@ export function MyResultsList({
     if (isLoading) {
         return (
             <div className="flex items-center justify-center py-12">
-                <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+                <Loader2 className="w-8 h-8 animate-spin text-neutral-ink" />
             </div>
         );
     }
@@ -31,11 +31,11 @@ export function MyResultsList({
     if (attempts.length === 0) {
         return (
             <div className="text-center py-20 px-8 bg-muted/20 rounded-2xl border-2 border-dashed border-border">
-                <div className="w-20 h-20 mx-auto mb-6 bg-card rounded-2xl flex items-center justify-center  text-muted-foreground/30">
+                <div className="w-20 h-20 mx-auto mb-6 bg-card rounded-2xl flex items-center justify-center  text-neutral-ink">
                     <History size={40} />
                 </div>
                 <h3 className="text-xl font-black text-foreground mb-3 font-display tracking-tight">No Results Yet</h3>
-                <p className="text-sm font-bold text-muted-foreground max-w-xs mx-auto leading-relaxed">
+                <p className="text-sm font-bold text-neutral-ink max-w-xs mx-auto leading-relaxed">
                     Once you complete a challenge, your achievements will bloom here.
                 </p>
             </div>
@@ -88,7 +88,7 @@ export function MyResultsList({
                     <div className="flex items-start justify-between mb-6">
                         <div className="flex-1 space-y-2">
                             <div className="flex items-center gap-3">
-                                <h4 className="text-lg font-black text-foreground font-display tracking-tight group-hover:text-primary transition-colors">{attempt.examTitle}</h4>
+                                <h4 className="text-lg font-black text-foreground font-display tracking-tight group-hover:text-primary transition-colors">{attempt.nodeTitle || (attempt as any).examTitle}</h4>
                                 <span className={`px-3 py-1 rounded-full text-[9px] font-black font-display uppercase tracking-widest border  ${attempt.passed
                                     ? 'bg-primary/5 text-primary border-primary/20'
                                     : 'bg-destructive/5 text-destructive border-destructive/20'
@@ -96,9 +96,9 @@ export function MyResultsList({
                                     {attempt.passed ? 'PASSED' : 'FAILED'}
                                 </span>
                             </div>
-                            <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.15em] text-muted-foreground/60 font-display">
-                                <span className="px-2.5 py-1 bg-muted rounded  text-foreground/70">
-                                    {attempt.level}
+                            <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.15em] text-neutral-ink font-display">
+                                <span className="px-2.5 py-1 bg-muted rounded  text-neutral-ink">
+                                    {attempt.tags?.level || (attempt as any).level}
                                 </span>
                                 <span className="flex items-center gap-1.5 grayscale opacity-60">
                                     <Clock size={12} />
@@ -124,14 +124,14 @@ export function MyResultsList({
                             />
                         </div>
 
-                        <div className="flex items-center gap-6 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 font-display">
+                        <div className="flex items-center gap-6 text-[10px] font-black uppercase tracking-widest text-neutral-ink font-display">
                             <span className="flex items-center gap-2">
                                 <CheckCircle2 size={14} className="text-primary" />
-                                <span className="text-foreground/80">{attempt.correctAnswers}/{attempt.totalQuestions}</span> Correct
+                                <span className="text-neutral-ink">{attempt.correctAnswers}/{attempt.totalQuestions}</span> Correct
                             </span>
                             <span className="flex items-center gap-2">
                                 <Clock size={14} />
-                                <span className="text-foreground/80">{formatTime(attempt.timeTakenSeconds)}</span> Taken
+                                <span className="text-neutral-ink">{formatTime(attempt.timeTakenSeconds)}</span> Taken
                             </span>
                             {attempt.unansweredQuestions > 0 && (
                                 <span className="flex items-center gap-2 text-secondary">
@@ -146,13 +146,13 @@ export function MyResultsList({
                     <div className="flex gap-4 pt-4 border-t border-border/50">
                         <button
                             onClick={() => onReview(attempt.id)}
-                            className="flex-1 flex items-center justify-center gap-2 py-3 px-6 bg-muted/30 border border-border/50 rounded-xl text-[10px] font-black uppercase tracking-widest font-display text-muted-foreground hover:text-foreground hover:bg-card hover: transition-all"
+                            className="flex-1 flex items-center justify-center gap-2 py-3 px-6 bg-muted/30 border border-border/50 rounded-xl text-[10px] font-black uppercase tracking-widest font-display text-neutral-ink hover:text-foreground hover:bg-card hover: transition-all"
                         >
                             <Eye size={16} />
                             Review Result
                         </button>
                         <button
-                            onClick={() => onRetake(attempt.examId)}
+                            onClick={() => onRetake(attempt.nodeId || (attempt as any).examId)}
                             className="flex-1 flex items-center justify-center gap-2 py-3 px-6 bg-foreground text-background rounded-xl text-[10px] font-black uppercase tracking-widest font-display hover:opacity-90 active:scale-95 transition-all "
                         >
                             <RotateCcw size={16} />

@@ -3,8 +3,39 @@
 import React, { useState, useEffect } from "react";
 import { flashcardService } from "@/services/flashcardService";
 import { Search, Filter, Trash2, Edit3, Plus, X, Tag as TagIcon, Check, ArrowLeft, Loader2 } from "lucide-react";
-import { ALL_TAGS, Tag, getTagById, getTagsByType } from "../decks-data";
 import Link from "next/link";
+
+// Inline tag definitions (no longer importing from decks-data)
+interface Tag {
+    id: string;
+    label: string;
+}
+
+const CATEGORY_TAGS: Tag[] = [
+    { id: 'kanji', label: 'Kanji' },
+    { id: 'vocabulary', label: 'Vocabulary' },
+    { id: 'grammar', label: 'Grammar' },
+    { id: 'reading', label: 'Reading' }
+];
+
+const LEVEL_TAGS: Tag[] = [
+    { id: 'N5', label: 'N5' },
+    { id: 'N4', label: 'N4' },
+    { id: 'N3', label: 'N3' },
+    { id: 'N2', label: 'N2' },
+    { id: 'N1', label: 'N1' }
+];
+
+const SKILL_TAGS: Tag[] = [
+    { id: 'reading', label: 'Reading' },
+    { id: 'listening', label: 'Listening' },
+    { id: 'speaking', label: 'Speaking' },
+    { id: 'writing', label: 'Writing' }
+];
+
+const ALL_TAGS = [...CATEGORY_TAGS, ...LEVEL_TAGS, ...SKILL_TAGS];
+
+const getTagById = (id: string): Tag | undefined => ALL_TAGS.find(t => t.id === id);
 
 interface CardData {
     _id?: string;
@@ -30,10 +61,6 @@ export default function ManageDeckPage() {
     const [showFilters, setShowFilters] = useState(false);
     const [editModal, setEditModal] = useState<CardData | null>(null);
     const [createModal, setCreateModal] = useState(false);
-
-    const categoryTags = getTagsByType('category').filter(t => t.id !== 'personal');
-    const levelTags = getTagsByType('level');
-    const skillTags = getTagsByType('skill');
 
     useEffect(() => { loadCards(); }, []);
 
@@ -91,11 +118,11 @@ export default function ManageDeckPage() {
                 <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
                         <Link href="/flashcards" className="w-10 h-10 bg-muted hover:bg-muted/80 rounded-xl flex items-center justify-center transition-colors">
-                            <ArrowLeft size={20} className="text-muted-foreground" />
+                            <ArrowLeft size={20} className="text-neutral-ink" />
                         </Link>
                         <div>
                             <h1 className="text-2xl font-bold text-foreground font-display">Manage Deck</h1>
-                            <p className="text-sm text-muted-foreground">View and edit your flashcards</p>
+                            <p className="text-sm text-neutral-ink">View and edit your flashcards</p>
                         </div>
                     </div>
                     <button onClick={() => setCreateModal(true)} className="flex items-center gap-2 px-5 py-3 bg-foreground text-background font-bold rounded-xl hover:bg-foreground/90 transition-colors">
@@ -110,7 +137,7 @@ export default function ManageDeckPage() {
                 <div className="bg-card rounded-2xl border border-border p-4 mb-6">
                     <div className="flex flex-col md:flex-row gap-3">
                         <div className="relative flex-1">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-ink" size={18} />
                             <input
                                 type="text"
                                 placeholder="Search cards..."
@@ -131,12 +158,12 @@ export default function ManageDeckPage() {
 
                     {showFilters && (
                         <div className="mt-4 pt-4 border-t border-border grid grid-cols-1 md:grid-cols-3 gap-4">
-                            {[{ label: 'Category', tags: categoryTags }, { label: 'JLPT Level', tags: levelTags }, { label: 'Skill', tags: skillTags }].map((group, i) => (
+                            {[{ label: 'Category', tags: CATEGORY_TAGS }, { label: 'JLPT Level', tags: LEVEL_TAGS }, { label: 'Skill', tags: SKILL_TAGS }].map((group, i) => (
                                 <div key={i}>
-                                    <label className="text-xs font-bold text-muted-foreground mb-2 block">{group.label}</label>
+                                    <label className="text-xs font-bold text-neutral-ink mb-2 block">{group.label}</label>
                                     <div className="flex flex-wrap gap-2">
                                         {group.tags.map(tag => (
-                                            <button key={tag.id} onClick={() => toggleFilterTag(tag.id)} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${filterTags.includes(tag.id) ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:text-foreground'}`}>
+                                            <button key={tag.id} onClick={() => toggleFilterTag(tag.id)} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${filterTags.includes(tag.id) ? 'bg-primary text-primary-foreground' : 'bg-muted text-neutral-ink hover:text-foreground'}`}>
                                                 {tag.label}
                                             </button>
                                         ))}
@@ -148,7 +175,7 @@ export default function ManageDeckPage() {
                 </div>
 
                 {/* Results */}
-                <div className="text-sm text-muted-foreground mb-4">
+                <div className="text-sm text-neutral-ink mb-4">
                     Showing <span className="font-bold text-foreground">{filteredCards.length}</span> cards
                     {filterTags.length > 0 && <button onClick={clearFilters} className="ml-2 text-primary hover:underline">Clear filters</button>}
                 </div>
@@ -158,35 +185,35 @@ export default function ManageDeckPage() {
                     <table className="w-full text-left">
                         <thead>
                             <tr className="border-b border-border bg-muted">
-                                <th className="px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wide">Front</th>
-                                <th className="px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wide">Back</th>
-                                <th className="px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wide hidden md:table-cell">Tags</th>
-                                <th className="px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wide text-right">Actions</th>
+                                <th className="px-6 py-4 text-xs font-bold text-neutral-ink uppercase tracking-wide">Front</th>
+                                <th className="px-6 py-4 text-xs font-bold text-neutral-ink uppercase tracking-wide">Back</th>
+                                <th className="px-6 py-4 text-xs font-bold text-neutral-ink uppercase tracking-wide hidden md:table-cell">Tags</th>
+                                <th className="px-6 py-4 text-xs font-bold text-neutral-ink uppercase tracking-wide text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-border">
                             {loading ? (
-                                <tr><td colSpan={4} className="px-6 py-12 text-center"><Loader2 className="w-6 h-6 animate-spin text-muted-foreground mx-auto" /></td></tr>
+                                <tr><td colSpan={4} className="px-6 py-12 text-center"><Loader2 className="w-6 h-6 animate-spin text-neutral-ink mx-auto" /></td></tr>
                             ) : filteredCards.length === 0 ? (
-                                <tr><td colSpan={4} className="px-6 py-12 text-center text-muted-foreground">No cards found</td></tr>
+                                <tr><td colSpan={4} className="px-6 py-12 text-center text-neutral-ink">No cards found</td></tr>
                             ) : filteredCards.map((card) => {
                                 const content = card.content || {};
                                 return (
                                     <tr key={card._id} className="hover:bg-muted/50 transition-colors cursor-pointer" onClick={() => setEditModal(card)}>
                                         <td className="px-6 py-4 font-bold text-foreground font-jp text-lg">{content.front || content.kanji || "?"}</td>
-                                        <td className="px-6 py-4 text-muted-foreground font-jp max-w-xs truncate">{content.back || content.meaning || "?"}</td>
+                                        <td className="px-6 py-4 text-neutral-ink font-jp max-w-xs truncate">{content.back || content.meaning || "?"}</td>
                                         <td className="px-6 py-4 hidden md:table-cell">
                                             <div className="flex flex-wrap gap-1">
                                                 {(card.tags || []).slice(0, 3).map(tagId => {
                                                     const tag = getTagById(tagId);
-                                                    return tag ? <span key={tagId} className="px-2 py-0.5 bg-muted rounded text-xs font-bold text-muted-foreground">{tag.label}</span> : null;
+                                                    return tag ? <span key={tagId} className="px-2 py-0.5 bg-muted rounded text-xs font-bold text-neutral-ink">{tag.label}</span> : null;
                                                 })}
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex items-center justify-end gap-2">
-                                                <button onClick={(e) => { e.stopPropagation(); setEditModal(card); }} className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"><Edit3 size={16} /></button>
-                                                {card.card_type === 'PERSONAL' && <button onClick={(e) => handleDelete(card.source_id!, e)} className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors"><Trash2 size={16} /></button>}
+                                                <button onClick={(e) => { e.stopPropagation(); setEditModal(card); }} className="p-2 text-neutral-ink hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"><Edit3 size={16} /></button>
+                                                {card.card_type === 'PERSONAL' && <button onClick={(e) => handleDelete(card.source_id!, e)} className="p-2 text-neutral-ink hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors"><Trash2 size={16} /></button>}
                                             </div>
                                         </td>
                                     </tr>
@@ -209,10 +236,6 @@ function CardFormModal({ mode, card, onClose, onSave }: { mode: 'create' | 'edit
     const [back, setBack] = useState(card?.content?.back || card?.content?.meaning || "");
     const [selectedTags, setSelectedTags] = useState<string[]>(card?.tags || []);
 
-    const categoryTags = getTagsByType('category').filter(t => t.id !== 'personal');
-    const levelTags = getTagsByType('level');
-    const skillTags = getTagsByType('skill');
-
     const toggleTag = (tagId: string) => {
         setSelectedTags(prev => prev.includes(tagId) ? prev.filter(t => t !== tagId) : [...prev, tagId]);
     };
@@ -225,12 +248,12 @@ function CardFormModal({ mode, card, onClose, onSave }: { mode: 'create' | 'edit
                 {/* Header */}
                 <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-muted">
                     <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${mode === 'create' ? 'bg-primary text-primary-foreground' : 'bg-muted-foreground/20 text-muted-foreground'}`}>
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${mode === 'create' ? 'bg-primary text-primary-foreground' : 'bg-muted-foreground/20 text-neutral-ink'}`}>
                             {mode === 'create' ? <Plus size={20} /> : <Edit3 size={20} />}
                         </div>
                         <h3 className="font-bold text-lg text-foreground">{mode === 'create' ? 'Add Card' : 'Edit Card'}</h3>
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-muted rounded-lg text-muted-foreground"><X size={20} /></button>
+                    <button onClick={onClose} className="p-2 hover:bg-muted rounded-lg text-neutral-ink"><X size={20} /></button>
                 </div>
 
                 {/* Content */}
@@ -238,17 +261,17 @@ function CardFormModal({ mode, card, onClose, onSave }: { mode: 'create' | 'edit
                     {isStatic && <div className="p-3 bg-accent/10 text-accent text-sm rounded-xl font-bold">Static cards cannot be edited.</div>}
 
                     <div>
-                        <label className="text-xs font-bold text-muted-foreground mb-1.5 block">Front</label>
+                        <label className="text-xs font-bold text-neutral-ink mb-1.5 block">Front</label>
                         <input type="text" className="w-full p-3 bg-muted border-none rounded-xl font-bold text-lg focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="Word or question..." value={front} onChange={(e) => setFront(e.target.value)} disabled={isStatic} />
                     </div>
 
                     <div>
-                        <label className="text-xs font-bold text-muted-foreground mb-1.5 block">Back</label>
+                        <label className="text-xs font-bold text-neutral-ink mb-1.5 block">Back</label>
                         <textarea className="w-full p-3 bg-muted border-none rounded-xl h-24 resize-none focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="Meaning or answer..." value={back} onChange={(e) => setBack(e.target.value)} disabled={isStatic} />
                     </div>
 
                     <div>
-                        <label className="text-xs font-bold text-muted-foreground mb-2 block flex items-center gap-2"><TagIcon size={14} /> Tags</label>
+                        <label className="text-xs font-bold text-neutral-ink mb-2 block flex items-center gap-2"><TagIcon size={14} /> Tags</label>
                         {selectedTags.length > 0 && (
                             <div className="flex flex-wrap gap-2 mb-3">
                                 {selectedTags.map(tagId => {
@@ -258,12 +281,12 @@ function CardFormModal({ mode, card, onClose, onSave }: { mode: 'create' | 'edit
                             </div>
                         )}
                         <div className="space-y-3">
-                            {[{ label: 'Category', tags: categoryTags }, { label: 'JLPT Level', tags: levelTags }, { label: 'Skill', tags: skillTags }].map((group, i) => (
+                            {[{ label: 'Category', tags: CATEGORY_TAGS }, { label: 'JLPT Level', tags: LEVEL_TAGS }, { label: 'Skill', tags: SKILL_TAGS }].map((group, i) => (
                                 <div key={i}>
-                                    <span className="text-xs text-muted-foreground mb-1 block">{group.label}</span>
+                                    <span className="text-xs text-neutral-ink mb-1 block">{group.label}</span>
                                     <div className="flex flex-wrap gap-2">
                                         {group.tags.map(tag => (
-                                            <button key={tag.id} type="button" onClick={() => toggleTag(tag.id)} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${selectedTags.includes(tag.id) ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground hover:text-foreground'}`}>
+                                            <button key={tag.id} type="button" onClick={() => toggleTag(tag.id)} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${selectedTags.includes(tag.id) ? 'bg-primary/20 text-primary' : 'bg-muted text-neutral-ink hover:text-foreground'}`}>
                                                 {tag.label}
                                             </button>
                                         ))}
@@ -276,9 +299,9 @@ function CardFormModal({ mode, card, onClose, onSave }: { mode: 'create' | 'edit
 
                 {/* Footer */}
                 <div className="px-6 py-4 border-t border-border bg-muted flex justify-between items-center">
-                    <span className="text-xs text-muted-foreground">{selectedTags.length} tags</span>
+                    <span className="text-xs text-neutral-ink">{selectedTags.length} tags</span>
                     <div className="flex gap-3">
-                        <button onClick={onClose} className="px-5 py-2.5 font-bold text-muted-foreground hover:text-foreground transition-colors">Cancel</button>
+                        <button onClick={onClose} className="px-5 py-2.5 font-bold text-neutral-ink hover:text-foreground transition-colors">Cancel</button>
                         <button onClick={() => onSave({ front, back, tags: selectedTags })} disabled={!front.trim()} className="px-5 py-2.5 font-bold bg-foreground text-background rounded-xl hover:bg-foreground/90 transition-colors disabled:opacity-50 flex items-center gap-2">
                             <Check size={16} />
                             {mode === 'create' ? 'Create' : 'Save'}

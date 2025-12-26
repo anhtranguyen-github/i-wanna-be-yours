@@ -46,7 +46,7 @@ export default function ReadingPage({ params }: { params: { slug: string } }) {
       <div className="max-w-4xl mx-auto space-y-10">
         <Link
           href="/library/reading"
-          className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-all active:scale-95 group w-fit"
+          className="flex items-center gap-3 text-neutral-ink hover:text-primary transition-all active:scale-95 group w-fit"
         >
           <ArrowLeft size={24} />
           <span className="text-xs font-black uppercase tracking-widest font-display">Back to Stories</span>
@@ -58,12 +58,12 @@ export default function ReadingPage({ params }: { params: { slug: string } }) {
               <BookOpen className="w-12 h-12 text-destructive/20" />
             </div>
             <h3 className="text-2xl font-black text-foreground mb-3 font-display">Failed to Load Story</h3>
-            <p className="text-muted-foreground font-bold">Please try again later or check your connection.</p>
+            <p className="text-neutral-ink font-bold">Please try again later or check your connection.</p>
           </div>
         ) : !readingPayload ? (
           <div className="flex flex-col justify-center items-center py-32">
             <div className="w-16 h-16 border-4 border-reading border-t-transparent rounded-full animate-spin mb-6"></div>
-            <p className="text-xs font-black text-muted-foreground uppercase tracking-widest font-display">Loading Story...</p>
+            <p className="text-xs font-black text-neutral-ink uppercase tracking-widest font-display">Loading Story...</p>
           </div>
         ) : (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">

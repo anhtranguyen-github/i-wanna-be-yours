@@ -238,27 +238,27 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
 
   // if (!isOpen)
   //   return (
-  //     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden m-2 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl flex flex-row justify-between items-center text-center sm:text-left">
+  //     <div className="bg-white dark:bg-gray-800 rounded-lg  overflow-hidden m-2 transition duration-300 ease-in-out transform hover:-translate-y-1 hover: flex flex-row justify-between items-center text-center sm:text-left">
   //       <div className="p-4 flex-grow">
-  //         <div className="text-xs sm:text-sm md:text-md lg:text-lg font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-widest">
+  //         <div className="text-xs sm:text-sm md:text-md lg:text-lg font-semibold text-neutral-ink dark:text-neutral-ink uppercase tracking-widest">
   //           {p_tag}
   //         </div>
 
   //         <a
   //            href="/flashcards"
-  //           className="block mt-1 text-xs sm:text-sm md:text-md leading-tight font-semibold text-gray-800 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400"
+  //           className="block mt-1 text-xs sm:text-sm md:text-md leading-tight font-semibold text-neutral-ink dark:text-neutral-ink hover:text-neutral-ink dark:hover:text-neutral-ink"
   //           aria-label={`Kanji with one reading ${s_tag}`}
   //         >
   //           Essential vocabulary {s_tag}
   //         </a>
-  //         <p className="mt-1 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+  //         <p className="mt-1 text-xs sm:text-sm text-neutral-ink dark:text-neutral-ink">
   //           Explore essential Japanese vocabulary interactively.
   //         </p>
   //         <div className="mt-2">
   //           <button
   //             type="button"
   //             onClick={openModal}
-  //             className="inline-flex justify-center items-center rounded-md bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 text-gray-800 dark:text-gray-300 text-xs sm:text-sm px-3 py-1.5 transition-colors duration-150"
+  //             className="inline-flex justify-center items-center rounded-md bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 text-neutral-ink dark:text-neutral-ink text-xs sm:text-sm px-3 py-1.5 transition-colors duration-150"
   //           >
   //             Open flashcard
   //           </button>
@@ -339,14 +339,14 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
               >
                 {/* Fixed-size modal with responsive breakpoints */}
                 <Dialog.Panel
-                  className="relative transform w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl h-[85vh] max-h-[700px] overflow-hidden rounded-[2.5rem] bg-white p-4 sm:p-8 text-left shadow-2xl transition-all z-50 border border-slate-100"
+                  className="relative transform w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl h-[85vh] max-h-[700px] overflow-hidden rounded-[2.5rem] bg-white p-4 sm:p-8 text-left  transition-all z-50 border border-slate-100"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <div className="h-full flex flex-col">
                     {/* Close button */}
                     <button
                       onClick={() => setIsOpen(false)}
-                      className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 z-10"
+                      className="absolute right-3 top-3 text-neutral-ink hover:text-neutral-ink dark:hover:text-neutral-ink z-10"
                     >
                       ✕
                     </button>
@@ -372,12 +372,12 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                           <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
                           <div className="text-center relative z-10">
                             <div className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em] mb-12 font-display italic">Spectral Signature</div>
-                            <span className="text-5xl sm:text-6xl md:text-7xl font-black text-slate-900 block mb-8 truncate max-w-full px-2 italic tracking-tighter">
+                            <span className="text-5xl sm:text-6xl md:text-7xl font-black text-neutral-ink block mb-8 truncate max-w-full px-2 italic tracking-tighter">
                               {currentQuestion.vocabulary_original}
                             </span>
                             <button
                               onClick={(e) => { e.stopPropagation(); playVocabularyAudio(); }}
-                              className="w-16 h-16 rounded-3xl bg-slate-50 border border-slate-100 text-slate-400 hover:text-primary hover:border-primary/20 hover:bg-white flex items-center justify-center transition-all active:scale-90"
+                              className="w-16 h-16 rounded-3xl bg-slate-50 border border-slate-100 text-neutral-ink hover:text-primary hover:border-primary/20 hover:bg-white flex items-center justify-center transition-all active:scale-90"
                             >
                               <FontAwesomeIcon
                                 icon={faPlayCircle}
@@ -402,7 +402,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                             <div className="flex items-center space-x-6">
                               <button
                                 onClick={(e) => { e.stopPropagation(); playVocabularyAudio(); }}
-                                className="w-14 h-14 rounded-2xl bg-white border border-slate-100 text-slate-400 hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all active:scale-90 shadow-sm"
+                                className="w-14 h-14 rounded-2xl bg-white border border-slate-100 text-neutral-ink hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all active:scale-90 "
                               >
                                 <FontAwesomeIcon
                                   icon={faPlayCircle}
@@ -410,10 +410,10 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                                 />
                               </button>
                               <div className="flex-1 min-w-0">
-                                <div className="text-2xl sm:text-3xl font-black text-slate-900 truncate italic tracking-tight">
+                                <div className="text-2xl sm:text-3xl font-black text-neutral-ink truncate italic tracking-tight">
                                   {currentQuestion.vocabulary_simplified}
                                 </div>
-                                <div className="text-sm font-bold text-slate-500 mt-1 truncate italic">
+                                <div className="text-sm font-bold text-neutral-ink mt-1 truncate italic">
                                   {currentQuestion.vocabulary_english}
                                 </div>
                               </div>
@@ -432,7 +432,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                     <div className="flex-shrink-0 pt-4 sm:pt-6 space-y-3">
                       {isFlipped ? (
                         <div className="flex flex-col items-center space-y-3">
-                          <span className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
+                          <span className="text-xs sm:text-sm font-semibold text-neutral-ink dark:text-neutral-ink">
                             How well did you know this?
                           </span>
                           <div className="flex flex-wrap justify-center gap-2">
@@ -461,7 +461,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                               resetFlip();
                               handleNextQuestion();
                             }}
-                            className="text-xs sm:text-sm text-gray-400 hover:text-gray-600"
+                            className="text-xs sm:text-sm text-neutral-ink hover:text-neutral-ink"
                           >
                             Skip without rating
                           </button>
@@ -478,7 +478,7 @@ const ComplexFlashcardModal: FC<ComplexFlashcardModalProps> = ({
                       )}
 
                       {/* Card counter */}
-                      <div className="text-xs sm:text-sm text-gray-400 text-center">
+                      <div className="text-xs sm:text-sm text-neutral-ink text-center">
                         {currentQuestionIndex + 1} / {questions?.length || 0}
                       </div>
                     </div>
@@ -547,11 +547,11 @@ const SentenceSection: React.FC<SentenceSectionProps> = ({ sentences }) => {
       {visibleSentences.map((sentence, index) => (
         <div
           key={index}
-          className="rounded-[2.5rem] border border-slate-100 bg-slate-50/50 p-6 shadow-sm hover:shadow-md hover:bg-white transition-all group/ex"
+          className="rounded-[2.5rem] border border-slate-100 bg-slate-50/50 p-6  hover: hover:bg-white transition-all group/ex"
         >
           <div className="flex items-center justify-between gap-4">
             {/* JP Sentence */}
-            <div className="text-xl font-bold text-slate-900 font-jp leading-relaxed group-hover/ex:text-primary transition-colors text-left flex-1">
+            <div className="text-xl font-bold text-neutral-ink font-jp leading-relaxed group-hover/ex:text-primary transition-colors text-left flex-1">
               {sentence.sentence_original}
             </div>
 
@@ -559,7 +559,7 @@ const SentenceSection: React.FC<SentenceSectionProps> = ({ sentences }) => {
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => playSentenceAudio(sentence.sentence_audio)}
-                className="w-10 h-10 rounded-xl bg-white border border-slate-100 text-slate-300 hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all shadow-sm"
+                className="w-10 h-10 rounded-xl bg-white border border-slate-100 text-slate-300 hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all "
               >
                 <FontAwesomeIcon
                   icon={faPlayCircle}
@@ -568,7 +568,7 @@ const SentenceSection: React.FC<SentenceSectionProps> = ({ sentences }) => {
               </button>
               <button
                 onClick={() => toggleOpenState(index)}
-                className="w-10 h-10 rounded-xl bg-white border border-slate-100 text-slate-300 hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all shadow-sm"
+                className="w-10 h-10 rounded-xl bg-white border border-slate-100 text-slate-300 hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all "
               >
                 {openStates[index] ? (
                   <ChevronUpIcon className="h-5 w-5" />
@@ -582,7 +582,7 @@ const SentenceSection: React.FC<SentenceSectionProps> = ({ sentences }) => {
           {/* Romaji & English */}
           {openStates[index] && (
             <div className="mt-4 space-y-2 text-sm animate-in slide-in-from-top-2 duration-300 text-left">
-              <div className="text-slate-400 font-medium italic">{sentence.sentence_romaji}</div>
+              <div className="text-neutral-ink font-medium italic">{sentence.sentence_romaji}</div>
               <div className="text-slate-600 font-bold italic">{sentence.sentence_english}</div>
             </div>
           )}

@@ -82,14 +82,14 @@ export default function GrammarListPage() {
                             <h1 className="text-4xl font-black text-foreground font-display tracking-tight">
                                 Grammar <span className="text-primary">Library</span>
                             </h1>
-                            <p className="text-muted-foreground font-bold text-sm">Master Japanese grammar patterns</p>
+                            <p className="text-neutral-ink font-bold text-sm">Master Japanese grammar patterns</p>
                         </div>
                     </div>
 
                     {/* Search & Filter */}
                     <div className="flex flex-col sm:flex-row gap-4 flex-1 md:max-w-2xl justify-end">
                         <div className="relative group flex-1">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/40 group-focus-within:text-primary transition-colors" size={18} />
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-ink group-focus-within:text-primary transition-colors" size={18} />
                             <input
                                 type="text"
                                 placeholder="Search patterns..."
@@ -101,7 +101,7 @@ export default function GrammarListPage() {
                         <select
                             value={selectedLevel}
                             onChange={(e) => setSelectedLevel(e.target.value)}
-                            className="px-6 py-3 bg-card border border-border rounded-xl text-xs font-black uppercase tracking-widest text-muted-foreground focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary  font-display cursor-pointer"
+                            className="px-6 py-3 bg-card border border-border rounded-xl text-xs font-black uppercase tracking-widest text-neutral-ink focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary  font-display cursor-pointer"
                         >
                             {JLPT_LEVELS.map(l => (
                                 <option key={l.value} value={l.value}>{l.label}</option>
@@ -115,7 +115,7 @@ export default function GrammarListPage() {
                     {loading ? (
                         <div className="flex flex-col items-center justify-center py-32">
                             <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mb-6"></div>
-                            <p className="text-xs font-black text-muted-foreground uppercase tracking-widest font-display">Loading Grammar...</p>
+                            <p className="text-xs font-black text-neutral-ink uppercase tracking-widest font-display">Loading Grammar...</p>
                         </div>
                     ) : error ? (
                         <div className="bg-card rounded-2xl border-2 border-dashed border-border p-20 flex flex-col items-center justify-center text-center">
@@ -133,10 +133,10 @@ export default function GrammarListPage() {
                     ) : filteredGrammars.length === 0 ? (
                         <div className="bg-card rounded-2xl border-2 border-dashed border-border p-20 flex flex-col items-center justify-center text-center">
                             <div className="w-24 h-24 bg-muted/50 rounded-2xl flex items-center justify-center mb-8 ">
-                                <Filter className="w-12 h-12 text-muted-foreground/20" />
+                                <Filter className="w-12 h-12 text-neutral-ink" />
                             </div>
                             <h3 className="text-2xl font-black text-foreground mb-4 font-display">No Patterns Found</h3>
-                            <p className="text-muted-foreground font-bold">Try adjusting your search terms or level filter.</p>
+                            <p className="text-neutral-ink font-bold">Try adjusting your search terms or level filter.</p>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -160,13 +160,13 @@ export default function GrammarListPage() {
                                             </span>
                                         </div>
 
-                                        <p className="text-muted-foreground font-bold text-sm leading-relaxed line-clamp-2 flex-1 pt-2">
+                                        <p className="text-neutral-ink font-bold text-sm leading-relaxed line-clamp-2 flex-1 pt-2">
                                             {grammar.short_explanation}
                                         </p>
 
                                         <div className="pt-6 border-t border-border/50 flex items-center justify-between group-hover:border-primary/20 transition-colors">
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 font-display group-hover:text-primary transition-colors">View Pattern</span>
-                                            <ArrowRight size={18} className="text-muted-foreground/30 group-hover:text-primary group-hover:translate-x-2 transition-all" />
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-neutral-ink font-display group-hover:text-primary transition-colors">View Pattern</span>
+                                            <ArrowRight size={18} className="text-neutral-ink group-hover:text-primary group-hover:translate-x-2 transition-all" />
                                         </div>
                                     </div>
                                 </Link>

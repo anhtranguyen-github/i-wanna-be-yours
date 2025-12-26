@@ -253,14 +253,14 @@ const GrammarFlashcardModal: FC<GrammarFlashcardModalProps> = ({
             >
               {/* Fixed-size modal with responsive breakpoints */}
               <Dialog.Panel
-                className="relative transform w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl h-[85vh] max-h-[700px] overflow-hidden rounded-[2.5rem] bg-white p-4 sm:p-8 text-left shadow-2xl transition-all border border-slate-100"
+                className="relative transform w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl h-[85vh] max-h-[700px] overflow-hidden rounded-[2.5rem] bg-white p-4 sm:p-8 text-left  transition-all border border-slate-100"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="h-full flex flex-col">
                   {/* Close button */}
                   <button
                     onClick={closeModal}
-                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 z-10"
+                    className="absolute right-3 top-3 text-neutral-ink hover:text-neutral-ink dark:hover:text-neutral-ink z-10"
                   >
                     ✕
                   </button>
@@ -286,10 +286,10 @@ const GrammarFlashcardModal: FC<GrammarFlashcardModalProps> = ({
                         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
                         <div className="text-center relative z-10">
                           <div className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em] mb-12 font-display italic">Spectral Signature</div>
-                          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 mb-8 tracking-tighter italic">
+                          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-neutral-ink mb-8 tracking-tighter italic">
                             {currentGrammar.title}
                           </h2>
-                          <p className="text-sm sm:text-base md:text-lg font-bold text-slate-500 italic max-w-md mx-auto leading-relaxed">
+                          <p className="text-sm sm:text-base md:text-lg font-bold text-neutral-ink italic max-w-md mx-auto leading-relaxed">
                             {currentGrammar.short_explanation}
                           </p>
                         </div>
@@ -307,26 +307,26 @@ const GrammarFlashcardModal: FC<GrammarFlashcardModalProps> = ({
 
                         {/* Header - Fixed */}
                         <div className="flex-shrink-0 p-8 sm:p-10 border-b border-slate-50 bg-slate-50/30 relative z-10">
-                          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight italic">
+                          <h2 className="text-2xl sm:text-3xl font-black text-neutral-ink tracking-tight italic">
                             {currentGrammar.title}
                           </h2>
-                          <p className="mt-2 text-sm font-bold text-slate-500 italic">
+                          <p className="mt-2 text-sm font-bold text-neutral-ink italic">
                             {currentGrammar.short_explanation}
                           </p>
                         </div>
 
                         {/* Content - Scrollable */}
                         <div className="flex-1 min-h-0 overflow-y-auto p-8 sm:p-10 space-y-8 custom-scrollbar relative z-10">
-                          <div className="w-full rounded-[2rem] bg-slate-50 p-6 border border-slate-100 shadow-sm">
+                          <div className="w-full rounded-[2rem] bg-slate-50 p-6 border border-slate-100 ">
                             <h3 className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-3">
                               Formation Matrix
                             </h3>
-                            <p className="text-sm sm:text-base text-slate-900 font-bold font-jp">
+                            <p className="text-sm sm:text-base text-neutral-ink font-bold font-jp">
                               {currentGrammar.formation}
                             </p>
                           </div>
 
-                          <div className="w-full rounded-[2rem] bg-slate-50 p-6 border border-slate-100 shadow-sm">
+                          <div className="w-full rounded-[2rem] bg-slate-50 p-6 border border-slate-100 ">
                             <h3 className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-3">
                               Detailed Logic
                             </h3>
@@ -345,7 +345,7 @@ const GrammarFlashcardModal: FC<GrammarFlashcardModalProps> = ({
                   <div className="flex-shrink-0 pt-4 sm:pt-6 space-y-3">
                     {isFlipped ? (
                       <div className="flex flex-col items-center space-y-3">
-                        <span className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        <span className="text-xs sm:text-sm font-semibold text-neutral-ink dark:text-neutral-ink">
                           How well did you know this?
                         </span>
                         <div className="flex flex-wrap justify-center gap-2">
@@ -374,7 +374,7 @@ const GrammarFlashcardModal: FC<GrammarFlashcardModalProps> = ({
                             resetFlip();
                             handleNext();
                           }}
-                          className="text-xs sm:text-sm text-gray-400 hover:text-gray-600"
+                          className="text-xs sm:text-sm text-neutral-ink hover:text-neutral-ink"
                         >
                           Skip without rating
                         </button>
@@ -391,7 +391,7 @@ const GrammarFlashcardModal: FC<GrammarFlashcardModalProps> = ({
                     )}
 
                     {/* Card counter */}
-                    <div className="text-xs sm:text-sm text-gray-400 text-center">
+                    <div className="text-xs sm:text-sm text-neutral-ink text-center">
                       {currentIndex + 1} / {grammarItems?.length || 0}
                     </div>
                   </div>
@@ -437,17 +437,17 @@ const ExampleSection: FC<ExampleSectionProps> = ({ examples }) => {
       {examples.map((ex, i) => (
         <div
           key={i}
-          className="rounded-[2rem] border border-slate-100 bg-slate-50/50 p-6 shadow-sm hover:shadow-md hover:bg-white transition-all group/ex"
+          className="rounded-[2rem] border border-slate-100 bg-slate-50/50 p-6  hover: hover:bg-white transition-all group/ex"
         >
           <div className="flex items-center justify-between gap-4">
             {/* JP Sentence */}
-            <div className="text-xl font-bold text-slate-900 font-jp leading-relaxed group-hover/ex:text-primary transition-colors">{ex.jp}</div>
+            <div className="text-xl font-bold text-neutral-ink font-jp leading-relaxed group-hover/ex:text-primary transition-colors">{ex.jp}</div>
 
             {/* Audio + expand button */}
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => playExampleAudio(ex.grammar_audio)}
-                className="w-10 h-10 rounded-xl bg-white border border-slate-100 text-slate-300 hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all shadow-sm"
+                className="w-10 h-10 rounded-xl bg-white border border-slate-100 text-slate-300 hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all "
               >
                 <FontAwesomeIcon
                   icon={faPlayCircle}
@@ -456,7 +456,7 @@ const ExampleSection: FC<ExampleSectionProps> = ({ examples }) => {
               </button>
               <button
                 onClick={() => toggleOpenState(i)}
-                className="w-10 h-10 rounded-xl bg-white border border-slate-100 text-slate-300 hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all shadow-sm"
+                className="w-10 h-10 rounded-xl bg-white border border-slate-100 text-slate-300 hover:text-primary hover:border-primary/20 flex items-center justify-center transition-all "
               >
                 {openStates[i] ? (
                   <ChevronUpIcon className="h-5 w-5" />
@@ -470,7 +470,7 @@ const ExampleSection: FC<ExampleSectionProps> = ({ examples }) => {
           {/* Romaji & English */}
           {openStates[i] && (
             <div className="mt-4 space-y-2 text-sm animate-in slide-in-from-top-2 duration-300">
-              <div className="text-slate-400 font-medium italic">{ex.romaji}</div>
+              <div className="text-neutral-ink font-medium italic">{ex.romaji}</div>
               <div className="text-slate-600 font-bold italic">{ex.en}</div>
             </div>
           )}

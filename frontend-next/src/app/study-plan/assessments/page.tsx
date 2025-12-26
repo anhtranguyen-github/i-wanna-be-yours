@@ -160,7 +160,7 @@ function AssessmentsContent() {
             <div className="min-h-screen bg-gradient-to-br from-slate-50 to-brand-cream/30 py-12">
                 <div className="container mx-auto px-6 max-w-2xl text-center">
                     <div className="clay-card p-12">
-                        <Target className="w-16 h-16 mx-auto mb-6 text-gray-300" />
+                        <Target className="w-16 h-16 mx-auto mb-6 text-neutral-ink" />
                         <h2 className="text-2xl font-black text-brand-dark mb-4">
                             No Study Plan Found
                         </h2>
@@ -184,7 +184,7 @@ function AssessmentsContent() {
                 {/* Back Link */}
                 <Link
                     href={`/study-plan/dashboard?plan=${plan.id}`}
-                    className="inline-flex items-center gap-2 text-gray-500 hover:text-brand-dark transition-colors font-bold mb-6"
+                    className="inline-flex items-center gap-2 text-neutral-ink hover:text-brand-dark transition-colors font-bold mb-6"
                 >
                     <ChevronLeft size={20} />
                     Back to Dashboard
@@ -205,7 +205,7 @@ function AssessmentsContent() {
                                     Assessments
                                 </h1>
                             </div>
-                            <p className="text-gray-500 text-sm">
+                            <p className="text-neutral-ink text-sm">
                                 Track your progress with quizzes and mock exams
                             </p>
                         </div>
@@ -214,7 +214,7 @@ function AssessmentsContent() {
                             <div className="text-2xl font-black text-brand-dark">
                                 {completedCount}/{assessments.length}
                             </div>
-                            <div className="text-xs text-gray-500">Completed</div>
+                            <div className="text-xs text-neutral-ink">Completed</div>
                         </div>
                     </div>
                 </div>
@@ -223,17 +223,17 @@ function AssessmentsContent() {
                 <div className="grid grid-cols-3 gap-4 mb-8">
                     <div className="clay-card p-4 text-center">
                         <div className="text-2xl font-black text-brand-green">{completedCount}</div>
-                        <div className="text-xs text-gray-500 font-medium">Completed</div>
+                        <div className="text-xs text-neutral-ink font-medium">Completed</div>
                     </div>
                     <div className="clay-card p-4 text-center">
                         <div className="text-2xl font-black text-brand-salmon">{availableCount}</div>
-                        <div className="text-xs text-gray-500 font-medium">Available</div>
+                        <div className="text-xs text-neutral-ink font-medium">Available</div>
                     </div>
                     <div className="clay-card p-4 text-center">
-                        <div className="text-2xl font-black text-gray-400">
+                        <div className="text-2xl font-black text-neutral-ink">
                             {assessments.filter(a => a.status === 'locked').length}
                         </div>
-                        <div className="text-xs text-gray-500 font-medium">Locked</div>
+                        <div className="text-xs text-neutral-ink font-medium">Locked</div>
                     </div>
                 </div>
 
@@ -260,7 +260,7 @@ function AssessmentsContent() {
                                         ${isCompleted
                                             ? 'bg-brand-green text-white'
                                             : isLocked
-                                                ? 'bg-gray-200 text-gray-400'
+                                                ? 'bg-gray-200 text-neutral-ink'
                                                 : `${getAssessmentColor(assessment.type)} text-white`
                                         }
                                     `}>
@@ -285,23 +285,23 @@ function AssessmentsContent() {
                                                 {assessment.type.replace('_', ' ')}
                                             </span>
                                             {assessment.milestone_number && (
-                                                <span className="text-xs text-gray-400">
+                                                <span className="text-xs text-neutral-ink">
                                                     Milestone {assessment.milestone_number}
                                                 </span>
                                             )}
                                         </div>
 
-                                        <h3 className={`font-bold text-lg ${isLocked ? 'text-gray-400' : 'text-brand-dark'}`}>
+                                        <h3 className={`font-bold text-lg ${isLocked ? 'text-neutral-ink' : 'text-brand-dark'}`}>
                                             {assessment.title}
                                         </h3>
 
-                                        <p className="text-sm text-gray-500 mb-3">
+                                        <p className="text-sm text-neutral-ink mb-3">
                                             {assessment.description}
                                         </p>
 
                                         {/* Meta Info */}
                                         <div className="flex flex-wrap items-center gap-4 text-xs">
-                                            <div className="flex items-center gap-1 text-gray-400">
+                                            <div className="flex items-center gap-1 text-neutral-ink">
                                                 <Clock size={14} />
                                                 ~{assessment.estimated_minutes} min
                                             </div>
@@ -314,7 +314,7 @@ function AssessmentsContent() {
                                             )}
 
                                             {isCompleted && assessment.completed_at && (
-                                                <div className="flex items-center gap-1 text-gray-400">
+                                                <div className="flex items-center gap-1 text-neutral-ink">
                                                     <Calendar size={14} />
                                                     {new Date(assessment.completed_at).toLocaleDateString()}
                                                 </div>
@@ -333,12 +333,12 @@ function AssessmentsContent() {
                                     <div className="shrink-0">
                                         {isLocked ? (
                                             <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center">
-                                                <Lock size={20} className="text-gray-300" />
+                                                <Lock size={20} className="text-neutral-ink" />
                                             </div>
                                         ) : isCompleted ? (
                                             <button
                                                 onClick={() => handleStartAssessment(assessment)}
-                                                className="px-4 py-2 rounded-xl bg-gray-100 text-gray-600 font-bold text-sm hover:bg-gray-200 transition-all"
+                                                className="px-4 py-2 rounded-xl bg-gray-100 text-neutral-ink font-bold text-sm hover:bg-gray-200 transition-all"
                                             >
                                                 Retake
                                             </button>
@@ -361,7 +361,7 @@ function AssessmentsContent() {
                 {/* Info Box */}
                 <div className="mt-8 p-6 bg-brand-sky/10 rounded-2xl border border-brand-sky/20">
                     <h3 className="font-bold text-brand-dark mb-2">How Assessments Work</h3>
-                    <ul className="text-sm text-gray-600 space-y-1">
+                    <ul className="text-sm text-neutral-ink space-y-1">
                         <li>• <strong>Diagnostic Test:</strong> Take first to assess your starting level</li>
                         <li>• <strong>Milestone Quizzes:</strong> Unlock as you progress through milestones</li>
                         <li>• <strong>Mock Exam:</strong> Full practice test, available after completing all milestones</li>

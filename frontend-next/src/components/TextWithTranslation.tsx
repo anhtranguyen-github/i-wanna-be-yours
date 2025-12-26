@@ -72,7 +72,7 @@ const TextWithTranslation: React.FC<TextWithTranslationProps> = ({
           ?
         </button>
         {popupIndex === index && (
-          <div className="absolute top-0 left-0 transform -translate-y-full mt-0.5 p-3 bg-white border border-gray-300 rounded shadow-lg dark:bg-gray-800 dark:border-gray-600">
+          <div className="absolute top-0 left-0 transform -translate-y-full mt-0.5 p-3 bg-white border border-gray-300 rounded  dark:bg-gray-800 dark:border-gray-600">
             {isEnglishSpeaker ? (
               <>
                 <p className="mb-2 text-black dark:text-white">
@@ -160,7 +160,7 @@ export default TextWithTranslation;
 //           ?
 //         </button>
 //         {popupIndex === index && (
-//           <div className="absolute top-0 left-0 transform -translate-y-full mt-0.5 p-3 bg-white border border-gray-300 rounded shadow-lg dark:bg-gray-800 dark:border-gray-600">
+//           <div className="absolute top-0 left-0 transform -translate-y-full mt-0.5 p-3 bg-white border border-gray-300 rounded  dark:bg-gray-800 dark:border-gray-600">
 //             {/* Conditionally render popup content based on isEnglishSpeaker */}
 //             {isEnglishSpeaker ? (
 //               <>
@@ -253,7 +253,7 @@ export default TextWithTranslation;
 //               ?
 //             </button>
 //             {popupIndex === index && (
-//               <div className="absolute top-0 left-0 transform -translate-y-full mt-0.5 p-3 bg-white border border-gray-300 rounded shadow-lg dark:bg-gray-800 dark:border-gray-600">
+//               <div className="absolute top-0 left-0 transform -translate-y-full mt-0.5 p-3 bg-white border border-gray-300 rounded  dark:bg-gray-800 dark:border-gray-600">
 //                 <p className="mb-2 text-black dark:text-white">
 //                   <strong>Romanization:</strong> {sentence.romanization}
 //                 </p>

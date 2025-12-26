@@ -8,8 +8,8 @@ import jlpt_universal_01 from "@public/img/jlpt_universal_11.jpg";
 export default function GrammarHead() {
   return (
     <div className="w-full flex lg:flex-row flex-col p-5 px-7">
-      
-      
+
+
       {/* <div className="relative h-72 lg:w-11/12">
         <Image
           src={jlpt_universal_01}
@@ -48,13 +48,13 @@ export default function GrammarHead() {
 
       <div className="py-5 lg:px-5">
         <div className="flex items-center">
-          <span className="text-gray-400 mt-1">Series:</span>
+          <span className="text-neutral-ink mt-1">Series:</span>
           <span className="text-2xl text-blue-900 ml-2 font-semibold">
             Japanese grammar essentials
           </span>
         </div>
         <div className="flex items-center mt-3">
-          <span className="text-gray-400 mt-1">Level:</span>
+          <span className="text-neutral-ink mt-1">Level:</span>
           <span className="text-2xl text-blue-900 ml-2 font-semibold">
             Intermediate
           </span>
@@ -66,7 +66,7 @@ export default function GrammarHead() {
             <div className="h-7 w-7 p-1 rounded-full flex items-center justify-center bg-white">
               <DocumentChartBarIcon className="h-4 text-blue-900" />
             </div>
-            <div className="ml-1 text-gray-500">
+            <div className="ml-1 text-neutral-ink">
               Items: <span className="text-blue-900 font-medium">25</span>
             </div>
           </div>
@@ -76,7 +76,7 @@ export default function GrammarHead() {
             <div className="h-7 w-7 p-1 rounded-full flex items-center justify-center bg-white">
               <DocumentChartBarIcon className="h-4 text-blue-900" />
             </div>
-            <div className="ml-1 text-gray-500">
+            <div className="ml-1 text-neutral-ink">
               Sentences: <span className="text-blue-900 font-medium">100</span>
             </div>
           </div>
@@ -86,14 +86,14 @@ export default function GrammarHead() {
             <div className="h-7 w-7 p-1 rounded-full flex items-center justify-center bg-white">
               <DocumentChartBarIcon className="h-4 text-blue-900" />
             </div>
-            <div className="ml-1 text-gray-500">
+            <div className="ml-1 text-neutral-ink">
               Users:{" "}
               <span className="text-blue-900 font-medium">onboarding</span>
             </div>
           </div>
         </div>
 
-        <p className="w-full text-sm mt-5 text-gray-400">
+        <p className="w-full text-sm mt-5 text-neutral-ink">
           Boost your Japanese grammar skills with our focused JLPT course.
           Explore easy-to-follow lessons that make learning grammar enjoyable.
           Watch your language proficiency grow as you gain confidence in your

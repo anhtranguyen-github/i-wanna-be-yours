@@ -70,7 +70,7 @@ export default function MilestoneDetailPage() {
             case 'overdue':
                 return { bg: 'bg-red-50', text: 'text-red-500', badge: 'bg-red-500' };
             default:
-                return { bg: 'bg-gray-50', text: 'text-gray-500', badge: 'bg-gray-400' };
+                return { bg: 'bg-gray-50', text: 'text-neutral-ink', badge: 'bg-gray-400' };
         }
     };
 
@@ -151,7 +151,7 @@ export default function MilestoneDetailPage() {
                         <h2 className="text-2xl font-black text-brand-dark mb-4">
                             Milestone Not Found
                         </h2>
-                        <p className="text-gray-500 mb-6">{error || 'Could not load this milestone.'}</p>
+                        <p className="text-neutral-ink mb-6">{error || 'Could not load this milestone.'}</p>
                         <Link href="/study-plan/dashboard" className="btnPrimary">
                             Back to Dashboard
                         </Link>
@@ -171,7 +171,7 @@ export default function MilestoneDetailPage() {
                 {/* Back Link */}
                 <Link
                     href={`/study-plan/milestones?plan=${milestone.plan_id}`}
-                    className="inline-flex items-center gap-2 text-gray-500 hover:text-brand-dark transition-colors font-bold mb-6"
+                    className="inline-flex items-center gap-2 text-neutral-ink hover:text-brand-dark transition-colors font-bold mb-6"
                 >
                     <ChevronLeft size={20} />
                     Back to Milestones
@@ -199,7 +199,7 @@ export default function MilestoneDetailPage() {
                                 `}>
                                     {milestone.status.replace('_', ' ')}
                                 </span>
-                                <span className="px-3 py-1 bg-white/50 text-gray-600 rounded-lg text-xs font-bold capitalize">
+                                <span className="px-3 py-1 bg-white/50 text-neutral-ink rounded-lg text-xs font-bold capitalize">
                                     {milestone.category}
                                 </span>
                             </div>
@@ -208,7 +208,7 @@ export default function MilestoneDetailPage() {
                                 {milestone.title}
                             </h1>
 
-                            <p className="text-gray-600">
+                            <p className="text-neutral-ink">
                                 {milestone.description}
                             </p>
                         </div>
@@ -216,7 +216,7 @@ export default function MilestoneDetailPage() {
 
                     {/* Timeline */}
                     <div className="mt-6 flex items-center gap-4 text-sm">
-                        <div className="flex items-center gap-2 text-gray-500">
+                        <div className="flex items-center gap-2 text-neutral-ink">
                             <Calendar size={16} />
                             <span>
                                 {new Date(milestone.target_start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
@@ -241,7 +241,7 @@ export default function MilestoneDetailPage() {
                     {/* Overall Progress Bar */}
                     <div className="mb-6">
                         <div className="flex justify-between text-sm mb-2">
-                            <span className="text-gray-500">Overall Milestone Progress</span>
+                            <span className="text-neutral-ink">Overall Milestone Progress</span>
                             <span className="font-bold text-brand-dark">{Math.round(milestone.progress_percent)}%</span>
                         </div>
                         <div className="h-4 bg-gray-200 rounded-full overflow-hidden">
@@ -256,7 +256,7 @@ export default function MilestoneDetailPage() {
                     </div>
 
                     {/* Criteria */}
-                    <h3 className="text-sm font-bold text-gray-600 mb-3">Goals</h3>
+                    <h3 className="text-sm font-bold text-neutral-ink mb-3">Goals</h3>
                     <div className="space-y-4">
                         {milestone.criteria.map((criterion, idx) => {
                             const progress = criterion.target_value > 0
@@ -279,7 +279,7 @@ export default function MilestoneDetailPage() {
                                     </div>
 
                                     <div className="flex items-center justify-between text-sm mb-2">
-                                        <span className="text-gray-500">
+                                        <span className="text-neutral-ink">
                                             {criterion.current_value ?? 0} / {criterion.target_value} {criterion.unit}
                                         </span>
                                         <span className={`font-bold ${isComplete ? 'text-brand-green' : 'text-brand-dark'}`}>
@@ -319,9 +319,9 @@ export default function MilestoneDetailPage() {
                                         <h3 className="font-bold text-brand-dark group-hover:text-brand-salmon transition-colors">
                                             {action.title}
                                         </h3>
-                                        <p className="text-sm text-gray-500">{action.description}</p>
+                                        <p className="text-sm text-neutral-ink">{action.description}</p>
                                     </div>
-                                    <Play size={20} className="text-gray-300 group-hover:text-brand-salmon transition-colors" />
+                                    <Play size={20} className="text-neutral-ink group-hover:text-brand-salmon transition-colors" />
                                 </Link>
                             ))}
                         </div>
@@ -363,7 +363,7 @@ export default function MilestoneDetailPage() {
                     <div className="clay-card p-6 bg-brand-green/10 border-2 border-brand-green/30 text-center">
                         <CheckCircle2 className="w-12 h-12 text-brand-green mx-auto mb-3" />
                         <h3 className="text-xl font-black text-brand-dark mb-2">Milestone Complete!</h3>
-                        <p className="text-gray-600">
+                        <p className="text-neutral-ink">
                             Great job! You&apos;ve successfully completed this milestone.
                         </p>
                     </div>

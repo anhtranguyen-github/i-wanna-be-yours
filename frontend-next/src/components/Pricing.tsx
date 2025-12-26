@@ -30,7 +30,7 @@ export default function Pricing() {
           <h1 className="capitalize text-3xl lg:text-5xl mt-5 font-bold leading-tight">
             The best pricing for everyone learning.
           </h1>
-          <p className="mt-5 lg:mt-7 w-full lg:w-9/12 text-gray-500">
+          <p className="mt-5 lg:mt-7 w-full lg:w-9/12 text-neutral-ink">
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sunt iure
             nemo quo excepturi ex dicta asperiores exercitationem quam.
           </p>

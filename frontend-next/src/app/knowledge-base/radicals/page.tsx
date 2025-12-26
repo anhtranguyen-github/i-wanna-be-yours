@@ -292,25 +292,25 @@ const RadicalCard = ({ radical }) => {
     <ClayCard className="p-4 hover:scale-105 transition-transform duration-200">
       <div className="flex items-center justify-between mb-4">
         <div className="text-xl font-semibold" style={{ color: 'hsl(var(--text-default))' }}>No. {radical.no}</div>
-        <div className="text-sm text-gray-500">Stroke Count: {radical.strokeCount}</div>
+        <div className="text-sm text-neutral-ink">Stroke Count: {radical.strokeCount}</div>
       </div>
       <div className="flex flex-col items-center mb-4">
         <div className="text-5xl mb-2" style={{ color: 'hsl(var(--primary))' }}>{radical.symbol}</div>
         {radical.variants.length > 0 && (
-          <div className="text-lg text-gray-500 mb-2">
+          <div className="text-lg text-neutral-ink mb-2">
             Variants: {radical.variants.join(', ')}
           </div>
         )}
         <div className="text-xl font-semibold mb-2" style={{ color: 'hsl(var(--text-default))' }}>{radical.meaning}</div>
-        <div className="text-gray-600 mb-2">Readings: {radical.readings}</div>
+        <div className="text-neutral-ink mb-2">Readings: {radical.readings}</div>
       </div>
-      <div className="text-gray-700 mb-2">
+      <div className="text-neutral-ink mb-2">
         <strong>Examples:</strong> {radical.examples}
       </div>
       {radical.group && (
-        <div className="text-gray-500 italic mb-2">Group: {radical.group}</div>
+        <div className="text-neutral-ink italic mb-2">Group: {radical.group}</div>
       )}
-      <div className="flex justify-between text-sm text-gray-600">
+      <div className="flex justify-between text-sm text-neutral-ink">
         <div>Frequency: {radical.frequency}</div>
         {radical.joyoFrequency && <div>Jōyō Freq: {radical.joyoFrequency}</div>}
       </div>

@@ -36,7 +36,7 @@ export function AuthErrorScreen({
         <div className="flex flex-col items-center justify-center min-h-[60vh] px-6 py-12">
             {/* Icon */}
             <div className="relative mb-6">
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center shadow-lg">
+                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center ">
                     <ShieldAlert size={48} className="text-amber-500" />
                 </div>
                 {errorCode && (
@@ -47,12 +47,12 @@ export function AuthErrorScreen({
             </div>
 
             {/* Title */}
-            <h1 className="text-2xl font-bold text-slate-800 mb-2 text-center">
+            <h1 className="text-2xl font-bold text-neutral-ink mb-2 text-center">
                 {title}
             </h1>
 
             {/* Message */}
-            <p className="text-slate-500 text-center max-w-md mb-8 leading-relaxed">
+            <p className="text-neutral-ink text-center max-w-md mb-8 leading-relaxed">
                 {message}
             </p>
 
@@ -61,7 +61,7 @@ export function AuthErrorScreen({
                 {/* Primary: Login Button */}
                 <button
                     onClick={handleLogin}
-                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-brand-green text-white font-semibold rounded-xl hover:bg-brand-green/90 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95"
+                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-brand-green text-white font-semibold rounded-xl hover:bg-brand-green/90 transition-all duration-200  hover: active:scale-95"
                 >
                     <LogIn size={20} />
                     Log In
@@ -84,7 +84,7 @@ export function AuthErrorScreen({
                 {showBackButton && (
                     <button
                         onClick={() => router.back()}
-                        className="flex items-center gap-1 text-slate-500 hover:text-slate-700 transition-colors"
+                        className="flex items-center gap-1 text-neutral-ink hover:text-slate-700 transition-colors"
                     >
                         <ArrowLeft size={16} />
                         Go Back
@@ -96,7 +96,7 @@ export function AuthErrorScreen({
                 {showHomeButton && (
                     <button
                         onClick={() => router.push('/')}
-                        className="flex items-center gap-1 text-slate-500 hover:text-slate-700 transition-colors"
+                        className="flex items-center gap-1 text-neutral-ink hover:text-slate-700 transition-colors"
                     >
                         <Home size={16} />
                         Home
@@ -105,7 +105,7 @@ export function AuthErrorScreen({
             </div>
 
             {/* Toast-like helper text */}
-            <p className="text-xs text-slate-400 mt-8 text-center max-w-xs">
+            <p className="text-xs text-neutral-ink mt-8 text-center max-w-xs">
                 If you believe this is an error, try refreshing the page or clearing your browser cookies.
             </p>
         </div>

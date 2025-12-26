@@ -44,12 +44,12 @@ export default function Home() {
       <div className="w-28 h-20 group perspective-1000" onClick={playAudio}>
         <div className="relative w-full h-full transition-all duration-500 preserve-3d cursor-pointer group-hover:rotate-y-180">
           {/* Front of the Card */}
-          <div className="absolute inset-0 backface-hidden bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center p-2 group-hover:shadow-md transition-shadow">
-            <h5 className="text-3xl font-black text-slate-900 font-jp">{kanji}</h5>
+          <div className="absolute inset-0 backface-hidden bg-white rounded-2xl  border border-slate-100 flex items-center justify-center p-2 group-hover: transition-shadow">
+            <h5 className="text-3xl font-black text-neutral-ink font-jp">{kanji}</h5>
           </div>
 
           {/* Back of the Card */}
-          <div className="absolute inset-0 backface-hidden rotate-y-180 bg-primary/5 rounded-2xl shadow-sm border border-primary/20 flex flex-col items-center justify-center p-2">
+          <div className="absolute inset-0 backface-hidden rotate-y-180 bg-primary/5 rounded-2xl  border border-primary/20 flex flex-col items-center justify-center p-2">
             <h5 className="text-sm font-black text-primary uppercase tracking-widest">{reading}</h5>
 
             {/* Icon Link at the Bottom Left */}
@@ -134,7 +134,7 @@ export default function Home() {
     if (loading) return (
       <div className="flex flex-col items-center py-20 animate-pulse">
         <div className="w-12 h-12 bg-primary/20 rounded-2xl mb-4" />
-        <div className="text-slate-400 font-black uppercase tracking-widest text-xs">Parsing Kanji...</div>
+        <div className="text-neutral-ink font-black uppercase tracking-widest text-xs">Parsing Kanji...</div>
       </div>
     );
     if (error) return <div>Error: {error}</div>;
@@ -165,8 +165,8 @@ export default function Home() {
             <button
               key={index}
               className={`px-8 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${activeTab === tab.toLowerCase()
-                ? "bg-white text-slate-900 shadow-md ring-1 ring-slate-200"
-                : "text-slate-500 hover:text-slate-900 hover:bg-white/50"
+                ? "bg-white text-neutral-ink  ring-1 ring-slate-200"
+                : "text-neutral-ink hover:text-neutral-ink hover:bg-white/50"
                 }`}
               onClick={() => setActiveTab(tab.toLowerCase())}
             >
@@ -187,7 +187,7 @@ export default function Home() {
   return (
     <div className="container mx-auto py-16 px-6 max-w-5xl">
       <div className="text-center mb-16 space-y-4">
-        <h1 className="text-4xl font-black text-slate-900 font-display tracking-tight uppercase tracking-[0.2em] mb-4">Quick <span className="text-primary">Kanji</span></h1>
+        <h1 className="text-4xl font-black text-neutral-ink font-display tracking-tight uppercase tracking-[0.2em] mb-4">Quick <span className="text-primary">Kanji</span></h1>
         <div className="max-w-3xl mx-auto bg-primary/5 p-8 rounded-[2rem] border border-primary/10 relative overflow-hidden group">
           <div className="absolute -top-10 -right-10 w-24 h-24 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-colors" />
           <p className="text-slate-600 font-medium text-sm leading-relaxed relative z-10">

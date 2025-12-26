@@ -126,7 +126,7 @@ const LearningProgress: FC<LearningProgressProps> = ({
 
       <div>
         <h2 className="text-sm">Difficulty Count Dictionary</h2>
-        <pre className="text-sm p-2 bg-gray-100 dark:bg-gray-800 rounded-md overflow-x-auto dark:text-gray-200">
+        <pre className="text-sm p-2 bg-gray-100 dark:bg-gray-800 rounded-md overflow-x-auto dark:text-neutral-ink">
           {JSON.stringify(difficultyCounts, null, 2)}
         </pre>
       </div>

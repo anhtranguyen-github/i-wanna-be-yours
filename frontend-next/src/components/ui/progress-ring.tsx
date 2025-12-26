@@ -66,7 +66,7 @@ export function ProgressRing({
             {/* Center content */}
             <div className="absolute inset-0 flex items-center justify-center">
                 {children || (showLabel && (
-                    <span className={cn('font-bold text-slate-900', labelSizes[labelSize])}>
+                    <span className={cn('font-bold text-neutral-ink', labelSizes[labelSize])}>
                         {Math.round(progress)}%
                     </span>
                 ))}

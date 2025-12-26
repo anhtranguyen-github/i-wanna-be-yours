@@ -90,7 +90,7 @@ export default function GrammarDetailPage() {
         return (
             <div className="min-h-screen bg-background flex flex-col items-center justify-center">
                 <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mb-6"></div>
-                <p className="text-xs font-black text-muted-foreground uppercase tracking-widest font-display">Loading Details...</p>
+                <p className="text-xs font-black text-neutral-ink uppercase tracking-widest font-display">Loading Details...</p>
             </div>
         );
     }
@@ -120,7 +120,7 @@ export default function GrammarDetailPage() {
                 <div className="flex items-center justify-between">
                     <Link
                         href="/library/grammar"
-                        className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-all active:scale-95 group"
+                        className="flex items-center gap-3 text-neutral-ink hover:text-primary transition-all active:scale-95 group"
                     >
                         <ArrowLeft size={24} />
                         <span className="text-xs font-black uppercase tracking-widest font-display">Back to Library</span>
@@ -144,7 +144,7 @@ export default function GrammarDetailPage() {
                             <h1 className="text-5xl md:text-6xl font-black text-foreground font-display tracking-tight leading-tight">
                                 {grammar.title}
                             </h1>
-                            <p className="text-xl md:text-2xl text-muted-foreground font-bold leading-relaxed max-w-2xl">
+                            <p className="text-xl md:text-2xl text-neutral-ink font-bold leading-relaxed max-w-2xl">
                                 {grammar.short_explanation}
                             </p>
 
@@ -163,7 +163,7 @@ export default function GrammarDetailPage() {
                                     {added ? "In Your Reviews" : "Add to Reviews"}
                                 </button>
 
-                                <button className="p-5 bg-card border border-border rounded-2xl text-muted-foreground hover:text-foreground hover:border-foreground/20 transition-all ">
+                                <button className="p-5 bg-card border border-border rounded-2xl text-neutral-ink hover:text-foreground hover:border-foreground/20 transition-all ">
                                     <Share2 size={20} />
                                 </button>
                             </div>
@@ -189,7 +189,7 @@ export default function GrammarDetailPage() {
                                     <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
                                     Usage & Nuance
                                 </h2>
-                                <div className="prose prose-slate max-w-none text-muted-foreground font-bold leading-8 text-[17px]">
+                                <div className="prose prose-slate max-w-none text-neutral-ink font-bold leading-8 text-[17px]">
                                     {grammar.long_explanation}
                                 </div>
                             </div>
@@ -209,10 +209,10 @@ export default function GrammarDetailPage() {
                                                     {ex.jp}
                                                 </p>
                                                 <div className="space-y-1">
-                                                    <p className="text-[11px] font-black text-muted-foreground/40 uppercase tracking-widest font-display italic leading-relaxed">
+                                                    <p className="text-[11px] font-black text-neutral-ink uppercase tracking-widest font-display italic leading-relaxed">
                                                         {ex.romaji}
                                                     </p>
-                                                    <p className="text-base font-bold text-muted-foreground leading-relaxed">
+                                                    <p className="text-base font-bold text-neutral-ink leading-relaxed">
                                                         {ex.en}
                                                     </p>
                                                 </div>
@@ -221,7 +221,7 @@ export default function GrammarDetailPage() {
                                             {ex.grammar_audio && (
                                                 <button
                                                     onClick={() => playAudio(ex.grammar_audio)}
-                                                    className="absolute top-0 right-0 w-12 h-12 bg-muted/30 text-muted-foreground hover:bg-primary hover:text-white rounded-xl transition-all  flex items-center justify-center"
+                                                    className="absolute top-0 right-0 w-12 h-12 bg-muted/30 text-neutral-ink hover:bg-primary hover:text-white rounded-xl transition-all  flex items-center justify-center"
                                                 >
                                                     <PlayCircle size={24} />
                                                 </button>
@@ -236,17 +236,17 @@ export default function GrammarDetailPage() {
                             <div className="bg-primary/5 rounded-2xl p-8 border border-primary/10 relative overflow-hidden">
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -z-10"></div>
                                 <h3 className="text-xs font-black text-primary uppercase tracking-[0.2em] mb-4 font-display">Study Tip</h3>
-                                <p className="text-sm font-bold text-muted-foreground leading-relaxed">
+                                <p className="text-sm font-bold text-neutral-ink leading-relaxed">
                                     Use the <span className="text-foreground">"Add to Reviews"</span> button to include this grammar pattern in your daily SRS review queue.
                                 </p>
                             </div>
 
                             <div className="p-8 bg-card border border-border rounded-2xl ">
-                                <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-4 font-display">Mastery Level</h3>
+                                <h3 className="text-[10px] font-black text-neutral-ink uppercase tracking-widest mb-4 font-display">Mastery Level</h3>
                                 <div className="h-2 bg-muted rounded-full overflow-hidden">
                                     <div className="h-full bg-primary w-1/3 rounded-full"></div>
                                 </div>
-                                <p className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-widest mt-4 font-display">Beginner 33%</p>
+                                <p className="text-[10px] font-black text-neutral-ink uppercase tracking-widest mt-4 font-display">Beginner 33%</p>
                             </div>
                         </div>
                     </div>

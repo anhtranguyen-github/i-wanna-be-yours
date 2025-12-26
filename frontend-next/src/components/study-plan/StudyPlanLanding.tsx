@@ -33,7 +33,7 @@ export function StudyPlanLanding({ user, hasPlan, plan }: StudyPlanLandingProps)
 
     const handleGetStarted = () => {
         if (user && hasPlan) {
-            // Already handled by parent view switching to dashboard, 
+            // Already handled by parent view switching to dashboard,
             // but just in case:
             router.push('/study-plan');
         } else {
@@ -48,31 +48,32 @@ export function StudyPlanLanding({ user, hasPlan, plan }: StudyPlanLandingProps)
     }, {} as Record<JLPTLevel, PlanTemplateListItem[]>);
 
     return (
-        <div className="min-h-screen bg-background">
+        <div className="min-h-screen bg-secondary">
             {/* Hero Section */}
-            <section className="py-16 lg:py-20 bg-card border-b border-border">
+            <section className="py-16 lg:py-20 bg-neutral-white border-b border-neutral-gray/30  relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-[100px] -mr-48 -mt-48" />
                 <div className="container mx-auto px-6 max-w-5xl text-center">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/5 rounded-xl text-primary font-bold text-sm mb-6 border border-primary/10">
-                        <Sparkles size={16} className="text-primary/70" />
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/20 rounded-xl text-primary-strong font-black text-[10px] uppercase tracking-widest mb-6 border border-primary/20 font-display">
+                        <Sparkles size={16} className="text-primary-strong/70" />
                         {user ? 'Welcome Back' : 'Personalized JLPT Preparation'}
                     </div>
 
-                    <h1 className="text-4xl lg:text-5xl font-bold text-foreground font-display mb-6">
-                        Start Your JLPT <span className="text-primary">Journey</span>
+                    <h1 className="text-4xl lg:text-5xl font-black text-neutral-ink font-display mb-6 tracking-tight">
+                        Start Your JLPT <span className="text-primary-strong">Journey</span>
                     </h1>
 
-                    <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-10">
+                    <p className="text-lg text-neutral-ink max-w-2xl mx-auto mb-10">
                         Set your target level and let our AI guide you to JLPT mastery.
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <button onClick={handleGetStarted} className="flex items-center justify-center gap-2 px-8 py-4 bg-primary text-white font-black rounded-xl hover:opacity-90 transition-all shadow-xl shadow-primary/20 active:scale-95">
+                        <button onClick={handleGetStarted} className="flex items-center justify-center gap-3 px-10 py-5 bg-primary-strong text-white font-black rounded-2xl hover:opacity-90 transition-all  shadow-primary/30 active:scale-95 font-display uppercase tracking-widest text-xs">
                             Create My Plan
                             <ChevronRight size={20} />
                         </button>
 
                         {!user && (
-                            <button onClick={() => openAuth('LOGIN', { flowType: 'STUDY_PLAN' })} className="px-8 py-4 bg-white border border-slate-200 text-slate-900 font-bold rounded-xl hover:border-primary/50 transition-colors shadow-sm active:scale-95">
+                            <button onClick={() => openAuth('LOGIN', { flowType: 'STUDY_PLAN' })} className="px-10 py-5 bg-neutral-white border border-neutral-gray/30 text-neutral-ink font-black rounded-2xl hover:border-primary/50 transition-all  active:scale-95 font-display uppercase tracking-widest text-xs">
                                 Login to Resume
                             </button>
                         )}
@@ -90,13 +91,13 @@ export function StudyPlanLanding({ user, hasPlan, plan }: StudyPlanLandingProps)
                             { icon: Brain, title: 'AI Sensei', desc: 'Adaptive recommendations' },
                             { icon: BookOpen, title: 'Content Mastery', desc: 'SRS-backed knowledge vault' },
                         ].map((feature, idx) => (
-                            <div key={idx} className="bg-white rounded-2xl border border-slate-100 p-8 text-center hover:border-primary/30 hover:shadow-xl transition-all group overflow-hidden relative">
+                            <div key={idx} className="bg-neutral-white rounded-3xl border border-neutral-gray/20 p-8 text-center hover:border-primary/40 hover: transition-all group overflow-hidden relative ">
                                 <div className="absolute -top-10 -right-10 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors" />
-                                <div className="w-14 h-14 bg-primary/5 text-primary rounded-xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform relative z-10">
+                                <div className="w-14 h-14 bg-neutral-beige text-primary-strong rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-all relative z-10 ">
                                     <feature.icon size={28} />
                                 </div>
-                                <h3 className="font-black text-slate-900 mb-3 font-display uppercase tracking-widest text-[10px]">{feature.title}</h3>
-                                <p className="text-sm text-slate-500 font-medium leading-relaxed">{feature.desc}</p>
+                                <h3 className="font-black text-neutral-ink mb-3 font-display uppercase tracking-[0.2em] text-[10px]">{feature.title}</h3>
+                                <p className="text-sm text-neutral-ink font-bold leading-relaxed">{feature.desc}</p>
                             </div>
                         ))}
                     </div>
@@ -104,19 +105,19 @@ export function StudyPlanLanding({ user, hasPlan, plan }: StudyPlanLandingProps)
             </section>
 
             {/* Templates */}
-            <section className="py-16 bg-card">
+            <section className="py-20 bg-neutral-beige/30 border-y border-neutral-gray/20">
                 <div className="container mx-auto px-6 max-w-5xl">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl font-black text-slate-900 mb-3 font-display tracking-tight">Level Pathfinders</h2>
-                        <p className="text-slate-500 font-medium">Browse curated study plan templates designed by JLPT experts.</p>
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl font-black text-neutral-ink mb-4 font-display tracking-tight uppercase tracking-widest">Level Pathfinders</h2>
+                        <p className="text-neutral-ink font-bold">Browse curated study plan templates designed by JLPT experts.</p>
                     </div>
 
-                    <div className="flex flex-wrap gap-2 justify-center mb-10">
-                        <button onClick={() => setSelectedLevel(null)} className={`px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${selectedLevel === null ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-slate-100 text-slate-500 hover:text-slate-900 border border-transparent hover:border-slate-200'}`}>
+                    <div className="flex flex-wrap gap-3 justify-center mb-16">
+                        <button onClick={() => setSelectedLevel(null)} className={`px-8 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all duration-300 font-display ${selectedLevel === null ? 'bg-primary-strong text-white  shadow-primary/30 scale-105' : 'bg-neutral-white text-neutral-ink hover:text-neutral-ink border border-neutral-gray/30 '}`}>
                             All Levels
                         </button>
                         {JLPT_LEVELS.map(level => (
-                            <button key={level} onClick={() => setSelectedLevel(level)} className={`px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${selectedLevel === level ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-slate-100 text-slate-500 hover:text-slate-900 border border-transparent hover:border-slate-200'}`}>
+                            <button key={level} onClick={() => setSelectedLevel(level)} className={`px-8 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all duration-300 font-display ${selectedLevel === level ? 'bg-primary-strong text-white  shadow-primary/30 scale-105' : 'bg-neutral-white text-neutral-ink hover:text-neutral-ink border border-neutral-gray/30 '}`}>
                                 {level}
                             </button>
                         ))}
@@ -125,7 +126,7 @@ export function StudyPlanLanding({ user, hasPlan, plan }: StudyPlanLandingProps)
                     {loading ? (
                         <div className="text-center py-12">
                             <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
-                            <p className="text-muted-foreground">Loading templates...</p>
+                            <p className="text-neutral-ink">Loading templates...</p>
                         </div>
                     ) : (
                         <div className="space-y-10">
@@ -141,23 +142,24 @@ export function StudyPlanLanding({ user, hasPlan, plan }: StudyPlanLandingProps)
                                                 {level}
                                             </div>
                                             <div>
-                                                <h3 className="font-black text-slate-900 font-display uppercase tracking-[0.2em] text-[10px]">{levelInfo.name}</h3>
-                                                <p className="text-sm text-slate-500 font-medium">{levelInfo.description}</p>
+                                                <h3 className="font-black text-neutral-ink font-display uppercase tracking-[0.2em] text-[10px]">{levelInfo.name}</h3>
+                                                <p className="text-sm text-neutral-ink font-bold">{levelInfo.description}</p>
                                             </div>
                                         </div>
 
-                                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                                             {levelTemplates.map(template => (
-                                                <div key={template.id} onClick={() => router.push(`/study-plan/setup?template=${template.id}`)} className="bg-white rounded-2xl border border-slate-100 p-6 hover:border-primary/40 hover:shadow-xl transition-all cursor-pointer group">
-                                                    <div className="flex items-start justify-between mb-4">
-                                                        <span className="px-3 py-1 rounded-lg text-white text-[10px] font-black uppercase tracking-widest" style={{ backgroundColor: levelInfo.color }}>{template.target_level}</span>
-                                                        <span className="flex items-center gap-1.5 text-slate-400 text-[10px] font-bold"><Clock size={12} />{template.duration_weeks}W</span>
+                                                <div key={template.id} onClick={() => router.push(`/study-plan/setup?template=${template.id}`)} className="bg-neutral-white rounded-[2rem] border border-neutral-gray/20 p-8 hover:border-primary/40 hover: transition-all cursor-pointer group  relative overflow-hidden">
+                                                    <div className="absolute top-0 right-0 w-24 h-24 bg-primary/2 rounded-full blur-2xl group-hover:bg-primary/5 transition-colors" />
+                                                    <div className="flex items-start justify-between mb-6 relative z-10">
+                                                        <span className="px-4 py-1.5 rounded-xl text-white text-[10px] font-black uppercase tracking-widest " style={{ backgroundColor: levelInfo.color }}>{template.target_level}</span>
+                                                        <span className="flex items-center gap-2 text-neutral-ink text-[10px] font-black uppercase tracking-widest"><Clock size={14} />{template.duration_weeks}W</span>
                                                     </div>
-                                                    <h4 className="font-black text-slate-900 mb-2 font-display group-hover:text-primary transition-colors">{template.title}</h4>
-                                                    <p className="text-xs text-slate-500 font-medium mb-6 line-clamp-2 leading-relaxed">{template.description}</p>
-                                                    <div className="grid grid-cols-2 gap-4 text-[10px] font-black uppercase tracking-widest text-slate-400 pt-4 border-t border-slate-50">
-                                                        <span className="flex items-center gap-1.5"><CheckCircle2 size={12} className="text-primary/50" />{template.milestone_count} Milestones</span>
-                                                        <span className="flex items-center gap-1.5"><BookOpen size={12} className="text-primary/50" />{template.daily_minutes_recommended}m / Day</span>
+                                                    <h4 className="text-xl font-black text-neutral-ink mb-3 font-display group-hover:text-primary-strong transition-colors relative z-10">{template.title}</h4>
+                                                    <p className="text-sm text-neutral-ink font-medium mb-8 line-clamp-2 leading-relaxed relative z-10">{template.description}</p>
+                                                    <div className="grid grid-cols-2 gap-4 text-[9px] font-black uppercase tracking-widest text-neutral-ink pt-6 border-t border-neutral-gray/10 relative z-10">
+                                                        <span className="flex items-center gap-2"><CheckCircle2 size={14} className="text-primary-strong/40" />{template.milestone_count} Points</span>
+                                                        <span className="flex items-center gap-2"><BookOpen size={14} className="text-primary-strong/40" />{template.daily_minutes_recommended}m / Day</span>
                                                     </div>
                                                 </div>
                                             ))}

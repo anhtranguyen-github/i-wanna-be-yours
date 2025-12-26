@@ -16,7 +16,7 @@ export function NoteRenderer({ artifact }: NoteRendererProps) {
             <div className="bg-card rounded-2xl border border-border p-6">
                 <div className="prose prose-sm max-w-none
                     prose-headings:font-display prose-headings:font-bold prose-headings:text-foreground
-                    prose-p:text-foreground/80 prose-p:leading-relaxed
+                    prose-p:text-neutral-ink prose-p:leading-relaxed
                     prose-strong:text-foreground prose-strong:font-bold
                     prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
                     prose-pre:bg-muted prose-pre:rounded-xl

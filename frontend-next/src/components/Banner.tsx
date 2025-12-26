@@ -13,7 +13,7 @@ export default function Banner() {
           The japanese language <br />
           <span className="underline text-primary">learning software</span>.
         </h1>
-        <p className="mt-5 lg:mt-7 w-full lg:w-9/12 text-gray-500">
+        <p className="mt-5 lg:mt-7 w-full lg:w-9/12 text-neutral-ink">
           Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sunt iure
           nemo quo excepturi ex dicta asperiores exercitationem quam
           accusantium, quos atque, tempora impedit eum voluptatem! Est earum
@@ -33,7 +33,7 @@ export default function Banner() {
             How it works
           </Link>
           <div className="bg-gray-100 cursor-pointer hover:bg-gray-200 mt-3 lg:mt-0 h-12 w-12 rounded-full flex items-center justify-center">
-            <PlayIcon className="h-5 text-gray-500" />
+            <PlayIcon className="h-5 text-neutral-ink" />
           </div>
         </div>
         <img src="img/dashboard.png" alt="" className="mt-8 lg:mt-12 w-full" />

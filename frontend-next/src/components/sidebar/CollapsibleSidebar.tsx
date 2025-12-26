@@ -87,13 +87,13 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
     // --- RENDER HELPERS ---
 
     const renderChatModeContent = () => (
-        <div className="flex flex-col h-full overflow-hidden bg-background">
+        <div className="flex flex-col h-full overflow-hidden bg-transparent">
             {/* Top Section: New Chat Button Only */}
             <div className="flex-shrink-0 flex flex-col pt-4 px-4 pb-3 gap-3 bg-background z-10 relative">
                 <Link
                     href="/chat"
                     className={`
-                        flex items-center justify-center gap-2 w-full py-4 px-4 bg-primary text-primary-foreground font-black rounded-2xl hover:opacity-90 transition-all duration-300  hover: active:scale-95 font-display uppercase tracking-widest text-[10px]
+                        flex items-center justify-center gap-2 w-full py-4 px-4 bg-primary-strong text-white font-black rounded-2xl hover:opacity-90 transition-all duration-300  hover: active:scale-95 font-display uppercase tracking-widest text-[10px]
                         ${!isExpanded ? 'p-0 h-14 w-14 mx-auto' : ''}
                     `}
                     title={!isExpanded ? "New Chat" : undefined}
@@ -112,7 +112,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     {isExpanded && (
                         <button
                             onClick={() => setIsHistoryOpen(!isHistoryOpen)}
-                            className="flex items-center justify-between px-5 py-4 text-[10px] font-display font-black text-muted-foreground/50 uppercase tracking-[0.2em] hover:bg-muted/30 transition-colors w-full flex-shrink-0"
+                            className="flex items-center justify-between px-5 py-5 text-[10px] font-display font-black text-neutral-ink uppercase tracking-[0.2em] hover:bg-neutral-beige transition-colors w-full flex-shrink-0"
                         >
                             <span className="flex items-center gap-3">
                                 <History size={16} />
@@ -126,13 +126,13 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     {isExpanded && isHistoryOpen && (
                         <div className="px-4 pt-1 pb-3 flex-shrink-0">
                             <div className="relative group">
-                                <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/30 group-focus-within:text-primary transition-colors" />
+                                <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-ink group-focus-within:text-primary-strong transition-colors" />
                                 <input
                                     type="text"
                                     placeholder={isGuest ? "Search demo chats..." : "Search..."}
                                     value={chatSearch}
                                     onChange={(e) => setChatSearch(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-2.5 text-xs bg-muted/20 border border-border/50 rounded-xl focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-bold"
+                                    className="w-full pl-10 pr-4 py-3 text-xs bg-neutral-white border border-neutral-gray/30 rounded-xl focus:outline-none focus:border-primary-strong focus:ring-4 focus:ring-primary/10 transition-all font-bold"
                                 />
                             </div>
                         </div>
@@ -150,8 +150,8 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                                             className={`
                                                 group block p-4 rounded-xl border transition-all duration-300 relative overflow-hidden
                                                 ${pathname === `/chat/${chat._id}`
-                                                    ? 'bg-card border-primary/20  text-primary'
-                                                    : 'border-transparent hover:bg-card hover:border-border/50 text-muted-foreground hover:text-foreground'
+                                                    ? 'bg-neutral-white border-primary-strong/30 text-primary-strong ring-1 ring-primary-strong/5'
+                                                    : 'border-transparent hover:bg-neutral-white hover:border-neutral-gray/30 text-neutral-ink hover:text-neutral-ink'
                                                 }
                                             `}
                                         >
@@ -159,7 +159,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                                                 <p className={`text-sm font-black truncate font-display tracking-tight mb-1`}>
                                                     {chat.title}
                                                 </p>
-                                                <div className="flex items-center gap-2 opacity-40 group-hover:opacity-60 transition-opacity">
+                                                <div className="flex items-center gap-2 opacity-90 group-hover:opacity-100 transition-opacity">
                                                     <CalendarDays size={10} />
                                                     <p className="text-[10px] font-black uppercase tracking-widest font-display">
                                                         {new Date(chat.updated_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
@@ -173,32 +173,12 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                                     ))
                                 ) : (
                                     <div className="py-12 text-center space-y-3">
-                                        <MessageCircle size={32} className="mx-auto text-muted-foreground/10" />
-                                        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/30 font-display">No conversations</p>
+                                        <MessageCircle size={32} className="mx-auto text-neutral-ink" />
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-neutral-ink font-display">No conversations</p>
                                     </div>
                                 )}
 
-                                {isGuest && (
-                                    <div className="pt-4 mt-4 border-t border-border/50">
-                                        <button
-                                            onClick={() => openAuth('REGISTER', { title: "Chat History", description: "Sign up to save unlimited chat history and access it from any device." })}
-                                            className="w-full block p-5 rounded-2xl bg-card border border-border  hover: hover:border-primary/30 transition-all group text-left relative overflow-hidden"
-                                        >
-                                            <div className="absolute -top-10 -right-10 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors" />
-                                            <div className="relative z-10">
-                                                <div className="flex items-center gap-3 mb-2">
-                                                    <div className="p-2 bg-primary/10 rounded-xl text-primary ">
-                                                        <Crown size={14} className="fill-current" />
-                                                    </div>
-                                                    <span className="text-xs font-black text-foreground group-hover:text-primary transition-colors font-display uppercase tracking-widest">Save History</span>
-                                                </div>
-                                                <p className="text-[10px] text-muted-foreground font-bold leading-relaxed opacity-80">
-                                                    Don't lose your learning journey. Create a free account now.
-                                                </p>
-                                            </div>
-                                        </button>
-                                    </div>
-                                )}
+
                             </div>
                         )}
 
@@ -209,7 +189,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                                     <Link
                                         key={chat._id}
                                         href={`/chat/${chat._id}`}
-                                        className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${pathname === `/chat/${chat._id}` ? 'bg-primary text-white ' : 'bg-muted/10 text-muted-foreground hover:bg-muted'}`}
+                                        className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${pathname === `/chat/${chat._id}` ? 'bg-primary text-neutral-ink ' : 'bg-neutral-beige text-neutral-ink hover:bg-neutral-beige/80'}`}
                                         title={chat.title}
                                     >
                                         <MessageCircle size={18} />
@@ -229,7 +209,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     {isExpanded && (
                         <button
                             onClick={() => setIsResourcesOpen(!isResourcesOpen)}
-                            className="flex items-center justify-between px-5 py-4 text-[10px] font-display font-black text-muted-foreground/50 uppercase tracking-[0.2em] hover:bg-muted/30 transition-colors w-full flex-shrink-0"
+                            className="flex items-center justify-between px-5 py-5 text-[10px] font-display font-black text-neutral-ink uppercase tracking-[0.2em] hover:bg-neutral-beige transition-colors w-full flex-shrink-0"
                         >
                             <span className="flex items-center gap-3">
                                 <FolderOpen size={16} />
@@ -243,13 +223,13 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     {isExpanded && isResourcesOpen && (
                         <div className="px-4 pt-1 pb-3 flex-shrink-0">
                             <div className="relative group">
-                                <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/30 group-focus-within:text-primary transition-colors" />
+                                <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-ink group-focus-within:text-primary-strong transition-colors" />
                                 <input
                                     type="text"
                                     placeholder="Search resources..."
                                     value={resourceSearch}
                                     onChange={(e) => setResourceSearch(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-2.5 text-xs bg-muted/20 border border-border/50 rounded-xl focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-bold"
+                                    className="w-full pl-10 pr-4 py-3 text-xs bg-neutral-white border border-neutral-gray/30 rounded-xl focus:outline-none focus:border-primary-strong focus:ring-4 focus:ring-primary/10 transition-all font-bold"
                                 />
                             </div>
                         </div>
@@ -271,7 +251,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                                                     type: resource.type
                                                 }));
                                             }}
-                                            className="group relative flex items-center gap-4 p-4 rounded-xl hover:bg-card border border-transparent hover:border-border/50 transition-all text-sm text-foreground/70 hover:text-foreground cursor-grab active:cursor-grabbing font-bold shadow-none hover:"
+                                            className="group relative flex items-center gap-4 p-4 rounded-xl hover:bg-card border border-transparent hover:border-border/50 transition-all text-sm text-neutral-ink hover:text-neutral-ink cursor-grab active:cursor-grabbing font-bold shadow-none"
                                         >
                                             <div className="p-2 bg-muted/50 rounded-lg group-hover:bg-primary/10 group-hover:text-primary transition-colors">
                                                 <FileText size={16} />
@@ -286,7 +266,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                                                         e.stopPropagation();
                                                         openResourcePreview(resource as any);
                                                     }}
-                                                    className="p-2 hover:bg-primary/10 rounded-lg text-muted-foreground hover:text-primary transition-all active:scale-90"
+                                                    className="p-2 hover:bg-primary/10 rounded-lg text-neutral-ink hover:text-primary transition-all active:scale-90"
                                                     title="View details"
                                                 >
                                                     <Eye size={14} />
@@ -301,7 +281,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                                                             type: resource.type || 'document'
                                                         });
                                                     }}
-                                                    className="p-2 hover:bg-primary/10 rounded-lg text-muted-foreground hover:text-primary transition-all active:scale-90"
+                                                    className="p-2 hover:bg-primary/10 rounded-lg text-neutral-ink hover:text-primary transition-all active:scale-90"
                                                     title="Add to chat"
                                                 >
                                                     <PlusCircle size={14} />
@@ -311,8 +291,8 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                                     ))
                                 ) : (
                                     <div className="py-12 text-center space-y-3">
-                                        <FolderOpen size={32} className="mx-auto text-muted-foreground/10" />
-                                        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/30 font-display">No resources found</p>
+                                        <FolderOpen size={32} className="mx-auto text-neutral-ink" />
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-neutral-ink font-display">No resources found</p>
                                     </div>
                                 )}
                             </div>
@@ -322,7 +302,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                                 {filteredResources.slice(0, 5).map(resource => (
                                     <div
                                         key={resource.id}
-                                        className="w-10 h-10 rounded-xl flex items-center justify-center bg-muted/10 text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all cursor-pointer"
+                                        className="w-10 h-10 rounded-xl flex items-center justify-center bg-neutral-beige text-neutral-ink hover:bg-primary/10 hover:text-primary transition-all cursor-pointer"
                                         title={resource.title}
                                         onClick={() => openResourcePreview(resource as any)}
                                     >
@@ -346,8 +326,8 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                             className={`
                                 flex items-center justify-center rounded-xl transition-all duration-300 group p-3 relative
                                 ${activeSectionId === item.id
-                                    ? 'bg-primary text-primary-foreground '
-                                    : 'bg-card border border-border/50 text-muted-foreground hover:text-foreground hover: hover:border-primary/20'
+                                    ? 'bg-primary text-neutral-ink'
+                                    : 'bg-card border border-neutral-gray/20 text-neutral-ink hover:bg-neutral-beige transition-all'
                                 }
                             `}
                             title={item.label}
@@ -367,8 +347,8 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                             key={item.id}
                             href={item.href}
                             className={`p-2.5 rounded-xl transition-all active:scale-95 ${activeSectionId === item.id
-                                ? 'bg-primary/10 text-primary'
-                                : 'hover:bg-card hover: text-muted-foreground hover:text-primary'
+                                ? 'bg-primary/20 text-neutral-ink'
+                                : 'hover:bg-neutral-beige text-neutral-ink'
                                 }`}
                             title={item.label}
                         >
@@ -378,7 +358,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     {user ? (
                         <button
                             onClick={() => logout()}
-                            className="p-2.5 rounded-xl hover:bg-destructive/10 hover:text-destructive text-muted-foreground transition-all active:scale-95"
+                            className="p-2.5 rounded-xl hover:bg-destructive/10 hover:text-destructive text-neutral-ink transition-all active:scale-95"
                             title="Logout"
                         >
                             <LogOut size={isExpanded ? 18 : 22} />
@@ -386,7 +366,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     ) : (
                         <button
                             onClick={() => openAuth('LOGIN')}
-                            className="p-2.5 rounded-xl hover:bg-primary/10 hover:text-primary text-muted-foreground transition-all active:scale-95"
+                            className="p-2.5 rounded-xl hover:bg-primary/10 hover:text-primary text-neutral-ink transition-all active:scale-95"
                             title="Login"
                         >
                             <LogOut size={isExpanded ? 18 : 22} className="rotate-180" />
@@ -399,7 +379,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
 
 
     const renderStandardModeContent = () => (
-        <div className="flex flex-col h-full overflow-hidden bg-background">
+        <div className="flex flex-col h-full overflow-hidden bg-transparent">
             {/* Standard Vertical Navigation */}
             <div className="flex-1 overflow-y-auto min-h-0 px-3 py-4 space-y-2">
                 {NAV_CONFIG.map((item) => {
@@ -411,8 +391,8 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                             className={`
                                 flex items-center gap-4 p-4 rounded-xl transition-all duration-300 group relative overflow-hidden
                                 ${isActive
-                                    ? 'bg-primary text-primary-foreground '
-                                    : 'bg-card border border-border/50 text-muted-foreground hover:text-foreground hover: hover:border-primary/20'
+                                    ? 'bg-primary text-neutral-ink ring-1 ring-primary-strong/10'
+                                    : 'bg-neutral-white border border-neutral-gray/20 text-neutral-ink hover:bg-neutral-beige transition-all'
                                 }
                             `}
                             title={!isExpanded ? item.label : undefined}
@@ -441,8 +421,8 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                             key={item.id}
                             href={item.href}
                             className={`p-3 rounded-xl transition-all active:scale-95 ${activeSectionId === item.id
-                                ? 'bg-primary/10 text-primary'
-                                : 'hover:bg-card hover: text-muted-foreground hover:text-primary'
+                                ? 'bg-primary/20 text-neutral-ink'
+                                : 'hover:bg-neutral-beige text-neutral-ink transition-all'
                                 }`}
                             title={item.label}
                         >
@@ -452,7 +432,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     {user ? (
                         <button
                             onClick={() => logout()}
-                            className="p-3 rounded-xl hover:bg-destructive/10 hover:text-destructive text-muted-foreground transition-all active:scale-95"
+                            className="p-3 rounded-xl hover:bg-destructive/10 hover:text-destructive text-neutral-ink transition-all active:scale-95"
                             title="Logout"
                         >
                             <LogOut size={22} />
@@ -460,7 +440,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     ) : (
                         <button
                             onClick={() => openAuth('LOGIN')}
-                            className="p-3 rounded-xl hover:bg-primary/10 hover:text-primary text-muted-foreground transition-all active:scale-95"
+                            className="p-3 rounded-xl hover:bg-primary/10 hover:text-primary text-neutral-ink transition-all active:scale-95"
                             title="Login"
                         >
                             <LogOut size={22} className="rotate-180" />
@@ -473,20 +453,20 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
 
     return (
         <aside
-            className={`fixed left-0 top-0 bottom-0 z-40 flex flex-col bg-background border-r border-border transition-all duration-500 ease-spring  ${className}`}
+            className={`fixed left-0 top-0 bottom-0 z-40 flex flex-col bg-secondary border-r border-neutral-gray transition-all duration-500 ease-spring  ${className}`}
             style={{ width }}
         >
             {/* Header */}
-            <div className={`flex-shrink-0 flex items-center ${isExpanded ? 'justify-between px-6' : 'justify-center'} border-b border-border h-[80px] bg-background`}>
+            <div className={`flex-shrink-0 flex items-center ${isExpanded ? 'justify-between px-6' : 'justify-center'} border-b border-neutral-gray h-[80px] bg-transparent`}>
                 {isExpanded ? (
                     <>
                         <Link href="/" className="flex items-center gap-3 animate-in fade-in slide-in-from-left-4 duration-500">
                             <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center text-xl  border border-secondary/20">🌸</div>
-                            <span className="font-display font-black text-2xl text-foreground tracking-tight">hanachan</span>
+                            <span className="font-display font-black text-2xl text-neutral-ink tracking-tight">hanachan</span>
                         </Link>
                         <button
                             onClick={toggle}
-                            className="p-2.5 rounded-xl hover:bg-muted text-muted-foreground hover:text-primary transition-all active:scale-90"
+                            className="p-2.5 rounded-xl hover:bg-neutral-beige text-neutral-ink hover:text-primary transition-all active:scale-90"
                             aria-label="Collapse sidebar"
                         >
                             <ChevronsLeft size={20} />
@@ -495,7 +475,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                 ) : (
                     <button
                         onClick={toggle}
-                        className="w-12 h-12 flex items-center justify-center rounded-xl bg-muted/30 text-muted-foreground hover:text-primary hover:bg-muted transition-all active:scale-90 border border-transparent hover:border-border/50"
+                        className="w-12 h-12 flex items-center justify-center rounded-xl bg-neutral-white text-neutral-ink hover:text-primary hover:bg-neutral-beige transition-all active:scale-90 border border-neutral-gray/20"
                         aria-label="Expand sidebar"
                     >
                         <ChevronsRight size={24} />

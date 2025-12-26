@@ -212,7 +212,7 @@ function SetupWizardContent() {
                                 w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all
                                 ${step >= s
                                     ? 'bg-brand-salmon text-white'
-                                    : 'bg-gray-200 text-gray-400'
+                                    : 'bg-gray-200 text-neutral-ink'
                                 }
                             `}>
                                 {step > s ? <Check size={18} /> : s}
@@ -235,7 +235,7 @@ function SetupWizardContent() {
                                 <h2 className="text-2xl font-black text-brand-dark mb-2">
                                     Select Your Target Level
                                 </h2>
-                                <p className="text-gray-500">
+                                <p className="text-neutral-ink">
                                     Which JLPT level are you preparing for?
                                 </p>
                             </div>
@@ -265,7 +265,7 @@ function SetupWizardContent() {
                                             </div>
                                             <div className="flex-1">
                                                 <h3 className="font-bold text-brand-dark">{info.name}</h3>
-                                                <p className="text-sm text-gray-500">{info.description}</p>
+                                                <p className="text-sm text-neutral-ink">{info.description}</p>
                                             </div>
                                             {isSelected && (
                                                 <Check className="w-6 h-6 text-brand-salmon shrink-0" />
@@ -285,14 +285,14 @@ function SetupWizardContent() {
                                 <h2 className="text-2xl font-black text-brand-dark mb-2">
                                     When is Your Exam?
                                 </h2>
-                                <p className="text-gray-500">
+                                <p className="text-neutral-ink">
                                     Select your target JLPT exam date
                                 </p>
                             </div>
 
                             {/* Suggested Exam Dates */}
                             <div className="space-y-3">
-                                <p className="text-sm font-bold text-gray-600">Official JLPT Dates:</p>
+                                <p className="text-sm font-bold text-neutral-ink">Official JLPT Dates:</p>
                                 <div className="grid sm:grid-cols-2 gap-3">
                                     {nextExamDates.map((date, idx) => {
                                         const isSelected = examDate?.toDateString() === date.toDateString();
@@ -314,7 +314,7 @@ function SetupWizardContent() {
                                                 <div className="font-bold text-brand-dark">
                                                     {date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                                                 </div>
-                                                <div className="text-sm text-gray-500">
+                                                <div className="text-sm text-neutral-ink">
                                                     {daysUntil} days ({months} months)
                                                 </div>
                                             </button>
@@ -325,7 +325,7 @@ function SetupWizardContent() {
 
                             {/* Custom Date */}
                             <div className="pt-4 border-t border-gray-100">
-                                <p className="text-sm font-bold text-gray-600 mb-3">Or select a custom date:</p>
+                                <p className="text-sm font-bold text-neutral-ink mb-3">Or select a custom date:</p>
                                 <input
                                     type="date"
                                     value={customDate}
@@ -359,14 +359,14 @@ function SetupWizardContent() {
                                 <h2 className="text-2xl font-black text-brand-dark mb-2">
                                     Set Your Study Preferences
                                 </h2>
-                                <p className="text-gray-500">
+                                <p className="text-neutral-ink">
                                     How much time can you dedicate daily?
                                 </p>
                             </div>
 
                             {/* Daily Minutes */}
                             <div>
-                                <label className="block text-sm font-bold text-gray-600 mb-3">
+                                <label className="block text-sm font-bold text-neutral-ink mb-3">
                                     Daily study time:
                                 </label>
                                 <div className="grid grid-cols-5 gap-2">
@@ -378,7 +378,7 @@ function SetupWizardContent() {
                                                 py-3 rounded-xl font-bold transition-all text-sm
                                                 ${dailyMinutes === mins
                                                     ? 'bg-brand-salmon text-white'
-                                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                                    : 'bg-gray-100 text-neutral-ink hover:bg-gray-200'
                                                 }
                                             `}
                                         >
@@ -390,7 +390,7 @@ function SetupWizardContent() {
 
                             {/* Study Days Per Week */}
                             <div>
-                                <label className="block text-sm font-bold text-gray-600 mb-3">
+                                <label className="block text-sm font-bold text-neutral-ink mb-3">
                                     Days per week:
                                 </label>
                                 <div className="grid grid-cols-3 gap-2">
@@ -402,7 +402,7 @@ function SetupWizardContent() {
                                                 py-3 rounded-xl font-bold transition-all
                                                 ${studyDays === days
                                                     ? 'bg-brand-salmon text-white'
-                                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                                    : 'bg-gray-100 text-neutral-ink hover:bg-gray-200'
                                                 }
                                             `}
                                         >
@@ -414,8 +414,8 @@ function SetupWizardContent() {
 
                             {/* Focus Areas */}
                             <div>
-                                <label className="block text-sm font-bold text-gray-600 mb-3">
-                                    Focus areas <span className="text-gray-400 font-normal">(optional)</span>:
+                                <label className="block text-sm font-bold text-neutral-ink mb-3">
+                                    Focus areas <span className="text-neutral-ink font-normal">(optional)</span>:
                                 </label>
                                 <div className="flex flex-wrap gap-2">
                                     {FOCUS_AREAS.map((area) => (
@@ -426,7 +426,7 @@ function SetupWizardContent() {
                                                 px-4 py-2 rounded-full font-bold text-sm transition-all capitalize
                                                 ${focusAreas.includes(area)
                                                     ? 'bg-brand-sky text-white'
-                                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                                    : 'bg-gray-100 text-neutral-ink hover:bg-gray-200'
                                                 }
                                             `}
                                         >
@@ -438,7 +438,7 @@ function SetupWizardContent() {
 
                             {/* Estimated weekly hours */}
                             <div className="p-4 bg-gray-50 rounded-xl">
-                                <div className="text-sm text-gray-500 mb-1">Weekly study time:</div>
+                                <div className="text-sm text-neutral-ink mb-1">Weekly study time:</div>
                                 <div className="text-2xl font-black text-brand-dark">
                                     {Math.round((dailyMinutes * studyDays) / 60 * 10) / 10} hours/week
                                 </div>
@@ -454,7 +454,7 @@ function SetupWizardContent() {
                                 <h2 className="text-2xl font-black text-brand-dark mb-2">
                                     Review Your Plan
                                 </h2>
-                                <p className="text-gray-500">
+                                <p className="text-neutral-ink">
                                     Confirm your study plan details
                                 </p>
                             </div>
@@ -463,7 +463,7 @@ function SetupWizardContent() {
                                 {/* Summary Cards */}
                                 <div className="grid sm:grid-cols-2 gap-4">
                                     <div className="p-5 bg-gray-50 rounded-xl">
-                                        <div className="text-sm text-gray-500 mb-1">Target Level</div>
+                                        <div className="text-sm text-neutral-ink mb-1">Target Level</div>
                                         <div className="text-xl font-black text-brand-dark flex items-center gap-2">
                                             <div
                                                 className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm font-bold"
@@ -476,7 +476,7 @@ function SetupWizardContent() {
                                     </div>
 
                                     <div className="p-5 bg-gray-50 rounded-xl">
-                                        <div className="text-sm text-gray-500 mb-1">Exam Date</div>
+                                        <div className="text-sm text-neutral-ink mb-1">Exam Date</div>
                                         <div className="text-xl font-black text-brand-dark">
                                             {examDate?.toLocaleDateString('en-US', {
                                                 month: 'long',
@@ -484,20 +484,20 @@ function SetupWizardContent() {
                                                 year: 'numeric'
                                             })}
                                         </div>
-                                        <div className="text-sm text-gray-500">
+                                        <div className="text-sm text-neutral-ink">
                                             {examDate && `${calculateDaysUntilExam(examDate)} days remaining`}
                                         </div>
                                     </div>
 
                                     <div className="p-5 bg-gray-50 rounded-xl">
-                                        <div className="text-sm text-gray-500 mb-1">Daily Study</div>
+                                        <div className="text-sm text-neutral-ink mb-1">Daily Study</div>
                                         <div className="text-xl font-black text-brand-dark">
                                             {dailyMinutes} minutes
                                         </div>
                                     </div>
 
                                     <div className="p-5 bg-gray-50 rounded-xl">
-                                        <div className="text-sm text-gray-500 mb-1">Weekly Schedule</div>
+                                        <div className="text-sm text-neutral-ink mb-1">Weekly Schedule</div>
                                         <div className="text-xl font-black text-brand-dark">
                                             {studyDays} days/week
                                         </div>
@@ -506,7 +506,7 @@ function SetupWizardContent() {
 
                                 {focusAreas.length > 0 && (
                                     <div className="p-5 bg-gray-50 rounded-xl">
-                                        <div className="text-sm text-gray-500 mb-2">Focus Areas</div>
+                                        <div className="text-sm text-neutral-ink mb-2">Focus Areas</div>
                                         <div className="flex flex-wrap gap-2">
                                             {focusAreas.map(area => (
                                                 <span key={area} className="px-3 py-1 bg-brand-sky/20 text-brand-sky rounded-full text-sm font-bold capitalize">
@@ -531,7 +531,7 @@ function SetupWizardContent() {
                     <div className="flex items-center justify-between mt-10 pt-6 border-t border-gray-100">
                         <button
                             onClick={step === 1 ? () => router.push('/study-plan') : handleBack}
-                            className="flex items-center gap-2 text-gray-500 hover:text-brand-dark transition-colors font-bold"
+                            className="flex items-center gap-2 text-neutral-ink hover:text-brand-dark transition-colors font-bold"
                         >
                             <ChevronLeft size={20} />
                             {step === 1 ? 'Back to Templates' : 'Back'}

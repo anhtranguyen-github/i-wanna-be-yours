@@ -28,7 +28,7 @@ export default function LoginPromptCard({
                     <Lock size={20} className="text-brand-salmon" />
                 </div>
                 <div className="flex-1 min-w-0">
-                    <p className="text-sm text-gray-600">{message}</p>
+                    <p className="text-sm text-neutral-ink">{message}</p>
                 </div>
                 <button
                     onClick={() => openAuth('LOGIN')}
@@ -53,7 +53,7 @@ export default function LoginPromptCard({
             </h2>
 
             {/* Message */}
-            <p className="text-gray-500 mb-8 leading-relaxed">
+            <p className="text-neutral-ink mb-8 leading-relaxed">
                 {message}
             </p>
 
@@ -68,7 +68,7 @@ export default function LoginPromptCard({
 
             {/* Benefits hint */}
             <div className="mt-8 pt-6 border-t border-gray-100">
-                <p className="text-xs text-gray-400 flex items-center justify-center gap-1">
+                <p className="text-xs text-neutral-ink flex items-center justify-center gap-1">
                     <Sparkles size={14} />
                     Free account with unlimited access
                 </p>
