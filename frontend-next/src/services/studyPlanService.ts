@@ -350,8 +350,141 @@ class StudyPlanService {
         });
         return this.handleResponse(res);
     }
+
+    // ============================================
+    // UI Preferences Endpoints
+    // ============================================
+
+    /**
+     * Get user's UI preferences (card collapse states, theme)
+     */
+    async getUIPreferences(): Promise<{
+        userId: string;
+        expandedCards: Record<string, boolean>;
+        theme: string;
+    }> {
+        const user = await this.getCurrentUser();
+        if (!user) return { userId: '', expandedCards: {}, theme: 'light' };
+
+        const res = await authFetch(`${API_BASE_URL}/v1/user/ui-preferences?user_id=${user.id}`);
+        return this.handleResponse(res);
+    }
+
+    /**
+     * Update user's UI preferences
+     */
+    async saveUIPreferences(preferences: {
+        expandedCards?: Record<string, boolean>;
+        theme?: string;
+    }): Promise<{ success: boolean }> {
+        const user = await this.getCurrentUser();
+        if (!user) throw new Error('Not authenticated');
+
+        const res = await authFetch(`${API_BASE_URL}/v1/user/ui-preferences`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id: user.id, ...preferences }),
+        });
+        return this.handleResponse(res);
+    }
+
+    // ============================================
+    // Study Sessions Endpoints
+    // ============================================
+
+    /**
+     * Log a study session
+     */
+    async logStudySession(session: {
+        skill: string;
+        effortLevel: string;
+        durationMinutes: number;
+        linkedKeyResultId?: string;
+        notes?: string;
+    }): Promise<{ id: string }> {
+        const user = await this.getCurrentUser();
+        if (!user) throw new Error('Not authenticated');
+
+        const res = await authFetch(`${API_BASE_URL}/v1/user/sessions`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id: user.id, ...session }),
+        });
+        return this.handleResponse(res);
+    }
+
+    /**
+     * Get user's recent study sessions
+     */
+    async getStudySessions(limit: number = 20, skill?: string): Promise<{
+        sessions: Array<{
+            id: string;
+            skill: string;
+            effortLevel: string;
+            durationMinutes: number;
+            createdAt: string;
+        }>;
+    }> {
+        const user = await this.getCurrentUser();
+        if (!user) return { sessions: [] };
+
+        const params = new URLSearchParams({ user_id: user.id, limit: String(limit) });
+        if (skill) params.append('skill', skill);
+
+        const res = await authFetch(`${API_BASE_URL}/v1/user/sessions?${params}`);
+        return this.handleResponse(res);
+    }
+
+    /**
+     * Get user's study streak
+     */
+    async getStudyStreak(): Promise<{ current: number; longest: number }> {
+        const user = await this.getCurrentUser();
+        if (!user) return { current: 0, longest: 0 };
+
+        const res = await authFetch(`${API_BASE_URL}/v1/user/streak?user_id=${user.id}`);
+        return this.handleResponse(res);
+    }
+
+    // ============================================
+    // Reflection Endpoints
+    // ============================================
+
+    /**
+     * Create a weekly reflection entry
+     */
+    async submitReflection(content: string): Promise<{ id: string }> {
+        const user = await this.getCurrentUser();
+        if (!user) throw new Error('Not authenticated');
+
+        const res = await authFetch(`${API_BASE_URL}/v1/user/reflections`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id: user.id, content }),
+        });
+        return this.handleResponse(res);
+    }
+
+    /**
+     * Get user's recent reflections
+     */
+    async getReflections(limit: number = 10): Promise<{
+        reflections: Array<{
+            id: string;
+            weekStartDate: string;
+            content: string;
+            createdAt: string;
+        }>;
+    }> {
+        const user = await this.getCurrentUser();
+        if (!user) return { reflections: [] };
+
+        const res = await authFetch(`${API_BASE_URL}/v1/user/reflections?user_id=${user.id}&limit=${limit}`);
+        return this.handleResponse(res);
+    }
 }
 
 export const studyPlanService = new StudyPlanService();
 export default studyPlanService;
+
 

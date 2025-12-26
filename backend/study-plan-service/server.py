@@ -109,6 +109,10 @@ from modules.adaptive_learning import AdaptiveLearningModule
 adaptive_learning_module = AdaptiveLearningModule()
 adaptive_learning_module.register_routes(app)
 
+from modules.user_preferences import UserPreferencesModule
+user_preferences_module = UserPreferencesModule()
+user_preferences_module.register_routes(app)
+
 # --------------- End of Module imports ---------------- #
 
 

@@ -1,60 +1,47 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
-    Calendar, Target, Clock, CheckCircle2,
-    Play, Loader2, Settings,
-    BookOpen, Sparkles, Lock,
-    BarChart3, Activity, Zap, History, PieChart,
-    AlertTriangle, Brain, ArrowRight
+    Loader2, Settings, Zap, ArrowRight, Target
 } from 'lucide-react';
 import {
     StudyPlanDetail,
     DailyTask,
     JLPT_LEVEL_INFO,
+    StudySession,
+    ReflectionEntry,
 } from '@/types/studyPlanTypes';
 import { PlanCheckoutModal } from '@/components/strategy/PlanCheckoutModal';
 import studyPlanService from '@/services/studyPlanService';
-import learnerProgressService from '@/services/learnerProgressService';
-import { strategyService } from '@/services/strategyService';
 import { useGlobalAuth } from '@/context/GlobalAuthContext';
 import { useUser } from '@/context/UserContext';
-import {
-    ResponsiveContainer,
-    RadarChart,
-    PolarGrid,
-    PolarAngleAxis,
-    PolarRadiusAxis,
-    Radar,
-    LineChart,
-    Line,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip
-} from 'recharts';
 
-// New Strategy Components
-import { InfoTooltip } from '@/components/ui/info-tooltip';
-import { StatCard } from '@/components/ui/stat-card';
-import { ExpandableSection } from '@/components/ui/expandable-section';
-import { HELP_CONTENT } from '@/data/helpContent';
-import { SMARTGoalCard } from '@/components/strategy/SMARTGoalCard';
-import { SMARTGoalDetailModal } from '@/components/strategy/SMARTGoalDetailModal';
-import { OKRObjectiveCard } from '@/components/strategy/OKRObjectiveCard';
-import { PACTDailyCard } from '@/components/strategy/PACTDailyCard';
-import { PriorityMatrixCard } from '@/components/strategy/PriorityMatrixCard';
-import { ContextCheckInModal } from '@/components/strategy/ContextCheckInModal';
+// New collapsible card components
 import {
-    OKRGoalEnhanced,
-    PACTStatEnhanced,
-    PriorityMatrix,
-    SMARTGoalEnhanced
-} from '@/mocks/strategyMockData';
+    ObjectiveOKRPanel,
+    MilestoneTimeline,
+    TodaysTasks,
+    ContentMasteryMap,
+    StudyStreak,
+    ActivityRecords,
+    ReflectionPrompt,
+    ExamReadinessBar,
+    VisionReminder,
+} from './';
 
-type DashboardTab = 'STRATEGY' | 'PERFORMANCE' | 'TASKS' | 'DIAGNOSTICS';
+interface CardStates {
+    'objective-okr': boolean;
+    'milestone-timeline': boolean;
+    'todays-tasks': boolean;
+    'content-mastery': boolean;
+    'study-streak': boolean;
+    'activity-records': boolean;
+    'reflection-prompt': boolean;
+    'exam-readiness': boolean;
+    'vision-reminder': boolean;
+}
 
 export function StudyPlanDashboard() {
     const router = useRouter();
@@ -62,54 +49,110 @@ export function StudyPlanDashboard() {
     const { user, loading: userLoading } = useUser();
     const { openAuth } = useGlobalAuth();
 
+    // Data states
     const [plan, setPlan] = useState<StudyPlanDetail | null>(null);
     const [tasks, setTasks] = useState<DailyTask[]>([]);
-    const [activities, setActivities] = useState<any[]>([]);
+    const [sessions, setSessions] = useState<StudySession[]>([]);
+    const [reflections, setReflections] = useState<ReflectionEntry[]>([]);
+    const [streak, setStreak] = useState({ current: 0, longest: 0 });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [activeTab, setActiveTab] = useState<DashboardTab>('STRATEGY');
-    const [showNewPlanBanner, setShowNewPlanBanner] = useState(false);
 
-    // Strategic data states
-    const [smartGoals, setSmartGoals] = useState<SMARTGoalEnhanced[]>([]);
-    const [okrs, setOkrs] = useState<OKRGoalEnhanced[]>([]);
-    const [pactState, setPactState] = useState<PACTStatEnhanced | null>(null);
-    const [matrix, setMatrix] = useState<PriorityMatrix | null>(null);
+    // UI states
+    const [expandedCards, setExpandedCards] = useState<CardStates>({
+        'objective-okr': true,
+        'milestone-timeline': false,
+        'todays-tasks': true,
+        'content-mastery': false,
+        'study-streak': false,
+        'activity-records': false,
+        'reflection-prompt': false,
+        'exam-readiness': true,
+        'vision-reminder': false,
+    });
 
-    // Modal states
-    const [selectedSMARTGoal, setSelectedSMARTGoal] = useState<SMARTGoalEnhanced | null>(null);
-    const [showSMARTModal, setShowSMARTModal] = useState(false);
-    const [showContextModal, setShowContextModal] = useState(false);
-    const [creating, setCreating] = useState(false);
+    // Checkout modal
     const [showCheckout, setShowCheckout] = useState(false);
     const [checkoutData, setCheckoutData] = useState<any>(null);
+    const [creating, setCreating] = useState(false);
 
-    // Performance History Mock Data
-    const performanceData: any[] = [
-        { subject: 'Vocabulary', A: 120, fullMark: 150 },
-        { subject: 'Grammar', A: 98, fullMark: 150 },
-        { subject: 'Reading', A: 86, fullMark: 150 },
-        { subject: 'Listening', A: 110, fullMark: 150 },
-        { subject: 'Kanji', A: 130, fullMark: 150 },
-    ];
+    // Load UI preferences
+    const loadUIPreferences = useCallback(async () => {
+        try {
+            const prefs = await studyPlanService.getUIPreferences();
+            if (prefs.expandedCards) {
+                setExpandedCards(prev => ({ ...prev, ...prefs.expandedCards }));
+            }
+        } catch (err) {
+            console.error('Failed to load UI preferences', err);
+        }
+    }, []);
 
-    const retentionHistory: any[] = [
-        { date: 'Mon', power: 85 },
-        { date: 'Tue', power: 82 },
-        { date: 'Wed', power: 88 },
-        { date: 'Thu', power: 84 },
-        { date: 'Fri', power: 90 },
-        { date: 'Sat', power: 87 },
-        { date: 'Sun', power: 92 },
-    ];
+    // Save UI preference when card is toggled
+    const handleCardToggle = useCallback(async (cardId: string, isExpanded: boolean) => {
+        setExpandedCards(prev => {
+            const updated = { ...prev, [cardId]: isExpanded };
+            // Save to backend (fire and forget)
+            studyPlanService.saveUIPreferences({ expandedCards: updated }).catch(console.error);
+            return updated;
+        });
+    }, []);
+
+    // Load all data
+    const loadData = useCallback(async () => {
+        if (!user) return;
+
+        try {
+            setLoading(true);
+            const planId = searchParams.get('plan');
+
+            // Load plan
+            let planData = planId
+                ? await studyPlanService.getPlan(planId)
+                : await studyPlanService.getActivePlan();
+
+            if (planData) {
+                setPlan(planData);
+
+                // Load additional data in parallel
+                const [tasksRes, sessionsRes, streakRes, reflectionsRes] = await Promise.all([
+                    studyPlanService.getMyDailyTasks(),
+                    studyPlanService.getStudySessions(20),
+                    studyPlanService.getStudyStreak(),
+                    studyPlanService.getReflections(5),
+                ]);
+
+                setTasks(tasksRes.tasks || []);
+                setSessions(sessionsRes.sessions?.map(s => ({
+                    id: s.id,
+                    userId: '',
+                    skill: s.skill as any,
+                    effortLevel: s.effortLevel as any,
+                    durationMinutes: s.durationMinutes,
+                    createdAt: s.createdAt,
+                })) || []);
+                setStreak(streakRes);
+                setReflections(reflectionsRes.reflections?.map(r => ({
+                    id: r.id,
+                    userId: '',
+                    weekStartDate: r.weekStartDate,
+                    content: r.content,
+                    createdAt: r.createdAt,
+                })) || []);
+            }
+        } catch (err: any) {
+            console.error('Error loading dashboard data:', err);
+            setError(err.message || 'Failed to load study plan');
+        } finally {
+            setLoading(false);
+        }
+    }, [user, searchParams]);
 
     useEffect(() => {
-        if (!userLoading && !user) {
-            // In the merged view, we don't redirect to login here,
-            // the parent will handle showing the landing page.
-            return;
+        if (!userLoading && user) {
+            loadData();
+            loadUIPreferences();
         }
-        if (user) loadData();
 
         // Check for pending guest setup
         if (!userLoading && user) {
@@ -120,12 +163,11 @@ export function StudyPlanDashboard() {
                     setCheckoutData(data);
                     setShowCheckout(true);
                 } catch (e) {
-                    console.error('Failed to parse pending setup', e);
                     localStorage.removeItem('pending_study_plan_setup');
                 }
             }
         }
-    }, [user, userLoading]);
+    }, [user, userLoading, loadData, loadUIPreferences]);
 
     const handleConfirmCheckout = async () => {
         if (!checkoutData) return;
@@ -144,9 +186,6 @@ export function StudyPlanDashboard() {
 
             localStorage.removeItem('pending_study_plan_setup');
             setShowCheckout(false);
-            setShowNewPlanBanner(true);
-
-            // Reload dashboard with the new plan
             router.push(`/study-plan?plan=${result.id}&new=true`);
             loadData();
         } catch (err: any) {
@@ -156,154 +195,32 @@ export function StudyPlanDashboard() {
         }
     };
 
-    const loadData = async () => {
-        if (!user) return;
-        try {
-            setLoading(true);
-            const planId = searchParams.get('plan');
-            let planData = planId ? await studyPlanService.getPlan(planId) : await studyPlanService.getActivePlan();
-
-            if (planData) {
-                setPlan(planData);
-
-                const uid = String(user.id);
-
-                const [
-                    tasksResponse,
-                    activitiesResponse,
-                    smartGoalsRes,
-                    okrsRes,
-                    pactRes,
-                    pactStatusRes,
-                    matrixRes
-                ] = await Promise.all([
-                    studyPlanService.getMyDailyTasks(),
-                    learnerProgressService.getMyActivities(10),
-                    strategyService.getSmartGoals(uid),
-                    strategyService.getOKRs(uid),
-                    strategyService.getPactCommitment(uid),
-                    strategyService.getPactDailyStatus(uid),
-                    strategyService.getPriorityMatrix(uid)
-                ]);
-
-                setTasks(tasksResponse.tasks || []);
-                setActivities(activitiesResponse.activities || []);
-
-                if (smartGoalsRes) {
-                    setSmartGoals(smartGoalsRes.map((g: any) => ({
-                        ...g,
-                        id: g._id || g.id,
-                        title: g.title || 'Untitled Goal',
-                        deadline: g.time_bound_deadline || new Date().toISOString(),
-                        specific: g.specific || 'No description provided',
-                        measurable: `Reach ${g.measurable_target} ${g.measurable_metric?.replace(/_/g, ' ')}`,
-                        achievable: `Active Goal`,
-                        relevant: `Critical for ${g.relevant_jlpt_section || 'JLPT Prep'}`,
-                        timeBound: `Deadline: ${new Date(g.time_bound_deadline).toLocaleDateString()}`,
-                        progress: g.progress_percent || 0,
-                        status: g.status || 'active',
-                        linked_jlpt_level: planData.target_level || 'N3',
-                        ai_confidence_score: g.ai_confidence_score || 85,
-                        baseline_score: g.measurable_baseline || 0,
-                        target_score: g.measurable_target || 100,
-                        ai_recommended_adjustments: g.ai_recommended_adjustments || [],
-                        success_criteria: (g.success_criteria || []).map((sc: any) => ({
-                            id: sc.id || String(Math.random()),
-                            label: sc.description || 'Success Metric',
-                            current_value: sc.current_value || 0,
-                            target_value: sc.target_value || 100,
-                            unit: sc.metric_type || '',
-                            weight: 1
-                        }))
-                    })));
-                }
-
-                if (okrsRes) {
-                    setOkrs(okrsRes.map((o: any) => ({
-                        ...o,
-                        id: o._id || o.id,
-                        progress: o.progress_percent || 0,
-                        blockers: o.blockers || [],
-                        on_track: o.on_track ?? true,
-                        risk_level: o.risk_level || 'low',
-                        keyResults: (o.key_results || []).map((kr: any) => ({
-                            ...kr,
-                            id: kr.id || String(Math.random()),
-                            progress: kr.progress_percent || 0,
-                            trend: kr.trend || 'stable',
-                            velocity: kr.velocity || 0,
-                            confidence: kr.confidence || 0,
-                            contributing_task_types: kr.contributing_task_types || [],
-                            items: kr.items || []
-                        }))
-                    })));
-                }
-
-                if (pactRes) {
-                    setPactState({
-                        ...pactRes,
-                        actions: (pactRes.actions || []).map((a: any) => ({
-                            ...a,
-                            completed_today: (pactStatusRes || []).some((s: any) => s.id === a.id && s.completed)
-                        })),
-                        streak_current: pactRes.streak_current || 0,
-                        last_context: pactRes.last_context || null
-                    });
-                }
-
-                if (matrixRes) {
-                    setMatrix({
-                        ...matrixRes,
-                        content_items: matrixRes.items || [],
-                        skills: matrixRes.skills || [],
-                        today_focus: matrixRes.today_focus || 'drill_practice',
-                        today_time_allocation: matrixRes.recommended_time_allocation || matrixRes.today_time_allocation || null
-                    });
-                }
-            }
-        } catch (err: any) {
-            console.error('Error loading dashboard data:', err);
-            setError(err.message || 'Failed to load study plan');
-        } finally {
-            setLoading(false);
-        }
-    };
-
     const handleTaskComplete = async (taskId: string) => {
         try {
             await studyPlanService.completeTask(taskId);
-            setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: 'completed' as const } : t));
-        } catch (err) { console.error(err); }
+            setTasks(prev => prev.map(t =>
+                t.id === taskId ? { ...t, status: 'completed' as const } : t
+            ));
+        } catch (err) {
+            console.error('Failed to complete task', err);
+        }
     };
 
-    const handleSMARTGoalClick = (goal: SMARTGoalEnhanced) => {
-        setSelectedSMARTGoal(goal);
-        setShowSMARTModal(true);
-    };
-
-    const handlePACTActionToggle = async (actionId: string) => {
-        if (!user) return;
+    const handleReflectionSubmit = async (content: string) => {
         try {
-            setPactState(prev => prev ? ({
-                ...prev,
-                actions: (prev.actions || []).map(a =>
-                    a.id === actionId ? { ...a, completed_today: !a.completed_today } : a
-                )
-            }) : null);
-
-            await strategyService.completePactAction(actionId, String(user.id), {
-                energy_level: 7, mood: 'focused'
-            });
-        } catch (err) { console.error('Failed to toggle PACT action:', err); }
-    };
-
-    const handleContextSubmit = async (context: any) => {
-        if (!user) return;
-        try {
-            await strategyService.submitCheckin({ ...context, user_id: String(user.id) });
-            setShowContextModal(false);
-            loadData();
-        } catch (err) { console.error('Failed to submit context:', err); }
+            const result = await studyPlanService.submitReflection(content);
+            // Reload reflections
+            const reflectionsRes = await studyPlanService.getReflections(5);
+            setReflections(reflectionsRes.reflections?.map(r => ({
+                id: r.id,
+                userId: '',
+                weekStartDate: r.weekStartDate,
+                content: r.content,
+                createdAt: r.createdAt,
+            })) || []);
+        } catch (err) {
+            console.error('Failed to submit reflection', err);
+        }
     };
 
     if (userLoading || loading) {
@@ -311,7 +228,7 @@ export function StudyPlanDashboard() {
             <div className="flex items-center justify-center py-20">
                 <div className="text-center">
                     <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto mb-4" />
-                    <p className="text-lg font-bold text-slate-600 tracking-tight">Syncing Intelligence...</p>
+                    <p className="text-lg font-bold text-neutral-ink tracking-tight">Loading your study plan...</p>
                 </div>
             </div>
         );
@@ -321,176 +238,209 @@ export function StudyPlanDashboard() {
 
     const levelInfo = JLPT_LEVEL_INFO[plan.target_level];
 
+    // Derive data for components
+    const objective = {
+        id: plan.id,
+        title: `Pass JLPT ${plan.target_level}`,
+        targetExam: plan.target_level,
+        targetDate: plan.exam_date,
+        progress: plan.overall_progress_percent,
+    };
+
+    const keyResults = [
+        { id: '1', label: 'Vocabulary Mastery', currentValue: Math.round(plan.overall_progress_percent * 30), targetValue: 3000, metricType: 'count' as const },
+        { id: '2', label: 'Grammar Points', currentValue: Math.round(plan.overall_progress_percent * 2), targetValue: 200, metricType: 'count' as const },
+        { id: '3', label: 'Kanji Learned', currentValue: Math.round(plan.overall_progress_percent * 6), targetValue: 600, metricType: 'count' as const },
+    ];
+
+    // Derive mastery from progress (placeholder - will be from real data)
+    const contentMastery = {
+        vocabulary: { percent: Math.round(plan.overall_progress_percent * 0.9), learned: Math.round(plan.overall_progress_percent * 27), total: 3000 },
+        grammar: { percent: Math.round(plan.overall_progress_percent * 0.8), learned: Math.round(plan.overall_progress_percent * 1.6), total: 200 },
+        kanji: { percent: Math.round(plan.overall_progress_percent * 0.7), learned: Math.round(plan.overall_progress_percent * 4.2), total: 600 },
+        reading: { percent: Math.round(plan.overall_progress_percent * 0.6), learned: 0, total: 100 },
+        listening: { percent: Math.round(plan.overall_progress_percent * 0.5), learned: 0, total: 100 },
+    };
+
+    const examReadiness = Math.round(
+        (contentMastery.vocabulary.percent + contentMastery.grammar.percent +
+            contentMastery.kanji.percent + contentMastery.reading.percent +
+            contentMastery.listening.percent) / 5
+    );
+
     return (
         <div className="min-h-screen bg-secondary pb-12">
-            <div className="bg-neutral-white border-b border-neutral-gray/30 sticky top-16 z-20 ">
+            {/* Header */}
+            <div className="bg-neutral-white border-b border-neutral-gray/30 sticky top-16 z-20">
                 <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
-                        <div className="p-3 bg-neutral-beige border border-neutral-gray/20 rounded-2xl  text-primary-strong flex items-center justify-center">
+                        <div className="p-3 bg-neutral-beige border border-neutral-gray/20 rounded-2xl text-primary-strong flex items-center justify-center">
                             <Zap size={24} className="fill-primary-strong text-primary-strong" />
                         </div>
                         <div>
-                            <div className="flex items-center gap-2">
-                                <h1 className="text-2xl font-black text-neutral-ink tracking-tight font-display uppercase tracking-widest text-xs">Strategy Command</h1>
-                            </div>
-                            <p className="text-[10px] text-neutral-ink font-black flex items-center gap-2 uppercase tracking-widest font-display">
-                                <span className={`w-2.5 h-2.5 rounded-full bg-primary-strong animate-pulse`} />
-                                Mission: JLPT {plan.target_level} {levelInfo.name}
+                            <h1 className="text-xl font-black text-neutral-ink tracking-tight">Study Plan Dashboard</h1>
+                            <p className="text-xs text-neutral-ink font-bold flex items-center gap-2">
+                                <span className="w-2.5 h-2.5 rounded-full bg-primary-strong animate-pulse" />
+                                JLPT {plan.target_level} • {plan.days_remaining} days remaining
                             </p>
                         </div>
                     </div>
 
-                    <div className="flex bg-neutral-beige p-1.5 rounded-2xl gap-1 overflow-x-auto border border-neutral-gray/20">
-                        {[
-                            { id: 'STRATEGY', label: 'Strategy', icon: Target },
-                            { id: 'TASKS', label: 'Tasks', icon: BookOpen },
-                            { id: 'DIAGNOSTICS', label: 'Diagnostics', icon: AlertTriangle },
-                            { id: 'PERFORMANCE', label: 'Vault', icon: BarChart3 },
-                        ].map(tab => (
-                            <button
-                                key={tab.id}
-                                onClick={() => setActiveTab(tab.id as DashboardTab)}
-                                className={`
-                                    flex items-center gap-2 px-5 py-2.5 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all whitespace-nowrap font-display
-                                    ${activeTab === tab.id ? 'bg-neutral-white text-primary-strong  border border-neutral-gray/10' : 'text-neutral-ink hover:text-neutral-ink'}
-                                `}
-                            >
-                                <tab.icon size={16} />
-                                {tab.label}
-                            </button>
-                        ))}
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                        <button onClick={() => setShowContextModal(true)} className="flex items-center gap-2 px-5 py-2.5 bg-primary-sky/20 text-primary-sky font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-primary-sky/30 transition-colors font-display ">
-                            <Brain size={16} /> Check-in
-                        </button>
-                    </div>
+                    <Link
+                        href="/study-plan/settings"
+                        className="flex items-center gap-2 px-4 py-2 text-neutral-ink hover:text-primary-strong transition-colors"
+                    >
+                        <Settings size={18} />
+                        <span className="text-sm font-bold">Settings</span>
+                    </Link>
                 </div>
             </div>
 
+            {/* Main Content */}
             <main className="max-w-7xl mx-auto px-6 py-8">
-                {activeTab === 'STRATEGY' && (
-                    <div className="space-y-8 animate-fadeIn">
-                        <div className="relative overflow-hidden bg-primary-strong rounded-[2.5rem] p-10 md:p-14 text-white  shadow-primary/30">
-                            <div className="absolute top-0 right-0 w-96 h-96 bg-white/20 rounded-full blur-[100px] -mr-48 -mt-48" />
-                            <div className="relative z-10 grid lg:grid-cols-12 gap-12 items-center">
-                                <div className="lg:col-span-8 space-y-8">
-                                    <div className="inline-flex items-center gap-3 px-5 py-2.5 bg-white/20 rounded-full text-white font-black text-[10px] uppercase tracking-[0.2em] border border-white/20 font-display">
-                                        <Sparkles size={16} className="animate-pulse" /> Sensei&apos;s Directive
-                                    </div>
-                                    <h2 className="text-4xl md:text-6xl font-black leading-tight tracking-tight font-display">
-                                        {Math.round(plan.overall_progress_percent) < 10 ? <>The Journey <span className="opacity-60 italic">Begins Today.</span></> : <>Your Momentum is <span className="opacity-60 italic">Building.</span></>}
-                                    </h2>
-                                    <div className="flex flex-wrap gap-5 pt-4">
-                                        <button onClick={() => setActiveTab('TASKS')} className="px-10 py-5 bg-neutral-white text-neutral-ink rounded-[1.5rem] font-black transition-all flex items-center gap-4  active:scale-95 group font-display uppercase tracking-widest text-xs">
-                                            Resume Study <ArrowRight size={22} className="group-hover:translate-x-1.5 transition-transform" />
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <div className="grid lg:grid-cols-12 gap-6">
+                    {/* Left Column */}
+                    <div className="lg:col-span-8 space-y-6">
+                        {/* Objective & OKR */}
+                        <ObjectiveOKRPanel
+                            objective={objective}
+                            keyResults={keyResults}
+                            isExpanded={expandedCards['objective-okr']}
+                            onToggle={handleCardToggle}
+                        />
 
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <StatCard label="Days Remaining" value={plan.days_remaining} unit="days" icon={Calendar} iconColor="text-blue-500" />
-                            <StatCard label="Overall Progress" value={Math.round(plan.overall_progress_percent)} unit="%" icon={Target} iconColor="text-primary" />
-                            <StatCard label="Study Streak" value={pactState?.streak_current || 0} unit="days" icon={Zap} iconColor="text-orange-500" />
-                            <StatCard label="Vocab Mastered" value={okrs[0]?.keyResults[0]?.current || 0} unit="words" icon={BookOpen} iconColor="text-emerald-500" />
-                        </div>
+                        {/* Today's Tasks */}
+                        <TodaysTasks
+                            tasks={tasks}
+                            isExpanded={expandedCards['todays-tasks']}
+                            onToggle={handleCardToggle}
+                            onTaskComplete={handleTaskComplete}
+                        />
 
-                        <ExpandableSection title="OKR: Strategic Vision" icon={Target} defaultOpen badge={okrs.length}>
-                            <div className="grid md:grid-cols-2 gap-4 mt-4">
-                                {okrs.map(okr => (
-                                    <OKRObjectiveCard key={okr.id} okr={okr} onClick={() => { }} />
-                                ))}
-                            </div>
-                        </ExpandableSection>
+                        {/* Milestone Timeline */}
+                        <MilestoneTimeline
+                            milestones={plan.milestones}
+                            currentMilestoneId={plan.current_milestone_id}
+                            isExpanded={expandedCards['milestone-timeline']}
+                            onToggle={handleCardToggle}
+                        />
 
-                        <div className="grid lg:grid-cols-2 gap-8">
-                            {pactState && <PACTDailyCard pact={pactState} onActionToggle={handlePACTActionToggle} onContextCheckIn={() => setShowContextModal(true)} />}
-                            <div className="space-y-4">
-                                {smartGoals.map(goal => <SMARTGoalCard key={goal.id} goal={goal} onClick={() => handleSMARTGoalClick(goal)} />)}
-                            </div>
-                        </div>
+                        {/* Content Mastery */}
+                        <ContentMasteryMap
+                            mastery={contentMastery}
+                            isExpanded={expandedCards['content-mastery']}
+                            onToggle={handleCardToggle}
+                        />
+
+                        {/* Reflection */}
+                        <ReflectionPrompt
+                            recentReflections={reflections}
+                            isExpanded={expandedCards['reflection-prompt']}
+                            onToggle={handleCardToggle}
+                            onSubmit={handleReflectionSubmit}
+                        />
                     </div>
-                )}
 
-                {activeTab === 'DIAGNOSTICS' && (
-                    <div className="space-y-8 animate-fadeIn">
-                        {matrix && <PriorityMatrixCard matrix={matrix} onItemClick={() => { }} onViewAll={() => { }} />}
+                    {/* Right Column */}
+                    <div className="lg:col-span-4 space-y-6">
+                        {/* Exam Readiness */}
+                        <ExamReadinessBar
+                            readinessPercent={examReadiness}
+                            daysRemaining={plan.days_remaining}
+                            targetExam={plan.target_level}
+                            breakdown={{
+                                vocabulary: contentMastery.vocabulary.percent,
+                                grammar: contentMastery.grammar.percent,
+                                kanji: contentMastery.kanji.percent,
+                                reading: contentMastery.reading.percent,
+                                listening: contentMastery.listening.percent,
+                            }}
+                            isExpanded={expandedCards['exam-readiness']}
+                            onToggle={handleCardToggle}
+                        />
+
+                        {/* Study Streak */}
+                        <StudyStreak
+                            currentStreak={streak.current}
+                            longestStreak={streak.longest}
+                            recentSessions={sessions}
+                            isExpanded={expandedCards['study-streak']}
+                            onToggle={handleCardToggle}
+                        />
+
+                        {/* Activity Records */}
+                        <ActivityRecords
+                            sessions={sessions}
+                            isExpanded={expandedCards['activity-records']}
+                            onToggle={handleCardToggle}
+                        />
+
+                        {/* Vision Reminder */}
+                        <VisionReminder
+                            objective={objective}
+                            userName={user?.email?.split('@')[0]}
+                            isExpanded={expandedCards['vision-reminder']}
+                            onToggle={handleCardToggle}
+                        />
                     </div>
-                )}
+                </div>
+            </main>
 
-                {activeTab === 'TASKS' && (
-                    <div className="grid lg:grid-cols-12 gap-8 animate-fadeIn">
-                        <div className="lg:col-span-8">
-                            <div className="bg-neutral-white rounded-[2.5rem] border border-neutral-gray/20 p-10 ">
-                                <h2 className="text-xs font-black text-neutral-ink flex items-center gap-4 mb-10 font-display uppercase tracking-[0.2em]">
-                                    <BookOpen className="text-primary-strong" /> Today&apos;s Tactical Board
-                                </h2>
-                                <div className="space-y-6">
-                                    {tasks.map((task, idx) => (
-                                        <div key={task.id || idx} className={`p-8 rounded-[2rem] border-2 flex items-center gap-8 transition-all ${task.status === 'completed' ? 'bg-neutral-beige/50 border-transparent opacity-60' : 'bg-neutral-white border-neutral-gray/20  hover:border-primary/30'}`}>
-                                            <button onClick={() => task.id && handleTaskComplete(task.id)} disabled={task.status === 'completed'} className={`w-16 h-16 rounded-[1.25rem] flex items-center justify-center shrink-0  transition-all ${task.status === 'completed' ? 'bg-primary-strong text-white' : 'bg-neutral-beige text-neutral-gray hover:text-primary-strong'}`}>
-                                                {task.status === 'completed' ? <CheckCircle2 size={32} /> : <Play size={28} className="translate-x-0.5" />}
-                                            </button>
-                                            <div className="flex-1 min-w-0">
-                                                <h3 className={`text-2xl font-black tracking-tight ${task.status === 'completed' ? 'text-neutral-gray line-through' : 'text-neutral-ink font-display'}`}>{task.title}</h3>
-                                                <p className="text-neutral-ink font-bold text-sm leading-relaxed mt-1">{task.description}</p>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {activeTab === 'PERFORMANCE' && (
-                    <div className="grid lg:grid-cols-12 gap-8 animate-fadeIn">
-                        <div className="lg:col-span-12 bg-neutral-white rounded-[2.5rem] border border-neutral-gray/20 p-10 ">
-                            <h2 className="text-[10px] font-black text-neutral-ink flex items-center gap-4 mb-10 font-display uppercase tracking-[0.2em]"><PieChart className="text-primary-strong" /> Performance Vault</h2>
-                            <div className="h-[300px] w-full">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <RadarChart cx="50%" cy="50%" outerRadius="80%" data={performanceData}>
-                                        <PolarGrid stroke="#E2E8F0" />
-                                        <PolarAngleAxis dataKey="subject" tick={{ fontSize: 11, fontWeight: 700, fill: '#4A4A4A' }} />
-                                        <PolarRadiusAxis angle={30} domain={[0, 150]} tick={false} axisLine={false} />
-                                        <Radar name="You" dataKey="A" stroke="#F6AD55" fill="#F6AD55" fillOpacity={0.6} />
-                                    </RadarChart>
-                                </ResponsiveContainer>
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </main >
-
-            <SMARTGoalDetailModal isOpen={showSMARTModal} onClose={() => setShowSMARTModal(false)} goal={selectedSMARTGoal} />
-            <ContextCheckInModal isOpen={showContextModal} onClose={() => setShowContextModal(false)} onSubmit={handleContextSubmit} initialContext={pactState?.last_context} />
-            {checkoutData && <PlanCheckoutModal isOpen={showCheckout} onClose={() => setShowCheckout(false)} onConfirm={handleConfirmCheckout} planSummary={checkoutData} loading={creating} />}
-        </div >
+            {/* Modals */}
+            {checkoutData && (
+                <PlanCheckoutModal
+                    isOpen={showCheckout}
+                    onClose={() => setShowCheckout(false)}
+                    onConfirm={handleConfirmCheckout}
+                    planSummary={checkoutData}
+                    loading={creating}
+                />
+            )}
+        </div>
     );
 }
 
 function NoPlanView({ user, openAuth }: { user: any, openAuth: any }) {
     return (
-        <div className="min-h-screen bg-[#F8FAFC] py-12 px-6">
+        <div className="min-h-screen bg-secondary py-12 px-6">
             <div className="max-w-4xl mx-auto space-y-12 text-center">
-                <h1 className="text-4xl font-black text-neutral-ink font-display tracking-tight">Strategic Intelligence</h1>
-                <p className="text-xl text-neutral-ink font-medium font-display">You don&apos;t have an active study plan yet. Let&apos;s build your roadmap.</p>
-                <div className="grid md:grid-cols-2 gap-8 mt-12">
-                    <div className="clay-card p-10 bg-white border border-slate-100  shadow-primary/5 group hover:border-primary transition-all">
-                        <Target size={48} className="text-primary mx-auto mb-6 group-hover:scale-110 transition-transform" />
-                        <h2 className="text-2xl font-black text-neutral-ink mb-4 font-display uppercase tracking-widest text-xs">New Plan</h2>
-                        <Link href="/study-plan/setup" className="btnPrimary w-full py-4 text-center block bg-primary text-white font-black rounded-2xl  shadow-primary/20">Create Study Plan</Link>
+                <div>
+                    <h1 className="text-4xl font-black text-neutral-ink tracking-tight">Study Plan Dashboard</h1>
+                    <p className="text-xl text-neutral-ink/70 font-medium mt-2">
+                        Create a personalized JLPT study plan
+                    </p>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-8">
+                    <div className="p-10 bg-neutral-white border border-neutral-gray/10 rounded-3xl group hover:border-primary-strong/20 transition-all">
+                        <Target size={48} className="text-primary-strong mx-auto mb-6 group-hover:scale-110 transition-transform" />
+                        <h2 className="text-xl font-black text-neutral-ink mb-4">Create Study Plan</h2>
+                        <p className="text-neutral-ink/60 mb-6">Set your target JLPT level and exam date to get started.</p>
+                        <Link
+                            href="/study-plan/setup"
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-primary-strong text-white font-bold rounded-xl hover:bg-primary-strong/90 transition-colors"
+                        >
+                            Get Started <ArrowRight size={18} />
+                        </Link>
                     </div>
-                    <div className="clay-card p-10 bg-slate-900 text-white  group hover:shadow-primary/10 transition-all">
-                        <Lock size={48} className="text-primary mx-auto mb-6 group-hover:scale-110 transition-transform" />
-                        <h2 className="text-2xl font-black mb-4 font-display uppercase tracking-widest text-xs">Sync Data</h2>
-                        <button onClick={() => openAuth('REGISTER')} className="w-full py-4 bg-white text-neutral-ink rounded-2xl font-black ">Log In</button>
-                    </div>
+
+                    {!user && (
+                        <div className="p-10 bg-neutral-ink text-white rounded-3xl group">
+                            <Zap size={48} className="text-primary-strong mx-auto mb-6 group-hover:scale-110 transition-transform" />
+                            <h2 className="text-xl font-black mb-4">Sync Your Progress</h2>
+                            <p className="text-white/70 mb-6">Log in to save your study plan and track progress across devices.</p>
+                            <button
+                                onClick={() => openAuth('REGISTER')}
+                                className="px-6 py-3 bg-white text-neutral-ink font-bold rounded-xl hover:bg-white/90 transition-colors"
+                            >
+                                Sign Up
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
     );
 }
+
+export default StudyPlanDashboard;

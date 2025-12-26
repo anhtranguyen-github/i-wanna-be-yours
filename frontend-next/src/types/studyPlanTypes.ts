@@ -280,3 +280,101 @@ export const JLPT_LEVEL_INFO: Record<JLPTLevel, { name: string; description: str
         color: '#F44336', // Red
     },
 };
+
+// ============================================
+// Study Session Types
+// ============================================
+
+export type SkillCategory = 'grammar' | 'kanji' | 'reading' | 'listening' | 'vocabulary' | 'mixed';
+
+export type EffortLevel = 'light' | 'focused' | 'deep';
+
+export interface StudySession {
+    id: string;
+    userId: string;
+    skill: SkillCategory;
+    effortLevel: EffortLevel;
+    durationMinutes: number;
+    linkedKeyResultId?: string;
+    notes?: string;
+    createdAt: string;
+}
+
+export interface StudyStreak {
+    current: number;
+    longest: number;
+}
+
+// ============================================
+// Content Mastery Types
+// ============================================
+
+export interface ContentMastery {
+    id: string;
+    userId: string;
+    category: SkillCategory;
+    masteryPercent: number;
+    itemsLearned: number;
+    itemsTotal: number;
+    updatedAt: string;
+}
+
+export interface ContentMasteryOverview {
+    grammar: ContentMastery;
+    kanji: ContentMastery;
+    vocabulary: ContentMastery;
+    reading: ContentMastery;
+    listening: ContentMastery;
+}
+
+// ============================================
+// Reflection Types
+// ============================================
+
+export interface ReflectionEntry {
+    id: string;
+    userId: string;
+    weekStartDate: string;
+    content: string;
+    createdAt: string;
+}
+
+// ============================================
+// UI Preferences Types
+// ============================================
+
+export interface UIPreferences {
+    userId: string;
+    expandedCards: Record<string, boolean>;
+    theme: 'light' | 'dark';
+    createdAt?: string;
+    updatedAt?: string;
+}
+
+// ============================================
+// Dashboard Overview Types
+// ============================================
+
+export interface DashboardOverview {
+    objective: {
+        id: string;
+        title: string;
+        targetExam: string;
+        targetDate: string;
+        progress: number;
+    } | null;
+    keyResults: {
+        id: string;
+        label: string;
+        currentValue: number;
+        targetValue: number;
+        metricType: 'percentage' | 'count' | 'streak';
+    }[];
+    streak: StudyStreak;
+    todaysTasks: DailyTask[];
+    recentSessions: StudySession[];
+    contentMastery: ContentMasteryOverview;
+    examReadiness: number;
+    daysRemaining: number;
+}
+
