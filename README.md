@@ -6,8 +6,9 @@ A comprehensive Japanese language learning platform with AI-powered tutoring, ad
 
 ### 📚 Core Learning
 - **Knowledge Base**: JLPT N1-N5 grammar, vocabulary, and kanji
-- **Flashcards**: SRS-based spaced repetition system
-- **Quizzes**: Adaptive difficulty quizzes for all levels (Premium Unified UI)
+- **Flashcards**: SRS-based spaced repetition system with deck-based study
+- **Quoot**: High-stakes vocabulary battle game
+- **Practice Hub**: Structured drills and simulated exams
 - **Reading Practice**: Japanese text with furigana and translations
 - **JLPT Exams**: Full-length exam simulations with sticky navigation and scroll mode
 
@@ -17,18 +18,23 @@ A comprehensive Japanese language learning platform with AI-powered tutoring, ad
 - Study recommendations based on progress
 - Artifact generation (flashcards, summaries, quizzes)
 
-### 📊 Comprehensive Planning & Strategy
-- **Study Plans**: JLPT exam-focused personalized study plans (Strategy Center)
+### 📊 Progress Tracking & History
+- **Session Recording**: Track practice, flashcard, and game session results
+- **History Panel**: View recent activity across all learning modes
 - **Learner Tracking**: Track vocabulary, kanji, grammar mastery
 - **Adaptive Learning**: Recommendations based on performance
 - **Achievements**: Badges and streak tracking for motivation
-- **Dashboard**: Unified view of all progress metrics and personal stats
 
-### 🎯 Daily Learning
-- Daily task generation
-- Weekly goals tracking
-- Study streak tracking
-- Progress analytics
+### 🎯 Study Planning
+- **Study Plans**: JLPT exam-focused personalized study plans
+- **Daily Tasks**: AI-generated daily learning activities
+- **Weekly Goals**: Progress tracking against custom goals
+- **Milestones**: Long-term learning objectives
+
+### 🔗 Social & Sharing
+- **Add by ID**: Import shared flashcard sets, practice protocols, or quoot arenas by ID
+- **Visibility Filters**: Browse public, official, or personal content
+- **Collection Management**: Organize followed items in personal collections
 
 ## 🏗️ Architecture
 
@@ -56,8 +62,8 @@ A comprehensive Japanese language learning platform with AI-powered tutoring, ad
 | Service | Port | Purpose |
 |---------|------|---------|
 | **frontend-next** | 3000 | Next.js web application |
-| **express** | 8000 | Static curriculum content (grammar, vocab, kanji) |
-| **flask** | 5100 | User data (flashcards, progress, learner tracking) |
+| **express** | 8000 | Core API (auth, flashcards, practice, quoot, records) |
+| **flask** | 5100 | User data (progress, learner tracking) |
 | **python-dictionary** | 5200 | Japanese text processing (MeCab, sudachipy) |
 | **hanachan** | 5400 | AI chat agent (LangChain, Ollama) |
 | **study-plan-service** | 5500 | Strategy, OKRs, PACT, and SMART goal management |
@@ -90,10 +96,13 @@ hanachan.org/
 │   │   ├── components/    # Reusable React components
 │   │   ├── services/      # API service clients
 │   │   ├── types/         # TypeScript definitions
-│   │   └── config/        # Navigation and system config
+│   │   └── context/       # React context providers
 │
 ├── backend/
-│   ├── express/           # Static content API
+│   ├── express/           # Core API server
+│   │   ├── models/        # MongoDB schemas
+│   │   ├── routes/        # API route handlers
+│   │   └── seeding_scripts/ # Database seeders
 │   ├── flask/             # User data & learning API
 │   ├── study-plan-service/# Strategy and goals API
 │   ├── python-dictionary/ # Text processing API
@@ -109,45 +118,70 @@ hanachan.org/
 |-------|-------------|
 | `/` | Landing page |
 | `/chat` | AI Tutor (Hanachan) |
+| `/activity` | Activity Hub (Games, Practice, Flashcards) |
+| `/flashcards` | Flashcard deck browser and study |
+| `/flashcards/study` | SRS study session |
+| `/practice` | Practice Hub (Drills, Quizzes) |
+| `/quoot` | Quoot game arena browser |
+| `/quoot/[id]` | Quoot game session |
 | `/tools` | Linguistic Laboratory (Vocab/Kanji maps, Text Parser) |
-| `/game` | Hanachan's Arcade (Learning games) |
 | `/library` | Learning Library (Podcasts, Reading, Mnemonics) |
 | `/dictionary` | Integrated Japanese Dictionary |
-| `/study-plan` | Strategy Center (OKRs, PACT, SMART Goals) |
-| `/practice` | Practice Hub (Daily tasks, streaks) |
-| `/jlpt` | Exam Center (JLPT Simulators) |
-| `/quiz` | Practice Center (Custom Quizzes) |
-| `/dashboard` | User Profile & Command Center |
+| `/study-plan` | Strategy Center (Goals, Milestones) |
+| `/dashboard` | User Profile & Progress Overview |
 | `/settings` | Account and UI Settings |
 
 ## 🆕 Recent Updates
 
-### UI Unification (Premium Matcha)
-- Unified Card Architecture for Quizzes and JLPT Exams.
-- Consistent typography (Black weights, non-italicized headers).
-- Premium "Matcha" aesthetic with glassmorphism and claymorphism elements.
+### Activity History & Records (v1.4)
+- **Session Recording**: All practice, flashcard, and quoot sessions now save results
+- **HistoryPanel**: View recent activity with scores and timestamps
+- **HistoryModal**: Quick access to history from any hub page
 
-### Advanced Planning System
-- **Strategy Center**: Implementation of OKRs, PACT commitments, and SMART goals.
-- **Progress Tracking**: Holistic view of vocabulary, kanji, and grammar mastery.
-- **Activity Logging**: Semantic activity logs for performance analysis.
+### Add by ID Feature (v1.4)
+- **RetrievalModal**: Add shared content to your collection by ID
+- **Follow System**: Track followed items across flashcards, practice, and quoot
 
-### Performance & Text Processing
-- Migrated dictionary service to Python for better Japanese NLP support.
-- Implemented robust text parsing with furigana and context-aware translations.
+### Unified Access Filtering (v1.4)
+- **Visibility Filters**: Filter by Official, Public, or Personal content
+- **Sticky Headers**: Search and filters remain visible while scrolling
+- **Consistent UI**: Same filtering experience across all hub pages
+
+### UI Enhancements
+- **Link2 Icon**: Better icon for "Add by ID" functionality
+- **History Button**: Quick access to session history from hub pages
+- **Premium Matcha Aesthetic**: Consistent design language throughout
 
 ## 🔧 Configuration
 
 ### Environment Variables
 
 ```bash
-# Frontend (next.config.js handles proxying)
+# Frontend (.env.local)
+NEXT_PUBLIC_EXPRESS_API_URL=http://localhost:8000
+
+# Backend (.env)
 EXPRESS_API_URL=http://localhost:8000
 FLASK_API_URL=http://localhost:5100
 STUDY_PLAN_API_URL=http://localhost:5500
 DICTIONARY_API_URL=http://localhost:5200
 HANACHAN_API_URL=http://localhost:5400
+MONGO_URI=mongodb://localhost:27017/hanachan
+JWT_SECRET=your-secret-key
 ```
+
+## 🔌 API Endpoints
+
+### Express API (Port 8000)
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/e-api/v1/auth/*` | POST | Authentication (login, register, refresh) |
+| `/e-api/v1/flashcards/*` | GET/POST | Flashcard sets and cards |
+| `/e-api/v1/practice/*` | GET/POST | Practice nodes and sessions |
+| `/e-api/v1/quoot/*` | GET/POST | Quoot arenas and games |
+| `/e-api/v1/records/*` | GET/POST | Session history records |
+| `/e-api/v1/user/*` | GET/POST | User preferences and follows |
 
 ## 📝 License
 
