@@ -18,28 +18,24 @@ import { useUser } from '@/context/UserContext';
 import { useGlobalAuth } from '@/context/GlobalAuthContext';
 import { CreateButton, InformativeLoginCard, PageHeader, ViewModeToggle, CreateContentPanel, ListingCard } from '@/components/shared';
 import type { ViewMode } from '@/components/shared';
-import {
-    getPublicDecks,
-    getPersonalDecks,
-    searchDecks,
-    getTagsByType
-} from './decks-data';
 import { createDeck, fetchDecks } from '@/services/deckService';
 
-interface FlashcardDeckCardProps {
-    deck: any;
-    viewMode: ViewMode;
+interface FlashcardDeck {
+    id: string;
+    title: string;
+    description: string;
+    cardCount: number;
+    level?: string;
+    tags: string[];
+    isPersonal: boolean;
 }
-
-// FlashcardDeckCard replaced by ListingCard
 
 export default function FlashcardsMenu() {
     const { user } = useUser();
     const { openAuth } = useGlobalAuth();
 
-    // We'll load decks dynamically
-    const [decks, setDecks] = useState<any[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
+    const [decks, setDecks] = useState<FlashcardDeck[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     const [searchState, setSearchState] = useState<SearchNexusState>({
         query: "",
@@ -56,13 +52,7 @@ export default function FlashcardsMenu() {
         setIsLoading(true);
         try {
             const fetched = await fetchDecks(searchState.activeTab);
-            // Mix with static data for now to keep the demo rich
-            const staticList = searchState.activeTab === 'PUBLIC'
-                ? getPublicDecks(user?.id ? String(user.id) : null)
-                : getPersonalDecks();
-
-            const mappedStatic = staticList.map(d => ({ ...d, isPersonal: searchState.activeTab === 'PERSONAL' }));
-            const mappedFetched = fetched.map(d => ({
+            const mappedDecks: FlashcardDeck[] = fetched.map(d => ({
                 id: d._id,
                 title: d.title,
                 description: d.description || "",
@@ -71,12 +61,10 @@ export default function FlashcardsMenu() {
                 tags: d.tags || [],
                 isPersonal: searchState.activeTab === 'PERSONAL'
             }));
-
-            // Deduplicate by ID
-            const existingIds = new Set(mappedFetched.map(d => d.id));
-            setDecks([...mappedFetched, ...mappedStatic.filter(d => !existingIds.has(d.id))]);
+            setDecks(mappedDecks);
         } catch (err) {
             console.error("Failed to load flashcard decks:", err);
+            setDecks([]);
         } finally {
             setIsLoading(false);
         }
@@ -101,8 +89,14 @@ export default function FlashcardsMenu() {
             );
         }
 
+        // Inline search filtering
         if (searchState.query.trim()) {
-            result = searchDecks(result, searchState.query);
+            const query = searchState.query.toLowerCase();
+            result = result.filter(deck =>
+                deck.title.toLowerCase().includes(query) ||
+                deck.description.toLowerCase().includes(query) ||
+                deck.tags.some(tag => tag.toLowerCase().includes(query))
+            );
         }
 
         // Prioritize personal content
@@ -115,11 +109,11 @@ export default function FlashcardsMenu() {
     }, [decks, searchState.query, searchState.activeFilters]);
 
 
-    const filterGroups = useMemo((): FilterGroup[] => [
+    const filterGroups: FilterGroup[] = [
         {
             id: 'access',
             label: 'Access',
-            type: 'SINGLE' as const,
+            type: 'SINGLE',
             options: [
                 { id: 'PUBLIC', label: 'Public Decks', icon: <Globe size={12} /> },
                 { id: 'PERSONAL', label: 'My Decks', icon: <UserIcon size={12} /> }
@@ -128,22 +122,27 @@ export default function FlashcardsMenu() {
         {
             id: 'category',
             label: 'Categories',
-            type: 'MULTI' as const,
-            options: getTagsByType('category').filter(t => t.id !== 'personal').map(t => ({ id: t.id, label: t.label }))
+            type: 'MULTI',
+            options: [
+                { id: 'kanji', label: 'Kanji' },
+                { id: 'vocabulary', label: 'Vocabulary' },
+                { id: 'grammar', label: 'Grammar' },
+                { id: 'reading', label: 'Reading' }
+            ]
         },
         {
             id: 'level',
             label: 'JLPT Level',
-            type: 'MULTI' as const,
-            options: getTagsByType('level').map(t => ({ id: t.id, label: t.label }))
-        },
-        {
-            id: 'skill',
-            label: 'Skill',
-            type: 'MULTI' as const,
-            options: getTagsByType('skill').map(t => ({ id: t.id, label: t.label }))
+            type: 'MULTI',
+            options: [
+                { id: 'N5', label: 'N5' },
+                { id: 'N4', label: 'N4' },
+                { id: 'N3', label: 'N3' },
+                { id: 'N2', label: 'N2' },
+                { id: 'N1', label: 'N1' }
+            ]
         }
-    ], []);
+    ];
 
     const handleSearchChange = (newState: SearchNexusState) => {
         const accessFilter = newState.activeFilters.access?.[0];

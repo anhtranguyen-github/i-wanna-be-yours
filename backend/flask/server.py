@@ -93,10 +93,10 @@ from modules.library import LibraryTexts
 library_texts_module = LibraryTexts()
 library_texts_module.register_routes(app)
 
-# -- quiz -- #
-from modules.quiz import QuizModule
-quiz_module = QuizModule()
-quiz_module.register_routes(app)
+# -- quiz (Unified into Express practiceRoutes) -- #
+# from modules.quiz import QuizModule
+# quiz_module = QuizModule()
+# quiz_module.register_routes(app)
 
 # -- decks -- #
 from modules.decks import DeckModule

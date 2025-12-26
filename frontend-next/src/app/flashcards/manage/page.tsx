@@ -3,8 +3,39 @@
 import React, { useState, useEffect } from "react";
 import { flashcardService } from "@/services/flashcardService";
 import { Search, Filter, Trash2, Edit3, Plus, X, Tag as TagIcon, Check, ArrowLeft, Loader2 } from "lucide-react";
-import { ALL_TAGS, Tag, getTagById, getTagsByType } from "../decks-data";
 import Link from "next/link";
+
+// Inline tag definitions (no longer importing from decks-data)
+interface Tag {
+    id: string;
+    label: string;
+}
+
+const CATEGORY_TAGS: Tag[] = [
+    { id: 'kanji', label: 'Kanji' },
+    { id: 'vocabulary', label: 'Vocabulary' },
+    { id: 'grammar', label: 'Grammar' },
+    { id: 'reading', label: 'Reading' }
+];
+
+const LEVEL_TAGS: Tag[] = [
+    { id: 'N5', label: 'N5' },
+    { id: 'N4', label: 'N4' },
+    { id: 'N3', label: 'N3' },
+    { id: 'N2', label: 'N2' },
+    { id: 'N1', label: 'N1' }
+];
+
+const SKILL_TAGS: Tag[] = [
+    { id: 'reading', label: 'Reading' },
+    { id: 'listening', label: 'Listening' },
+    { id: 'speaking', label: 'Speaking' },
+    { id: 'writing', label: 'Writing' }
+];
+
+const ALL_TAGS = [...CATEGORY_TAGS, ...LEVEL_TAGS, ...SKILL_TAGS];
+
+const getTagById = (id: string): Tag | undefined => ALL_TAGS.find(t => t.id === id);
 
 interface CardData {
     _id?: string;
@@ -30,10 +61,6 @@ export default function ManageDeckPage() {
     const [showFilters, setShowFilters] = useState(false);
     const [editModal, setEditModal] = useState<CardData | null>(null);
     const [createModal, setCreateModal] = useState(false);
-
-    const categoryTags = getTagsByType('category').filter(t => t.id !== 'personal');
-    const levelTags = getTagsByType('level');
-    const skillTags = getTagsByType('skill');
 
     useEffect(() => { loadCards(); }, []);
 
@@ -131,7 +158,7 @@ export default function ManageDeckPage() {
 
                     {showFilters && (
                         <div className="mt-4 pt-4 border-t border-border grid grid-cols-1 md:grid-cols-3 gap-4">
-                            {[{ label: 'Category', tags: categoryTags }, { label: 'JLPT Level', tags: levelTags }, { label: 'Skill', tags: skillTags }].map((group, i) => (
+                            {[{ label: 'Category', tags: CATEGORY_TAGS }, { label: 'JLPT Level', tags: LEVEL_TAGS }, { label: 'Skill', tags: SKILL_TAGS }].map((group, i) => (
                                 <div key={i}>
                                     <label className="text-xs font-bold text-neutral-ink mb-2 block">{group.label}</label>
                                     <div className="flex flex-wrap gap-2">
@@ -209,10 +236,6 @@ function CardFormModal({ mode, card, onClose, onSave }: { mode: 'create' | 'edit
     const [back, setBack] = useState(card?.content?.back || card?.content?.meaning || "");
     const [selectedTags, setSelectedTags] = useState<string[]>(card?.tags || []);
 
-    const categoryTags = getTagsByType('category').filter(t => t.id !== 'personal');
-    const levelTags = getTagsByType('level');
-    const skillTags = getTagsByType('skill');
-
     const toggleTag = (tagId: string) => {
         setSelectedTags(prev => prev.includes(tagId) ? prev.filter(t => t !== tagId) : [...prev, tagId]);
     };
@@ -258,7 +281,7 @@ function CardFormModal({ mode, card, onClose, onSave }: { mode: 'create' | 'edit
                             </div>
                         )}
                         <div className="space-y-3">
-                            {[{ label: 'Category', tags: categoryTags }, { label: 'JLPT Level', tags: levelTags }, { label: 'Skill', tags: skillTags }].map((group, i) => (
+                            {[{ label: 'Category', tags: CATEGORY_TAGS }, { label: 'JLPT Level', tags: LEVEL_TAGS }, { label: 'Skill', tags: SKILL_TAGS }].map((group, i) => (
                                 <div key={i}>
                                     <span className="text-xs text-neutral-ink mb-1 block">{group.label}</span>
                                     <div className="flex flex-wrap gap-2">
