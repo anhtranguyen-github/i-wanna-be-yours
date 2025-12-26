@@ -70,10 +70,11 @@ export function SearchNexus({
                         </button>
                         <button
                             onClick={() => handleTabChange('PERSONAL')}
-                            className={`flex items-center gap-2 px-6 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${state.activeTab === 'PERSONAL' ? 'bg-neutral-white text-neutral-ink  border border-neutral-gray/10' : 'text-neutral-ink hover:text-primary-strong'}`}
+                            className={`flex items-center gap-2 px-6 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all relative ${state.activeTab === 'PERSONAL' ? 'bg-neutral-white text-neutral-ink border border-neutral-gray/10' : 'text-neutral-ink hover:text-primary-strong'} ${!isLoggedIn ? 'opacity-60 grayscale-[0.5]' : ''}`}
                         >
                             <User size={14} />
                             Personal
+                            {!isLoggedIn && <span className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full border border-white" />}
                         </button>
                     </div>
                 )}
@@ -136,14 +137,24 @@ export function SearchNexus({
                                     <div className="flex flex-wrap gap-2">
                                         {group.options.map((option) => {
                                             const isActive = state.activeFilters[group.id]?.includes(option.id);
+                                            const isPersonalOption = option.id === 'PERSONAL' || option.id === 'personal';
+                                            const isRestricted = isPersonalOption && !isLoggedIn;
+
                                             return (
                                                 <button
                                                     key={option.id}
-                                                    onClick={() => toggleFilter(group.id, option.id)}
-                                                    className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all border ${isActive ? 'bg-neutral-ink text-white border-neutral-ink' : 'bg-neutral-white text-neutral-ink border-neutral-gray/10 hover:border-primary-strong/40'}`}
+                                                    onClick={() => {
+                                                        if (isRestricted) {
+                                                            onPersonalTabAttempt();
+                                                            return;
+                                                        }
+                                                        toggleFilter(group.id, option.id);
+                                                    }}
+                                                    className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all border relative ${isActive ? 'bg-neutral-ink text-white border-neutral-ink' : 'bg-neutral-white text-neutral-ink border-neutral-gray/10 hover:border-primary-strong/40'} ${isRestricted ? 'opacity-50' : ''}`}
                                                 >
                                                     {option.icon && <span className="mr-2">{option.icon}</span>}
                                                     {option.label}
+                                                    {isRestricted && <span className="absolute -top-1 -right-1 w-2 h-2 bg-accent rounded-full" />}
                                                 </button>
                                             );
                                         })}

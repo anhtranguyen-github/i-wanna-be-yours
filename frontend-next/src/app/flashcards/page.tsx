@@ -9,12 +9,13 @@ import {
     ArrowRight,
     MoreVertical,
     Globe,
-    User as UserIcon
+    User as UserIcon,
+    ArrowRightLeft
 } from 'lucide-react';
 import { SearchNexus } from '@/components/shared/SearchNexus';
 import { SearchNexusState, FilterGroup } from '@/types/search';
 import { useUser } from '@/context/UserContext';
-import { CreateButton, InformativeLoginCard, PageHeader, ViewModeToggle } from '@/components/shared';
+import { CreateButton, InformativeLoginCard, PageHeader, ViewModeToggle, CreateContentPanel } from '@/components/shared';
 import type { ViewMode } from '@/components/shared';
 import {
     getPublicDecks,
@@ -22,6 +23,69 @@ import {
     searchDecks,
     getTagsByType
 } from './decks-data';
+import { createDeck } from '@/services/deckService';
+
+interface FlashcardDeckCardProps {
+    deck: any;
+    viewMode: ViewMode;
+}
+
+function FlashcardDeckCard({ deck, viewMode }: FlashcardDeckCardProps) {
+    if (viewMode === 'LIST') {
+        return (
+            <div className="bg-neutral-white border border-neutral-gray/20 rounded-2xl p-4 flex items-center justify-between group hover:border-primary-strong transition-all">
+                <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-neutral-beige/50 rounded-xl flex items-center justify-center text-neutral-ink group-hover:bg-primary-strong group-hover:text-white transition-all">
+                        <Layers size={24} />
+                    </div>
+                    <div>
+                        <h4 className="font-black text-neutral-ink font-display group-hover:text-primary-strong transition-colors">
+                            {deck.title}
+                        </h4>
+                        <p className="text-[10px] text-neutral-ink font-bold opacity-60 line-clamp-1">
+                            {deck.description}
+                        </p>
+                    </div>
+                </div>
+                <div className="flex items-center gap-8">
+                    <div className="text-[10px] font-black uppercase tracking-widest text-neutral-ink/40 flex items-center gap-2">
+                        <Layers size={14} className="text-primary-strong" />
+                        {deck.cardCount || 0} Cards
+                    </div>
+                    <ArrowRight size={20} className="text-neutral-ink/40 group-hover:text-primary-strong group-hover:translate-x-1 transition-all" />
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div key={deck.id} className="bg-neutral-white border border-neutral-gray/20 rounded-[2rem] p-8 hover:border-primary-strong transition-all group relative overflow-hidden h-full flex flex-col">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-primary/10 transition-colors" />
+
+            <div className="flex justify-between items-start mb-6">
+                <div className="w-14 h-14 bg-neutral-beige/50 rounded-2xl flex items-center justify-center text-neutral-ink group-hover:bg-primary-strong group-hover:text-white transition-all">
+                    <Layers size={28} />
+                </div>
+                <button className="p-2 text-neutral-ink/40 hover:text-neutral-ink transition-colors">
+                    <MoreVertical size={20} />
+                </button>
+            </div>
+
+            <h3 className="text-2xl font-black text-neutral-ink font-display mb-3 group-hover:text-primary-strong transition-colors">{deck.title}</h3>
+            <p className="text-sm font-bold text-neutral-ink mb-8 line-clamp-2 opacity-80 flex-grow leading-relaxed">{deck.description}</p>
+
+            <div className="flex items-center justify-between mt-auto pt-6 border-t border-neutral-gray/10">
+                <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-neutral-ink/60">
+                    <span className="flex items-center gap-2">
+                        <Layers size={14} className="text-primary-strong" />
+                        {deck.cardCount || 0} Cards
+                    </span>
+                </div>
+                <ArrowRight size={20} className="text-neutral-ink group-hover:translate-x-2 transition-transform" />
+            </div>
+        </div>
+    );
+}
 
 export default function FlashcardsMenu() {
     const { user } = useUser();
@@ -39,13 +103,19 @@ export default function FlashcardsMenu() {
     });
     const [showLoginPrompt, setShowLoginPrompt] = useState(false);
     const [viewMode, setViewMode] = useState<ViewMode>('GRID');
+    const [isCreatePanelOpen, setIsCreatePanelOpen] = useState(false);
 
-    const currentList = searchState.activeTab === 'PUBLIC' ? publicList : personalList;
+    const [decks, setDecks] = useState<any[]>([]);
+
+    useEffect(() => {
+        const list = searchState.activeTab === 'PUBLIC' ? publicList : personalList;
+        const mapped = list.map(d => ({ ...d, isPersonal: searchState.activeTab === 'PERSONAL' }));
+        setDecks(mapped);
+    }, [searchState.activeTab, publicList, personalList]);
 
     const filteredDecks = useMemo(() => {
-        let result = currentList;
+        let result = [...decks];
 
-        // Filter by tags (Level, Skill, Category)
         const selectedTagIds = [
             ...(searchState.activeFilters.level || []),
             ...(searchState.activeFilters.skill || []),
@@ -58,13 +128,19 @@ export default function FlashcardsMenu() {
             );
         }
 
-        // Search by query
         if (searchState.query.trim()) {
             result = searchDecks(result, searchState.query);
         }
 
+        // Prioritize personal content
+        result.sort((a, b) => {
+            if (a.isPersonal === b.isPersonal) return 0;
+            return a.isPersonal ? -1 : 1;
+        });
+
         return result;
-    }, [currentList, searchState]);
+    }, [decks, searchState.query, searchState.activeFilters]);
+
 
     const filterGroups = useMemo((): FilterGroup[] => [
         {
@@ -116,6 +192,35 @@ export default function FlashcardsMenu() {
         if (newState.activeTab === 'PUBLIC') setShowLoginPrompt(false);
     };
 
+    const handleCreateClick = () => {
+        if (!user) {
+            setShowLoginPrompt(true);
+        } else {
+            setIsCreatePanelOpen(true);
+        }
+    };
+
+    const handleSaveContent = async (data: any) => {
+        try {
+            await createDeck({
+                title: data.title,
+                description: data.description || "",
+                cards: data.items.map((item: any) => ({
+                    front: item.term || item.question,
+                    back: item.definition || item.answer,
+                    type: 'vocabulary'
+                })),
+                tags: ['personal', 'flashcards']
+            });
+            // In a real app we'd refresh the list here, 
+            // but since we are using local dummy data mostly, 
+            // we'll just log success.
+        } catch (err) {
+            console.error("Failed to save flashcard deck:", err);
+            throw err;
+        }
+    };
+
     return (
         <div className="min-h-screen bg-neutral-beige/20 pb-24">
             {/* Header */}
@@ -125,11 +230,12 @@ export default function FlashcardsMenu() {
                 icon={<Layers size={24} className="text-white" />}
                 iconBgColor="bg-primary-strong"
                 backHref="/game"
-                backLabel="Back to Games"
+                backLabel="Back"
+                backPosition="inline"
                 rightContent={
                     <>
                         <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
-                        <CreateButton href="/flashcards/create" label="Create Deck" />
+                        <CreateButton label="Create Deck" onClick={handleCreateClick} />
                     </>
                 }
             >
@@ -147,38 +253,21 @@ export default function FlashcardsMenu() {
 
 
             {/* Main Content */}
-            <main className="max-w-7xl mx-auto px-6 pt-16">
+            <main className="max-w-6xl mx-auto px-6 py-12">
+                <div className="flex items-center gap-3 mb-8">
+                    <Layers size={18} className="text-primary-strong" />
+                    <h2 className="text-[10px] font-black uppercase tracking-widest text-neutral-ink/60">
+                        Cognitive Vaults ({filteredDecks.length})
+                    </h2>
+                </div>
+
                 {filteredDecks.length > 0 ? (
                     <div className={viewMode === 'GRID'
-                        ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                        ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
                         : "flex flex-col gap-4"
                     }>
                         {filteredDecks.map((deck) => (
-                            <div key={deck.id} className="bg-neutral-white border border-neutral-gray/20 rounded-[2rem] p-8 hover:border-primary-strong transition-all group relative overflow-hidden">
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-primary/10 transition-colors" />
-
-                                <div className="flex justify-between items-start mb-6">
-                                    <div className="w-14 h-14 bg-neutral-beige/50 rounded-2xl flex items-center justify-center text-neutral-ink group-hover:bg-primary-strong group-hover:text-white transition-all">
-                                        <Layers size={28} />
-                                    </div>
-                                    <button className="p-2 text-neutral-ink hover:text-neutral-ink transition-colors">
-                                        <MoreVertical size={20} />
-                                    </button>
-                                </div>
-
-                                <h3 className="text-2xl font-black text-neutral-ink font-display mb-3 group-hover:text-primary-strong transition-colors">{deck.title}</h3>
-                                <p className="text-sm font-bold text-neutral-ink mb-8 line-clamp-2 opacity-80">{deck.description}</p>
-
-                                <div className="flex items-center justify-between mt-auto pt-6 border-t border-neutral-gray/10">
-                                    <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-neutral-ink">
-                                        <span className="flex items-center gap-2">
-                                            <Layers size={14} className="text-primary-strong" />
-                                            {deck.cardCount || 0} Cards
-                                        </span>
-                                    </div>
-                                    <ArrowRight size={20} className="text-neutral-ink group-hover:translate-x-2 transition-transform" />
-                                </div>
-                            </div>
+                            <FlashcardDeckCard key={deck.id} deck={deck} viewMode={viewMode} />
                         ))}
                     </div>
                 ) : (
@@ -205,6 +294,14 @@ export default function FlashcardsMenu() {
                     </div>
                 )}
             </main>
+
+            {/* Create Content Panel */}
+            <CreateContentPanel
+                isOpen={isCreatePanelOpen}
+                onClose={() => setIsCreatePanelOpen(false)}
+                type="FLASHCARDS"
+                onSave={handleSaveContent}
+            />
         </div>
     );
 }

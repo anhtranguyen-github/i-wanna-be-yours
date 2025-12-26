@@ -116,13 +116,13 @@ export default function GamesHubPage() {
             {/* Games Grid */}
             <main className="max-w-6xl mx-auto px-6 py-12">
                 <div className="flex items-center gap-3 mb-8">
-                    <Sparkles size={20} className="text-primary-strong" />
-                    <h2 className="text-xl font-black text-neutral-ink font-display tracking-tight uppercase tracking-widest text-sm">
-                        Available Games
+                    <Sparkles size={18} className="text-secondary" />
+                    <h2 className="text-[10px] font-black uppercase tracking-widest text-neutral-ink/60">
+                        Available Trials ({games.length})
                     </h2>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {games.map((game) => (
                         <GameCard key={game.id} game={game} />
                     ))}

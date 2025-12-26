@@ -16,7 +16,7 @@ import PracticeListCard from "@/components/practice/PracticeListCard";
 import PracticeCard from "@/components/practice/PracticeCard";
 import { SearchNexus } from "@/components/shared/SearchNexus";
 import { SearchNexusState, FilterGroup } from "@/types/search";
-import { InformativeLoginCard, CreateButton, PageHeader, ViewModeToggle } from "@/components/shared";
+import { InformativeLoginCard, CreateButton, PageHeader, ViewModeToggle, CreateContentPanel } from "@/components/shared";
 import type { ViewMode } from "@/components/shared";
 import { useUser } from "@/context/UserContext";
 
@@ -28,6 +28,8 @@ export default function PracticeHubPage() {
     const [nodes, setNodes] = useState<PracticeNode[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [viewMode, setViewMode] = useState<ViewMode>('LIST');
+    const [isCreatePanelOpen, setIsCreatePanelOpen] = useState(false);
+
     const [searchState, setSearchState] = useState<SearchNexusState>({
         query: "",
         activeFilters: {
@@ -159,22 +161,36 @@ export default function PracticeHubPage() {
         if (newState.activeTab === 'PUBLIC') setShowLoginPrompt(false);
     };
 
+    const handleCreateClick = () => {
+        if (!user) {
+            setShowLoginPrompt(true);
+        } else {
+            setIsCreatePanelOpen(true);
+        }
+    };
+
+    const handleSaveContent = async (data: any) => {
+        console.log("Saving practice plan:", data);
+        // For practice, we might want a different service or bulk creation.
+        // For now, we'll just log it.
+    };
+
     return (
         <div className="min-h-screen bg-neutral-beige/20 pb-24">
             {/* Header */}
             <PageHeader
                 title="Practice Hub"
-                subtitle="Refine your knowledge through structured drills and simulated exams"
+                subtitle="Structured drills and simulated exams"
                 icon={<BrainCircuit size={24} className="text-primary-strong" />}
                 rightContent={
                     <>
                         <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
-                        <CreateButton href="/practice/create" label="Create Plan" />
+                        <CreateButton label="Create Plan" onClick={handleCreateClick} />
                     </>
                 }
             >
                 <SearchNexus
-                    placeholder="Search practice protocols..."
+                    placeholder="Search protocols..."
                     groups={filterGroups}
                     state={searchState}
                     onChange={handleSearchChange}
@@ -187,15 +203,22 @@ export default function PracticeHubPage() {
 
 
             {/* Content Display */}
-            <main className="max-w-7xl mx-auto px-8 pt-12">
+            <main className="max-w-6xl mx-auto px-6 py-12">
+                <div className="flex items-center gap-3 mb-8">
+                    <Activity size={18} className="text-secondary" />
+                    <h2 className="text-[10px] font-black uppercase tracking-widest text-neutral-ink/60">
+                        Available Protocols ({nodes.length})
+                    </h2>
+                </div>
+
                 {isLoading ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {[1, 2, 3, 4, 5, 6].map(i => (
                             <div key={i} className="h-64 bg-neutral-white rounded-[2rem] border border-neutral-gray/20 animate-pulse" />
                         ))}
                     </div>
                 ) : nodes.length > 0 ? (
-                    <div className={viewMode === 'GRID' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" : "space-y-4"}>
+                    <div className={viewMode === 'GRID' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "flex flex-col gap-4"}>
                         {nodes.map(node => (
                             viewMode === 'GRID' ? (
                                 <PracticeCard key={node.id} config={node as any} onStart={handleStartNode} />
@@ -210,8 +233,8 @@ export default function PracticeHubPage() {
                             <SearchX size={40} className="text-neutral-ink" />
                         </div>
                         <div className="space-y-2">
-                            <h3 className="text-2xl font-black text-neutral-ink">No protocols detected</h3>
-                            <p className="text-neutral-ink font-bold">Adjust your parameters or initialize a new plan.</p>
+                            <h3 className="text-xl font-black text-neutral-ink font-display">No protocols detected</h3>
+                            <p className="text-neutral-ink/60 font-bold max-w-sm mx-auto">Adjust your parameters or initialize a new training plan.</p>
                         </div>
                     </div>
                 )}
@@ -234,6 +257,14 @@ export default function PracticeHubPage() {
                     </div>
                 )}
             </main>
+
+            {/* Create Content Panel */}
+            <CreateContentPanel
+                isOpen={isCreatePanelOpen}
+                onClose={() => setIsCreatePanelOpen(false)}
+                type="PRACTICE"
+                onSave={handleSaveContent}
+            />
         </div>
     );
 }

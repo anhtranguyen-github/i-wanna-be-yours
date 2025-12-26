@@ -59,23 +59,31 @@ import { PageHeader } from "@/components/shared";
 
 export default function LibraryPage() {
     return (
-        <div className="min-h-screen bg-background pb-24">
+        <div className="min-h-screen bg-neutral-beige/20 pb-24">
             <PageHeader
                 title="Library"
                 subtitle="Browse your learning resources"
-                icon={<Library className="w-6 h-6 text-primary-strong" />}
+                icon={<Library className="w-6 h-6 text-white" />}
+                iconBgColor="bg-neutral-ink"
             />
 
-            <main className="max-w-6xl mx-auto px-6 py-8">
+            <main className="max-w-6xl mx-auto px-6 py-12">
+                <div className="flex items-center gap-3 mb-8">
+                    <Library size={18} className="text-secondary" />
+                    <h2 className="text-[10px] font-black uppercase tracking-widest text-neutral-ink/60">
+                        Cognitive Archives ({routes.length})
+                    </h2>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {routes.map((route) => (
                         <Link key={route.href} href={route.href}>
-                            <div className="bg-card rounded-2xl border border-neutral-gray/30 p-8  hover: hover:border-primary/40 transition-all h-full flex flex-col items-center text-center cursor-pointer">
-                                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6  ${route.color}`}>
+                            <div className="bg-neutral-white rounded-[2rem] border border-neutral-gray/20 p-8 hover:border-primary-strong transition-all h-full flex flex-col items-center text-center cursor-pointer group">
+                                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500 ${route.color}`}>
                                     {route.icon}
                                 </div>
-                                <h2 className="text-xl font-black text-neutral-ink mb-3 font-display">{route.title}</h2>
-                                <p className="text-sm text-neutral-ink leading-relaxed font-bold">{route.description}</p>
+                                <h2 className="text-xl font-black text-neutral-ink mb-3 font-display group-hover:text-primary-strong transition-colors">{route.title}</h2>
+                                <p className="text-sm text-neutral-ink leading-relaxed font-bold opacity-60">{route.description}</p>
                             </div>
                         </Link>
                     ))}

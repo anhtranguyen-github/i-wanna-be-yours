@@ -32,5 +32,22 @@ export const fetchDecks = async (access?: 'PUBLIC' | 'PERSONAL'): Promise<Deck[]
     }
 };
 
+export const createDeck = async (deck: Partial<Deck>): Promise<Deck> => {
+    try {
+        const response = await authFetch(`${API_BASE_URL}/decks`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(deck)
+        });
+        if (!response.ok) {
+            throw new Error(`Failed to create deck: ${response.statusText}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error creating deck:", error);
+        throw error;
+    }
+};
+
 // For backward compatibility
 export const fetchAllDecks = () => fetchDecks();

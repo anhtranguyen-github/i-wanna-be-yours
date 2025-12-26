@@ -61,28 +61,35 @@ import { PageHeader } from "@/components/shared";
 
 export default function ToolsPage() {
     return (
-        <div className="min-h-screen bg-secondary pb-24">
+        <div className="min-h-screen bg-neutral-beige/20 pb-24">
             <PageHeader
-                title="Linguistic Laboratory"
-                highlightWord="Laboratory"
-                subtitle="High-performance utilities for Japanese acquisition"
-                icon={<WrenchIcon className="w-6 h-6 text-primary-strong" />}
+                title="Tools"
+                subtitle="Utilities for Japanese acquisition"
+                icon={<WrenchIcon className="w-6 h-6 text-white" />}
+                iconBgColor="bg-neutral-ink"
             />
 
-            <main className="max-w-6xl mx-auto px-6 py-8">
+            <main className="max-w-6xl mx-auto px-6 py-12">
+                <div className="flex items-center gap-3 mb-8">
+                    <Wrench size={18} className="text-secondary" />
+                    <h2 className="text-[10px] font-black uppercase tracking-widest text-neutral-ink/60">
+                        Available Utilities ({routes.length})
+                    </h2>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {routes.map((route) => (
                         <Link key={route.href} href={route.href}>
-                            <div className="bg-neutral-white rounded-2xl border border-neutral-gray/20 p-8 hover:border-primary/40 transition-all group h-full flex flex-col items-center text-center cursor-pointer  hover:">
+                            <div className="bg-neutral-white rounded-[2rem] border border-neutral-gray/20 p-8 hover:border-primary-strong transition-all group h-full flex flex-col items-center text-center cursor-pointer">
                                 <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110 duration-500  ${route.color}`}>
                                     {route.icon}
                                 </div>
                                 <h2 className="text-xl font-black text-neutral-ink mb-2 font-display">{route.title}</h2>
-                                <p className="text-sm text-neutral-ink leading-relaxed font-bold">{route.description}</p>
+                                <p className="text-sm text-neutral-ink leading-relaxed font-bold opacity-60">{route.description}</p>
 
-                                <div className="mt-auto pt-8 flex items-center gap-3 text-primary-strong font-black uppercase tracking-[0.2em] text-[10px] font-display opacity-0 group-hover:opacity-100 transition-all translate-y-3 group-hover:translate-y-0">
+                                <div className="mt-auto pt-8 flex items-center gap-3 text-primary-strong font-black uppercase tracking-[0.2em] text-[10px] items-center opacity-0 group-hover:opacity-100 transition-all translate-y-3 group-hover:translate-y-0">
                                     Launch Tool
-                                    <ArrowRightLeft size={16} className="rotate-45" />
+                                    <ArrowRightLeft size={16} />
                                 </div>
                             </div>
                         </Link>

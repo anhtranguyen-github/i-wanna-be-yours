@@ -11,6 +11,7 @@ interface PageHeaderProps {
     highlightWord?: string;
     backHref?: string;
     backLabel?: string;
+    backPosition?: 'above' | 'inline';
     rightContent?: React.ReactNode;
     children?: React.ReactNode;
 }
@@ -23,6 +24,7 @@ export function PageHeader({
     highlightWord,
     backHref,
     backLabel = "Back",
+    backPosition = 'above',
     rightContent,
     children
 }: PageHeaderProps) {
@@ -40,10 +42,10 @@ export function PageHeader({
     }
 
     return (
-        <header className="bg-neutral-white border-b border-neutral-gray/20 px-6 py-8">
+        <header className="bg-neutral-beige/20 border-b border-neutral-gray/20 px-6 py-8">
             <div className="max-w-6xl mx-auto">
-                {/* Back Button */}
-                {backHref && (
+                {/* Back Button (Above) */}
+                {backHref && backPosition === 'above' && (
                     <Link
                         href={backHref}
                         className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-neutral-ink hover:text-primary-strong mb-6 transition-colors group w-fit"
@@ -56,8 +58,18 @@ export function PageHeader({
                 {/* Title Row */}
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
+                        {/* Inline Back Button */}
+                        {backHref && backPosition === 'inline' && (
+                            <Link
+                                href={backHref}
+                                className="flex items-center gap-2 text-neutral-ink hover:text-primary-strong transition-colors group mr-2"
+                            >
+                                <ArrowLeft size={24} className="group-hover:-translate-x-1 transition-transform" />
+                            </Link>
+                        )}
+
                         {icon && (
-                            <div className={`w-12 h-12 ${iconBgColor} rounded-xl flex items-center justify-center`}>
+                            <div className={`w-12 h-12 ${iconBgColor} rounded-xl flex items-center justify-center shrink-0`}>
                                 {icon}
                             </div>
                         )}
@@ -66,7 +78,7 @@ export function PageHeader({
                                 {renderedTitle}
                             </h1>
                             {subtitle && (
-                                <p className="text-neutral-ink mt-1">{subtitle}</p>
+                                <p className="text-neutral-ink mt-1 font-bold">{subtitle}</p>
                             )}
                         </div>
                     </div>
