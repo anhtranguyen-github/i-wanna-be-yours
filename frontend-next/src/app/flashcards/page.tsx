@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState, useMemo } from 'react';
-import { 
-    Plus, 
-    Layers, 
-    History, 
-    Star, 
-    ArrowRight, 
+import {
+    Plus,
+    Layers,
+    History,
+    Star,
+    ArrowRight,
     MoreVertical,
     Globe,
     User as UserIcon
@@ -14,17 +14,18 @@ import {
 import { SearchNexus } from '@/components/shared/SearchNexus';
 import { SearchNexusState, FilterGroup } from '@/types/search';
 import { useUser } from '@/context/UserContext';
-import { CreateButton, InformativeLoginCard } from '@/components/shared';
-import { 
-    getPublicDecks, 
-    getPersonalDecks, 
-    searchDecks, 
-    getTagsByType 
+import { CreateButton, InformativeLoginCard, PageHeader, ViewModeToggle } from '@/components/shared';
+import type { ViewMode } from '@/components/shared';
+import {
+    getPublicDecks,
+    getPersonalDecks,
+    searchDecks,
+    getTagsByType
 } from './decks-data';
 
 export default function FlashcardsMenu() {
     const { user } = useUser();
-    
+
     // We use useMemo to avoid regenerating the lists on every render
     const publicList = useMemo(() => getPublicDecks(user?.id ? String(user.id) : null), [user]);
     const personalList = useMemo(() => getPersonalDecks(), []);
@@ -37,6 +38,7 @@ export default function FlashcardsMenu() {
         activeTab: 'PUBLIC'
     });
     const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+    const [viewMode, setViewMode] = useState<ViewMode>('GRID');
 
     const currentList = searchState.activeTab === 'PUBLIC' ? publicList : personalList;
 
@@ -51,7 +53,7 @@ export default function FlashcardsMenu() {
         ].filter(id => id !== 'ALL');
 
         if (selectedTagIds.length > 0) {
-            result = result.filter(deck => 
+            result = result.filter(deck =>
                 selectedTagIds.some(tagId => deck.tags.includes(tagId))
             );
         }
@@ -96,7 +98,7 @@ export default function FlashcardsMenu() {
 
     const handleSearchChange = (newState: SearchNexusState) => {
         const accessFilter = newState.activeFilters.access?.[0];
-        
+
         if (accessFilter && accessFilter !== searchState.activeTab) {
             if (accessFilter === 'PERSONAL' && !user) {
                 setShowLoginPrompt(true);
@@ -117,21 +119,21 @@ export default function FlashcardsMenu() {
     return (
         <div className="min-h-screen bg-neutral-beige/20 pb-24">
             {/* Header */}
-            <header className="bg-neutral-white border-b border-neutral-gray/20 px-6 py-12 relative z-50">
-                <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-                    <div className="text-center md:text-left space-y-4">
-                        <h1 className="text-6xl font-black text-neutral-ink font-display tracking-tight">Flashcard Deck Repository</h1>
-                        <p className="text-neutral-ink font-bold max-w-2xl leading-relaxed">
-                            Access our global library of curated decks or manage your personal repertoire for focused training.
-                        </p>
-                    </div>
-                    <CreateButton href="/flashcards/create" label="Create New Deck" />
-                </div>
-            </header>
-
-            {/* Nexus Controller */}
-            <div className="max-w-7xl mx-auto px-6 -mt-8 relative z-50">
-                <SearchNexus 
+            <PageHeader
+                title="Flashcards"
+                subtitle="Master vocabulary through spaced repetition"
+                icon={<Layers size={24} className="text-white" />}
+                iconBgColor="bg-primary-strong"
+                backHref="/game"
+                backLabel="Back to Games"
+                rightContent={
+                    <>
+                        <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
+                        <CreateButton href="/flashcards/create" label="Create Deck" />
+                    </>
+                }
+            >
+                <SearchNexus
                     placeholder="Search decks, categories, or keywords..."
                     groups={filterGroups}
                     state={searchState}
@@ -141,16 +143,20 @@ export default function FlashcardsMenu() {
                     variant="minimal"
                     showSwitches={false}
                 />
-            </div>
+            </PageHeader>
+
 
             {/* Main Content */}
             <main className="max-w-7xl mx-auto px-6 pt-16">
                 {filteredDecks.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div className={viewMode === 'GRID'
+                        ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                        : "flex flex-col gap-4"
+                    }>
                         {filteredDecks.map((deck) => (
                             <div key={deck.id} className="bg-neutral-white border border-neutral-gray/20 rounded-[2rem] p-8 hover:border-primary-strong transition-all group relative overflow-hidden">
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-primary/10 transition-colors" />
-                                
+
                                 <div className="flex justify-between items-start mb-6">
                                     <div className="w-14 h-14 bg-neutral-beige/50 rounded-2xl flex items-center justify-center text-neutral-ink group-hover:bg-primary-strong group-hover:text-white transition-all">
                                         <Layers size={28} />
@@ -162,7 +168,7 @@ export default function FlashcardsMenu() {
 
                                 <h3 className="text-2xl font-black text-neutral-ink font-display mb-3 group-hover:text-primary-strong transition-colors">{deck.title}</h3>
                                 <p className="text-sm font-bold text-neutral-ink mb-8 line-clamp-2 opacity-80">{deck.description}</p>
-                                
+
                                 <div className="flex items-center justify-between mt-auto pt-6 border-t border-neutral-gray/10">
                                     <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-neutral-ink">
                                         <span className="flex items-center gap-2">
@@ -184,7 +190,7 @@ export default function FlashcardsMenu() {
                 {/* Personalization Gate */}
                 {searchState.activeTab === 'PERSONAL' && !user && (
                     <div className="mt-12">
-                        <InformativeLoginCard 
+                        <InformativeLoginCard
                             title="Your Personal Flashcard Vault"
                             description="Sign in to create custom decks, track your SRS progress, and bookmark community resources for personal study."
                             icon={Layers}

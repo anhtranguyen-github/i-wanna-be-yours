@@ -3,13 +3,12 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {
-    LayoutGrid,
-    StretchHorizontal,
-    ArrowLeft,
     Zap,
     Activity,
     BrainCircuit,
-    SearchX
+    SearchX,
+    Globe,
+    User as UserIcon
 } from "lucide-react";
 import { FilterState, PracticeNode, PracticeMode, JLPTLevel, SkillType } from "@/types/practice";
 import * as practiceService from "@/services/practiceService";
@@ -17,9 +16,9 @@ import PracticeListCard from "@/components/practice/PracticeListCard";
 import PracticeCard from "@/components/practice/PracticeCard";
 import { SearchNexus } from "@/components/shared/SearchNexus";
 import { SearchNexusState, FilterGroup } from "@/types/search";
-import { InformativeLoginCard, CreateButton } from "@/components/shared";
+import { InformativeLoginCard, CreateButton, PageHeader, ViewModeToggle } from "@/components/shared";
+import type { ViewMode } from "@/components/shared";
 import { useUser } from "@/context/UserContext";
-import { Globe, User as UserIcon } from "lucide-react";
 
 export default function PracticeHubPage() {
     const router = useRouter();
@@ -28,7 +27,7 @@ export default function PracticeHubPage() {
     // State
     const [nodes, setNodes] = useState<PracticeNode[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [viewMode, setViewMode] = useState<'LIST' | 'GRID'>('LIST');
+    const [viewMode, setViewMode] = useState<ViewMode>('LIST');
     const [searchState, setSearchState] = useState<SearchNexusState>({
         query: "",
         activeFilters: {
@@ -163,37 +162,17 @@ export default function PracticeHubPage() {
     return (
         <div className="min-h-screen bg-neutral-beige/20 pb-24">
             {/* Header */}
-            <header className="bg-neutral-white border-b border-neutral-gray/20 px-8 py-12">
-                <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-                    <div className="space-y-4 text-center md:text-left">
-                        <h1 className="text-5xl font-black text-neutral-ink font-display tracking-tight">Practice Hub</h1>
-                        <p className="text-neutral-ink font-bold max-w-xl">
-                            Refine your knowledge through structured drills and simulated exams.
-                        </p>
-                    </div>
-
-                    <div className="flex items-center gap-4">
-                        <div className="flex bg-neutral-white border border-neutral-gray/20 rounded-xl p-1">
-                            <button
-                                onClick={() => setViewMode('LIST')}
-                                className={`p-2 rounded-lg transition-all ${viewMode === 'LIST' ? 'bg-neutral-ink text-white' : 'text-neutral-ink hover:bg-neutral-beige'}`}
-                            >
-                                <StretchHorizontal size={20} />
-                            </button>
-                            <button
-                                onClick={() => setViewMode('GRID')}
-                                className={`p-2 rounded-lg transition-all ${viewMode === 'GRID' ? 'bg-neutral-ink text-white' : 'text-neutral-ink hover:bg-neutral-beige'}`}
-                            >
-                                <LayoutGrid size={20} />
-                            </button>
-                        </div>
-                        <CreateButton href="/practice/create" label="Create New Plan" />
-                    </div>
-                </div>
-            </header>
-
-            {/* Nexus Controller */}
-            <div className="max-w-7xl mx-auto px-8 -mt-8 relative z-50">
+            <PageHeader
+                title="Practice Hub"
+                subtitle="Refine your knowledge through structured drills and simulated exams"
+                icon={<BrainCircuit size={24} className="text-primary-strong" />}
+                rightContent={
+                    <>
+                        <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
+                        <CreateButton href="/practice/create" label="Create Plan" />
+                    </>
+                }
+            >
                 <SearchNexus
                     placeholder="Search practice protocols..."
                     groups={filterGroups}
@@ -204,7 +183,8 @@ export default function PracticeHubPage() {
                     variant="minimal"
                     showSwitches={false}
                 />
-            </div>
+            </PageHeader>
+
 
             {/* Content Display */}
             <main className="max-w-7xl mx-auto px-8 pt-12">

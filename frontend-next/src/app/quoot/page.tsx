@@ -12,11 +12,13 @@ import {
     Search,
     Filter,
     Globe,
+    Zap,
     User as UserIcon
 } from "lucide-react";
 import { SearchNexus } from "@/components/shared/SearchNexus";
 import { SearchNexusState, FilterGroup } from "@/types/search";
-import { InformativeLoginCard, CreateButton } from "@/components/shared";
+import { InformativeLoginCard, CreateButton, PageHeader, ViewModeToggle } from "@/components/shared";
+import type { ViewMode } from "@/components/shared";
 import { useUser } from "@/context/UserContext";
 import { fetchDecks } from "@/services/deckService";
 
@@ -113,6 +115,7 @@ export default function GamePage() {
         activeTab: 'PUBLIC'
     });
     const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+    const [viewMode, setViewMode] = useState<ViewMode>('GRID');
 
     const filterGroups: FilterGroup[] = [
         {
@@ -233,41 +236,31 @@ export default function GamePage() {
     return (
         <div className="min-h-screen bg-neutral-beige/20 pb-24">
             {/* Header */}
-            <header className="bg-neutral-white border-b border-neutral-gray/10 px-8 py-16 text-center relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/sakura.png')] opacity-[0.03] pointer-events-none" />
-                <div className="max-w-4xl mx-auto space-y-6 relative z-10">
-                    <div className="w-24 h-24 bg-primary-strong rounded-[2.5rem] flex items-center justify-center mx-auto relative">
-                        <Gamepad2 size={48} className="text-white" />
-                    </div>
-                    <div>
-                        <h1 className="text-7xl font-black text-neutral-ink font-display tracking-tight mb-4">
-                            Hanachan Quoot
-                        </h1>
-                        <p className="text-2xl text-neutral-ink font-bold max-w-2xl mx-auto leading-relaxed">
-                            Competitive flashcard battles. Master Japanese through fast-paced gameplay and climb the global ranks.
-                        </p>
-                    </div>
-                </div>
-            </header>
-
-            {/* Nexus Controller */}
-            <div className="max-w-7xl mx-auto px-8 -mt-10 relative z-50 flex flex-col md:flex-row items-center gap-4">
-                <div className="flex-1 w-full">
-                    <SearchNexus
-                        placeholder="Search for anime decks, JLPT drills, or song lyrics..."
-                        groups={filterGroups}
-                        state={searchState}
-                        onChange={handleSearchChange}
-                        onPersonalTabAttempt={() => setShowLoginPrompt(true)}
-                        isLoggedIn={!!user}
-                        variant="minimal"
-                        showSwitches={false}
-                    />
-                </div>
-                <div className="w-full md:w-auto">
-                    <CreateButton href="/quoot/create" label="Create New Deck" className="w-full justify-center" />
-                </div>
-            </div>
+            <PageHeader
+                title="Quoot"
+                subtitle="Competitive flashcard battles"
+                icon={<Zap size={24} className="text-white" />}
+                iconBgColor="bg-primary-strong"
+                backHref="/game"
+                backLabel="Back to Games"
+                rightContent={
+                    <>
+                        <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
+                        <CreateButton href="/quoot/create" label="Create Deck" />
+                    </>
+                }
+            >
+                <SearchNexus
+                    placeholder="Search for anime decks, JLPT drills, or song lyrics..."
+                    groups={filterGroups}
+                    state={searchState}
+                    onChange={handleSearchChange}
+                    onPersonalTabAttempt={() => setShowLoginPrompt(true)}
+                    isLoggedIn={!!user}
+                    variant="minimal"
+                    showSwitches={false}
+                />
+            </PageHeader>
 
             {/* Content Area */}
             <main className="max-w-7xl mx-auto px-8 py-20 space-y-24">
@@ -312,7 +305,10 @@ export default function GamePage() {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div className={viewMode === 'GRID'
+                        ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+                        : "flex flex-col gap-4"
+                    }>
                         {filteredDecks.map((deck) => (
                             <DeckCard key={deck.id} deck={deck} onClick={() => handleDeckSelect(deck.id)} />
                         ))}
