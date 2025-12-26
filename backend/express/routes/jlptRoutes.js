@@ -114,19 +114,52 @@ router.post('/attempts', authenticate, async (req, res) => {
 
 /**
  * GET /jlpt/exams
- * Fetch user's created exams
+ * Fetch exams - supports:
+ *   - is_public=true: Fetch all public exams (no auth required)
+ *   - Authenticated: Fetch user's created exams
  */
-router.get('/exams', authenticate, async (req, res) => {
+router.get('/exams', async (req, res) => {
     try {
         const limit = parseInt(req.query.limit) || 20;
         const offset = parseInt(req.query.offset) || 0;
+        const isPublicQuery = req.query.is_public;
 
+        // If requesting public exams, no auth required
+        if (isPublicQuery === 'true') {
+            const [exams, total] = await Promise.all([
+                JLPTUserExam.find({ isPublic: true })
+                    .sort({ createdAt: -1 })
+                    .skip(offset)
+                    .limit(limit),
+                JLPTUserExam.countDocuments({ isPublic: true })
+            ]);
+            return res.status(200).json({ exams, total });
+        }
+
+        // Otherwise, require authentication for user's personal exams
+        let token = null;
+        const authHeader = req.headers.authorization;
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+            token = authHeader.split(' ')[1];
+        }
+        if (!token && req.cookies) {
+            token = req.cookies.accessToken;
+        }
+        if (!token) {
+            return res.status(401).json({ error: 'Unauthorized: No token provided' });
+        }
+        const payload = verifyAccessToken(token);
+        if (!payload) {
+            return res.status(401).json({ error: 'Unauthorized: Invalid token' });
+        }
+
+        const userId = payload.id || payload.userId;
         const [exams, total] = await Promise.all([
-            JLPTUserExam.find({ userId: req.user.id || req.user.userId })
+            JLPTUserExam.find({ userId })
                 .sort({ createdAt: -1 })
                 .skip(offset)
                 .limit(limit),
-            JLPTUserExam.countDocuments({ userId: req.user.id || req.user.userId })
+            JLPTUserExam.countDocuments({ userId })
         ]);
 
         res.status(200).json({ exams, total });
