@@ -8,7 +8,8 @@ import {
     Star,
     Globe,
     Zap,
-    User as UserIcon
+    User as UserIcon,
+    ShieldCheck
 } from "lucide-react";
 import { SearchNexus } from "@/components/shared/SearchNexus";
 import { SearchNexusState, FilterGroup } from "@/types/search";
@@ -16,13 +17,13 @@ import { InformativeLoginCard, CreateButton, PageHeader, ViewModeToggle, CreateC
 import type { ViewMode } from "@/components/shared";
 import { useUser } from "@/context/UserContext";
 import { useGlobalAuth } from "@/context/GlobalAuthContext";
-import { fetchQuootDecks, createQuootDeck } from "@/services/quootService";
+import { fetchQuootArenas, createQuootArena } from "@/services/quootService";
 
 // =============================================================================
 // TYPES
 // =============================================================================
 
-interface QuootDeck {
+interface QuootArena {
     id: string;
     title: string;
     description: string;
@@ -32,20 +33,10 @@ interface QuootDeck {
     coverColor?: string;
     coverEmoji?: string;
     isPersonal?: boolean;
+    visibility?: 'global' | 'public' | 'private';
+    creatorName?: string;
 }
 
-
-// =============================================================================
-// COMPONENTS
-// =============================================================================
-
-interface DeckCardProps {
-    deck: QuootDeck;
-    onClick: () => void;
-    viewMode: ViewMode;
-}
-
-// DeckCard replaced by ListingCard
 
 // =============================================================================
 // MAIN PAGE
@@ -73,19 +64,8 @@ export default function GamePage() {
             label: 'Access',
             type: 'SINGLE',
             options: [
-                { id: 'PUBLIC', label: 'Public Content', icon: <Globe size={12} /> },
-                { id: 'PERSONAL', label: 'My Decks', icon: <UserIcon size={12} /> }
-            ]
-        },
-        {
-            id: 'category',
-            label: 'Genre',
-            type: 'MULTI',
-            options: [
-                { id: 'ANIME', label: 'Anime & Manga' },
-                { id: 'GENERAL', label: 'Everyday' },
-                { id: 'JLPT', label: 'JLPT Prep' },
-                { id: 'MEDIA', label: 'J-Pop & News' }
+                { id: 'PUBLIC', label: 'Public Arenas', icon: <Globe size={12} /> },
+                { id: 'PERSONAL', label: 'My Arenas', icon: <UserIcon size={12} /> }
             ]
         },
         {
@@ -103,65 +83,68 @@ export default function GamePage() {
     ];
 
 
-    const [decks, setDecks] = useState<QuootDeck[]>([]);
+    const [arenas, setArenas] = useState<QuootArena[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {
-        const loadDecks = async () => {
-            setIsLoading(true);
-            try {
-                const fetchedDecks = await fetchQuootDecks();
-                const mappedDecks: QuootDeck[] = fetchedDecks.map((d: any) => ({
-                    id: d.id,
-                    title: d.title,
-                    description: d.description || "",
-                    cardCount: d.cardCount || 0,
-                    level: d.level,
-                    coverColor: 'bg-primary/20',
-                    coverEmoji: d.icon || '⚔️',
-                    isPersonal: false // Access control handled by backend query
-                }));
-                setDecks(mappedDecks);
-            } catch (err) {
-                console.error("Failed to load quoot decks:", err);
-            } finally {
-                setIsLoading(false);
-            }
-        };
+    const loadArenas = async () => {
+        setIsLoading(true);
+        try {
+            const fetchedArenas = await fetchQuootArenas();
+            const mappedArenas: QuootArena[] = fetchedArenas.map((a: any) => ({
+                id: a.id,
+                title: a.title,
+                description: a.description || "",
+                cardCount: a.cardCount || 0,
+                level: a.level,
+                coverColor: 'bg-primary/20',
+                coverEmoji: a.icon || '⚔️',
+                isPersonal: a.visibility === 'private',
+                visibility: a.visibility,
+                creatorName: a.creatorName
+            }));
+            setArenas(mappedArenas);
+        } catch (err) {
+            console.error("Failed to load quoot arenas:", err);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
+    useEffect(() => {
         if (searchState.activeTab === 'PUBLIC' || user) {
-            loadDecks();
+            loadArenas();
         } else {
-            setDecks([]);
+            setArenas([]);
         }
     }, [searchState.activeTab, user]);
 
-    const filteredDecks = useMemo(() => {
-        let result = [...decks];
+    const filteredArenas = useMemo(() => {
+        let result = [...arenas];
+
+        // Filter by Access tab
+        if (searchState.activeTab === 'PUBLIC') {
+            result = result.filter(a => a.visibility !== 'private');
+        } else {
+            result = result.filter(a => a.visibility === 'private');
+        }
 
         // Filter by tags/level
         const selectedLevels = searchState.activeFilters.level || [];
         if (selectedLevels.length > 0) {
-            result = result.filter(d => d.level && selectedLevels.includes(d.level));
+            result = result.filter(a => a.level && selectedLevels.includes(a.level));
         }
 
         // Search
         if (searchState.query) {
             const q = searchState.query.toLowerCase();
-            result = result.filter(d =>
-                d.title.toLowerCase().includes(q) ||
-                d.description.toLowerCase().includes(q)
+            result = result.filter(a =>
+                a.title.toLowerCase().includes(q) ||
+                a.description.toLowerCase().includes(q)
             );
         }
 
-        // Prioritize personal content
-        result.sort((a, b) => {
-            if (a.isPersonal === b.isPersonal) return 0;
-            return a.isPersonal ? -1 : 1;
-        });
-
         return result;
-    }, [decks, searchState.query, searchState.activeFilters.level]);
+    }, [arenas, searchState.query, searchState.activeFilters.level, searchState.activeTab]);
 
     const handleSearchChange = (newState: SearchNexusState) => {
         const accessFilter = newState.activeFilters.access?.[0];
@@ -183,15 +166,15 @@ export default function GamePage() {
         if (newState.activeTab === 'PUBLIC') setShowLoginPrompt(false);
     };
 
-    const handleDeckSelect = (deckId: string) => {
-        router.push(`/quoot/${deckId}`);
+    const handleArenaSelect = (arenaId: string) => {
+        router.push(`/quoot/${arenaId}`);
     };
 
     const handleCreateClick = () => {
         if (!user) {
             openAuth('LOGIN', {
                 flowType: 'QUOOT',
-                title: 'Forge Your Deck',
+                title: 'Forge Your Arena',
                 description: 'Join the ranks to create custom battle arenas and track your mastery.'
             });
         } else {
@@ -201,9 +184,10 @@ export default function GamePage() {
 
     const handleSaveContent = async (data: any) => {
         try {
-            await createQuootDeck({
-                title: data.title || "New Quoot Deck",
-                description: data.description || "Created via Hanachan AI",
+            await createQuootArena({
+                title: data.title || "New Arena",
+                description: data.description || "Forged via Hanachan AI",
+                visibility: data.visibility || 'private',
                 level: (searchState.activeFilters.level?.[0] !== 'ALL' ? searchState.activeFilters.level?.[0] : 'N3') as any,
                 cards: data.items?.map((item: any) => ({
                     front: item.front || item.term || item.kanji || "",
@@ -212,22 +196,10 @@ export default function GamePage() {
                     type: 'vocabulary'
                 }))
             });
-            // Refresh decks
-            const fetchedDecks = await fetchQuootDecks();
-            const mappedDecks: QuootDeck[] = fetchedDecks.map((d: any) => ({
-                id: d.id,
-                title: d.title,
-                description: d.description || "",
-                cardCount: d.cardCount || 0,
-                level: d.level,
-                coverColor: 'bg-primary/20',
-                coverEmoji: d.icon || '⚔️',
-                isPersonal: false
-            }));
-            setDecks(mappedDecks);
+            await loadArenas();
             setIsCreatePanelOpen(false);
         } catch (err) {
-            console.error("Failed to save deck:", err);
+            console.error("Failed to save arena:", err);
             throw err;
         }
     };
@@ -246,12 +218,12 @@ export default function GamePage() {
                 rightContent={
                     <>
                         <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
-                        <CreateButton label="Create Deck" onClick={handleCreateClick} />
+                        <CreateButton label="Create Arena" onClick={handleCreateClick} />
                     </>
                 }
             >
                 <SearchNexus
-                    placeholder="Search decks (Anime, JLPT, News...)"
+                    placeholder="Search battle arenas..."
                     groups={filterGroups}
                     state={searchState}
                     onChange={handleSearchChange}
@@ -265,36 +237,34 @@ export default function GamePage() {
 
             {/* Content Area */}
             <main className="max-w-6xl mx-auto px-6 py-12">
-                {/* Deck Discovery */}
                 <section>
-                    {/* Content Removed */}
-
                     <div className={viewMode === 'GRID'
                         ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
                         : "flex flex-col gap-4"
                     }>
-                        {filteredDecks.map((deck) => (
+                        {filteredArenas.map((arena) => (
                             <ListingCard
-                                key={deck.id}
-                                title={deck.title}
-                                description={deck.description}
-                                icon={<span className="text-2xl">{deck.coverEmoji || '📚'}</span>}
-                                iconBgColor={deck.coverColor || 'bg-primary/10'}
+                                key={arena.id}
+                                title={arena.title}
+                                description={arena.description}
+                                icon={<span className="text-2xl">{arena.coverEmoji || '⚔️'}</span>}
+                                iconBgColor={arena.coverColor || 'bg-primary/10'}
                                 viewMode={viewMode}
-                                onClick={() => handleDeckSelect(deck.id)}
-                                badge={deck.level ? { label: deck.level } : undefined}
+                                onClick={() => handleArenaSelect(arena.id)}
+                                badge={arena.level ? { label: arena.level } : undefined}
                                 metadata={[
-                                    { label: 'Cards', value: deck.cardCount, icon: <Layers size={14} /> },
-                                    ...(deck.avgScore ? [{ label: '% Score', value: deck.avgScore, icon: <Star size={14} className="text-secondary" /> }] : [])
+                                    { label: 'Cards', value: arena.cardCount, icon: <Layers size={14} /> },
+                                    ...(arena.visibility === 'global' ? [{ label: 'Official', value: 'Verified', icon: <ShieldCheck size={14} className="text-primary-strong" /> }] : []),
+                                    ...(arena.creatorName && arena.visibility !== 'global' ? [{ label: 'By', value: arena.creatorName, icon: <UserIcon size={14} /> }] : [])
                                 ]}
                             />
                         ))}
                     </div>
 
-                    {filteredDecks.length === 0 && !isLoading && (
+                    {filteredArenas.length === 0 && !isLoading && (
                         <div className="bg-neutral-white border border-dashed border-neutral-gray/30 rounded-[2rem] p-20 text-center">
                             <Layers size={48} className="mx-auto text-neutral-gray/30 mb-6" />
-                            <h3 className="text-xl font-black text-neutral-ink font-display mb-2">No decks found</h3>
+                            <h3 className="text-xl font-black text-neutral-ink font-display mb-2">No arenas found</h3>
                             <p className="text-neutral-ink/60 font-bold max-w-md mx-auto">
                                 Try adjusting your search or filters to discover new battle arenas.
                             </p>
@@ -307,21 +277,20 @@ export default function GamePage() {
                     <div className="mt-20">
                         <InformativeLoginCard
                             title="Your Personal Armory"
-                            description="Sign in to save your battle history, track your progress on specific decks, and create your own custom drills."
+                            description="Sign in to save your battle history, track your progress on specific arenas, and create your own custom drills."
                             benefits={[
                                 "Track personal high scores",
                                 "Earn unique battle badges",
-                                "Create private training decks",
+                                "Create private training arenas",
                                 "Review difficult cards"
                             ]}
                             icon={Gamepad2}
-                            flowType="CHAT"
+                            flowType="QUOOT"
                         />
                     </div>
                 )}
             </main>
 
-            {/* Create Content Panel */}
             <CreateContentPanel
                 isOpen={isCreatePanelOpen}
                 onClose={() => setIsCreatePanelOpen(false)}

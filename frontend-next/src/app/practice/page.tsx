@@ -9,7 +9,8 @@ import {
     SearchX,
     Globe,
     User as UserIcon,
-    Layers
+    Layers,
+    ShieldCheck
 } from "lucide-react";
 import { FilterState, PracticeNode } from "@/types/practice";
 import * as practiceService from "@/services/practiceService";
@@ -37,16 +38,12 @@ export default function PracticeHubPage() {
             mode: ['ALL'],
             level: ['ALL'],
             skill: ['ALL'],
-            timing: ['ALL'],
-            origin: ['ALL'],
-            status: ['ALL'],
             access: ['PUBLIC']
         },
         activeTab: 'PUBLIC'
     });
     const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
-    // Filter Groups Configuration
     const filterGroups: FilterGroup[] = [
         {
             id: 'access',
@@ -58,19 +55,8 @@ export default function PracticeHubPage() {
             ]
         },
         {
-            id: 'mode',
-            label: 'Protocol Mode',
-            type: 'SINGLE',
-            options: [
-                { id: 'ALL', label: 'All Protocols' },
-                { id: 'QUIZ', label: 'Quick Quiz' },
-                { id: 'FULL_EXAM', label: 'Full Exam' },
-                { id: 'SINGLE_EXAM', label: 'Single Topic' }
-            ]
-        },
-        {
             id: 'level',
-            label: 'Cognitive Level',
+            label: 'JLPT Level',
             type: 'SINGLE',
             options: [
                 { id: 'ALL', label: 'All Levels' },
@@ -80,41 +66,37 @@ export default function PracticeHubPage() {
                 { id: 'N2', label: 'JLPT N2' },
                 { id: 'N1', label: 'JLPT N1' }
             ]
-        },
-        {
-            id: 'skill',
-            label: 'Domain Specification',
-            type: 'SINGLE',
-            options: [
-                { id: 'ALL', label: 'All Skills' },
-                { id: 'VOCABULARY', label: 'Vocabulary' },
-                { id: 'GRAMMAR', label: 'Grammar' },
-                { id: 'READING', label: 'Reading' },
-                { id: 'LISTENING', label: 'Listening' }
-            ]
         }
     ];
 
-    // Fetch Data
     const fetchNodes = useCallback(async () => {
         setIsLoading(true);
         try {
             const apiFilters: FilterState = {
                 mode: (searchState.activeFilters.mode?.[0] || 'ALL') as any,
                 level: (searchState.activeFilters.level?.[0] || 'ALL') as any,
-                skill: (searchState.activeFilters.skill?.[0] || 'ALL') as any,
-                timing: (searchState.activeFilters.timing?.[0] || 'ALL') as any,
-                origin: searchState.activeTab === 'PUBLIC' ? 'system' : 'manual',
-                status: (searchState.activeFilters.status?.[0] || 'ALL') as any,
-                access: searchState.activeTab as 'PUBLIC' | 'PERSONAL'
-            };
+                visibility: searchState.activeTab === 'PUBLIC' ? undefined : 'private'
+            } as any;
 
             const { nodes: fetchedNodes } = await practiceService.getNodes(apiFilters, !!user);
 
-            const filtered = fetchedNodes.filter(node =>
-                node.title.toLowerCase().includes(searchState.query.toLowerCase()) ||
-                node.description.toLowerCase().includes(searchState.query.toLowerCase())
-            );
+            let filtered = fetchedNodes;
+
+            // Filter by Access tab logic
+            if (searchState.activeTab === 'PUBLIC') {
+                filtered = filtered.filter(n => n.tags?.visibility !== 'private');
+            } else {
+                filtered = filtered.filter(n => n.tags?.visibility === 'private');
+            }
+
+            // Search
+            if (searchState.query.trim()) {
+                const q = searchState.query.toLowerCase();
+                filtered = filtered.filter(node =>
+                    node.title.toLowerCase().includes(q) ||
+                    node.description.toLowerCase().includes(q)
+                );
+            }
 
             setNodes(filtered);
         } catch (error) {
@@ -167,11 +149,12 @@ export default function PracticeHubPage() {
     const handleSaveContent = async (data: any) => {
         try {
             await practiceService.createNode({
-                title: data.title || "New Practice Plan",
+                title: data.title || "New Protocol",
                 description: data.description || "Custom training sequence",
+                visibility: data.visibility || 'private',
                 mode: (searchState.activeFilters.mode?.[0] !== 'ALL' ? searchState.activeFilters.mode?.[0] : 'QUIZ') as any,
                 level: (searchState.activeFilters.level?.[0] !== 'ALL' ? searchState.activeFilters.level?.[0] : 'N3') as any,
-                skills: (searchState.activeFilters.skill?.[0] !== 'ALL' ? [searchState.activeFilters.skill?.[0]] : ['VOCABULARY']) as any,
+                skills: ['VOCABULARY'],
                 questions: data.items?.map((item: any, i: number) => ({
                     content: item.question || item.front || item.term || "",
                     options: item.options?.map((opt: any, oi: number) => ({
@@ -180,13 +163,12 @@ export default function PracticeHubPage() {
                     })) || [],
                     correctOptionId: (item.correctIndex !== undefined) ? `o-${item.correctIndex}` : (item.correctOptionId || "o-0"),
                     explanation: item.explanation || ""
-                })) || [],
-                isPublic: false
+                })) || []
             });
             fetchNodes();
             setIsCreatePanelOpen(false);
         } catch (error) {
-            console.error("Failed to save practice plan:", error);
+            console.error("Failed to save protocol:", error);
             throw error;
         }
     };
@@ -201,7 +183,7 @@ export default function PracticeHubPage() {
                 rightContent={
                     <>
                         <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
-                        <CreateButton label="Create Plan" onClick={handleCreateClick} />
+                        <CreateButton label="Create Protocol" onClick={handleCreateClick} />
                     </>
                 }
             >
@@ -239,7 +221,8 @@ export default function PracticeHubPage() {
                                 badge={{ label: node.tags?.level || node.level }}
                                 metadata={[
                                     { label: 'Questions', value: node.stats.questionCount, icon: <Layers size={14} /> },
-                                    ...(node.personalData?.bestScore ? [{ label: '% Best', value: node.personalData.bestScore, icon: <Activity size={14} className="text-secondary" /> }] : [])
+                                    ...(node.tags?.visibility === 'global' ? [{ label: 'Official', value: 'Verified', icon: <ShieldCheck size={14} className="text-primary-strong" /> }] : []),
+                                    ...(node.creatorName && node.tags?.visibility !== 'global' ? [{ label: 'By', value: node.creatorName, icon: <UserIcon size={14} /> }] : [])
                                 ]}
                                 onClick={() => handleStartNode(node.id)}
                             />
@@ -276,7 +259,6 @@ export default function PracticeHubPage() {
                 )}
             </main>
 
-            {/* Create Content Panel */}
             <CreateContentPanel
                 isOpen={isCreatePanelOpen}
                 onClose={() => setIsCreatePanelOpen(false)}

@@ -10,7 +10,8 @@ import {
     MoreVertical,
     Globe,
     User as UserIcon,
-    ArrowRightLeft
+    ArrowRightLeft,
+    ShieldCheck
 } from 'lucide-react';
 import { SearchNexus } from '@/components/shared/SearchNexus';
 import { SearchNexusState, FilterGroup } from '@/types/search';
@@ -18,23 +19,24 @@ import { useUser } from '@/context/UserContext';
 import { useGlobalAuth } from '@/context/GlobalAuthContext';
 import { CreateButton, InformativeLoginCard, PageHeader, ViewModeToggle, CreateContentPanel, ListingCard } from '@/components/shared';
 import type { ViewMode } from '@/components/shared';
-import { fetchFlashcardDecks, createFlashcardDeck } from '@/services/flashcardService';
+import { fetchFlashcardSets, createFlashcardSet } from '@/services/flashcardService';
 
-interface FlashcardDeck {
+interface FlashcardSet {
     id: string;
     title: string;
     description: string;
     cardCount: number;
     level?: string;
     tags: string[];
-    isPersonal: boolean;
+    visibility?: 'global' | 'public' | 'private';
+    creatorName?: string;
 }
 
 export default function FlashcardsMenu() {
     const { user } = useUser();
     const { openAuth } = useGlobalAuth();
 
-    const [decks, setDecks] = useState<FlashcardDeck[]>([]);
+    const [sets, setSets] = useState<FlashcardSet[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     const [searchState, setSearchState] = useState<SearchNexusState>({
@@ -48,65 +50,63 @@ export default function FlashcardsMenu() {
     const [viewMode, setViewMode] = useState<ViewMode>('GRID');
     const [isCreatePanelOpen, setIsCreatePanelOpen] = useState(false);
 
-    const loadDecks = async () => {
+    const loadSets = async () => {
         setIsLoading(true);
         try {
-            const fetched = await fetchFlashcardDecks();
-            const mappedDecks: FlashcardDeck[] = fetched.map((d: any) => ({
-                id: d.id,
-                title: d.title,
-                description: d.description || "",
-                cardCount: d.cardCount || 0,
-                level: d.level,
-                tags: d.tags || [],
-                isPersonal: false // Handling managed by backend
+            const fetched = await fetchFlashcardSets();
+            const mappedSets: FlashcardSet[] = fetched.map((s: any) => ({
+                id: s.id,
+                title: s.title,
+                description: s.description || "",
+                cardCount: s.cardCount || 0,
+                level: s.level,
+                tags: s.tags || [],
+                visibility: s.visibility,
+                creatorName: s.creatorName
             }));
-            setDecks(mappedDecks);
+            setSets(mappedSets);
         } catch (err) {
-            console.error("Failed to load flashcard decks:", err);
-            setDecks([]);
+            console.error("Failed to load flashcard sets:", err);
+            setSets([]);
         } finally {
             setIsLoading(false);
         }
     };
 
     useEffect(() => {
-        loadDecks();
+        if (searchState.activeTab === 'PUBLIC' || user) {
+            loadSets();
+        } else {
+            setSets([]);
+        }
     }, [searchState.activeTab, user]);
 
-    const filteredDecks = useMemo(() => {
-        let result = [...decks];
+    const filteredSets = useMemo(() => {
+        let result = [...sets];
 
-        const selectedTagIds = [
-            ...(searchState.activeFilters.level || []),
-            ...(searchState.activeFilters.skill || []),
-            ...(searchState.activeFilters.category || [])
-        ].filter(id => id !== 'ALL');
-
-        if (selectedTagIds.length > 0) {
-            result = result.filter(deck =>
-                selectedTagIds.some(tagId => deck.tags.includes(tagId))
-            );
+        // Filter by Access tab
+        if (searchState.activeTab === 'PUBLIC') {
+            result = result.filter(s => s.visibility !== 'private');
+        } else {
+            result = result.filter(s => s.visibility === 'private');
         }
 
-        // Inline search filtering
+        const selectedLevels = searchState.activeFilters.level || [];
+        if (selectedLevels.length > 0) {
+            result = result.filter(s => s.level && selectedLevels.includes(s.level));
+        }
+
         if (searchState.query.trim()) {
             const query = searchState.query.toLowerCase();
-            result = result.filter(deck =>
-                deck.title.toLowerCase().includes(query) ||
-                deck.description.toLowerCase().includes(query) ||
-                deck.tags.some(tag => tag.toLowerCase().includes(query))
+            result = result.filter(s =>
+                s.title.toLowerCase().includes(query) ||
+                s.description.toLowerCase().includes(query) ||
+                s.tags.some(tag => tag.toLowerCase().includes(query))
             );
         }
 
-        // Prioritize personal content
-        result.sort((a, b) => {
-            if (a.isPersonal === b.isPersonal) return 0;
-            return a.isPersonal ? -1 : 1;
-        });
-
         return result;
-    }, [decks, searchState.query, searchState.activeFilters]);
+    }, [sets, searchState.query, searchState.activeFilters, searchState.activeTab]);
 
 
     const filterGroups: FilterGroup[] = [
@@ -115,19 +115,8 @@ export default function FlashcardsMenu() {
             label: 'Access',
             type: 'SINGLE',
             options: [
-                { id: 'PUBLIC', label: 'Public Decks', icon: <Globe size={12} /> },
-                { id: 'PERSONAL', label: 'My Decks', icon: <UserIcon size={12} /> }
-            ]
-        },
-        {
-            id: 'category',
-            label: 'Categories',
-            type: 'MULTI',
-            options: [
-                { id: 'kanji', label: 'Kanji' },
-                { id: 'vocabulary', label: 'Vocabulary' },
-                { id: 'grammar', label: 'Grammar' },
-                { id: 'reading', label: 'Reading' }
+                { id: 'PUBLIC', label: 'Public Sets', icon: <Globe size={12} /> },
+                { id: 'PERSONAL', label: 'My Sets', icon: <UserIcon size={12} /> }
             ]
         },
         {
@@ -169,7 +158,7 @@ export default function FlashcardsMenu() {
             openAuth('LOGIN', {
                 flowType: 'FLASHCARDS',
                 title: 'Master Spaced Repetition',
-                description: 'Sign in to create your own personalized decks and master them using Hanapita SRS.'
+                description: 'Sign in to create your own personalized sets and master them using Hanapita SRS.'
             });
         } else {
             setIsCreatePanelOpen(true);
@@ -178,9 +167,10 @@ export default function FlashcardsMenu() {
 
     const handleSaveContent = async (data: any) => {
         try {
-            await createFlashcardDeck({
-                title: data.title || "New Flashcard Deck",
+            await createFlashcardSet({
+                title: data.title || "New Set",
                 description: data.description || "Created via Hanachan AI",
+                visibility: data.visibility || 'private',
                 level: (searchState.activeFilters.level?.[0] !== 'ALL' ? searchState.activeFilters.level?.[0] : 'N3') as any,
                 cards: data.items?.map((item: any) => ({
                     front: item.front || item.term || item.kanji || "",
@@ -188,12 +178,12 @@ export default function FlashcardsMenu() {
                     reading: item.reading || item.hiragana || "",
                     mnemonic: item.mnemonic || ""
                 })),
-                tags: ['personal', 'flashcards']
+                tags: ['personal']
             });
-            await loadDecks();
+            await loadSets();
             setIsCreatePanelOpen(false);
         } catch (err) {
-            console.error("Failed to save flashcard deck:", err);
+            console.error("Failed to save flashcard set:", err);
             throw err;
         }
     };
@@ -212,12 +202,12 @@ export default function FlashcardsMenu() {
                 rightContent={
                     <>
                         <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
-                        <CreateButton label="Create Deck" onClick={handleCreateClick} />
+                        <CreateButton label="Create Set" onClick={handleCreateClick} />
                     </>
                 }
             >
                 <SearchNexus
-                    placeholder="Search decks, categories, or keywords..."
+                    placeholder="Search flashcard sets..."
                     groups={filterGroups}
                     state={searchState}
                     onChange={handleSearchChange}
@@ -231,30 +221,32 @@ export default function FlashcardsMenu() {
 
             {/* Main Content */}
             <main className="max-w-6xl mx-auto px-6 py-12">
-                {/* Content Removed */}
-
-                {filteredDecks.length > 0 ? (
+                {filteredSets.length > 0 ? (
                     <div className={viewMode === 'GRID'
                         ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
                         : "flex flex-col gap-4"
                     }>
-                        {filteredDecks.map((deck) => (
+                        {filteredSets.map((set) => (
                             <ListingCard
-                                key={deck.id}
-                                title={deck.title}
-                                description={deck.description}
+                                key={set.id}
+                                title={set.title}
+                                description={set.description}
                                 icon={<Layers size={24} />}
                                 iconBgColor="bg-neutral-beige/50"
                                 viewMode={viewMode}
-                                metadata={[{ label: 'Cards', value: deck.cardCount || 0, icon: <Layers size={14} className="text-primary-strong" /> }]}
-                                badge={deck.isPersonal ? { label: 'My Deck', color: 'bg-accent/20' } : undefined}
+                                metadata={[
+                                    { label: 'Cards', value: set.cardCount || 0, icon: <Layers size={14} className="text-primary-strong" /> },
+                                    ...(set.visibility === 'global' ? [{ label: 'Official', value: 'Verified', icon: <ShieldCheck size={14} className="text-primary-strong" /> }] : []),
+                                    ...(set.creatorName && set.visibility !== 'global' ? [{ label: 'By', value: set.creatorName, icon: <UserIcon size={14} /> }] : [])
+                                ]}
+                                badge={set.level ? { label: set.level } : undefined}
                                 onClick={() => {/* handle navigate */ }}
                             />
                         ))}
                     </div>
                 ) : (
                     <div className="text-center py-20 bg-neutral-white border border-neutral-gray/20 rounded-[2rem]">
-                        <p className="text-neutral-ink font-black uppercase tracking-widest">No decks found matching your parameters</p>
+                        <p className="text-neutral-ink font-black uppercase tracking-widest">No sets found matching your parameters</p>
                     </div>
                 )}
 
@@ -262,14 +254,14 @@ export default function FlashcardsMenu() {
                 {searchState.activeTab === 'PERSONAL' && !user && (
                     <div className="mt-12">
                         <InformativeLoginCard
-                            title="Your Personal Flashcard Vault"
-                            description="Sign in to create custom decks, track your SRS progress, and bookmark community resources for personal study."
+                            title="Your Personal Vault"
+                            description="Sign in to create custom sets, track your SRS progress, and bookmark community resources for personal study."
                             icon={Layers}
                             benefits={[
-                                "Create Unlimited Custom Decks",
+                                "Create Unlimited Custom Sets",
                                 "Spaced Repetition Tracking (SRS)",
                                 "Priority Search Results",
-                                "Synchronization Across All Devices"
+                                "Synchronization Across Devices"
                             ]}
                             flowType="FLASHCARDS"
                         />
@@ -277,7 +269,6 @@ export default function FlashcardsMenu() {
                 )}
             </main>
 
-            {/* Create Content Panel */}
             <CreateContentPanel
                 isOpen={isCreatePanelOpen}
                 onClose={() => setIsCreatePanelOpen(false)}

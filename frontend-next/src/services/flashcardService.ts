@@ -3,40 +3,38 @@ import { authFetch } from '@/lib/authFetch';
 const API_BASE = '/e-api/v1/flashcards';
 
 class FlashcardService {
-    // Deck Management
-    async fetchFlashcardDecks() {
-        const response = await authFetch(`${API_BASE}/decks`);
-        if (!response.ok) throw new Error('Failed to fetch flashcard decks');
+    // Set Management
+    async fetchFlashcardSets() {
+        const response = await authFetch(`${API_BASE}/sets`);
+        if (!response.ok) throw new Error('Failed to fetch flashcard sets');
         return response.json();
     }
 
-    async fetchFlashcardDeckById(id: string) {
-        const response = await authFetch(`${API_BASE}/decks/${id}`);
-        if (!response.ok) throw new Error('Failed to fetch flashcard deck');
+    async fetchFlashcardSetById(id: string) {
+        const response = await authFetch(`${API_BASE}/sets/${id}`);
+        if (!response.ok) throw new Error('Failed to fetch flashcard set');
         return response.json();
     }
 
-    async createFlashcardDeck(deck: any) {
-        const response = await authFetch(`${API_BASE}/decks`, {
+    async createFlashcardSet(set: any) {
+        const response = await authFetch(`${API_BASE}/sets`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(deck)
+            body: JSON.stringify(set)
         });
-        if (!response.ok) throw new Error('Failed to create flashcard deck');
+        if (!response.ok) throw new Error('Failed to create flashcard set');
         return response.json();
     }
 
     // --- Study & SRS ---
 
     async getDueFlashcards() {
-        // Updated to use Express endpoint
         const response = await authFetch(`${API_BASE}/study/due`);
         if (!response.ok) throw new Error('Failed to fetch due cards');
         return response.json();
     }
 
     async answerCard(cardId: string, quality: number) {
-        // Updated to use Express endpoint
         const response = await authFetch(`${API_BASE}/study/answer`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -49,7 +47,6 @@ class FlashcardService {
 
 export const flashcardService = new FlashcardService();
 
-// Individual exports for components that prefer them
-export const fetchFlashcardDecks = () => flashcardService.fetchFlashcardDecks();
-export const fetchFlashcardDeckById = (id: string) => flashcardService.fetchFlashcardDeckById(id);
-export const createFlashcardDeck = (deck: any) => flashcardService.createFlashcardDeck(deck);
+export const fetchFlashcardSets = () => flashcardService.fetchFlashcardSets();
+export const fetchFlashcardSetById = (id: string) => flashcardService.fetchFlashcardSetById(id);
+export const createFlashcardSet = (set: any) => flashcardService.createFlashcardSet(set);
