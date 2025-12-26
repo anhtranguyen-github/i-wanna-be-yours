@@ -15,6 +15,7 @@ import Cookies from 'js-cookie';
 
 // Custom event for session expiry
 export const AUTH_SESSION_EXPIRED_EVENT = 'auth:session-expired';
+export const NOTIFICATION_EVENT = 'app:notification';
 
 // Flag to prevent event storming
 let isSessionExpiring = false;
@@ -31,6 +32,15 @@ export function dispatchSessionExpired(reason?: string) {
 
         window.dispatchEvent(new CustomEvent(AUTH_SESSION_EXPIRED_EVENT, {
             detail: { reason: reason || 'Session expired' }
+        }));
+    }
+}
+
+// Dispatch general notification event
+export function dispatchNotification(message: string, type: 'info' | 'success' | 'warning' | 'error' | 'critical', code?: string) {
+    if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent(NOTIFICATION_EVENT, {
+            detail: { message, type, code }
         }));
     }
 }
@@ -91,14 +101,47 @@ export async function authFetch(
     if (response.status === 401 && !skipAuthCheck) {
         console.warn(`[AuthFetch] 401 received from ${url.toString()}, initiating session cleanup`);
 
+        // Try to parse error code if available
+        let errorCode = '';
+        try {
+            const clone = response.clone();
+            const data = await clone.json();
+            errorCode = data.code || '';
+        } catch (e) { /* ignore */ }
+
         // Only perform cleanup actions if we aren't already handling an expiry
         if (!isSessionExpiring) {
-            // Dispatch event FIRST to update UI immediately
-            dispatchSessionExpired('Your session has expired. Please log in again.');
+            const message = errorCode === 'TOKEN_EXPIRED'
+                ? 'Your session has expired. Please log in again.'
+                : 'Authentication required. Please log in.';
 
-            // Then clear session in background
+            dispatchSessionExpired(message);
             clearSession();
         }
+    }
+
+    // Handle other middleware-level errors (400, 403, 413)
+    if ([400, 403, 413].includes(response.status)) {
+        try {
+            const clone = response.clone();
+            const data = await clone.json();
+            if (data.code) {
+                // Map codes to user-friendly messages
+                const codeMap: Record<string, { message: string, type: any }> = {
+                    'VIRUS_DETECTED': { message: data.error || 'Security risk detected. File discarded.', type: 'critical' },
+                    'FILE_TOO_LARGE': { message: 'The file is too large to process. Max 50MB.', type: 'error' },
+                    'INVALID_EXTENSION': { message: 'This file type is not allowed.', type: 'error' },
+                    'MIME_MISMATCH': { message: 'Security check failed: File content mismatch.', type: 'error' },
+                    'VALIDATION_ERROR': { message: 'Invalid input. Please check your data.', type: 'warning' },
+                    'FORBIDDEN': { message: 'You do not have permission for this action.', type: 'error' }
+                };
+
+                const mapped = codeMap[data.code];
+                if (mapped) {
+                    dispatchNotification(mapped.message, mapped.type, data.code);
+                }
+            }
+        } catch (e) { /* ignore */ }
     }
 
     return response;
