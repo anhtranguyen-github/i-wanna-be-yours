@@ -240,7 +240,7 @@ export default function GamePage() {
                 subtitle="High-stakes vocabulary battles"
                 icon={<Zap size={24} className="text-white" />}
                 iconBgColor="bg-primary-strong"
-                backHref="/game"
+                backHref="/activity"
                 backLabel="Back"
                 backPosition="inline"
                 rightContent={

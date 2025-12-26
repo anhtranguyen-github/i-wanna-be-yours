@@ -205,7 +205,7 @@ export default function FlashcardsMenu() {
                 subtitle="Master vocabulary through spaced repetition"
                 icon={<Layers size={24} className="text-white" />}
                 iconBgColor="bg-primary-strong"
-                backHref="/game"
+                backHref="/activity"
                 backLabel="Back"
                 backPosition="inline"
                 rightContent={

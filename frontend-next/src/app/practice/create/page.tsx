@@ -126,7 +126,7 @@ export default function CreateQuizPage() {
             <header className="bg-card border-b border-border sticky top-0 z-50 px-6 py-4">
                 <div className="max-w-6xl mx-auto flex items-center justify-between gap-6">
                     <div className="flex items-center gap-4">
-                        <Link href="/practice" className="w-10 h-10 bg-muted hover:bg-muted/80 rounded-xl flex items-center justify-center transition-colors">
+                        <Link href="/activity" className="w-10 h-10 bg-muted hover:bg-muted/80 rounded-xl flex items-center justify-center transition-colors">
                             <ArrowLeft size={20} className="text-neutral-ink" />
                         </Link>
                         <div>

@@ -11,7 +11,7 @@ import {
     User as UserIcon,
     Layers
 } from "lucide-react";
-import { FilterState, PracticeNode, PracticeMode, JLPTLevel, SkillType } from "@/types/practice";
+import { FilterState, PracticeNode } from "@/types/practice";
 import * as practiceService from "@/services/practiceService";
 import { SearchNexus } from "@/components/shared/SearchNexus";
 import { SearchNexusState, FilterGroup } from "@/types/search";
@@ -91,17 +91,6 @@ export default function PracticeHubPage() {
                 { id: 'GRAMMAR', label: 'Grammar' },
                 { id: 'READING', label: 'Reading' },
                 { id: 'LISTENING', label: 'Listening' }
-            ]
-        },
-        {
-            id: 'status',
-            label: 'Completion Status',
-            type: 'SINGLE',
-            options: [
-                { id: 'ALL', label: 'All States' },
-                { id: 'UNSTARTED', label: 'Pristine' },
-                { id: 'IN_PROGRESS', label: 'Active' },
-                { id: 'COMPLETED', label: 'Finalized' }
             ]
         }
     ];
@@ -228,8 +217,6 @@ export default function PracticeHubPage() {
 
             {/* Content Display */}
             <main className="max-w-6xl mx-auto px-6 py-12">
-                {/* Content Removed */}
-
                 {isLoading ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {[1, 2, 3, 4, 5, 6].map(i => (
@@ -246,7 +233,7 @@ export default function PracticeHubPage() {
                                 icon={<BrainCircuit size={24} />}
                                 iconBgColor="bg-neutral-beige/50"
                                 viewMode={viewMode}
-                                badge={{ label: node.tags.level }}
+                                badge={{ label: node.tags?.level || node.level }}
                                 metadata={[
                                     { label: 'Questions', value: node.stats.questionCount, icon: <Layers size={14} /> },
                                     ...(node.personalData?.bestScore ? [{ label: '% Best', value: node.personalData.bestScore, icon: <Activity size={14} className="text-secondary" /> }] : [])
