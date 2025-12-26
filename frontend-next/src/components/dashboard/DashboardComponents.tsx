@@ -1,6 +1,6 @@
 /**
  * Dashboard Components
- * 
+ *
  * Reusable components for displaying learning progress and statistics.
  */
 
@@ -114,7 +114,7 @@ export function StatCard({ title, value, icon, trend, color = "#4CAF50", descrip
 
             <div className="flex items-start justify-between">
                 <div>
-                    <p className="text-sm font-bold text-muted-foreground mb-1 uppercase tracking-tight font-display">
+                    <p className="text-sm font-bold text-neutral-ink mb-1 uppercase tracking-tight font-display">
                         {title}
                     </p>
                     <p className="text-3xl font-display font-black text-foreground">{value}</p>
@@ -231,7 +231,7 @@ export function StreakDisplay({ current, longest }: StreakDisplayProps) {
                 <span className="text-7xl font-black text-foreground font-display leading-none">
                     {current}
                 </span>
-                <span className="text-xs font-black text-muted-foreground uppercase tracking-widest font-display pb-2">
+                <span className="text-xs font-black text-neutral-ink uppercase tracking-widest font-display pb-2">
                     Days Running
                 </span>
             </div>
@@ -241,7 +241,7 @@ export function StreakDisplay({ current, longest }: StreakDisplayProps) {
                     <TrophyIcon className="w-6 h-6" />
                 </div>
                 <div className="flex-1">
-                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest font-display">
+                    <p className="text-[10px] font-black text-neutral-ink uppercase tracking-widest font-display">
                         Longest Streak
                     </p>
                     <p className="text-lg font-black text-foreground font-display">
@@ -250,7 +250,7 @@ export function StreakDisplay({ current, longest }: StreakDisplayProps) {
                 </div>
             </div>
 
-            <p className="mt-8 text-sm font-bold text-muted-foreground leading-relaxed">
+            <p className="mt-8 text-sm font-bold text-neutral-ink leading-relaxed">
                 Study every day to keep your streak alive and build your mastery!
             </p>
         </div>

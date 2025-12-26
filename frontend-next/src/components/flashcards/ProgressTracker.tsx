@@ -25,7 +25,7 @@ export function ProgressBar({ current, total, reviewed, className = "" }: Progre
                 />
                 {/* Current position indicator */}
                 <div
-                    className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white border-2 border-brand-green rounded-full shadow-sm transition-all duration-300"
+                    className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white border-2 border-brand-green rounded-full  transition-all duration-300"
                     style={{ left: `calc(${(current / total) * 100}% - 6px)` }}
                 />
             </div>
@@ -117,7 +117,7 @@ export function CompletionScreen({
         <div className="flex flex-col items-center justify-center h-full text-center p-6 space-y-6">
             {/* Trophy animation */}
             <div className="relative">
-                <div className="w-24 h-24 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center shadow-lg animate-pulse">
+                <div className="w-24 h-24 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center  animate-pulse">
                     <Trophy className="w-12 h-12 text-white" />
                 </div>
                 <div className="absolute -top-2 -right-2">
@@ -181,7 +181,7 @@ export function CompletionScreen({
             <div className="flex flex-col sm:flex-row gap-3 w-full max-w-xs">
                 <button
                     onClick={onRestart}
-                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-brand-green hover:bg-green-500 text-white font-bold rounded-xl shadow-lg transition-colors"
+                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-brand-green hover:bg-green-500 text-white font-bold rounded-xl  transition-colors"
                 >
                     <RotateCcw size={18} />
                     Study Again
