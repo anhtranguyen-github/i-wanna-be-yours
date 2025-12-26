@@ -25,8 +25,13 @@ const PracticeNodeSchema = new mongoose.Schema({
     level: { type: String, enum: ['N5', 'N4', 'N3', 'N2', 'N1'], default: 'N5' },
     skills: [{ type: String, enum: ['VOCABULARY', 'GRAMMAR', 'READING', 'LISTENING', 'KANJI'] }],
     origin: { type: String, enum: ['system', 'user', 'ai'], default: 'system' },
-    isPublic: { type: Boolean, default: true },
+    visibility: {
+        type: String,
+        enum: ['global', 'public', 'private'],
+        default: 'private'
+    },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+    creatorName: { type: String, default: 'System' },
     timeLimitMinutes: { type: Number, default: null },
     questions: [QuestionSchema],
     stats: {
@@ -45,7 +50,7 @@ PracticeNodeSchema.pre('save', function (next) {
 });
 
 // Indexes
-PracticeNodeSchema.index({ isPublic: 1, level: 1 });
+PracticeNodeSchema.index({ visibility: 1, level: 1 });
 PracticeNodeSchema.index({ userId: 1 });
 PracticeNodeSchema.index({ origin: 1 });
 

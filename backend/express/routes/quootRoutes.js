@@ -1,53 +1,86 @@
 const express = require('express');
 const router = express.Router();
-const { QuootDeck } = require('../models/QuootDeck');
+const { QuootArena } = require('../models/QuootArena');
 const { verifyJWT, optionalAuth } = require('../middleware/auth');
 
 /**
- * GET /quoot/decks
- * List all available quoot decks
+ * GET /quoot/arenas
+ * List available arenas with visibility filtering
  */
-router.get('/decks', optionalAuth, async (req, res) => {
+router.get('/arenas', optionalAuth, async (req, res) => {
     try {
-        const query = { isPublic: true };
+        const { level, visibility } = req.query;
+        let query = {};
+
+        // Visibility Logic:
+        // 1. Always show 'global'
+        // 2. Show 'public' if requested or by default? 
+        // 3. Show 'private' ONLY if it belongs to req.user
+
+        const visibilityFilters = [];
+        visibilityFilters.push({ visibility: 'global' });
+        visibilityFilters.push({ visibility: 'public' });
+
         if (req.user) {
             const userId = req.user.id || req.user.userId;
-            // Include user's own private decks
-            // query.$or = [{ isPublic: true }, { userId }];
+            visibilityFilters.push({ visibility: 'private', userId });
         }
 
-        const decks = await QuootDeck.find(query).sort({ createdAt: -1 }).lean();
+        query.$or = visibilityFilters;
 
-        // Transform for frontend
-        const transformed = decks.map(d => ({
-            id: d._id.toString(),
-            title: d.title,
-            description: d.description,
-            icon: d.icon,
-            level: d.level,
-            cardCount: d.cards.length,
-            stats: d.stats
+        if (level && level !== 'ALL') {
+            query.level = level;
+        }
+
+        // Specific visibility filter if requested (e.g., just my private ones)
+        if (visibility && ['global', 'public', 'private'].includes(visibility)) {
+            if (visibility === 'private') {
+                if (!req.user) return res.status(200).json([]);
+                query = { visibility: 'private', userId: req.user.id || req.user.userId };
+            } else {
+                query = { visibility };
+            }
+        }
+
+        const arenas = await QuootArena.find(query).sort({ visibility: 1, createdAt: -1 }).lean();
+
+        const transformed = arenas.map(a => ({
+            id: a._id.toString(),
+            title: a.title,
+            description: a.description,
+            icon: a.icon,
+            level: a.level,
+            cardCount: a.cards.length,
+            stats: a.stats,
+            visibility: a.visibility,
+            creatorName: a.creatorName
         }));
 
         res.status(200).json(transformed);
     } catch (err) {
-        console.error('Fetch Quoot Decks Error:', err);
+        console.error('Fetch Quoot Arenas Error:', err);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
 
 /**
- * GET /quoot/decks/:id
- * Get specific deck with all cards
+ * GET /quoot/arenas/:id
  */
-router.get('/decks/:id', optionalAuth, async (req, res) => {
+router.get('/arenas/:id', optionalAuth, async (req, res) => {
     try {
-        const deck = await QuootDeck.findById(req.params.id).lean();
-        if (!deck) return res.status(404).json({ error: 'Deck not found' });
+        const arena = await QuootArena.findById(req.params.id).lean();
+        if (!arena) return res.status(404).json({ error: 'Arena not found' });
+
+        // Access Control
+        if (arena.visibility === 'private') {
+            if (!req.user) return res.status(403).json({ error: 'Forbidden' });
+            const userId = req.user.id || req.user.userId;
+            if (arena.userId.toString() !== userId) return res.status(403).json({ error: 'Forbidden' });
+        }
 
         res.status(200).json({
-            ...deck,
-            id: deck._id.toString()
+            ...arena,
+            id: arena._id.toString()
         });
     } catch (err) {
         res.status(500).json({ error: 'Internal server error' });
@@ -55,25 +88,27 @@ router.get('/decks/:id', optionalAuth, async (req, res) => {
 });
 
 /**
- * POST /quoot/decks
- * Create a new custom quoot deck
+ * POST /quoot/arenas
+ * Create a new custom quoot arena
  */
-router.post('/decks', verifyJWT, async (req, res) => {
+router.post('/arenas', verifyJWT, async (req, res) => {
     try {
         const userId = req.user.id || req.user.userId;
-        const { title, description, level, icon, cards } = req.body;
+        const username = req.user.username || 'User'; // Assume username is in JWT or fallback
+        const { title, description, level, icon, cards, visibility } = req.body;
 
         if (!title || !cards || !Array.isArray(cards)) {
             return res.status(400).json({ error: 'Title and cards are required' });
         }
 
-        const deck = new QuootDeck({
+        const arena = new QuootArena({
             title,
             description: description || '',
             level: level || 'N3',
             icon: icon || '⚔️',
-            isPublic: false, // User created decks are private by default
+            visibility: visibility || 'private',
             userId,
+            creatorName: username,
             cards: cards.map(c => ({
                 front: c.front,
                 back: c.back,
@@ -82,14 +117,14 @@ router.post('/decks', verifyJWT, async (req, res) => {
             }))
         });
 
-        await deck.save();
+        await arena.save();
 
         res.status(201).json({
-            id: deck._id.toString(),
-            message: 'Quoot deck created successfully'
+            id: arena._id.toString(),
+            message: 'Quoot arena created successfully'
         });
     } catch (err) {
-        console.error('Create Quoot Deck Error:', err);
+        console.error('Create Quoot Arena Error:', err);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

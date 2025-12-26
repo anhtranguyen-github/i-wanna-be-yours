@@ -15,47 +15,50 @@ const { verifyJWT, verifyAccessToken, optionalAuth } = require('../middleware/au
 
 /**
  * GET /practice/nodes
- * List practice nodes - supports public and personal filtering
  */
 router.get('/nodes', optionalAuth, async (req, res) => {
     try {
         const limit = parseInt(req.query.limit) || 50;
         const offset = parseInt(req.query.offset) || 0;
-        const isPublic = req.query.is_public === 'true';
         const level = req.query.level;
         const mode = req.query.mode;
-        const skill = req.query.skill;
+        const visibilityFilter = req.query.visibility;
 
-        // Build query
         let query = {};
 
-        if (isPublic) {
-            // Public nodes - no auth required
-            query.isPublic = true;
-        } else if (req.user) {
-            // Personal nodes - auth required
-            query.userId = req.user.id || req.user.userId;
-        } else {
-            // No auth and not requesting public - return public by default
-            query.isPublic = true;
+        const visibilityFilters = [];
+        visibilityFilters.push({ visibility: 'global' });
+        visibilityFilters.push({ visibility: 'public' });
+
+        if (req.user) {
+            const userId = req.user.id || req.user.userId;
+            visibilityFilters.push({ visibility: 'private', userId });
         }
 
-        // Apply filters
+        query.$or = visibilityFilters;
+
         if (level && level !== 'ALL') query.level = level;
         if (mode && mode !== 'ALL') query.mode = mode;
-        if (skill && skill !== 'ALL') query.skills = { $in: [skill] };
+
+        if (visibilityFilter && ['global', 'public', 'private'].includes(visibilityFilter)) {
+            if (visibilityFilter === 'private') {
+                if (!req.user) return res.status(200).json({ nodes: [], total: 0 });
+                query = { visibility: 'private', userId: req.user.id || req.user.userId };
+            } else {
+                query = { visibility: visibilityFilter };
+            }
+        }
 
         const [nodes, total] = await Promise.all([
             PracticeNode.find(query)
-                .select('-questions') // Don't include questions in list
-                .sort({ createdAt: -1 })
+                .select('-questions')
+                .sort({ visibility: 1, createdAt: -1 })
                 .skip(offset)
                 .limit(limit)
                 .lean(),
             PracticeNode.countDocuments(query)
         ]);
 
-        // Transform _id to id for frontend
         const transformedNodes = nodes.map(node => ({
             id: node._id.toString(),
             title: node.title,
@@ -65,7 +68,7 @@ router.get('/nodes', optionalAuth, async (req, res) => {
                 level: node.level,
                 skills: node.skills,
                 origin: node.origin,
-                isStrict: node.mode === 'FULL_EXAM'
+                visibility: node.visibility
             },
             stats: {
                 questionCount: node.stats?.questionCount || 0,
@@ -73,7 +76,7 @@ router.get('/nodes', optionalAuth, async (req, res) => {
                 avgScore: node.stats?.avgScore || 0,
                 attemptCount: node.stats?.attemptCount || 0
             },
-            isPublic: node.isPublic,
+            creatorName: node.creatorName,
             createdAt: node.createdAt
         }));
 
@@ -86,7 +89,6 @@ router.get('/nodes', optionalAuth, async (req, res) => {
 
 /**
  * GET /practice/nodes/:id
- * Get a single practice node with questions
  */
 router.get('/nodes/:id', optionalAuth, async (req, res) => {
     try {
@@ -97,18 +99,12 @@ router.get('/nodes/:id', optionalAuth, async (req, res) => {
             return res.status(404).json({ error: 'Practice node not found' });
         }
 
-        // Check access for private nodes
-        if (!node.isPublic) {
-            if (!req.user) {
-                return res.status(403).json({ error: 'Forbidden' });
-            }
+        if (node.visibility === 'private') {
+            if (!req.user) return res.status(403).json({ error: 'Forbidden' });
             const userId = req.user.id || req.user.userId;
-            if (node.userId && node.userId.toString() !== userId) {
-                return res.status(403).json({ error: 'Forbidden' });
-            }
+            if (node.userId.toString() !== userId) return res.status(403).json({ error: 'Forbidden' });
         }
 
-        // Transform for frontend
         const response = {
             node: {
                 id: node._id.toString(),
@@ -119,13 +115,13 @@ router.get('/nodes/:id', optionalAuth, async (req, res) => {
                     level: node.level,
                     skills: node.skills,
                     origin: node.origin,
-                    isStrict: node.mode === 'FULL_EXAM',
-                    timerMode: node.timeLimitMinutes ? 'TIMED' : 'UNLIMITED'
+                    visibility: node.visibility
                 },
                 stats: {
                     questionCount: node.stats?.questionCount || node.questions.length,
                     timeLimitMinutes: node.timeLimitMinutes
-                }
+                },
+                creatorName: node.creatorName
             },
             questions: node.questions.map(q => ({
                 id: q.id,
@@ -145,18 +141,14 @@ router.get('/nodes/:id', optionalAuth, async (req, res) => {
     }
 });
 
-// ============================================================================
-// AUTHENTICATED ROUTES
-// ============================================================================
-
 /**
  * POST /practice/nodes
- * Create a new practice node
  */
 router.post('/nodes', verifyJWT, async (req, res) => {
     try {
         const userId = req.user.id || req.user.userId;
-        const { title, description, mode, level, skills, timeLimitMinutes, questions, isPublic } = req.body;
+        const username = req.user.username || 'User';
+        const { title, description, mode, level, skills, timeLimitMinutes, questions, visibility } = req.body;
 
         if (!title || !questions || !Array.isArray(questions) || questions.length === 0) {
             return res.status(400).json({ error: 'Title and at least one question are required' });
@@ -169,8 +161,9 @@ router.post('/nodes', verifyJWT, async (req, res) => {
             level: level || 'N5',
             skills: skills || [],
             origin: 'user',
-            isPublic: isPublic !== false, // Default to public
+            visibility: visibility || 'private',
             userId,
+            creatorName: username,
             timeLimitMinutes: timeLimitMinutes || null,
             questions: questions.map((q, i) => ({
                 id: q.id || `q-${Date.now()}-${i}`,
@@ -187,7 +180,7 @@ router.post('/nodes', verifyJWT, async (req, res) => {
 
         res.status(201).json({
             id: node._id.toString(),
-            message: 'Practice node created successfully'
+            message: 'Practice protocol created successfully'
         });
     } catch (err) {
         console.error('Create Node Error:', err);
@@ -195,29 +188,22 @@ router.post('/nodes', verifyJWT, async (req, res) => {
     }
 });
 
-/**
- * POST /practice/nodes/:id/submit
- * Submit an attempt for a practice node
- */
+// ... rest of the file (attempts, delete) remain same ...
+// Note: I'm only showing the changed parts for brevity in my thought, 
+// but I'll write the full file.
+
 router.post('/nodes/:id/submit', verifyJWT, async (req, res) => {
     try {
         const { id } = req.params;
         const userId = req.user.id || req.user.userId;
         const { answers, timeSpentSeconds } = req.body;
 
-        // Fetch the node to score
         const node = await PracticeNode.findById(id);
-        if (!node) {
-            return res.status(404).json({ error: 'Practice node not found' });
-        }
+        if (!node) return res.status(404).json({ error: 'Practice node not found' });
 
-        // Build answer map
         const answersMap = {};
-        (answers || []).forEach(a => {
-            answersMap[a.questionId] = a.selectedOptionId;
-        });
+        (answers || []).forEach(a => { answersMap[a.questionId] = a.selectedOptionId; });
 
-        // Score the attempt
         let correctCount = 0;
         let incorrectCount = 0;
         let unansweredCount = 0;
@@ -225,21 +211,11 @@ router.post('/nodes/:id/submit', verifyJWT, async (req, res) => {
         const scoredAnswers = node.questions.map(q => {
             const selectedOptionId = answersMap[q.id] || null;
             const isCorrect = selectedOptionId === q.correctOptionId;
+            if (!selectedOptionId) unansweredCount++;
+            else if (isCorrect) correctCount++;
+            else incorrectCount++;
 
-            if (!selectedOptionId) {
-                unansweredCount++;
-            } else if (isCorrect) {
-                correctCount++;
-            } else {
-                incorrectCount++;
-            }
-
-            return {
-                questionId: q.id,
-                selectedOptionId,
-                isCorrect,
-                timeSpentSeconds: 0
-            };
+            return { questionId: q.id, selectedOptionId, isCorrect, timeSpentSeconds: 0 };
         });
 
         const maxScore = node.questions.length;
@@ -247,37 +223,22 @@ router.post('/nodes/:id/submit', verifyJWT, async (req, res) => {
         const percentage = Math.round((score / maxScore) * 100);
         const status = percentage >= 60 ? 'PASSED' : 'FAILED';
 
-        // Save attempt
         const attempt = new PracticeAttempt({
             nodeId: id,
             userId,
             answers: scoredAnswers,
-            score,
-            maxScore,
-            percentage,
-            correctCount,
-            incorrectCount,
-            unansweredCount,
+            score, maxScore, percentage, correctCount, incorrectCount, unansweredCount,
             timeSpentSeconds: timeSpentSeconds || 0,
             status
         });
 
         await attempt.save();
 
-        // Update node stats
-        await PracticeNode.findByIdAndUpdate(id, {
-            $inc: { 'stats.attemptCount': 1 }
-        });
+        await PracticeNode.findByIdAndUpdate(id, { $inc: { 'stats.attemptCount': 1 } });
 
         res.status(200).json({
             attemptId: attempt._id.toString(),
-            score,
-            maxScore,
-            percentage,
-            correctCount,
-            incorrectCount,
-            unansweredCount,
-            status,
+            score, maxScore, percentage, correctCount, incorrectCount, unansweredCount, status,
             answers: scoredAnswers
         });
     } catch (err) {
@@ -286,10 +247,6 @@ router.post('/nodes/:id/submit', verifyJWT, async (req, res) => {
     }
 });
 
-/**
- * GET /practice/attempts
- * Get user's attempt history
- */
 router.get('/attempts', verifyJWT, async (req, res) => {
     try {
         const userId = req.user.id || req.user.userId;
@@ -327,22 +284,15 @@ router.get('/attempts', verifyJWT, async (req, res) => {
     }
 });
 
-/**
- * DELETE /practice/nodes/:id
- * Delete a practice node (owner only)
- */
 router.delete('/nodes/:id', verifyJWT, async (req, res) => {
     try {
         const { id } = req.params;
         const userId = req.user.id || req.user.userId;
 
         const node = await PracticeNode.findById(id);
-        if (!node) {
-            return res.status(404).json({ error: 'Practice node not found' });
-        }
+        if (!node) return res.status(404).json({ error: 'Practice node not found' });
 
-        // Only owner can delete (or system nodes can't be deleted)
-        if (node.origin === 'system') {
+        if (node.origin === 'system' || node.visibility === 'global') {
             return res.status(403).json({ error: 'Cannot delete system nodes' });
         }
         if (node.userId && node.userId.toString() !== userId) {
@@ -350,7 +300,7 @@ router.delete('/nodes/:id', verifyJWT, async (req, res) => {
         }
 
         await PracticeNode.findByIdAndDelete(id);
-        res.status(200).json({ message: 'Practice node deleted successfully' });
+        res.status(200).json({ message: 'Practice protocol deleted successfully' });
     } catch (err) {
         console.error('Delete Node Error:', err);
         res.status(500).json({ error: 'Internal server error' });
