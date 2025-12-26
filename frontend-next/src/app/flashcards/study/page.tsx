@@ -136,13 +136,11 @@ export default function StudyPage() {
     }
 
     const currentCard = queue[currentIndex];
-    const content = currentCard.content || {};
-
-    const frontText = content.front || content.kanji || content.vocabulary_original || content.title || "???";
-    const backText = content.back || content.meaning || content.english_meaning || "???";
+    const frontText = currentCard.front || currentCard.content?.front || currentCard.kanji || "???";
+    const backText = currentCard.back || currentCard.content?.back || currentCard.meaning || "???";
     const backDisplay = Array.isArray(backText) ? backText.join(", ") : backText;
 
-    const typeLabel = currentCard.card_type === "PERSONAL" ? "Private" : (content.p_tag || "Global");
+    const typeLabel = currentCard.card_type === "PERSONAL" ? "Private" : "Global";
     const deckLabel = currentCard.deck_name || "General";
 
     return (
@@ -214,9 +212,9 @@ export default function StudyPage() {
                                     {backDisplay}
                                 </div>
 
-                                {content.reading && (
+                                {currentCard.reading && (
                                     <div className="px-10 py-4 bg-background/10 rounded-[2rem]  border border-background/20  group-hover/back:border-secondary/30 transition-all duration-500">
-                                        <span className="text-secondary font-jp text-3xl font-black">{content.reading}</span>
+                                        <span className="text-secondary font-jp text-3xl font-black">{currentCard.reading}</span>
                                     </div>
                                 )}
                             </div>

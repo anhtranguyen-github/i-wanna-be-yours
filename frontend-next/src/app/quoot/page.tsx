@@ -16,7 +16,7 @@ import { InformativeLoginCard, CreateButton, PageHeader, ViewModeToggle, CreateC
 import type { ViewMode } from "@/components/shared";
 import { useUser } from "@/context/UserContext";
 import { useGlobalAuth } from "@/context/GlobalAuthContext";
-import { fetchDecks, createDeck } from "@/services/deckService";
+import { fetchQuootDecks, createQuootDeck } from "@/services/quootService";
 
 // =============================================================================
 // TYPES
@@ -110,16 +110,16 @@ export default function GamePage() {
         const loadDecks = async () => {
             setIsLoading(true);
             try {
-                const fetchedDecks = await fetchDecks(searchState.activeTab);
-                const mappedDecks: QuootDeck[] = fetchedDecks.map(d => ({
-                    id: d._id,
+                const fetchedDecks = await fetchQuootDecks();
+                const mappedDecks: QuootDeck[] = fetchedDecks.map((d: any) => ({
+                    id: d.id,
                     title: d.title,
                     description: d.description || "",
-                    cardCount: d.cards?.length || 0,
+                    cardCount: d.cardCount || 0,
                     level: d.level,
                     coverColor: 'bg-primary/20',
-                    coverEmoji: d.icon || '📚',
-                    isPersonal: searchState.activeTab === 'PERSONAL'
+                    coverEmoji: d.icon || '⚔️',
+                    isPersonal: false // Access control handled by backend query
                 }));
                 setDecks(mappedDecks);
             } catch (err) {
@@ -201,28 +201,28 @@ export default function GamePage() {
 
     const handleSaveContent = async (data: any) => {
         try {
-            const newDeck = await createDeck({
+            await createQuootDeck({
                 title: data.title || "New Quoot Deck",
                 description: data.description || "Created via Hanachan AI",
                 level: (searchState.activeFilters.level?.[0] !== 'ALL' ? searchState.activeFilters.level?.[0] : 'N3') as any,
                 cards: data.items?.map((item: any) => ({
                     front: item.term || item.kanji,
                     back: item.definition || item.meaning || "",
+                    reading: item.reading || item.hiragana || "",
                     type: 'vocabulary'
-                })),
-                tags: ['quoot', 'ai-generated']
+                }))
             });
             // Refresh decks
-            const fetchedDecks = await fetchDecks(searchState.activeTab);
-            const mappedDecks: QuootDeck[] = fetchedDecks.map(d => ({
-                id: d._id,
+            const fetchedDecks = await fetchQuootDecks();
+            const mappedDecks: QuootDeck[] = fetchedDecks.map((d: any) => ({
+                id: d.id,
                 title: d.title,
                 description: d.description || "",
-                cardCount: d.cards?.length || 0,
+                cardCount: d.cardCount || 0,
                 level: d.level,
                 coverColor: 'bg-primary/20',
-                coverEmoji: d.icon || '📚',
-                isPersonal: searchState.activeTab === 'PERSONAL'
+                coverEmoji: d.icon || '⚔️',
+                isPersonal: false
             }));
             setDecks(mappedDecks);
             setIsCreatePanelOpen(false);

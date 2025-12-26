@@ -20,7 +20,7 @@ import {
     generateOptions,
     shuffleArray
 } from "@/utils/gameUtils";
-import { fetchDeckById } from "@/services/deckService";
+import { fetchQuootDeckById } from "@/services/quootService";
 import {
     QuootDeck,
     QuootCard,
@@ -110,27 +110,27 @@ export default function QuootSessionPage() {
         const loadData = async () => {
             setLoading(true);
             try {
-                const deckData = await fetchDeckById(deckId);
+                const deckData = await fetchQuootDeckById(deckId);
 
                 if (deckData) {
                     const mappedDeck: QuootDeck = {
-                        id: deckData._id,
+                        id: deckData.id,
                         title: deckData.title,
                         description: deckData.description || "",
                         cardCount: deckData.cards?.length || 0,
                         level: deckData.level as any,
-                        category: (deckData.tags?.[0] as any) || 'VOCABULARY',
-                        coverEmoji: deckData.icon || '📚',
+                        category: 'VOCABULARY',
+                        coverEmoji: deckData.icon || '⚔️',
                         coverColor: 'bg-primary/20',
                         isPublic: true
                     };
 
-                    const mappedCards: QuootCard[] = deckData.cards.map(c => ({
-                        id: c._id,
+                    const mappedCards: QuootCard[] = deckData.cards.map((c: any) => ({
+                        id: c._id || c.id,
                         front: c.front,
                         back: c.back,
-                        furigana: c.sub_detail,
-                        wrongOptions: c.extra_data?.wrongOptions || []
+                        furigana: c.reading || c.sub_detail,
+                        wrongOptions: []
                     }));
 
                     setDeck(mappedDeck);

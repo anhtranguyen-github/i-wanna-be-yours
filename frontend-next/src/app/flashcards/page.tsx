@@ -18,7 +18,7 @@ import { useUser } from '@/context/UserContext';
 import { useGlobalAuth } from '@/context/GlobalAuthContext';
 import { CreateButton, InformativeLoginCard, PageHeader, ViewModeToggle, CreateContentPanel, ListingCard } from '@/components/shared';
 import type { ViewMode } from '@/components/shared';
-import { createDeck, fetchDecks } from '@/services/deckService';
+import { fetchFlashcardDecks, createFlashcardDeck } from '@/services/flashcardService';
 
 interface FlashcardDeck {
     id: string;
@@ -51,15 +51,15 @@ export default function FlashcardsMenu() {
     const loadDecks = async () => {
         setIsLoading(true);
         try {
-            const fetched = await fetchDecks(searchState.activeTab);
-            const mappedDecks: FlashcardDeck[] = fetched.map(d => ({
-                id: d._id,
+            const fetched = await fetchFlashcardDecks();
+            const mappedDecks: FlashcardDeck[] = fetched.map((d: any) => ({
+                id: d.id,
                 title: d.title,
                 description: d.description || "",
-                cardCount: d.cards?.length || 0,
+                cardCount: d.cardCount || 0,
                 level: d.level,
                 tags: d.tags || [],
-                isPersonal: searchState.activeTab === 'PERSONAL'
+                isPersonal: false // Handling managed by backend
             }));
             setDecks(mappedDecks);
         } catch (err) {
@@ -178,16 +178,17 @@ export default function FlashcardsMenu() {
 
     const handleSaveContent = async (data: any) => {
         try {
-            await createDeck({
+            await createFlashcardDeck({
                 title: data.title || "New Flashcard Deck",
                 description: data.description || "Created via Hanachan AI",
+                level: (searchState.activeFilters.level?.[0] !== 'ALL' ? searchState.activeFilters.level?.[0] : 'N3') as any,
                 cards: data.items?.map((item: any) => ({
                     front: item.term || item.kanji,
                     back: item.definition || item.meaning || "",
-                    sub_detail: item.reading || item.hiragana || "",
-                    type: 'vocabulary'
+                    reading: item.reading || item.hiragana || "",
+                    mnemonic: item.mnemonic || ""
                 })),
-                tags: ['personal', 'flashcards', 'ai-generated']
+                tags: ['personal', 'flashcards']
             });
             await loadDecks();
             setIsCreatePanelOpen(false);
