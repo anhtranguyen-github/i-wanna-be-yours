@@ -117,6 +117,7 @@ export default function PracticeHubPage() {
                 timing: (searchState.activeFilters.timing?.[0] || 'ALL') as any,
                 origin: searchState.activeTab === 'PUBLIC' ? 'system' : 'manual',
                 status: (searchState.activeFilters.status?.[0] || 'ALL') as any,
+                access: searchState.activeTab as 'PUBLIC' | 'PERSONAL'
             };
 
             const { nodes: fetchedNodes } = await practiceService.getNodes(apiFilters, !!user);
@@ -176,34 +177,18 @@ export default function PracticeHubPage() {
 
     const handleSaveContent = async (data: any) => {
         try {
-            await practiceService.jlptService.createExam({
-                config: {
-                    title: data.title || "New Practice Plan",
-                    description: data.description || "Custom training sequence",
-                    mode: (searchState.activeFilters.mode?.[0] !== 'ALL' ? searchState.activeFilters.mode?.[0] : 'QUIZ') as any,
-                    tags: {
-                        level: (searchState.activeFilters.level?.[0] !== 'ALL' ? searchState.activeFilters.level?.[0] : 'N3') as any,
-                        skills: (searchState.activeFilters.skill?.[0] !== 'ALL' ? [searchState.activeFilters.skill?.[0]] : ['VOCABULARY']) as any,
-                        origin: 'chatbot'
-                    },
-                    stats: {
-                        questionCount: data.items?.length || 0,
-                    }
-                },
+            await practiceService.createNode({
+                title: data.title || "New Practice Plan",
+                description: data.description || "Custom training sequence",
+                mode: (searchState.activeFilters.mode?.[0] !== 'ALL' ? searchState.activeFilters.mode?.[0] : 'QUIZ') as any,
+                level: (searchState.activeFilters.level?.[0] !== 'ALL' ? searchState.activeFilters.level?.[0] : 'N3') as any,
+                skills: (searchState.activeFilters.skill?.[0] !== 'ALL' ? [searchState.activeFilters.skill?.[0]] : ['VOCABULARY']) as any,
                 questions: data.items?.map((item: any, i: number) => ({
-                    id: `q-${i}`,
-                    type: 'MULTIPLE_CHOICE',
                     content: item.question || item.term || "",
                     options: item.options?.map((opt: any, oi: number) => ({ id: `o-${oi}`, text: opt })) || [],
                     correctOptionId: item.correctOptionId || "o-0",
-                    explanation: item.explanation || "",
-                    tags: {
-                        skills: (searchState.activeFilters.skill?.[0] !== 'ALL' ? [searchState.activeFilters.skill?.[0]] : ['VOCABULARY']) as any,
-                        level: (searchState.activeFilters.level?.[0] !== 'ALL' ? searchState.activeFilters.level?.[0] : 'N3') as any,
-                        origin: 'chatbot'
-                    }
+                    explanation: item.explanation || ""
                 })) || [],
-                origin: 'chatbot',
                 isPublic: false
             });
             fetchNodes();

@@ -26,18 +26,22 @@ export default function UnifiedSessionPage() {
     const [node, setNode] = useState<PracticeNode | null>(null);
     const [questions, setQuestions] = useState<Question[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [loadError, setLoadError] = useState<string | null>(null);
 
     useEffect(() => {
         if (!nodeId) return;
 
         const loadData = async () => {
             setIsLoading(true);
+            setLoadError(null);
             try {
                 const data = await practiceService.getNodeSessionData(nodeId);
                 setNode(data.node);
                 setQuestions(data.questions);
-            } catch (err) {
-                console.error("Failed to load practice session:", err);
+            } catch (err: any) {
+                // Don't spam console for expected 404 errors
+                const message = err?.message || 'Unknown error';
+                setLoadError(message);
             } finally {
                 setIsLoading(false);
             }
@@ -154,19 +158,25 @@ export default function UnifiedSessionPage() {
     }
 
     // Error state
-    if (!node || questions.length === 0) {
+    if (loadError || !node || questions.length === 0) {
         return (
             <div className="min-h-screen bg-background flex flex-col items-center justify-center p-8 text-center">
                 <div className="w-16 h-16 bg-destructive/10 text-destructive rounded-2xl flex items-center justify-center mb-6">
                     <AlertTriangle size={32} />
                 </div>
-                <h2 className="text-2xl font-black text-foreground font-display mb-2">Practice Not Found</h2>
-                <p className="text-neutral-ink font-bold mb-6">The requested practice session could not be loaded.</p>
+                <h2 className="text-2xl font-black text-foreground font-display mb-2">
+                    {loadError === 'Exam not found' ? 'Practice Not Found' : 'Unable to Load Practice'}
+                </h2>
+                <p className="text-neutral-ink font-bold mb-6 max-w-md">
+                    {loadError === 'Exam not found'
+                        ? 'This practice session doesn\'t exist or may have been removed.'
+                        : 'The requested practice session could not be loaded. Please try again or choose a different practice.'}
+                </p>
                 <Link
                     href="/practice"
                     className="px-6 py-3 bg-foreground text-background font-black font-display text-sm rounded-xl hover:bg-foreground/90 transition-colors"
                 >
-                    Back to Practice
+                    Back to Practice Hub
                 </Link>
             </div>
         );

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useUser } from '@/context/UserContext';
 import { ChevronLeft, Plus, Trash2, Save, Loader2, AlertCircle, Check, ArrowLeft, Zap } from 'lucide-react';
 import Link from 'next/link';
-import { createQuiz } from '@/services/quizService';
+import { createNode } from '@/services/practiceService';
 import { useGlobalAuth } from "@/context/GlobalAuthContext";
 
 const JLPT_LEVELS = ['N5', 'N4', 'N3', 'N2', 'N1', 'mixed'];
@@ -89,23 +89,21 @@ export default function CreateQuizPage() {
         setError('');
 
         try {
-            const quizData = {
-                author_id: String(user.id),
+            const result = await createNode({
                 title,
                 description,
-                origin: 'manual' as const,
-                jlpt_level: jlptLevel,
-                category,
-                time_limit_seconds: timeLimit || undefined,
-                is_public: isPublic,
-                questions: questions.map(q => ({
-                    question_type: q.question_type,
-                    content: { prompt: q.prompt, options: q.options, correct_answer: q.correct_answer, scoring_rule: 'binary' },
-                    points: q.points,
-                    learning_points: [],
-                })),
-            };
-            const result = await createQuiz(quizData);
+                mode: 'QUIZ',
+                level: jlptLevel === 'mixed' ? 'N3' : jlptLevel,
+                skills: category === 'mixed' ? ['VOCABULARY'] : [category.toUpperCase()],
+                timeLimitMinutes: timeLimit || undefined,
+                isPublic,
+                questions: questions.map((q, i) => ({
+                    content: q.prompt,
+                    options: q.options.filter(o => o).map((opt, oi) => ({ id: `o-${oi}`, text: opt })),
+                    correctOptionId: `o-${q.options.findIndex(o => o === q.correct_answer)}`,
+                    explanation: ''
+                }))
+            });
             setSuccess('Quiz created successfully!');
             setTimeout(() => router.push(`/practice/session/${result.id}`), 1000);
         } catch (err: any) {

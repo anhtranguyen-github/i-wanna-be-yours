@@ -6,7 +6,7 @@ import { ExamConfigForm } from './ExamConfigForm';
 import { ExamChatAssistant } from './ExamChatAssistant';
 import { ExamPreview } from './ExamPreview';
 import { JLPTLevel, SkillType, TimerMode, Question, UserCreatedExam, ExamConfig } from '@/types/practice';
-import * as jlptService from '@/services/jlptService';
+import { createNode } from '@/services/practiceService';
 import { useUser } from '@/context/UserContext';
 
 export interface CreateExamFormState {
@@ -76,55 +76,43 @@ export function CreateExamModal({ isOpen, onClose, onExamCreated }: CreateExamMo
         setError(null);
 
         try {
-            const tempId = `user-exam-${Date.now()}`;
-            let examId = '';
-
-            const nodeConfig: ExamConfig = {
-                id: tempId,
-                title: formState.title,
-                description: formState.description,
-                mode: formState.mode,
-                tags: {
+            if (!user) {
+                // Guest users - store in localStorage (simplified)
+                const tempId = `local-exam-${Date.now()}`;
+                const localExams = JSON.parse(localStorage.getItem('hanabira_local_exams') || '[]');
+                localExams.push({
+                    id: tempId,
+                    title: formState.title,
+                    description: formState.description,
+                    mode: formState.mode,
                     level: formState.level,
                     skills: formState.skills,
-                    origin: 'manual',
-                    timerMode: formState.timerMode,
-                },
-                stats: {
-                    questionCount: formState.questionCount,
-                    timeLimitMinutes: formState.timeLimitMinutes || undefined,
-                }
-            };
-
-            const examPayload = {
-                config: nodeConfig,
-                questions: generatedQuestions,
-                origin: 'manual' as const,
-                isPublic: formState.isPublic,
-            };
-
-            if (user) {
-                // Save to API
-                const response = await jlptService.createExam(examPayload);
-                examId = response.id;
+                    questions: generatedQuestions,
+                    createdAt: new Date().toISOString()
+                });
+                localStorage.setItem('hanabira_local_exams', JSON.stringify(localExams));
+                onExamCreated(tempId);
             } else {
-                // Save to Local Storage for guests
-                examId = tempId;
-                const newExam: UserCreatedExam = {
-                    id: examId,
-                    userId: 'guest',
-                    ...examPayload,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
-                    timesAttempted: 0,
-                };
-                jlptService.saveLocalUserExam(newExam);
+                // Logged in users - save to API
+                const result = await createNode({
+                    title: formState.title,
+                    description: formState.description,
+                    mode: formState.mode,
+                    level: formState.level,
+                    skills: formState.skills,
+                    timeLimitMinutes: formState.timeLimitMinutes || undefined,
+                    isPublic: formState.isPublic,
+                    questions: generatedQuestions.map(q => ({
+                        content: q.content,
+                        options: q.options,
+                        correctOptionId: q.correctOptionId,
+                        explanation: q.explanation || ''
+                    }))
+                });
+                onExamCreated(result.id);
             }
 
-            onExamCreated(examId);
             onClose();
-
-            // Reset form
             setFormState(initialFormState);
             setGeneratedQuestions([]);
         } catch (err: any) {
