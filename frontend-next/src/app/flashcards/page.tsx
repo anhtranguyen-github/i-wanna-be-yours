@@ -15,7 +15,8 @@ import {
 import { SearchNexus } from '@/components/shared/SearchNexus';
 import { SearchNexusState, FilterGroup } from '@/types/search';
 import { useUser } from '@/context/UserContext';
-import { CreateButton, InformativeLoginCard, PageHeader, ViewModeToggle, CreateContentPanel } from '@/components/shared';
+import { useGlobalAuth } from '@/context/GlobalAuthContext';
+import { CreateButton, InformativeLoginCard, PageHeader, ViewModeToggle, CreateContentPanel, ListingCard } from '@/components/shared';
 import type { ViewMode } from '@/components/shared';
 import {
     getPublicDecks,
@@ -23,76 +24,22 @@ import {
     searchDecks,
     getTagsByType
 } from './decks-data';
-import { createDeck } from '@/services/deckService';
+import { createDeck, fetchDecks } from '@/services/deckService';
 
 interface FlashcardDeckCardProps {
     deck: any;
     viewMode: ViewMode;
 }
 
-function FlashcardDeckCard({ deck, viewMode }: FlashcardDeckCardProps) {
-    if (viewMode === 'LIST') {
-        return (
-            <div className="bg-neutral-white border border-neutral-gray/20 rounded-2xl p-4 flex items-center justify-between group hover:border-primary-strong transition-all">
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-neutral-beige/50 rounded-xl flex items-center justify-center text-neutral-ink group-hover:bg-primary-strong group-hover:text-white transition-all">
-                        <Layers size={24} />
-                    </div>
-                    <div>
-                        <h4 className="font-black text-neutral-ink font-display group-hover:text-primary-strong transition-colors">
-                            {deck.title}
-                        </h4>
-                        <p className="text-[10px] text-neutral-ink font-bold opacity-60 line-clamp-1">
-                            {deck.description}
-                        </p>
-                    </div>
-                </div>
-                <div className="flex items-center gap-8">
-                    <div className="text-[10px] font-black uppercase tracking-widest text-neutral-ink/40 flex items-center gap-2">
-                        <Layers size={14} className="text-primary-strong" />
-                        {deck.cardCount || 0} Cards
-                    </div>
-                    <ArrowRight size={20} className="text-neutral-ink/40 group-hover:text-primary-strong group-hover:translate-x-1 transition-all" />
-                </div>
-            </div>
-        );
-    }
-
-    return (
-        <div key={deck.id} className="bg-neutral-white border border-neutral-gray/20 rounded-[2rem] p-8 hover:border-primary-strong transition-all group relative overflow-hidden h-full flex flex-col">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-primary/10 transition-colors" />
-
-            <div className="flex justify-between items-start mb-6">
-                <div className="w-14 h-14 bg-neutral-beige/50 rounded-2xl flex items-center justify-center text-neutral-ink group-hover:bg-primary-strong group-hover:text-white transition-all">
-                    <Layers size={28} />
-                </div>
-                <button className="p-2 text-neutral-ink/40 hover:text-neutral-ink transition-colors">
-                    <MoreVertical size={20} />
-                </button>
-            </div>
-
-            <h3 className="text-2xl font-black text-neutral-ink font-display mb-3 group-hover:text-primary-strong transition-colors">{deck.title}</h3>
-            <p className="text-sm font-bold text-neutral-ink mb-8 line-clamp-2 opacity-80 flex-grow leading-relaxed">{deck.description}</p>
-
-            <div className="flex items-center justify-between mt-auto pt-6 border-t border-neutral-gray/10">
-                <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-neutral-ink/60">
-                    <span className="flex items-center gap-2">
-                        <Layers size={14} className="text-primary-strong" />
-                        {deck.cardCount || 0} Cards
-                    </span>
-                </div>
-                <ArrowRight size={20} className="text-neutral-ink group-hover:translate-x-2 transition-transform" />
-            </div>
-        </div>
-    );
-}
+// FlashcardDeckCard replaced by ListingCard
 
 export default function FlashcardsMenu() {
     const { user } = useUser();
+    const { openAuth } = useGlobalAuth();
 
-    // We use useMemo to avoid regenerating the lists on every render
-    const publicList = useMemo(() => getPublicDecks(user?.id ? String(user.id) : null), [user]);
-    const personalList = useMemo(() => getPersonalDecks(), []);
+    // We'll load decks dynamically
+    const [decks, setDecks] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     const [searchState, setSearchState] = useState<SearchNexusState>({
         query: "",
@@ -105,13 +52,39 @@ export default function FlashcardsMenu() {
     const [viewMode, setViewMode] = useState<ViewMode>('GRID');
     const [isCreatePanelOpen, setIsCreatePanelOpen] = useState(false);
 
-    const [decks, setDecks] = useState<any[]>([]);
+    const loadDecks = async () => {
+        setIsLoading(true);
+        try {
+            const fetched = await fetchDecks(searchState.activeTab);
+            // Mix with static data for now to keep the demo rich
+            const staticList = searchState.activeTab === 'PUBLIC'
+                ? getPublicDecks(user?.id ? String(user.id) : null)
+                : getPersonalDecks();
+
+            const mappedStatic = staticList.map(d => ({ ...d, isPersonal: searchState.activeTab === 'PERSONAL' }));
+            const mappedFetched = fetched.map(d => ({
+                id: d._id,
+                title: d.title,
+                description: d.description || "",
+                cardCount: d.cards?.length || 0,
+                level: d.level,
+                tags: d.tags || [],
+                isPersonal: searchState.activeTab === 'PERSONAL'
+            }));
+
+            // Deduplicate by ID
+            const existingIds = new Set(mappedFetched.map(d => d.id));
+            setDecks([...mappedFetched, ...mappedStatic.filter(d => !existingIds.has(d.id))]);
+        } catch (err) {
+            console.error("Failed to load flashcard decks:", err);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const list = searchState.activeTab === 'PUBLIC' ? publicList : personalList;
-        const mapped = list.map(d => ({ ...d, isPersonal: searchState.activeTab === 'PERSONAL' }));
-        setDecks(mapped);
-    }, [searchState.activeTab, publicList, personalList]);
+        loadDecks();
+    }, [searchState.activeTab, user]);
 
     const filteredDecks = useMemo(() => {
         let result = [...decks];
@@ -194,7 +167,11 @@ export default function FlashcardsMenu() {
 
     const handleCreateClick = () => {
         if (!user) {
-            setShowLoginPrompt(true);
+            openAuth('LOGIN', {
+                flowType: 'FLASHCARDS',
+                title: 'Master Spaced Repetition',
+                description: 'Sign in to create your own personalized decks and master them using Hanapita SRS.'
+            });
         } else {
             setIsCreatePanelOpen(true);
         }
@@ -203,18 +180,18 @@ export default function FlashcardsMenu() {
     const handleSaveContent = async (data: any) => {
         try {
             await createDeck({
-                title: data.title,
-                description: data.description || "",
-                cards: data.items.map((item: any) => ({
-                    front: item.term || item.question,
-                    back: item.definition || item.answer,
+                title: data.title || "New Flashcard Deck",
+                description: data.description || "Created via Hanachan AI",
+                cards: data.items?.map((item: any) => ({
+                    front: item.term || item.kanji,
+                    back: item.definition || item.meaning || "",
+                    sub_detail: item.reading || item.hiragana || "",
                     type: 'vocabulary'
                 })),
-                tags: ['personal', 'flashcards']
+                tags: ['personal', 'flashcards', 'ai-generated']
             });
-            // In a real app we'd refresh the list here, 
-            // but since we are using local dummy data mostly, 
-            // we'll just log success.
+            await loadDecks();
+            setIsCreatePanelOpen(false);
         } catch (err) {
             console.error("Failed to save flashcard deck:", err);
             throw err;
@@ -254,12 +231,7 @@ export default function FlashcardsMenu() {
 
             {/* Main Content */}
             <main className="max-w-6xl mx-auto px-6 py-12">
-                <div className="flex items-center gap-3 mb-8">
-                    <Layers size={18} className="text-primary-strong" />
-                    <h2 className="text-[10px] font-black uppercase tracking-widest text-neutral-ink/60">
-                        Cognitive Vaults ({filteredDecks.length})
-                    </h2>
-                </div>
+                {/* Content Removed */}
 
                 {filteredDecks.length > 0 ? (
                     <div className={viewMode === 'GRID'
@@ -267,7 +239,17 @@ export default function FlashcardsMenu() {
                         : "flex flex-col gap-4"
                     }>
                         {filteredDecks.map((deck) => (
-                            <FlashcardDeckCard key={deck.id} deck={deck} viewMode={viewMode} />
+                            <ListingCard
+                                key={deck.id}
+                                title={deck.title}
+                                description={deck.description}
+                                icon={<Layers size={24} />}
+                                iconBgColor="bg-neutral-beige/50"
+                                viewMode={viewMode}
+                                metadata={[{ label: 'Cards', value: deck.cardCount || 0, icon: <Layers size={14} className="text-primary-strong" /> }]}
+                                badge={deck.isPersonal ? { label: 'My Deck', color: 'bg-accent/20' } : undefined}
+                                onClick={() => {/* handle navigate */ }}
+                            />
                         ))}
                     </div>
                 ) : (

@@ -70,12 +70,7 @@ export default function ToolsPage() {
             />
 
             <main className="max-w-6xl mx-auto px-6 py-12">
-                <div className="flex items-center gap-3 mb-8">
-                    <Wrench size={18} className="text-secondary" />
-                    <h2 className="text-[10px] font-black uppercase tracking-widest text-neutral-ink/60">
-                        Available Utilities ({routes.length})
-                    </h2>
-                </div>
+                {/* Content Removed */}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {routes.map((route) => (

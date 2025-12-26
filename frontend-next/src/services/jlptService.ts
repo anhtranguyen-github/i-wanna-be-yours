@@ -3,6 +3,7 @@
  */
 
 import { ExamAttempt, UserCreatedExam, ExamConfig, Question, SkillBreakdown, UserAnswer } from '@/types/practice';
+import { authFetch } from '@/lib/authFetch';
 
 const API_BASE = '/e-api/v1';
 
@@ -196,7 +197,7 @@ export async function getAttempts(options?: {
     if (options?.limit) params.append('limit', String(options.limit));
     if (options?.offset) params.append('offset', String(options.offset));
 
-    const response = await fetch(`${API_BASE}/jlpt/attempts?${params.toString()}`);
+    const response = await authFetch(`${API_BASE}/jlpt/attempts?${params.toString()}`);
 
     if (!response.ok) {
         throw new Error('Failed to fetch attempts');
@@ -209,7 +210,7 @@ export async function getAttempts(options?: {
  * Save exam attempt to API
  */
 export async function saveAttempt(attempt: ExamAttempt): Promise<{ id: string }> {
-    const response = await fetch(`${API_BASE}/jlpt/attempts`, {
+    const response = await authFetch(`${API_BASE}/jlpt/attempts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(attempt),
@@ -233,7 +234,7 @@ export async function getUserExams(options?: {
     if (options?.limit) params.append('limit', String(options.limit));
     if (options?.offset) params.append('offset', String(options.offset));
 
-    const response = await fetch(`${API_BASE}/jlpt/exams?${params.toString()}`);
+    const response = await authFetch(`${API_BASE}/jlpt/exams?${params.toString()}`);
 
     if (!response.ok) {
         throw new Error('Failed to fetch user exams');
@@ -251,7 +252,7 @@ export async function createExam(exam: {
     origin: 'manual' | 'chatbot';
     isPublic: boolean;
 }): Promise<{ id: string }> {
-    const response = await fetch(`${API_BASE}/jlpt/exams`, {
+    const response = await authFetch(`${API_BASE}/jlpt/exams`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(exam),
@@ -271,7 +272,7 @@ export async function updateExam(
     examId: string,
     updates: Partial<UserCreatedExam>
 ): Promise<{ success: boolean }> {
-    const response = await fetch(`${API_BASE}/jlpt/exams/${examId}`, {
+    const response = await authFetch(`${API_BASE}/jlpt/exams/${examId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates),
@@ -288,7 +289,7 @@ export async function updateExam(
  * Delete a custom exam
  */
 export async function deleteExam(examId: string): Promise<{ success: boolean }> {
-    const response = await fetch(`${API_BASE}/jlpt/exams/${examId}`, {
+    const response = await authFetch(`${API_BASE}/jlpt/exams/${examId}`, {
         method: 'DELETE',
     });
 
@@ -303,7 +304,7 @@ export async function deleteExam(examId: string): Promise<{ success: boolean }> 
  * Get a specific exam (including public exams)
  */
 export async function getExam(examId: string): Promise<UserCreatedExam> {
-    const response = await fetch(`${API_BASE}/jlpt/exams/${examId}`);
+    const response = await authFetch(`${API_BASE}/jlpt/exams/${examId}`);
 
     if (!response.ok) {
         throw new Error('Exam not found');
@@ -327,7 +328,7 @@ export interface GenerateQuestionsOptions {
 export async function generateQuestions(
     options: GenerateQuestionsOptions
 ): Promise<Question[]> {
-    const response = await fetch(`${API_BASE}/jlpt/generate`, {
+    const response = await authFetch(`${API_BASE}/jlpt/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(options),

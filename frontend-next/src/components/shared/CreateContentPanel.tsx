@@ -14,6 +14,7 @@ import {
     CheckCircle2,
     AlertCircle
 } from "lucide-react";
+import { authFetch } from "@/lib/authFetch";
 
 interface CreateContentPanelProps {
     isOpen: boolean;
@@ -54,17 +55,36 @@ export function CreateContentPanel({ isOpen, onClose, type, onSave }: CreateCont
         setIsGenerating(true);
         setError(null);
         try {
-            const response = await fetch('/hana-api/v1/agent', {
+            const response = await authFetch('/h-api/v1/agent', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     prompt: `Create a ${type.toLowerCase()} deck about: ${prompt}. Return JSON only.`,
-                    type: type
+                    type: type,
+                    session_id: "creator-session-" + Date.now(),
+                    user_id: "creator-user" // Will be overridden or pulled from context if available
                 })
             });
             const data = await response.json();
             if (data.error) throw new Error(data.error);
-            setGeneratedContent(data.content);
+
+            // Extract content from artifacts
+            const artifact = data.responses?.find((r: any) => r.type !== 'text');
+            if (artifact && artifact.content) {
+                // Determine format based on type
+                if (type === 'PRACTICE') {
+                    setGeneratedContent(artifact.content.quiz || artifact.content);
+                } else {
+                    setGeneratedContent({
+                        title: artifact.content.title || prompt.slice(0, 20),
+                        items: artifact.content.flashcards?.cards || artifact.content.vocabulary?.items || artifact.content.items || []
+                    });
+                }
+            } else if (data.responses?.[0]?.content) {
+                // Fallback to text content if no artifact
+                setGeneratedContent({ title: "Draft", items: [{ term: "Note", definition: data.responses[0].content }] });
+            }
+
             setIsPreviewMode(true);
         } catch (err: any) {
             setError(err.message || "Failed to generate content");

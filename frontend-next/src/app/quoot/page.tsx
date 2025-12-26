@@ -6,21 +6,16 @@ import {
     Gamepad2,
     Layers,
     Star,
-    Trophy,
-    Play,
-    Clock,
-    Search,
-    Filter,
     Globe,
     Zap,
-    User as UserIcon,
-    Sparkles
+    User as UserIcon
 } from "lucide-react";
 import { SearchNexus } from "@/components/shared/SearchNexus";
 import { SearchNexusState, FilterGroup } from "@/types/search";
-import { InformativeLoginCard, CreateButton, PageHeader, ViewModeToggle, ModeTabs, CreateContentPanel } from "@/components/shared";
+import { InformativeLoginCard, CreateButton, PageHeader, ViewModeToggle, CreateContentPanel, ListingCard } from "@/components/shared";
 import type { ViewMode } from "@/components/shared";
 import { useUser } from "@/context/UserContext";
+import { useGlobalAuth } from "@/context/GlobalAuthContext";
 import { fetchDecks, createDeck } from "@/services/deckService";
 
 // =============================================================================
@@ -39,7 +34,6 @@ interface QuootDeck {
     isPersonal?: boolean;
 }
 
-type QuootMode = 'CLASSIC' | 'SURVIVAL' | 'RANKED';
 
 // =============================================================================
 // COMPONENTS
@@ -51,77 +45,7 @@ interface DeckCardProps {
     viewMode: ViewMode;
 }
 
-function DeckCard({ deck, onClick, viewMode }: DeckCardProps) {
-    if (viewMode === 'LIST') {
-        return (
-            <button
-                onClick={onClick}
-                className="group bg-neutral-white rounded-2xl border border-neutral-gray/20 p-4 flex items-center justify-between text-left hover:border-primary-strong transition-all"
-            >
-                <div className="flex items-center gap-4">
-                    <div className={`w-12 h-12 ${deck.coverColor || 'bg-primary/20'} rounded-xl flex items-center justify-center text-2xl`}>
-                        {deck.coverEmoji || '📚'}
-                    </div>
-                    <div>
-                        <h4 className="font-black text-neutral-ink font-display group-hover:text-primary-strong transition-colors">
-                            {deck.title}
-                        </h4>
-                        <p className="text-[10px] text-neutral-ink font-bold opacity-60 line-clamp-1">
-                            {deck.description}
-                        </p>
-                    </div>
-                </div>
-                <div className="flex items-center gap-6">
-                    <div className="text-[10px] font-black uppercase tracking-widest text-neutral-ink/40 flex items-center gap-2">
-                        <Layers size={12} />
-                        {deck.cardCount} Cards
-                    </div>
-                    {deck.level && (
-                        <span className="px-2 py-1 bg-neutral-beige/30 text-[9px] font-black uppercase tracking-widest rounded-lg">
-                            {deck.level}
-                        </span>
-                    )}
-                </div>
-            </button>
-        );
-    }
-
-    return (
-        <button
-            onClick={onClick}
-            className="group bg-neutral-white rounded-[2rem] border border-neutral-gray/20 p-6 text-left hover:border-primary-strong transition-all relative overflow-hidden h-full flex flex-col"
-        >
-            <div className="flex items-start justify-between mb-4">
-                <div className={`w-14 h-14 ${deck.coverColor || 'bg-primary/20'} rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition-transform md:w-16 md:h-16 md:text-4xl`}>
-                    {deck.coverEmoji || '📚'}
-                </div>
-                {deck.level && (
-                    <span className="px-3 py-1.5 bg-neutral-white border border-neutral-gray/20 text-neutral-ink rounded-xl text-[9px] font-black uppercase tracking-widest">
-                        {deck.level}
-                    </span>
-                )}
-            </div>
-            <h4 className="text-xl font-black text-neutral-ink font-display mb-2 group-hover:text-primary-strong transition-colors line-clamp-1">
-                {deck.title}
-            </h4>
-            <p className="text-xs text-neutral-ink font-bold mb-6 line-clamp-2 leading-relaxed flex-grow">
-                {deck.description}
-            </p>
-            <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-[0.15em] text-neutral-ink/60 border-t border-neutral-gray/10 pt-4">
-                <span className="flex items-center gap-1.5">
-                    <Layers size={14} />
-                    {deck.cardCount} Cards
-                </span>
-                {deck.avgScore && (
-                    <span className="flex items-center gap-1.5 text-secondary">
-                        <Star size={14} fill="currentColor" />
-                        {deck.avgScore}%
-                    </span>
-                )}
-            </div>
-        </button>
-    );
-}
+// DeckCard replaced by ListingCard
 
 // =============================================================================
 // MAIN PAGE
@@ -130,6 +54,7 @@ function DeckCard({ deck, onClick, viewMode }: DeckCardProps) {
 export default function GamePage() {
     const router = useRouter();
     const { user } = useUser();
+    const { openAuth } = useGlobalAuth();
 
     const [searchState, setSearchState] = useState<SearchNexusState>({
         query: "",
@@ -140,7 +65,6 @@ export default function GamePage() {
     });
     const [showLoginPrompt, setShowLoginPrompt] = useState(false);
     const [viewMode, setViewMode] = useState<ViewMode>('GRID');
-    const [activeMode, setActiveMode] = useState<QuootMode>('CLASSIC');
     const [isCreatePanelOpen, setIsCreatePanelOpen] = useState(false);
 
     const filterGroups: FilterGroup[] = [
@@ -178,11 +102,6 @@ export default function GamePage() {
         }
     ];
 
-    const modes = [
-        { id: 'CLASSIC', label: 'Classic Battle', icon: <Gamepad2 size={16} /> },
-        { id: 'SURVIVAL', label: 'Survival Protocol', icon: <Clock size={16} /> },
-        { id: 'RANKED', label: 'Global Ranked', icon: <Trophy size={16} /> }
-    ];
 
     const [decks, setDecks] = useState<QuootDeck[]>([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -265,12 +184,16 @@ export default function GamePage() {
     };
 
     const handleDeckSelect = (deckId: string) => {
-        router.push(`/quoot/${deckId}?mode=${activeMode}`);
+        router.push(`/quoot/${deckId}`);
     };
 
     const handleCreateClick = () => {
         if (!user) {
-            setShowLoginPrompt(true);
+            openAuth('LOGIN', {
+                flowType: 'CHAT',
+                title: 'Forge Your Deck',
+                description: 'Join the ranks to create custom battle arenas and track your mastery.'
+            });
         } else {
             setIsCreatePanelOpen(true);
         }
@@ -278,15 +201,16 @@ export default function GamePage() {
 
     const handleSaveContent = async (data: any) => {
         try {
-            await createDeck({
-                title: data.title,
-                description: data.description || "",
-                cards: data.items.map((item: any) => ({
-                    front: item.term || item.question,
-                    back: item.definition || item.answer,
+            const newDeck = await createDeck({
+                title: data.title || "New Quoot Deck",
+                description: data.description || "Created via Hanachan AI",
+                level: (searchState.activeFilters.level?.[0] !== 'ALL' ? searchState.activeFilters.level?.[0] : 'N3') as any,
+                cards: data.items?.map((item: any) => ({
+                    front: item.term || item.kanji,
+                    back: item.definition || item.meaning || "",
                     type: 'vocabulary'
                 })),
-                tags: ['personal', 'quoot']
+                tags: ['quoot', 'ai-generated']
             });
             // Refresh decks
             const fetchedDecks = await fetchDecks(searchState.activeTab);
@@ -301,6 +225,7 @@ export default function GamePage() {
                 isPersonal: searchState.activeTab === 'PERSONAL'
             }));
             setDecks(mappedDecks);
+            setIsCreatePanelOpen(false);
         } catch (err) {
             console.error("Failed to save deck:", err);
             throw err;
@@ -337,42 +262,31 @@ export default function GamePage() {
                 />
             </PageHeader>
 
-            {/* Mode Tabs Navigation */}
-            <div className="bg-neutral-white border-b border-neutral-gray/20 py-4 px-6 sticky top-0 z-40">
-                <div className="max-w-6xl mx-auto flex items-center justify-between">
-                    <ModeTabs
-                        modes={modes}
-                        activeMode={activeMode}
-                        onChange={(m) => setActiveMode(m as QuootMode)}
-                    />
-                    <div className="hidden md:flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-neutral-ink/40">
-                        <Sparkles size={14} className="text-secondary" />
-                        Selected Mode: {modes.find(m => m.id === activeMode)?.label}
-                    </div>
-                </div>
-            </div>
 
             {/* Content Area */}
             <main className="max-w-6xl mx-auto px-6 py-12">
                 {/* Deck Discovery */}
                 <section>
-                    <div className="flex items-center gap-3 mb-8">
-                        <Layers size={18} className="text-primary-strong" />
-                        <h2 className="text-[10px] font-black uppercase tracking-widest text-neutral-ink/60">
-                            Cognitive Vaults ({filteredDecks.length})
-                        </h2>
-                    </div>
+                    {/* Content Removed */}
 
                     <div className={viewMode === 'GRID'
                         ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
                         : "flex flex-col gap-4"
                     }>
                         {filteredDecks.map((deck) => (
-                            <DeckCard
+                            <ListingCard
                                 key={deck.id}
-                                deck={deck}
-                                onClick={() => handleDeckSelect(deck.id)}
+                                title={deck.title}
+                                description={deck.description}
+                                icon={<span className="text-2xl">{deck.coverEmoji || '📚'}</span>}
+                                iconBgColor={deck.coverColor || 'bg-primary/10'}
                                 viewMode={viewMode}
+                                onClick={() => handleDeckSelect(deck.id)}
+                                badge={deck.level ? { label: deck.level } : undefined}
+                                metadata={[
+                                    { label: 'Cards', value: deck.cardCount, icon: <Layers size={14} /> },
+                                    ...(deck.avgScore ? [{ label: '% Score', value: deck.avgScore, icon: <Star size={14} className="text-secondary" /> }] : [])
+                                ]}
                             />
                         ))}
                     </div>

@@ -13,7 +13,9 @@ import {
     PracticeAttempt as EvaluationResult
 } from '@/types/practice';
 import * as jlptService from './jlptService';
+export { jlptService };
 import * as quizService from './quizService';
+import { authFetch } from '@/lib/authFetch';
 
 // Migration/Helper: Map ExamConfig to PracticeNode
 export const mapExamToNode = (exam: any): PracticeNode => {
@@ -75,13 +77,15 @@ export const mapQuizToNode = (quiz: any): PracticeNode => {
 
 /**
  * Fetch all nodes from all sources (System Exams, Custom Exams, Quizzes)
+ * @param filters - Filter criteria
+ * @param isAuthenticated - If true, fetch user-specific data (exams and attempts)
  */
-export async function getNodes(filters: FilterState): Promise<{ nodes: PracticeNode[], total: number }> {
+export async function getNodes(filters: FilterState, isAuthenticated: boolean = false): Promise<{ nodes: PracticeNode[], total: number }> {
     try {
         // 1. Fetch System Exams from API
         let nodes: PracticeNode[] = [];
         try {
-            const systemExamsResponse = await fetch('/e-api/v1/jlpt/exams?is_public=true');
+            const systemExamsResponse = await authFetch('/e-api/v1/jlpt/exams?is_public=true');
             if (systemExamsResponse.ok) {
                 const data = await systemExamsResponse.json();
                 nodes = data.exams.map(mapExamToNode);
@@ -90,8 +94,8 @@ export async function getNodes(filters: FilterState): Promise<{ nodes: PracticeN
             console.warn('Failed to fetch system exams from API:', e);
         }
 
-        // 2. Fetch User Custom Exams (if filters allow)
-        if (filters.mode === 'ALL' || filters.mode === 'FULL_EXAM' || filters.mode === 'SINGLE_EXAM') {
+        // 2. Fetch User Custom Exams (only if authenticated and filters allow)
+        if (isAuthenticated && (filters.mode === 'ALL' || filters.mode === 'FULL_EXAM' || filters.mode === 'SINGLE_EXAM')) {
             try {
                 const userExams = await jlptService.getUserExams();
                 const userNodes = userExams.exams.map(e => mapExamToNode(e.config || e));
@@ -127,36 +131,38 @@ export async function getNodes(filters: FilterState): Promise<{ nodes: PracticeN
             return modeMatch && levelMatch && skillMatch && timingMatch && originMatch;
         });
 
-        // 5. Inject Personal Data (Using API)
-        try {
-            const { attempts } = await jlptService.getAttempts();
-            filteredNodes = filteredNodes.map(node => {
-                const nodeAttempts = (attempts as any[]).filter(a => (a.nodeId || a.examId) === node.id);
-                if (nodeAttempts.length > 0) {
-                    const best = Math.max(...nodeAttempts.map(a => a.scorePercentage));
-                    const lastAttempt = nodeAttempts[nodeAttempts.length - 1];
+        // 5. Inject Personal Data (only if authenticated)
+        if (isAuthenticated) {
+            try {
+                const { attempts } = await jlptService.getAttempts();
+                filteredNodes = filteredNodes.map(node => {
+                    const nodeAttempts = (attempts as any[]).filter(a => (a.nodeId || a.examId) === node.id);
+                    if (nodeAttempts.length > 0) {
+                        const best = Math.max(...nodeAttempts.map(a => a.scorePercentage));
+                        const lastAttempt = nodeAttempts[nodeAttempts.length - 1];
+                        return {
+                            ...node,
+                            personalData: {
+                                hasCompleted: true,
+                                bestScore: best,
+                                attemptCount: nodeAttempts.length,
+                                status: best >= 60 ? 'PASSED' : 'FAILED',
+                                lastAttemptedAt: lastAttempt.completedAt
+                            }
+                        };
+                    }
                     return {
                         ...node,
                         personalData: {
-                            hasCompleted: true,
-                            bestScore: best,
-                            attemptCount: nodeAttempts.length,
-                            status: best >= 60 ? 'PASSED' : 'FAILED',
-                            lastAttemptedAt: lastAttempt.completedAt
+                            hasCompleted: false,
+                            attemptCount: 0,
+                            status: 'NEW'
                         }
                     };
-                }
-                return {
-                    ...node,
-                    personalData: {
-                        hasCompleted: false,
-                        attemptCount: 0,
-                        status: 'NEW'
-                    }
-                };
-            });
-        } catch (e) {
-            console.warn('Failed to fetch attempts from API:', e);
+                });
+            } catch (e) {
+                console.warn('Failed to fetch attempts from API:', e);
+            }
         }
 
         return {
@@ -224,5 +230,6 @@ export const practiceService = {
     getNodeSessionData,
     saveAttempt,
     mapExamToNode,
-    mapQuizToNode
+    mapQuizToNode,
+    jlptService
 };

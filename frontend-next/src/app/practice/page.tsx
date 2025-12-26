@@ -8,21 +8,22 @@ import {
     BrainCircuit,
     SearchX,
     Globe,
-    User as UserIcon
+    User as UserIcon,
+    Layers
 } from "lucide-react";
 import { FilterState, PracticeNode, PracticeMode, JLPTLevel, SkillType } from "@/types/practice";
 import * as practiceService from "@/services/practiceService";
-import PracticeListCard from "@/components/practice/PracticeListCard";
-import PracticeCard from "@/components/practice/PracticeCard";
 import { SearchNexus } from "@/components/shared/SearchNexus";
 import { SearchNexusState, FilterGroup } from "@/types/search";
-import { InformativeLoginCard, CreateButton, PageHeader, ViewModeToggle, CreateContentPanel } from "@/components/shared";
+import { InformativeLoginCard, CreateButton, PageHeader, ViewModeToggle, CreateContentPanel, ListingCard } from "@/components/shared";
 import type { ViewMode } from "@/components/shared";
 import { useUser } from "@/context/UserContext";
+import { useGlobalAuth } from "@/context/GlobalAuthContext";
 
 export default function PracticeHubPage() {
     const router = useRouter();
     const { user } = useUser();
+    const { openAuth } = useGlobalAuth();
 
     // State
     const [nodes, setNodes] = useState<PracticeNode[]>([]);
@@ -118,7 +119,7 @@ export default function PracticeHubPage() {
                 status: (searchState.activeFilters.status?.[0] || 'ALL') as any,
             };
 
-            const { nodes: fetchedNodes } = await practiceService.getNodes(apiFilters);
+            const { nodes: fetchedNodes } = await practiceService.getNodes(apiFilters, !!user);
 
             const filtered = fetchedNodes.filter(node =>
                 node.title.toLowerCase().includes(searchState.query.toLowerCase()) ||
@@ -131,7 +132,7 @@ export default function PracticeHubPage() {
         } finally {
             setIsLoading(false);
         }
-    }, [searchState]);
+    }, [searchState, user]);
 
     useEffect(() => {
         fetchNodes();
@@ -163,16 +164,54 @@ export default function PracticeHubPage() {
 
     const handleCreateClick = () => {
         if (!user) {
-            setShowLoginPrompt(true);
+            openAuth('LOGIN', {
+                flowType: 'PRACTICE',
+                title: 'Design Your Protocol',
+                description: 'Sign in to create custom practice plans and track your cognitive progress.'
+            });
         } else {
             setIsCreatePanelOpen(true);
         }
     };
 
     const handleSaveContent = async (data: any) => {
-        console.log("Saving practice plan:", data);
-        // For practice, we might want a different service or bulk creation.
-        // For now, we'll just log it.
+        try {
+            await practiceService.jlptService.createExam({
+                config: {
+                    title: data.title || "New Practice Plan",
+                    description: data.description || "Custom training sequence",
+                    mode: (searchState.activeFilters.mode?.[0] !== 'ALL' ? searchState.activeFilters.mode?.[0] : 'QUIZ') as any,
+                    tags: {
+                        level: (searchState.activeFilters.level?.[0] !== 'ALL' ? searchState.activeFilters.level?.[0] : 'N3') as any,
+                        skills: (searchState.activeFilters.skill?.[0] !== 'ALL' ? [searchState.activeFilters.skill?.[0]] : ['VOCABULARY']) as any,
+                        origin: 'chatbot'
+                    },
+                    stats: {
+                        questionCount: data.items?.length || 0,
+                    }
+                },
+                questions: data.items?.map((item: any, i: number) => ({
+                    id: `q-${i}`,
+                    type: 'MULTIPLE_CHOICE',
+                    content: item.question || item.term || "",
+                    options: item.options?.map((opt: any, oi: number) => ({ id: `o-${oi}`, text: opt })) || [],
+                    correctOptionId: item.correctOptionId || "o-0",
+                    explanation: item.explanation || "",
+                    tags: {
+                        skills: (searchState.activeFilters.skill?.[0] !== 'ALL' ? [searchState.activeFilters.skill?.[0]] : ['VOCABULARY']) as any,
+                        level: (searchState.activeFilters.level?.[0] !== 'ALL' ? searchState.activeFilters.level?.[0] : 'N3') as any,
+                        origin: 'chatbot'
+                    }
+                })) || [],
+                origin: 'chatbot',
+                isPublic: false
+            });
+            fetchNodes();
+            setIsCreatePanelOpen(false);
+        } catch (error) {
+            console.error("Failed to save practice plan:", error);
+            throw error;
+        }
     };
 
     return (
@@ -204,12 +243,7 @@ export default function PracticeHubPage() {
 
             {/* Content Display */}
             <main className="max-w-6xl mx-auto px-6 py-12">
-                <div className="flex items-center gap-3 mb-8">
-                    <Activity size={18} className="text-secondary" />
-                    <h2 className="text-[10px] font-black uppercase tracking-widest text-neutral-ink/60">
-                        Available Protocols ({nodes.length})
-                    </h2>
-                </div>
+                {/* Content Removed */}
 
                 {isLoading ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -220,11 +254,20 @@ export default function PracticeHubPage() {
                 ) : nodes.length > 0 ? (
                     <div className={viewMode === 'GRID' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "flex flex-col gap-4"}>
                         {nodes.map(node => (
-                            viewMode === 'GRID' ? (
-                                <PracticeCard key={node.id} config={node as any} onStart={handleStartNode} />
-                            ) : (
-                                <PracticeListCard key={node.id} node={node} onStart={handleStartNode} />
-                            )
+                            <ListingCard
+                                key={node.id}
+                                title={node.title}
+                                description={node.description}
+                                icon={<BrainCircuit size={24} />}
+                                iconBgColor="bg-neutral-beige/50"
+                                viewMode={viewMode}
+                                badge={{ label: node.tags.level }}
+                                metadata={[
+                                    { label: 'Questions', value: node.stats.questionCount, icon: <Layers size={14} /> },
+                                    ...(node.personalData?.bestScore ? [{ label: '% Best', value: node.personalData.bestScore, icon: <Activity size={14} className="text-secondary" /> }] : [])
+                                ]}
+                                onClick={() => handleStartNode(node.id)}
+                            />
                         ))}
                     </div>
                 ) : (
