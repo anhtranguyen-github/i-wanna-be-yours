@@ -190,7 +190,7 @@ export default function GamePage() {
     const handleCreateClick = () => {
         if (!user) {
             openAuth('LOGIN', {
-                flowType: 'CHAT',
+                flowType: 'QUOOT',
                 title: 'Forge Your Deck',
                 description: 'Join the ranks to create custom battle arenas and track your mastery.'
             });

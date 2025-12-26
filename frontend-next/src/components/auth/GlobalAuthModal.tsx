@@ -73,6 +73,26 @@ export default function GlobalAuthModal() {
             title: "Build Your Personal Library",
             description: "Keep all your Japanese learning materials in one place, accessible anywhere."
         },
+        FLASHCARDS: {
+            benefits: [
+                "Master vocabulary with Spaced Repetition (SRS)",
+                "Create unlimited custom flashcard decks",
+                "Track your memory retention over time",
+                "Access community-shared study sets"
+            ],
+            title: "Master Your Memory",
+            description: "Join now to start building your personal vocabulary armory."
+        },
+        QUOOT: {
+            benefits: [
+                "Compete on global high-score leaderboards",
+                "Save your battle history and achievements",
+                "Unlock exclusive anime-themed battle arenas",
+                "Track your speed and accuracy improvements"
+            ],
+            title: "Enter the Battle Arena",
+            description: "Ready to test your reflexes? Sign up to track your progress and compete!"
+        },
         GENERAL: {
             benefits: [
                 "Track your learning progress & milestones",
@@ -87,7 +107,7 @@ export default function GlobalAuthModal() {
     };
 
     const currentFlow = featureContext?.flowType || 'GENERAL';
-    const activeContent = flowContent[currentFlow as keyof typeof flowContent];
+    const activeContent = flowContent[currentFlow as keyof typeof flowContent] || flowContent.GENERAL;
     const displayBenefits = activeContent.benefits;
     const displayTitle = featureContext?.title || activeContent.title;
     const displayDescription = featureContext?.description || activeContent.description;
