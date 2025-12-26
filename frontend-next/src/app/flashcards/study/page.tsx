@@ -18,23 +18,45 @@ import {
     Zap,
     History
 } from "lucide-react";
-import Link from "next/link";
+import { useSearchParams, useRouter } from 'next/navigation';
+import { ResultShell } from '@/components/results/ResultShell';
+import { UnifiedSessionResult } from '@/types/results';
+import { saveRecord } from '@/services/recordService';
+import Link from 'next/link';
 
 export default function StudyPage() {
+    const searchParams = useSearchParams();
+    const router = useRouter();
     const [queue, setQueue] = useState<any[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [flipped, setFlipped] = useState(false);
     const [loading, setLoading] = useState(true);
     const [sessionComplete, setSessionComplete] = useState(false);
+    const [correctCount, setCorrectCount] = useState(0);
+
+    const deckId = searchParams.get('deckId');
 
     useEffect(() => {
         loadDueCards();
-    }, []);
+    }, [deckId]);
+
+    useEffect(() => {
+        if (sessionComplete) {
+            const accuracy = queue.length > 0 ? Math.round((correctCount / queue.length) * 100) : 0;
+            saveRecord({
+                itemType: 'FLASHCARD',
+                itemId: deckId || '000000000000000000000000',
+                score: accuracy,
+                status: 'COMPLETED',
+                details: { count: queue.length }
+            });
+        }
+    }, [sessionComplete, queue.length, correctCount, deckId]);
 
     const loadDueCards = async () => {
         setLoading(true);
         try {
-            const cards = await flashcardService.getDueFlashcards();
+            const cards = await flashcardService.getDueFlashcards(deckId || undefined);
             const shuffled = cards.sort(() => Math.random() - 0.5);
             setQueue(shuffled);
         } catch (err) {
@@ -46,6 +68,10 @@ export default function StudyPage() {
 
     const handleAnswer = async (quality: number) => {
         const currentCard = queue[currentIndex];
+
+        if (quality >= 4) {
+            setCorrectCount(prev => prev + 1);
+        }
 
         if (currentCard?._id) {
             try {
@@ -65,6 +91,13 @@ export default function StudyPage() {
         }
     };
 
+    const handleRetry = () => {
+        setSessionComplete(false);
+        setCurrentIndex(0);
+        setCorrectCount(0);
+        loadDueCards();
+    };
+
     if (loading) {
         return (
             <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-6">
@@ -78,42 +111,41 @@ export default function StudyPage() {
     }
 
     if (sessionComplete) {
+        // Construct Result Object
+        const accuracy = queue.length > 0 ? Math.round((correctCount / queue.length) * 100) : 0;
+        const result: UnifiedSessionResult = {
+            sessionId: deckId || 'session-id',
+            type: 'FLASHCARD' as any, // Temporary cast as FLASHCARD might not be in the enum yet
+            accuracy: accuracy,
+            timeSeconds: 0, // Placeholder
+            xpEarned: 12, // Placeholder
+            score: accuracy,
+            stats: [
+                { label: 'Recall Accuracy', value: `${accuracy}%` },
+                { label: 'Nodes Processed', value: queue.length },
+                { label: 'Mastery Gain', value: '+12 XP' } // Fake XP for now
+            ],
+            feedback: {
+                title: accuracy > 80 ? 'Exceptional Performance' : 'Session Complete',
+                message: accuracy > 80 ? 'Your retention is optimal. Continue this cadence.' : 'Consistent practice builds permanent pathways.',
+                suggestions: ['Review incorrectly answered cards', 'Practice more Kanji sets']
+            },
+            achievements: []
+        };
+
         return (
-            <div className="min-h-screen bg-background flex flex-col items-center justify-center p-8 text-center selection:bg-secondary/20">
-                <div className="relative group mb-12">
-                    <div className="absolute inset-0 bg-secondary/20 rounded-[3rem] blur-3xl animate-pulse" />
-                    <div className="relative w-32 h-32 bg-secondary text-secondary-foreground rounded-[2.5rem] flex items-center justify-center  border border-secondary/20 rotate-6 group-hover:rotate-0 transition-transform duration-700">
-                        <Trophy size={48} />
-                    </div>
-                </div>
-
-                <h1 className="text-4xl font-black text-foreground font-display tracking-tighter mb-4 italic leading-none">
-                    Session <span className="text-secondary italic-none not-italic">Synchronized</span>
-                </h1>
-
-                <p className="text-neutral-ink font-bold italic mb-12 max-w-md leading-relaxed tracking-tight">
-                    All currently due neural nodes have been successfully reinforced. Cognitive integrity is optimal.
-                </p>
-
-                <div className="grid grid-cols-2 gap-6 w-full max-w-sm mb-12">
-                    <div className="bg-muted/30 rounded-3xl p-6 border border-border/20 ">
-                        <div className="text-2xl font-black text-secondary font-display mb-1">{queue.length}</div>
-                        <div className="text-[9px] font-black text-neutral-ink uppercase tracking-widest font-display">Recall Nodes</div>
-                    </div>
-                    <div className="bg-muted/30 rounded-3xl p-6 border border-border/20 ">
-                        <div className="text-2xl font-black text-foreground font-display mb-1">100%</div>
-                        <div className="text-[9px] font-black text-neutral-ink uppercase tracking-widest font-display">Throughput</div>
-                    </div>
-                </div>
-
-                <Link
-                    href="/flashcards"
-                    className="group flex items-center gap-4 px-12 py-5 bg-foreground text-background rounded-2xl font-black font-display text-[11px] uppercase tracking-[0.25em]  hover:opacity-95 transition-all active:scale-95"
-                >
-                    Return to Cluster
-                    <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
-                </Link>
-            </div>
+            <ResultShell
+                result={result}
+                onRetry={handleRetry}
+                customActions={
+                    <button
+                        onClick={() => router.push('/flashcards')}
+                        className="h-16 px-10 bg-neutral-white border-2 border-neutral-gray/10 text-neutral-ink rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] flex items-center gap-3 hover:border-primary-strong/30 hover:bg-neutral-beige/10 transition-all active:scale-95 shadow-sm"
+                    >
+                        Return to Deck
+                    </button>
+                }
+            />
         );
     }
 
@@ -220,9 +252,9 @@ export default function StudyPage() {
                             </div>
 
                             {/* Neural Metadata (Optional Examples) */}
-                            {content.example && (
+                            {currentCard.example && (
                                 <div className="mt-8 opacity-40 text-sm font-bold max-w-lg italic tracking-tight line-clamp-2">
-                                    "{content.example}"
+                                    "{currentCard.example}"
                                 </div>
                             )}
                         </div>

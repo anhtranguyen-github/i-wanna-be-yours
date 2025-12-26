@@ -4,8 +4,12 @@ const API_BASE = '/e-api/v1/flashcards';
 
 class FlashcardService {
     // Set Management
-    async fetchFlashcardSets() {
-        const response = await authFetch(`${API_BASE}/sets`);
+    async fetchFlashcardSets(filters?: { level?: string; access?: string }) {
+        const params = new URLSearchParams();
+        if (filters?.level && filters.level !== 'ALL') params.append('level', filters.level);
+        if (filters?.access && filters.access !== 'ALL') params.append('visibility', filters.access.toLowerCase());
+
+        const response = await authFetch(`${API_BASE}/sets?${params.toString()}`);
         if (!response.ok) throw new Error('Failed to fetch flashcard sets');
         return response.json();
     }
@@ -28,8 +32,11 @@ class FlashcardService {
 
     // --- Study & SRS ---
 
-    async getDueFlashcards() {
-        const response = await authFetch(`${API_BASE}/study/due`);
+    async getDueFlashcards(deckId?: string) {
+        const params = new URLSearchParams();
+        if (deckId) params.append('deckId', deckId);
+
+        const response = await authFetch(`${API_BASE}/study/due?${params.toString()}`);
         if (!response.ok) throw new Error('Failed to fetch due cards');
         return response.json();
     }
@@ -43,10 +50,36 @@ class FlashcardService {
         if (!response.ok) throw new Error('Failed to submit answer');
         return response.json();
     }
+    async deletePersonalCard(id: string) {
+        const response = await authFetch(`${API_BASE}/cards/${id}`, {
+            method: 'DELETE'
+        });
+        if (!response.ok) throw new Error('Failed to delete card');
+        return response.json();
+    }
+    async updatePersonalCard(id: string, updates: any) {
+        const response = await authFetch(`${API_BASE}/cards/${id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updates)
+        });
+        if (!response.ok) throw new Error('Failed to update card');
+        return response.json();
+    }
+
+    async createPersonalCard(card: { front: string; back: string; tags: string[] }) {
+        const response = await authFetch(`${API_BASE}/cards`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(card)
+        });
+        if (!response.ok) throw new Error('Failed to create card');
+        return response.json();
+    }
 }
 
 export const flashcardService = new FlashcardService();
 
-export const fetchFlashcardSets = () => flashcardService.fetchFlashcardSets();
+export const fetchFlashcardSets = (filters?: { level?: string; access?: string }) => flashcardService.fetchFlashcardSets(filters);
 export const fetchFlashcardSetById = (id: string) => flashcardService.fetchFlashcardSetById(id);
 export const createFlashcardSet = (set: any) => flashcardService.createFlashcardSet(set);

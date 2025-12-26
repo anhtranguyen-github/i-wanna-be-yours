@@ -7,12 +7,12 @@ import * as LucideIcons from "lucide-react";
 export function mapResultIcons(result: UnifiedSessionResult): UnifiedSessionResult {
     const stats = result.stats.map(stat => ({
         ...stat,
-        icon: (LucideIcons as any)[stat.icon as string] || LucideIcons.HelpCircle
+        icon: (LucideIcons as any)[stat.icon as unknown as string] || LucideIcons.HelpCircle
     }));
 
     const achievements = result.achievements.map(achievement => ({
         ...achievement,
-        icon: (LucideIcons as any)[achievement.icon as string] || LucideIcons.Trophy
+        icon: (LucideIcons as any)[achievement.icon as unknown as string] || LucideIcons.Trophy
     }));
 
     return {

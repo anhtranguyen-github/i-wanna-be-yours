@@ -21,7 +21,7 @@ import {
     generateOptions,
     shuffleArray
 } from "@/utils/gameUtils";
-import { fetchQuootDeckById } from "@/services/quootService";
+import { fetchQuootArenaById } from "@/services/quootService";
 import {
     QuootDeck,
     QuootCard,
@@ -111,7 +111,7 @@ export default function QuootSessionPage() {
         const loadData = async () => {
             setLoading(true);
             try {
-                const deckData = await fetchQuootDeckById(deckId);
+                const deckData = await fetchQuootArenaById(deckId);
 
                 if (deckData) {
                     const mappedDeck: QuootDeck = {

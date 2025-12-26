@@ -16,6 +16,7 @@ export function ScoreLantern({ score, label = "Mastery Score" }: ScoreLanternPro
         if (score >= 50) return { color: "text-amber-500", glow: "shadow-amber-500/50", bg: "bg-amber-500/10" };
         return { color: "text-rose-500", glow: "shadow-rose-500/50", bg: "bg-rose-500/10" };
     };
+    const config = getColorConfig();
 
     const getGlowRgb = () => {
         if (score >= 90) return 'rgba(16, 185, 129, 0.3)'; // Emerald
