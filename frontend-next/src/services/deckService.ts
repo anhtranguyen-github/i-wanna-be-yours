@@ -17,9 +17,10 @@ export const fetchDeckById = async (id: string): Promise<Deck> => {
     }
 };
 
-export const fetchAllDecks = async (): Promise<Deck[]> => {
+export const fetchDecks = async (access?: 'PUBLIC' | 'PERSONAL'): Promise<Deck[]> => {
     try {
-        const response = await authFetch(`${API_BASE_URL}/decks`);
+        const url = access ? `${API_BASE_URL}/decks?access=${access}` : `${API_BASE_URL}/decks`;
+        const response = await authFetch(url);
         if (!response.ok) {
             throw new Error(`Failed to fetch decks: ${response.statusText}`);
         }
@@ -27,7 +28,9 @@ export const fetchAllDecks = async (): Promise<Deck[]> => {
         return data as Deck[];
     } catch (error) {
         console.error("Error fetching decks:", error);
-        // Return empty array as fallback to prevent UI crash
         return [];
     }
 };
+
+// For backward compatibility
+export const fetchAllDecks = () => fetchDecks();
