@@ -120,9 +120,9 @@ export default function FlashcardsMenu() {
             label: 'Owned by',
             type: 'MULTI',
             options: [
-                { id: 'GLOBAL', label: 'Official', icon: <ShieldCheck size={14} className="text-primary-strong" /> },
-                { id: 'COMMUNITY', label: 'Community', icon: <Users size={14} /> },
-                ...(user ? [{ id: 'MINE', label: 'Mine', icon: <UserIcon size={14} /> }] : [])
+                { id: 'GLOBAL', label: 'Official', icon: <ShieldCheck size={14} className="text-neutral-ink" /> },
+                { id: 'COMMUNITY', label: 'Community', icon: <Users size={14} className="text-neutral-ink" /> },
+                { id: 'MINE', label: 'Mine', icon: <UserIcon size={14} className="text-neutral-ink" /> }
             ]
         },
         {
