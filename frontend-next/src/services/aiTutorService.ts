@@ -238,7 +238,7 @@ class AITutorService {
         if (!user) throw new Error("User not logged in");
         if (!sessionId) throw new Error("Session ID missing");
 
-        const response = await authFetch(`${this.API_BASE_URL}/agent/invoke`, {
+        const response = await fetch(`${this.API_BASE_URL}/agent/stream`, {
             method: 'POST',
             headers: this.getHeaders(),
             body: JSON.stringify({
@@ -252,25 +252,16 @@ class AITutorService {
         });
 
         if (!response.ok) {
-            throw new Error('Failed to invoke agent');
+            throw new Error('Failed to initiate neural stream');
         }
 
-        const data = await response.json();
-        const textContent = data.responses.find((r: any) => r.type === 'text')?.content || "No response content.";
-
-        const artifacts: Artifact[] = data.responses
-            .filter((r: any) => r.type !== 'text')
-            .map((r: any) => this.mapArtifact(r));
-
-        const stream = new ReadableStream({
-            start(controller) {
-                const encoder = new TextEncoder();
-                controller.enqueue(encoder.encode(textContent));
-                controller.close();
-            }
-        });
-
-        return { reader: stream.getReader(), artifacts, conversationId: data.conversationId };
+        // Note: For now, in Alpha, artifacts are sent separately or parsed from stream if needed.
+        // We return the reader directly from the fetch response.
+        return {
+            reader: response.body!.getReader(),
+            artifacts: [], // Stream handles text only for now in this path
+            conversationId: conversationId
+        };
     }
 }
 
