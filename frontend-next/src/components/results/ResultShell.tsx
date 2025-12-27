@@ -6,8 +6,11 @@ import { UnifiedSessionResult } from "@/types/results";
 import { ScoreLantern } from "./ScoreLantern";
 import { StatCard } from "./StatCard";
 import { AnalysisBlock } from "./AnalysisBlock";
-import { Trophy, Share2, ArrowRight, RotateCcw, Home, Sparkles } from "lucide-react";
+import { Trophy, Share2, ArrowRight, RotateCcw, Home, Sparkles, Lock } from "lucide-react";
 import Link from "next/link";
+
+import { useUser } from "@/context/UserContext";
+import { useGlobalAuth } from "@/context/GlobalAuthContext";
 
 interface ResultShellProps {
     result: UnifiedSessionResult;
@@ -17,6 +20,9 @@ interface ResultShellProps {
 }
 
 export function ResultShell({ result, onRetry, customActions, children }: ResultShellProps) {
+    const { user } = useUser();
+    const { openAuth } = useGlobalAuth();
+
     return (
         <div className="min-h-screen bg-neutral-beige/20 relative overflow-hidden pb-32">
             {/* Immersive Atmosphere Background */}
@@ -52,13 +58,15 @@ export function ResultShell({ result, onRetry, customActions, children }: Result
                 >
                     <div className="space-y-2">
                         <Link
-                            href="/profile"
+                            href={user ? "/profile" : "/"}
                             className="inline-flex items-center gap-2 group"
                         >
                             <div className="w-8 h-8 rounded-lg bg-neutral-white border border-neutral-gray/10 flex items-center justify-center group-hover:bg-primary-strong group-hover:text-neutral-beige transition-all">
                                 <Home size={16} />
                             </div>
-                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-neutral-ink/40 group-hover:text-neutral-ink transition-colors">Command Center</span>
+                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-neutral-ink/40 group-hover:text-neutral-ink transition-colors">
+                                {user ? "Command Center" : "Return Hub"}
+                            </span>
                         </Link>
                         <h1 className="text-4xl font-black text-neutral-ink font-display tracking-tight flex items-center gap-3">
                             Protocol Complete
@@ -70,12 +78,46 @@ export function ResultShell({ result, onRetry, customActions, children }: Result
                         <button className="h-14 w-14 inline-flex items-center justify-center bg-neutral-white border border-neutral-gray/10 rounded-2xl text-neutral-ink hover:text-primary-strong transition-all shadow-sm hover:shadow-md">
                             <Share2 size={20} />
                         </button>
-                        <button className="h-14 px-8 bg-neutral-ink text-neutral-beige rounded-2xl flex items-center gap-3 font-black text-[11px] uppercase tracking-[0.2em] shadow-xl hover:bg-primary-strong hover:scale-[1.02] active:scale-95 transition-all">
-                            <Trophy size={18} className="text-secondary" />
-                            Secure Record
-                        </button>
+                        {user ? (
+                            <button className="h-14 px-8 bg-neutral-ink text-neutral-beige rounded-2xl flex items-center gap-3 font-black text-[11px] uppercase tracking-[0.2em] shadow-xl hover:bg-primary-strong hover:scale-[1.02] active:scale-95 transition-all">
+                                <Trophy size={18} className="text-secondary" />
+                                Secure Record
+                            </button>
+                        ) : (
+                            <button
+                                onClick={() => openAuth('LOGIN', { title: 'Preserve Your Mastery', description: 'Authenticate to save this result to your permanent record and earn XP.' })}
+                                className="h-14 px-8 bg-primary-strong text-neutral-beige rounded-2xl flex items-center gap-3 font-black text-[11px] uppercase tracking-[0.2em] shadow-xl hover:opacity-90 hover:scale-[1.02] active:scale-95 transition-all"
+                            >
+                                <Lock size={18} className="text-secondary" />
+                                Join & Save
+                            </button>
+                        )}
                     </div>
                 </motion.header>
+
+                {!user && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mb-12 p-6 bg-amber-50 border border-amber-200 rounded-[2rem] flex flex-col md:flex-row items-center justify-between gap-6"
+                    >
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center text-amber-600">
+                                <Lock size={24} />
+                            </div>
+                            <div>
+                                <h3 className="text-sm font-black text-amber-900 uppercase tracking-tight">Ephemeral Training Mode</h3>
+                                <p className="text-xs font-bold text-amber-700/70 leading-tight">These results are not being saved. Create an account to track your progress and unlock performance insights.</p>
+                            </div>
+                        </div>
+                        <button
+                            onClick={() => openAuth('REGISTER')}
+                            className="px-6 py-3 bg-white border border-amber-200 text-amber-900 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-amber-100 transition-colors"
+                        >
+                            Create Account
+                        </button>
+                    </motion.div>
+                )}
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 xl:gap-20">
                     {/* Left Panel: Score & Key Stats */}
@@ -87,7 +129,7 @@ export function ResultShell({ result, onRetry, customActions, children }: Result
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-6">
                             {result.stats.map((stat, i) => (
-                                <StatCard key={i} stat={stat} index={i} />
+                                <StatCard key={i} stat={stat} index={i} isLockedTeaser={!user && (stat.label.toLowerCase().includes('xp') || stat.label.toLowerCase().includes('mastery'))} />
                             ))}
                         </div>
                     </div>
@@ -97,7 +139,7 @@ export function ResultShell({ result, onRetry, customActions, children }: Result
                         <AnalysisBlock feedback={result.feedback} />
 
                         {/* Achievements Section */}
-                        {result.achievements.length > 0 && (
+                        {(result.achievements.length > 0 || !user) && (
                             <section className="space-y-8">
                                 <div className="flex items-center gap-4">
                                     <h4 className="text-[11px] font-black text-neutral-ink/40 uppercase tracking-[0.5em] whitespace-nowrap">
@@ -107,26 +149,35 @@ export function ResultShell({ result, onRetry, customActions, children }: Result
                                 </div>
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                    {result.achievements.map((achievement, i) => (
-                                        <motion.div
-                                            key={achievement.id}
-                                            initial={{ y: 20, opacity: 0 }}
-                                            animate={{ y: 0, opacity: 1 }}
-                                            transition={{ delay: 2 + (i * 0.1) }}
-                                            className="p-8 bg-neutral-white/60 backdrop-blur-md border border-neutral-gray/10 rounded-[2.5rem] flex items-center gap-6 group hover:border-secondary/40 hover:bg-neutral-white transition-all duration-500"
-                                        >
-                                            <div className={`w-14 h-14 rounded-[1.25rem] flex items-center justify-center flex-shrink-0 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6 ${achievement.rarity === 'LEGENDARY'
-                                                ? 'bg-amber-100 text-amber-600 shadow-inner'
-                                                : 'bg-primary/10 text-primary-strong shadow-inner'
-                                                }`}>
-                                                <achievement.icon size={28} />
+                                    {result.achievements.length > 0 ? (
+                                        result.achievements.map((achievement, i) => (
+                                            <motion.div
+                                                key={achievement.id}
+                                                initial={{ y: 20, opacity: 0 }}
+                                                animate={{ y: 0, opacity: 1 }}
+                                                transition={{ delay: 2 + (i * 0.1) }}
+                                                className="p-8 bg-neutral-white/60 backdrop-blur-md border border-neutral-gray/10 rounded-[2.5rem] flex items-center gap-6 group hover:border-secondary/40 hover:bg-neutral-white transition-all duration-500"
+                                            >
+                                                <div className={`w-14 h-14 rounded-[1.25rem] flex items-center justify-center flex-shrink-0 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6 ${achievement.rarity === 'LEGENDARY'
+                                                    ? 'bg-amber-100 text-amber-600 shadow-inner'
+                                                    : 'bg-primary/10 text-primary-strong shadow-inner'
+                                                    }`}>
+                                                    <achievement.icon size={28} />
+                                                </div>
+                                                <div>
+                                                    <h5 className="text-lg font-black text-neutral-ink mb-1">{achievement.title}</h5>
+                                                    <p className="text-xs font-bold text-neutral-ink/60 leading-tight">{achievement.description}</p>
+                                                </div>
+                                            </motion.div>
+                                        ))
+                                    ) : (
+                                        <div className="col-span-full p-10 bg-neutral-white/40 border border-neutral-gray/10 border-dashed rounded-[2.5rem] text-center">
+                                            <div className="w-16 h-16 bg-neutral-beige/50 rounded-full flex items-center justify-center mx-auto mb-6">
+                                                <Trophy size={32} className="text-neutral-ink/20" />
                                             </div>
-                                            <div>
-                                                <h5 className="text-lg font-black text-neutral-ink mb-1">{achievement.title}</h5>
-                                                <p className="text-xs font-bold text-neutral-ink/60 leading-tight">{achievement.description}</p>
-                                            </div>
-                                        </motion.div>
-                                    ))}
+                                            <h5 className="text-xs font-black uppercase tracking-[0.2em] text-neutral-ink/30">Sign in to earn commendations</h5>
+                                        </div>
+                                    )}
                                 </div>
                             </section>
                         )}
@@ -151,10 +202,10 @@ export function ResultShell({ result, onRetry, customActions, children }: Result
                             {customActions}
 
                             <Link
-                                href="/activity"
+                                href={user ? "/activity" : "/"}
                                 className="h-16 flex-1 min-w-[200px] bg-primary-strong text-neutral-beige rounded-2xl font-black text-[11px] uppercase tracking-[0.3em] flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-98 transition-all shadow-xl shadow-primary/20"
                             >
-                                Advance Objective
+                                {user ? "Advance Objective" : "Return to Hub"}
                                 <ArrowRight size={20} />
                             </Link>
                         </motion.div>

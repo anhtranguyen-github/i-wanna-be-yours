@@ -182,7 +182,9 @@ export default function PracticeDetailPage() {
             label: "Clone to Collection",
             icon: Copy,
             onClick: handleClone,
-            variant: "PRIMARY" as any
+            variant: "PRIMARY" as any,
+            requireAuth: !user,
+            authTooltip: "Login to Clone"
         });
     }
 
@@ -225,11 +227,13 @@ export default function PracticeDetailPage() {
                 <DetailMain>
                     <MetricGrid>
                         <MetricCard
-                            label="Mastery Index"
-                            value={personalBest ? `${personalBest}%` : '0.00%'}
+                            label="Your Mastery Index"
+                            value={personalBest ? `${personalBest}%` : '---'}
                             icon={<Activity size={18} />}
                             trend={personalBest ? "+5%" : undefined}
                             trendDirection="up"
+                            isLocked={!user}
+                            onLockClick={() => openAuth('LOGIN', { flowType: 'PRACTICE', title: 'Unlock Mastery Tracking', description: 'Sign in to sync your practice history and visualize your learning curve.' })}
                         />
                         <MetricCard
                             label="Data Points"
@@ -240,6 +244,8 @@ export default function PracticeDetailPage() {
                             label="Mean Latency"
                             value="1.4s"
                             icon={<Clock size={18} />}
+                            isLocked={!user}
+                            onLockClick={() => openAuth('LOGIN', { flowType: 'PRACTICE', title: 'Latency Analysis', description: 'Real-time performance metrics are reserved for authenticated operators.' })}
                         />
                     </MetricGrid>
 

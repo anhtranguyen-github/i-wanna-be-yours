@@ -5,12 +5,15 @@ import { motion } from "framer-motion";
 import { SessionStat } from "@/types/results";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 
+import { Lock } from "lucide-react";
+
 interface StatCardProps {
     stat: SessionStat;
     index: number;
+    isLockedTeaser?: boolean;
 }
 
-export function StatCard({ stat, index }: StatCardProps) {
+export function StatCard({ stat, index, isLockedTeaser }: StatCardProps) {
     const Icon = stat.icon;
 
     const getColors = () => {
@@ -31,7 +34,7 @@ export function StatCard({ stat, index }: StatCardProps) {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 1 + (index * 0.1), duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="group relative overflow-hidden bg-neutral-beige/10 backdrop-blur-xl border border-neutral-gray/10 p-7 rounded-[2.5rem] hover:border-primary-strong/30 transition-all duration-500"
+            className={`group relative overflow-hidden bg-neutral-white/40 backdrop-blur-xl border border-neutral-gray/10 p-7 rounded-[2.5rem] hover:border-primary-strong/30 transition-all duration-500 ${isLockedTeaser ? 'cursor-help' : ''}`}
         >
             {/* Hover Gradient Effect */}
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
@@ -39,7 +42,7 @@ export function StatCard({ stat, index }: StatCardProps) {
             <div className="relative z-10 flex items-start justify-between">
                 <div className="space-y-4">
                     <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3 ${colorClasses}`}>
-                        {Icon && <Icon size={24} />}
+                        {isLockedTeaser ? <Lock size={20} className="text-amber-600/50" /> : (Icon && <Icon size={24} />)}
                     </div>
 
                     <div>
@@ -47,14 +50,14 @@ export function StatCard({ stat, index }: StatCardProps) {
                             {stat.label}
                         </span>
                         <div className="flex items-baseline gap-2">
-                            <span className="text-3xl font-black text-neutral-ink font-display tracking-tight">
+                            <span className={`text-3xl font-black text-neutral-ink font-display tracking-tight ${isLockedTeaser ? 'blur-md select-none opacity-30 px-4' : ''}`}>
                                 {stat.value}
                             </span>
                         </div>
                     </div>
                 </div>
 
-                {stat.trend && (
+                {stat.trend && !isLockedTeaser && (
                     <div className={`px-3 py-1.5 rounded-full flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest ${stat.trend === 'up' ? 'bg-emerald-500/10 text-emerald-600' :
                         stat.trend === 'down' ? 'bg-rose-500/10 text-rose-600' :
                             'bg-neutral-gray/10 text-neutral-ink'
@@ -63,6 +66,12 @@ export function StatCard({ stat, index }: StatCardProps) {
                         {stat.trend === 'down' && <TrendingDown size={12} />}
                         {stat.trend === 'neutral' && <Minus size={12} />}
                         {stat.trend}
+                    </div>
+                )}
+
+                {isLockedTeaser && (
+                    <div className="bg-amber-100 text-amber-700 px-2 py-1 rounded-md text-[8px] font-black uppercase tracking-widest">
+                        Member Only
                     </div>
                 )}
             </div>

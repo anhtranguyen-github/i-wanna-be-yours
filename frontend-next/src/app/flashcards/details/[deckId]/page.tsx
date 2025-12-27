@@ -208,7 +208,9 @@ export default function FlashcardDetailPage() {
             label: "Clone to Collection",
             icon: Copy,
             onClick: handleClone,
-            variant: "PRIMARY" as any
+            variant: "PRIMARY" as any,
+            requireAuth: !user,
+            authTooltip: "Login to Clone"
         });
     }
 
@@ -248,6 +250,8 @@ export default function FlashcardDetailPage() {
                             icon={<Sparkles size={18} />}
                             trend="+2.4%"
                             trendDirection="up"
+                            isLocked={!user}
+                            onLockClick={() => openAuth('LOGIN', { flowType: 'FLASHCARDS', title: 'Retention Analytics', description: 'Log in to visualize your memory strength and long-term retention metrics.' })}
                         />
                         <MetricCard
                             label="Active Nodes"
@@ -258,6 +262,8 @@ export default function FlashcardDetailPage() {
                             label="Next Review"
                             value="Today"
                             icon={<Calendar size={18} />}
+                            isLocked={!user}
+                            onLockClick={() => openAuth('LOGIN', { flowType: 'FLASHCARDS', title: 'Schedule Sync', description: 'Smart scheduling and review dates require a personal account.' })}
                         />
                     </MetricGrid>
 

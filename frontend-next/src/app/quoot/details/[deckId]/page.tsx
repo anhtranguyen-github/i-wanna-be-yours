@@ -184,7 +184,9 @@ export default function QuootDetailPage() {
             label: "Clone to Collection",
             icon: Copy,
             onClick: handleClone,
-            variant: "PRIMARY" as any
+            variant: "PRIMARY" as any,
+            requireAuth: !user,
+            authTooltip: "Login to Clone"
         });
     }
 
@@ -227,12 +229,14 @@ export default function QuootDetailPage() {
                 <DetailMain>
                     <MetricGrid>
                         <MetricCard
-                            label="Top Rank"
+                            label="Your Best"
                             value={arena.topScore ? `${arena.topScore}%` : '---'}
                             icon={<Crown size={18} />}
                             color="text-primary-strong"
                             trend="Season High"
                             trendDirection="up"
+                            isLocked={!user}
+                            onLockClick={() => openAuth('LOGIN', { flowType: 'QUOOT', title: 'Unlock Personal Stats', description: 'Sign in to track your best scores and climb the leaderboard.' })}
                         />
                         <MetricCard
                             label="Total Items"
