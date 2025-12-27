@@ -13,7 +13,7 @@ interface PlanCheckoutModalProps {
     onConfirm: () => void;
     planSummary: {
         targetLevel: JLPTLevel;
-        examDate: Date;
+        examDate: Date | string;
         dailyMinutes: number;
         studyDays: number;
         focusAreas: string[];
@@ -30,7 +30,12 @@ export function PlanCheckoutModal({
 }: PlanCheckoutModalProps) {
     if (!isOpen) return null;
 
-    const daysUntil = Math.ceil((planSummary.examDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+    // Safely parse examDate whether it's a Date object or string
+    const examDate = planSummary.examDate instanceof Date
+        ? planSummary.examDate
+        : new Date(planSummary.examDate);
+
+    const daysUntil = Math.ceil((examDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
     const levelInfo = JLPT_LEVEL_INFO[planSummary.targetLevel];
 
     return (
@@ -82,7 +87,7 @@ export function PlanCheckoutModal({
                                 <span className="text-xs font-black text-neutral-ink uppercase tracking-widest">Exam Date</span>
                             </div>
                             <div className="text-brand-dark font-black text-lg leading-tight">
-                                {planSummary.examDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                {examDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                                 <div className="text-xs text-brand-sky font-bold flex items-center gap-1 mt-1">
                                     <Sparkles size={10} />
                                     {daysUntil} Days Remaining
