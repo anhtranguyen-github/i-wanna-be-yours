@@ -44,8 +44,7 @@ class MockAgent:
         no_artifacts = context_config.get("no_artifacts", False) or "no artifact" in lower_prompt
 
         if creation_intent:
-            # Use the content creator to generate response
-            # Pass resources context to content creator if needed (future improvement)
+            # ... existing logic ...
             creation_response = ContentCreatorService.generate_creation_response(
                 intent=creation_intent,
                 prompt=prompt,
@@ -63,14 +62,20 @@ class MockAgent:
                 "artifacts": [] if no_artifacts else creation_response.get("artifacts", [])
             }
         
-        # =====================================================================
-        # 2. Check for study plan intent
-        # =====================================================================
+        # 2. REAL AI RESPONSE via OllamaAgent
+        from agent.ollama_agent import OllamaAgent
+        ollama = OllamaAgent()
+        real_content = ollama.invoke(
+            prompt=prompt,
+            user_id=user_id,
+            resource_ids=resource_ids,
+            stream=False
+        )
+
         from services.study_plan_context import (
             detect_study_plan_intent,
             StudyPlanContextProvider
         )
-        
         study_intent = detect_study_plan_intent(prompt)
         study_context = ""
         study_artifacts = []
@@ -184,7 +189,7 @@ All artifact types generated for UI testing:
                 pass
 
         return {
-            "content": debug_content,
+            "content": real_content,
             "tasks": tasks,
             "suggestions": suggestions,
             "artifacts": artifacts

@@ -8,15 +8,38 @@ bp = Blueprint('agent', __name__, url_prefix='/agent')
 def invoke():
     data = request.json
     try:
-        # Validate Input with Pydantic
         agent_req = AgentRequest(**data)
-        
         service = AgentService()
         response = service.invoke_agent(agent_req)
-        
-        # Serialize Output with Pydantic
         return jsonify(response.dict()), 200
     except Exception as e:
-        print(f"DEBUG: Request Data: {data}")
-        print(f"DEBUG: Error: {e}")
+        return jsonify({"error": str(e)}), 400
+
+@bp.route('/stream', methods=['POST'])
+def stream():
+    from flask import Response, stream_with_context
+    data = request.json
+    try:
+        agent_req = AgentRequest(**data)
+        service = AgentService()
+        
+        # This would require refactoring AgentService to split logic.
+        # For a quick "Alpha" implementation, we'll use the OllamaAgent directly
+        # and ignore persistence/artifacts for the live stream (they'll be saved on complete)
+        from agent.ollama_agent import OllamaAgent
+        agent = OllamaAgent()
+        
+        def generate():
+            # 1. Send metadata/artifacts first if possible (simplified for now: just text)
+            for chunk in agent.invoke(
+                prompt=agent_req.prompt,
+                user_id=agent_req.user_id,
+                resource_ids=agent_req.context_config.resource_ids if agent_req.context_config else [],
+                stream=True
+            ):
+                yield chunk
+
+        return Response(stream_with_context(generate()), mimetype='text/event-stream')
+        
+    except Exception as e:
         return jsonify({"error": str(e)}), 400
