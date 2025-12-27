@@ -111,7 +111,7 @@ router.post('/logout', validateRequest(logoutSchema), async (req, res) => {
 });
 
 // POST /auth/update-password
-const { verifyJWT } = require('../middleware/authMiddleware');
+const { verifyJWT } = require('../middleware/auth');
 router.post('/update-password', verifyJWT, async (req, res) => {
     try {
         const { currentPassword, newPassword } = req.body;

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { fetchHistory } from '@/services/recordService';
-import { History, Calendar, Trophy, Zap, Layers, ChevronRight } from 'lucide-react';
+import { History, Calendar, Trophy, Zap, Layers, ChevronRight, Brain } from 'lucide-react';
 
 export function HistoryPanel() {
     const [history, setHistory] = useState<any[]>([]);
@@ -47,11 +47,13 @@ export function HistoryPanel() {
                     <div key={record._id} className="p-4 flex items-center gap-4 hover:bg-neutral-beige/20 transition-colors">
                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${record.itemType === 'QUOOT' ? 'bg-secondary/10 text-secondary' :
                                 record.itemType === 'FLASHCARD' ? 'bg-primary/10 text-primary-strong' :
-                                    'bg-neutral-ink/10 text-neutral-ink'
+                                    record.itemType === 'PRACTICE' ? 'bg-emerald-50 text-emerald-600' :
+                                        'bg-neutral-ink/10 text-neutral-ink'
                             }`}>
                             {record.itemType === 'QUOOT' ? <Zap size={18} /> :
                                 record.itemType === 'FLASHCARD' ? <Layers size={18} /> :
-                                    <Trophy size={18} />}
+                                    record.itemType === 'PRACTICE' ? <Brain size={18} /> :
+                                        <Trophy size={18} />}
                         </div>
                         <div className="flex-1 min-w-0">
                             <h5 className="text-xs font-black text-neutral-ink truncate">{record.itemTitle || record.itemType}</h5>

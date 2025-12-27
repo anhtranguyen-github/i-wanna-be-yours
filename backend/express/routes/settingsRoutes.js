@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { User } = require('../models/User');
-const { verifyJWT } = require('../middleware/authMiddleware');
+const { verifyJWT } = require('../middleware/auth');
 
 /**
  * @route GET /e-api/v1/users/settings
