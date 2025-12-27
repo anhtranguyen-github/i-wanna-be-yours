@@ -16,12 +16,15 @@ import {
     ArrowLeft,
     CheckCircle2,
     Lock,
-    History
+    History,
+    Copy,
+    Trash2,
+    ShieldCheck
 } from "lucide-react";
 import Link from "next/link";
 import { useUser } from "@/context/UserContext";
 import { useGlobalAuth } from "@/context/GlobalAuthContext";
-import { fetchQuootArenaById } from "@/services/quootService";
+import { fetchQuootArenaById, cloneQuootArena, deleteQuootArena } from "@/services/quootService";
 import { fetchHistory } from "@/services/recordService";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
@@ -142,6 +145,39 @@ export default function QuootDetailPage() {
         router.push(`/quoot/${deckId}`);
     };
 
+    const handleClone = async () => {
+        if (!user) {
+            openAuth('LOGIN', {
+                flowType: 'QUOOT',
+                title: 'Clone to Your Collection',
+                description: 'Sign in to clone this arena to your personal collection.'
+            });
+            return;
+        }
+
+        try {
+            const { id: newId } = await cloneQuootArena(deckId);
+            toast.success('Arena cloned successfully!', {
+                description: 'A copy has been added to your collection.'
+            });
+            router.push(`/quoot/details/${newId}`);
+        } catch (err) {
+            toast.error('Failed to clone arena');
+        }
+    };
+
+    const handleDelete = async () => {
+        if (!confirm('Are you sure you want to delete this arena?')) return;
+
+        try {
+            await deleteQuootArena(deckId);
+            toast.success('Arena deleted');
+            router.push('/quoot');
+        } catch (err) {
+            toast.error('Failed to delete arena');
+        }
+    };
+
     if (loading) return (
         <div className="min-h-screen bg-neutral-beige/20 flex items-center justify-center">
             <div className="flex flex-col items-center gap-4">
@@ -195,8 +231,14 @@ export default function QuootDetailPage() {
                                 <span className="px-3 py-1 bg-primary-strong rounded-full text-[10px] font-black text-white uppercase tracking-widest">
                                     {arena.level || 'N3'} Level
                                 </span>
-                                <span className="flex items-center gap-1 text-[10px] font-black text-neutral-beige/60 uppercase tracking-widest">
-                                    <Clock size={12} /> Fast Paced
+                                <span className="flex items-center gap-1 px-3 py-1 bg-neutral-beige/30 rounded-full text-[10px] font-black text-neutral-beige/80 uppercase tracking-widest">
+                                    {arena.visibility === 'global' ? (
+                                        <><ShieldCheck size={10} /> Official</>
+                                    ) : isOwner ? (
+                                        arena.visibility === 'public' ? 'Shared' : 'Private'
+                                    ) : (
+                                        `By @${arena.creatorName || 'User'}`
+                                    )}
                                 </span>
                             </div>
                             <h1 className="text-5xl md:text-7xl font-black text-white font-display tracking-tighter leading-none">
@@ -297,11 +339,31 @@ export default function QuootDetailPage() {
                                 <div className="text-[10px] font-mono opacity-40 group-hover:opacity-100">{deckId.slice(0, 8)}...</div>
                             </button>
 
-                            {isOwner && (
-                                <button className="w-full flex items-center gap-3 p-4 bg-neutral-beige rounded-2xl hover:bg-secondary/10 hover:text-secondary transition-all">
-                                    <Edit3 size={18} />
-                                    <span className="text-xs font-black uppercase tracking-widest">Forge (Edit)</span>
+                            {/* Clone button - only for non-owners */}
+                            {!isOwner && (
+                                <button
+                                    onClick={handleClone}
+                                    className="w-full flex items-center gap-3 p-4 bg-neutral-beige rounded-2xl hover:bg-primary/10 hover:text-primary-strong transition-all"
+                                >
+                                    <Copy size={18} />
+                                    <span className="text-xs font-black uppercase tracking-widest">Clone to My Collection</span>
                                 </button>
+                            )}
+
+                            {isOwner && (
+                                <>
+                                    <button className="w-full flex items-center gap-3 p-4 bg-neutral-beige rounded-2xl hover:bg-secondary/10 hover:text-secondary transition-all">
+                                        <Edit3 size={18} />
+                                        <span className="text-xs font-black uppercase tracking-widest">Forge (Edit)</span>
+                                    </button>
+                                    <button
+                                        onClick={handleDelete}
+                                        className="w-full flex items-center gap-3 p-4 bg-red-50 rounded-2xl text-red-400 hover:bg-red-100 hover:text-red-600 transition-all"
+                                    >
+                                        <Trash2 size={18} />
+                                        <span className="text-xs font-black uppercase tracking-widest">Delete Arena</span>
+                                    </button>
+                                </>
                             )}
 
                             {!user && (

@@ -18,12 +18,15 @@ import {
     ShieldCheck,
     Clipboard,
     History as HistoryIcon,
-    AlertCircle
+    AlertCircle,
+    Copy,
+    Trash2,
+    Users
 } from "lucide-react";
 import Link from "next/link";
 import { useUser } from "@/context/UserContext";
 import { useGlobalAuth } from "@/context/GlobalAuthContext";
-import { getNodeSessionData, getAttempts } from "@/services/practiceService";
+import { getNodeSessionData, getAttempts, cloneNode, deleteNode } from "@/services/practiceService";
 import { fetchHistory } from "@/services/recordService";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
@@ -125,6 +128,39 @@ export default function PracticeDetailPage() {
         toast.info("Protocol ID replicated to clipboard");
     };
 
+    const handleClone = async () => {
+        if (!user) {
+            openAuth('LOGIN', {
+                flowType: 'PRACTICE',
+                title: 'Clone to Your Collection',
+                description: 'Sign in to clone this practice set to your personal collection.'
+            });
+            return;
+        }
+
+        try {
+            const { id: newId } = await cloneNode(setId);
+            toast.success('Practice set cloned!', {
+                description: 'A copy has been added to your collection.'
+            });
+            router.push(`/practice/details/${newId}`);
+        } catch (err) {
+            toast.error('Failed to clone practice set');
+        }
+    };
+
+    const handleDelete = async () => {
+        if (!confirm('Are you sure you want to delete this practice set?')) return;
+
+        try {
+            await deleteNode(setId);
+            toast.success('Practice set deleted');
+            router.push('/practice');
+        } catch (err) {
+            toast.error('Failed to delete practice set');
+        }
+    };
+
     if (loading) return (
         <div className="min-h-screen bg-slate-50 flex items-center justify-center">
             <div className="flex flex-col items-center gap-4">
@@ -171,8 +207,14 @@ export default function PracticeDetailPage() {
                                 <span className="px-2 py-0.5 bg-blue-600 text-[9px] font-black text-white rounded uppercase tracking-widest">
                                     Protocol: {practiceSet.level || 'Standard'}
                                 </span>
-                                <span className="flex items-center gap-1 text-[9px] font-black text-neutral-ink/40 uppercase tracking-widest">
-                                    <ShieldCheck size={12} className="text-blue-500" /> Verified Set
+                                <span className="flex items-center gap-1 px-2 py-0.5 bg-neutral-beige/50 rounded text-[9px] font-black text-neutral-ink/50 uppercase tracking-widest">
+                                    {practiceSet.visibility === 'global' ? (
+                                        <><ShieldCheck size={10} className="text-blue-500" /> Official</>
+                                    ) : isOwner ? (
+                                        practiceSet.visibility === 'public' ? 'Shared' : 'Private'
+                                    ) : (
+                                        <><Users size={10} /> By @{practiceSet.creatorName || 'User'}</>
+                                    )}
                                 </span>
                             </div>
                             <h1 className="text-4xl md:text-5xl font-black text-neutral-ink tracking-tight mb-4 lowercase">
@@ -274,11 +316,31 @@ export default function PracticeDetailPage() {
                                 <span className="text-[10px] font-black uppercase tracking-widest">Disseminate</span>
                             </button>
 
-                            {isOwner && (
-                                <button className="w-full flex items-center gap-3 p-4 bg-slate-50 border border-slate-100 rounded-xl hover:bg-slate-100 transition-all text-neutral-ink">
-                                    <Settings size={16} className="text-neutral-ink/30" />
-                                    <span className="text-[10px] font-black uppercase tracking-widest">Calibrate (Edit)</span>
+                            {/* Clone button - only for non-owners */}
+                            {!isOwner && (
+                                <button
+                                    onClick={handleClone}
+                                    className="w-full flex items-center gap-3 p-4 bg-slate-50 border border-slate-100 rounded-xl hover:bg-blue-50 hover:border-blue-200 transition-all text-neutral-ink"
+                                >
+                                    <Copy size={16} className="text-blue-500" />
+                                    <span className="text-[10px] font-black uppercase tracking-widest">Clone to Collection</span>
                                 </button>
+                            )}
+
+                            {isOwner && (
+                                <>
+                                    <button className="w-full flex items-center gap-3 p-4 bg-slate-50 border border-slate-100 rounded-xl hover:bg-slate-100 transition-all text-neutral-ink">
+                                        <Settings size={16} className="text-neutral-ink/30" />
+                                        <span className="text-[10px] font-black uppercase tracking-widest">Calibrate (Edit)</span>
+                                    </button>
+                                    <button
+                                        onClick={handleDelete}
+                                        className="w-full flex items-center gap-3 p-4 bg-red-50 border border-red-100 rounded-xl text-red-500 hover:bg-red-100 transition-all"
+                                    >
+                                        <Trash2 size={16} />
+                                        <span className="text-[10px] font-black uppercase tracking-widest">Delete Protocol</span>
+                                    </button>
+                                </>
                             )}
                         </section>
 

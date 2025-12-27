@@ -20,12 +20,15 @@ import {
     Trophy,
     ArrowLeft,
     CheckCircle2,
-    Sparkles
+    Sparkles,
+    Copy,
+    Trash2,
+    Users
 } from "lucide-react";
 import Link from "next/link";
 import { useUser } from "@/context/UserContext";
 import { useGlobalAuth } from "@/context/GlobalAuthContext";
-import { fetchDeckById } from "@/services/deckService";
+import { fetchDeckById, cloneFlashcardSet, deleteFlashcardSet } from "@/services/flashcardService";
 import { fetchHistory } from "@/services/recordService";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
@@ -141,6 +144,39 @@ export default function FlashcardDetailPage() {
         });
     };
 
+    const handleClone = async () => {
+        if (!user) {
+            openAuth('LOGIN', {
+                flowType: 'FLASHCARDS',
+                title: 'Clone to Your Collection',
+                description: 'Sign in to clone this deck to your personal collection.'
+            });
+            return;
+        }
+
+        try {
+            const { id: newId } = await cloneFlashcardSet(deckId);
+            toast.success('Deck cloned successfully!', {
+                description: 'A copy has been added to your collection.'
+            });
+            router.push(`/flashcards/details/${newId}`);
+        } catch (err) {
+            toast.error('Failed to clone deck');
+        }
+    };
+
+    const handleDelete = async () => {
+        if (!confirm('Are you sure you want to delete this deck?')) return;
+
+        try {
+            await deleteFlashcardSet(deckId);
+            toast.success('Deck deleted');
+            router.push('/flashcards');
+        } catch (err) {
+            toast.error('Failed to delete deck');
+        }
+    };
+
     if (loading) return (
         <div className="min-h-screen bg-[#FCFCFC] flex items-center justify-center">
             <div className="flex flex-col items-center gap-6">
@@ -194,8 +230,14 @@ export default function FlashcardDetailPage() {
                                 <span className="px-3 py-1 bg-neutral-beige/50 text-[9px] font-black uppercase tracking-widest text-neutral-ink/60 rounded-full">
                                     {deck.level || 'General'}
                                 </span>
-                                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-neutral-ink/20">
-                                    {deck.visibility || 'Private'} Archive
+                                <span className="px-3 py-1 bg-neutral-beige/30 text-[9px] font-black uppercase tracking-[0.2em] text-neutral-ink/40 rounded-full flex items-center gap-1">
+                                    {deck.visibility === 'global' ? (
+                                        <><Users size={10} /> Official</>
+                                    ) : isOwner ? (
+                                        deck.visibility === 'public' ? 'Shared' : 'Private'
+                                    ) : (
+                                        `By @${deck.creatorName || 'User'}`
+                                    )}
                                 </span>
                             </div>
                             <h1 className="text-5xl md:text-6xl font-serif text-neutral-ink leading-tight tracking-tight mb-6">
@@ -214,6 +256,19 @@ export default function FlashcardDetailPage() {
                                 <Play size={18} className="fill-current group-hover:scale-110 transition-transform" />
                                 Commence Study
                             </button>
+
+                            {/* Clone button - only for non-owners */}
+                            {!isOwner && (
+                                <button
+                                    onClick={handleClone}
+                                    className="w-full sm:w-auto p-6 bg-white border border-neutral-gray/10 rounded-full text-neutral-ink/40 hover:text-primary-strong hover:border-primary/20 transition-all shadow-sm"
+                                    title="Clone to my collection"
+                                >
+                                    <Copy size={24} />
+                                </button>
+                            )}
+
+                            {/* Share button */}
                             <button
                                 onClick={handleCopyId}
                                 className="w-full sm:w-auto p-6 bg-white border border-neutral-gray/10 rounded-full text-neutral-ink/40 hover:text-neutral-ink hover:border-neutral-ink/20 transition-all shadow-sm"
@@ -221,6 +276,17 @@ export default function FlashcardDetailPage() {
                             >
                                 <Share2 size={24} />
                             </button>
+
+                            {/* Delete button - only for owners */}
+                            {isOwner && (
+                                <button
+                                    onClick={handleDelete}
+                                    className="w-full sm:w-auto p-6 bg-white border border-red-200 rounded-full text-red-400 hover:text-red-600 hover:border-red-400 transition-all shadow-sm"
+                                    title="Delete deck"
+                                >
+                                    <Trash2 size={24} />
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
