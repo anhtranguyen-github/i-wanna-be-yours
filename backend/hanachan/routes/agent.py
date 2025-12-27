@@ -1,10 +1,12 @@
 from flask import Blueprint, request, jsonify
 from services.agent_service import AgentService
 from schemas.chat import AgentRequest
+from utils.middleware import validate_resource_access
 
 bp = Blueprint('agent', __name__, url_prefix='/agent')
 
 @bp.route('/invoke', methods=['POST'])
+@validate_resource_access
 def invoke():
     data = request.json
     try:
@@ -16,6 +18,7 @@ def invoke():
         return jsonify({"error": str(e)}), 400
 
 @bp.route('/stream', methods=['POST'])
+@validate_resource_access
 def stream():
     from flask import Response, stream_with_context
     data = request.json
