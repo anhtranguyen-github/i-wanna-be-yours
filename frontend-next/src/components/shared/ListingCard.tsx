@@ -66,8 +66,8 @@ export function ListingCard({
                     <div className={`w-12 h-12 ${iconBgColor} rounded-xl flex items-center justify-center text-neutral-ink group-hover:bg-primary-strong group-hover:text-white transition-all`}>
                         {icon}
                     </div>
-                    <div>
-                        <h4 className="font-black text-neutral-ink font-display group-hover:text-primary-strong transition-colors ring-offset-0">
+                    <div className="flex-1 min-w-0">
+                        <h4 className="font-black text-neutral-ink font-display group-hover:text-primary-strong transition-colors ring-offset-0 truncate">
                             {title}
                         </h4>
                         <p className="text-[10px] text-neutral-ink font-bold opacity-60 line-clamp-1 max-w-md">
@@ -76,13 +76,16 @@ export function ListingCard({
                     </div>
                 </div>
 
-                <div className="flex items-center gap-8">
-                    {metadata.map((meta, i) => (
-                        <div key={i} className={`text-[10px] font-black uppercase tracking-widest flex items-center gap-2 ${meta.color || 'text-neutral-ink/40'}`}>
-                            {meta.icon}
-                            {meta.value} {meta.label}
-                        </div>
-                    ))}
+                <div className="flex items-center gap-6">
+                    <div className="hidden sm:flex items-center gap-6">
+                        {metadata.map((meta, i) => (
+                            <div key={i} className={`text-[10px] font-black uppercase tracking-widest flex items-center gap-2 ${meta.color || 'text-neutral-ink/40'}`}>
+                                {meta.icon}
+                                {meta.value} {meta.label}
+                            </div>
+                        ))}
+                    </div>
+
                     {badge && (
                         <span className={`px-2 py-1 ${badge.color || 'bg-neutral-beige/30'} text-[9px] font-black uppercase tracking-widest rounded-lg`}>
                             {badge.label}
@@ -90,7 +93,7 @@ export function ListingCard({
                     )}
 
                     {/* Action buttons */}
-                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex items-center gap-2">
                         {onQuickAction && (
                             <button
                                 onClick={(e) => handleActionClick(e, onQuickAction)}
@@ -100,24 +103,26 @@ export function ListingCard({
                                 {quickActionLabel}
                             </button>
                         )}
-                        {onShare && (
-                            <button
-                                onClick={(e) => handleActionClick(e, onShare)}
-                                className="p-2 text-neutral-ink/40 hover:text-primary-strong hover:bg-primary-strong/10 rounded-lg transition-colors"
-                                title="Share"
-                            >
-                                <Share2 size={16} />
-                            </button>
-                        )}
-                        {onEdit && (
-                            <button
-                                onClick={(e) => handleActionClick(e, onEdit)}
-                                className="p-2 text-neutral-ink/40 hover:text-primary-strong hover:bg-primary-strong/10 rounded-lg transition-colors"
-                                title="Edit"
-                            >
-                                <Pencil size={16} />
-                            </button>
-                        )}
+                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            {onShare && (
+                                <button
+                                    onClick={(e) => handleActionClick(e, onShare)}
+                                    className="p-2 text-neutral-ink/40 hover:text-primary-strong hover:bg-primary-strong/10 rounded-lg transition-colors"
+                                    title="Share"
+                                >
+                                    <Share2 size={16} />
+                                </button>
+                            )}
+                            {onEdit && (
+                                <button
+                                    onClick={(e) => handleActionClick(e, onEdit)}
+                                    className="p-2 text-neutral-ink/40 hover:text-primary-strong hover:bg-primary-strong/10 rounded-lg transition-colors"
+                                    title="Edit"
+                                >
+                                    <Pencil size={16} />
+                                </button>
+                            )}
+                        </div>
                     </div>
 
                     <div className="text-neutral-ink/40 group-hover:text-primary-strong group-hover:translate-x-1 transition-all">
@@ -180,29 +185,32 @@ export function ListingCard({
                 {description}
             </p>
 
-            <div className="flex items-center justify-between mt-auto pt-6 border-t border-neutral-gray/10">
-                <div className="flex items-center gap-2">
-                    {onQuickAction ? (
-                        <button
-                            onClick={(e) => handleActionClick(e, onQuickAction)}
-                            className="px-6 py-2.5 bg-neutral-ink text-white rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:bg-primary-strong transition-all shadow-xl shadow-neutral-ink/10"
-                        >
-                            {quickActionIcon || <Zap size={14} fill="currentColor" />}
-                            {quickActionLabel}
-                        </button>
-                    ) : (
-                        <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-neutral-ink/60">
-                            {metadata.map((meta, i) => (
-                                <span key={i} className="flex items-center gap-2">
-                                    {meta.icon}
-                                    {meta.value} {meta.label}
-                                </span>
-                            ))}
-                        </div>
-                    )}
+            <div className="flex flex-col gap-4 mt-auto">
+                <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-neutral-ink/40">
+                    {metadata.map((meta, i) => (
+                        <span key={i} className="flex items-center gap-2">
+                            {meta.icon}
+                            {meta.value} {meta.label}
+                        </span>
+                    ))}
                 </div>
-                <div className="text-neutral-ink group-hover:translate-x-2 transition-transform">
-                    {actionIcon}
+
+                <div className="flex items-center justify-between pt-4 border-t border-neutral-gray/10">
+                    <div className="flex items-center gap-2">
+                        {onQuickAction && (
+                            <button
+                                onClick={(e) => handleActionClick(e, onQuickAction)}
+                                className="px-6 py-2.5 bg-neutral-ink text-white rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:bg-primary-strong transition-all shadow-xl shadow-neutral-ink/10"
+                            >
+                                {quickActionIcon || <Zap size={14} fill="currentColor" />}
+                                {quickActionLabel}
+                            </button>
+                        )}
+                    </div>
+                    <div className="flex items-center gap-2 text-neutral-ink group-hover:translate-x-2 transition-transform">
+                        <span className="text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-60 transition-opacity">View Detail</span>
+                        {actionIcon}
+                    </div>
                 </div>
             </div>
         </div>
