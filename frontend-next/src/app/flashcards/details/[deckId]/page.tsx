@@ -5,93 +5,76 @@ import { useParams, useRouter } from "next/navigation";
 import {
     Brain,
     Layers,
-    History as HistoryIcon,
-    Star,
-    Play,
-    Share2,
-    Edit3,
-    Eye,
-    Clock,
     Calendar,
-    ChevronRight,
     Search,
-    Volume2,
-    Lock,
-    Trophy,
-    ArrowLeft,
-    CheckCircle2,
+    Eye,
     Sparkles,
     Copy,
     Trash2,
-    Users
+    Share2,
+    Edit3,
+    Trophy,
+    Clock,
+    Lock,
+    Users,
+    ArrowLeft
 } from "lucide-react";
 import Link from "next/link";
 import { useUser } from "@/context/UserContext";
 import { useGlobalAuth } from "@/context/GlobalAuthContext";
 import { fetchDeckById, cloneFlashcardSet, deleteFlashcardSet } from "@/services/flashcardService";
 import { fetchHistory } from "@/services/recordService";
-import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
+import { motion, AnimatePresence } from "framer-motion";
+
+// Unified Components
+import { DetailLayout, DetailGrid, DetailMain, DetailSidebar } from "@/components/shared/details/DetailLayout";
+import { DetailHeader } from "@/components/shared/details/DetailHeader";
+import { MetricCard, MetricGrid } from "@/components/shared/details/MetricCard";
+import { CommandPanel } from "@/components/shared/details/CommandPanel";
 
 // =============================================================================
-// SUB-COMPONENTS
+// LOCAL SUB-COMPONENTS
 // =============================================================================
-
-function SRSMetric({ label, value, subtext, icon: Icon, color }: any) {
-    return (
-        <div className="bg-white/40 backdrop-blur-sm border border-neutral-gray/10 rounded-3xl p-6 hover:bg-white transition-all group">
-            <div className="flex items-center gap-3 mb-4">
-                <div className={`p-2 rounded-xl bg-${color}-50 text-${color}-600`}>
-                    <Icon size={18} />
-                </div>
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-ink/40">{label}</span>
-            </div>
-            <div className="text-3xl font-light text-neutral-ink mb-1 font-serif">{value}</div>
-            <div className="text-[10px] font-bold text-neutral-ink/20 uppercase tracking-widest">{subtext}</div>
-        </div>
-    );
-}
 
 function CardPeek({ card, index }: any) {
     const [isRevealed, setIsRevealed] = useState(false);
 
     return (
         <div
-            className="group relative bg-white border border-neutral-gray/5 p-6 rounded-2xl hover:shadow-xl hover:shadow-neutral-gray/5 transition-all cursor-pointer overflow-hidden"
+            className="group relative bg-white border border-neutral-gray/5 p-6 rounded-2xl hover:shadow-xl hover:shadow-neutral-gray/5 transition-all cursor-pointer overflow-hidden h-48 flex flex-col justify-center text-center"
             onMouseEnter={() => setIsRevealed(true)}
             onMouseLeave={() => setIsRevealed(false)}
         >
-            <div className="absolute top-0 right-0 p-4 opacity-10">
+            <div className="absolute top-4 right-4 opacity-10">
                 <span className="text-[8px] font-black font-display text-neutral-ink">#{index + 1}</span>
             </div>
 
-            <div className="flex flex-col items-center justify-center min-h-[100px] text-center">
-                <AnimatePresence mode="wait">
-                    {!isRevealed ? (
-                        <motion.div
-                            key="front"
-                            initial={{ opacity: 0, y: 5 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -5 }}
-                            className="text-2xl font-jp text-neutral-ink font-bold"
-                        >
-                            {card.front}
-                        </motion.div>
-                    ) : (
-                        <motion.div
-                            key="back"
-                            initial={{ opacity: 0, y: 5 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -5 }}
-                            className="space-y-1"
-                        >
-                            <div className="text-[10px] font-black text-primary uppercase tracking-widest mb-2 opacity-40">Definition</div>
-                            <div className="text-lg font-bold text-neutral-ink leading-tight">{card.back}</div>
-                            {card.sub_detail && <div className="text-xs text-neutral-ink/40 font-jp">{card.sub_detail}</div>}
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-            </div>
+            <AnimatePresence mode="wait">
+                {!isRevealed ? (
+                    <motion.div
+                        key="front"
+                        initial={{ opacity: 0, y: 5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -5 }}
+                        className="text-2xl font-jp text-neutral-ink font-bold line-clamp-3"
+                    >
+                        {card.front}
+                    </motion.div>
+                ) : (
+                    <motion.div
+                        key="back"
+                        initial={{ opacity: 0, y: 5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -5 }}
+                        className="space-y-1"
+                    >
+                        <div className="text-[10px] font-black text-primary-strong uppercase tracking-widest mb-2 opacity-60">Definition</div>
+                        <div className="text-lg font-bold text-neutral-ink leading-tight line-clamp-3">{card.back}</div>
+                        {card.sub_detail && <div className="text-xs text-neutral-ink/40 font-jp mt-1">{card.sub_detail}</div>}
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }
@@ -197,7 +180,7 @@ export default function FlashcardDetailPage() {
                 </div>
                 <h1 className="text-2xl font-serif text-neutral-ink mb-2">Registry Void</h1>
                 <p className="text-sm text-neutral-ink/40 mb-8">The requested synaptic cluster does not exist in this dimension.</p>
-                <Link href="/flashcards" className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-neutral-ink hover:text-primary transition-colors">
+                <Link href="/flashcards" className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-neutral-ink hover:text-primary-strong transition-colors">
                     <ArrowLeft size={16} /> Return to Library
                 </Link>
             </div>
@@ -211,237 +194,156 @@ export default function FlashcardDetailPage() {
 
     const isOwner = user && user.id.toString() === deck.userId;
 
+    // Define Actions for CommandPanel
+    const commandActions: any[] = [
+        {
+            label: "Share Frequency",
+            icon: Share2,
+            onClick: handleCopyId
+        }
+    ];
+
+    if (!isOwner) {
+        commandActions.push({
+            label: "Clone to Collection",
+            icon: Copy,
+            onClick: handleClone,
+            variant: "PRIMARY" as any
+        });
+    }
+
+    if (isOwner) {
+        commandActions.push({
+            label: "Delete Deck",
+            icon: Trash2,
+            onClick: handleDelete,
+            variant: "DANGER" as any
+        });
+    }
+
     return (
-        <div className="min-h-screen bg-[#FCFCFC] text-neutral-ink">
-            {/* Paper-White Header */}
-            <div className="bg-white border-b border-neutral-gray/5 pt-20 pb-16">
-                <div className="max-w-6xl mx-auto px-8">
-                    <Link
-                        href="/flashcards"
-                        className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-neutral-ink/30 hover:text-neutral-ink transition-colors mb-12"
-                    >
-                        <ArrowLeft size={14} />
-                        Library Registry
-                    </Link>
+        <DetailLayout>
+            <DetailHeader
+                title={deck.title}
+                description={deck.description || "An elegant collection of linguistic nodes for persistent reinforcement."}
+                tags={[
+                    { label: deck.levels?.[0] || 'General', color: 'bg-neutral-beige text-neutral-ink' },
+                    {
+                        label: deck.visibility === 'global' ? 'Official' : deck.visibility === 'public' ? 'Public' : 'Private',
+                        icon: deck.visibility === 'global' ? <Users size={12} /> : undefined
+                    }
+                ]}
+                backHref="/flashcards"
+                backLabel="Return to Registry"
+                onAction={handleCommence}
+                actionLabel="Commence Study"
+            />
 
-                    <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-12">
-                        <div className="max-w-3xl">
-                            <div className="flex items-center gap-4 mb-6">
-                                <span className="px-3 py-1 bg-neutral-beige/50 text-[9px] font-black uppercase tracking-widest text-neutral-ink/60 rounded-full">
-                                    {deck.level || 'General'}
-                                </span>
-                                <span className="px-3 py-1 bg-neutral-beige/30 text-[9px] font-black uppercase tracking-[0.2em] text-neutral-ink/40 rounded-full flex items-center gap-1">
-                                    {deck.visibility === 'global' ? (
-                                        <><Users size={10} /> Official</>
-                                    ) : isOwner ? (
-                                        deck.visibility === 'public' ? 'Shared' : 'Private'
-                                    ) : (
-                                        `By @${deck.creatorName || 'User'}`
-                                    )}
-                                </span>
+            <DetailGrid>
+                <DetailMain>
+                    <MetricGrid>
+                        <MetricCard
+                            label="Retention Rate"
+                            value="94.2%"
+                            icon={<Sparkles size={18} />}
+                            trend="+2.4%"
+                            trendDirection="up"
+                        />
+                        <MetricCard
+                            label="Active Nodes"
+                            value={deck.cards?.length || 0}
+                            icon={<Layers size={18} />}
+                        />
+                        <MetricCard
+                            label="Next Review"
+                            value="Today"
+                            icon={<Calendar size={18} />}
+                        />
+                    </MetricGrid>
+
+                    {/* Card Browser Section */}
+                    <div className="bg-neutral-white rounded-[2.5rem] p-8 border border-neutral-gray/20">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                            <div>
+                                <h2 className="text-xl font-black font-display text-neutral-ink mb-1">Registry Index</h2>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-neutral-ink/30">
+                                    {filteredCards.length} Nodes Detected
+                                </p>
                             </div>
-                            <h1 className="text-5xl md:text-6xl font-serif text-neutral-ink leading-tight tracking-tight mb-6">
-                                {deck.title}
-                            </h1>
-                            <p className="text-lg text-neutral-ink/40 font-medium max-w-xl leading-relaxed italic">
-                                {deck.description || "An elegant collection of linguistic nodes for persistent reinforcement. Optimal for deep synaptic integration."}
-                            </p>
+                            <div className="relative w-full md:w-64">
+                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-ink/20" size={16} />
+                                <input
+                                    type="text"
+                                    placeholder="Scan nodes..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="w-full pl-12 pr-6 py-3 bg-neutral-gray/5 border border-transparent rounded-xl focus:bg-white focus:border-neutral-gray/20 focus:outline-none transition-all text-sm font-bold placeholder:text-neutral-ink/30"
+                                />
+                            </div>
                         </div>
 
-                        <div className="flex flex-col sm:flex-row items-center gap-4">
-                            <button
-                                onClick={handleCommence}
-                                className="w-full sm:w-auto px-12 py-6 bg-neutral-ink text-white rounded-[2.5rem] font-black text-sm uppercase tracking-[0.2em] shadow-2xl shadow-neutral-ink/10 hover:-translate-y-1 active:translate-y-0 transition-all flex items-center justify-center gap-3 group"
-                            >
-                                <Play size={18} className="fill-current group-hover:scale-110 transition-transform" />
-                                Commence Study
-                            </button>
-
-                            {/* Clone button - only for non-owners */}
-                            {!isOwner && (
-                                <button
-                                    onClick={handleClone}
-                                    className="w-full sm:w-auto p-6 bg-white border border-neutral-gray/10 rounded-full text-neutral-ink/40 hover:text-primary-strong hover:border-primary/20 transition-all shadow-sm"
-                                    title="Clone to my collection"
-                                >
-                                    <Copy size={24} />
-                                </button>
-                            )}
-
-                            {/* Share button */}
-                            <button
-                                onClick={handleCopyId}
-                                className="w-full sm:w-auto p-6 bg-white border border-neutral-gray/10 rounded-full text-neutral-ink/40 hover:text-neutral-ink hover:border-neutral-ink/20 transition-all shadow-sm"
-                                title="Share frequency ID"
-                            >
-                                <Share2 size={24} />
-                            </button>
-
-                            {/* Delete button - only for owners */}
-                            {isOwner && (
-                                <button
-                                    onClick={handleDelete}
-                                    className="w-full sm:w-auto p-6 bg-white border border-red-200 rounded-full text-red-400 hover:text-red-600 hover:border-red-400 transition-all shadow-sm"
-                                    title="Delete deck"
-                                >
-                                    <Trash2 size={24} />
-                                </button>
-                            )}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {filteredCards.map((card: any, idx: number) => (
+                                <CardPeek key={idx} card={card} index={idx} />
+                            ))}
                         </div>
+
+                        {filteredCards.length === 0 && (
+                            <div className="py-20 text-center opacity-40">
+                                <Eye size={32} className="mx-auto mb-4" />
+                                <p className="text-[10px] font-black uppercase tracking-widest">No matching signatures</p>
+                            </div>
+                        )}
                     </div>
-                </div>
-            </div>
+                </DetailMain>
 
-            <main className="max-w-6xl mx-auto px-8 py-20">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+                <DetailSidebar>
+                    <CommandPanel actions={commandActions} />
 
-                    {/* Left: Mastery & Analytics */}
-                    <div className="lg:col-span-8 space-y-20">
+                    {/* User Stats/History Panel within Sidebar */}
+                    <div className="bg-neutral-white rounded-[2.5rem] p-8 border border-neutral-gray/20">
+                        <h3 className="text-xs font-black text-neutral-ink/40 uppercase tracking-[0.2em] mb-6 font-display">
+                            Reinforcement Logs
+                        </h3>
 
-                        {/* Synaptic Health Grid */}
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-                            <SRSMetric
-                                label="Retention Rate"
-                                value="94.2%"
-                                subtext="Synaptic Stability"
-                                icon={Sparkles}
-                                color="emerald"
-                            />
-                            <SRSMetric
-                                label="Active Nodes"
-                                value={deck.cards?.length || 0}
-                                subtext="Registry Mass"
-                                icon={Layers}
-                                color="blue"
-                            />
-                            <SRSMetric
-                                label="Next Review"
-                                value="Today"
-                                subtext="Calibration Window"
-                                icon={Calendar}
-                                color="amber"
-                            />
-                        </div>
-
-                        {/* Card Browser */}
-                        <section>
-                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
-                                <div>
-                                    <h2 className="text-2xl font-serif text-neutral-ink mb-1 italic">Library Browser</h2>
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-neutral-ink/20">Peek into the registry index</p>
-                                </div>
-                                <div className="relative max-w-xs w-full">
-                                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-ink/20" size={16} />
-                                    <input
-                                        type="text"
-                                        placeholder="Scan nodes..."
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="w-full pl-12 pr-6 py-3 bg-white border border-neutral-gray/5 rounded-2xl focus:outline-none focus:border-neutral-ink/20 transition-all text-sm font-bold placeholder:text-neutral-ink/20"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                                {filteredCards.map((card: any, idx: number) => (
-                                    <CardPeek key={idx} card={card} index={idx} />
-                                ))}
-                                {filteredCards.length === 0 && (
-                                    <div className="col-span-full py-20 text-center bg-white border border-dashed border-neutral-gray/10 rounded-3xl">
-                                        <Eye size={32} className="mx-auto text-neutral-ink/10 mb-4" />
-                                        <p className="text-[10px] font-black uppercase tracking-widest text-neutral-ink/20">No matching signatures detected</p>
-                                    </div>
-                                )}
-                            </div>
-                        </section>
-                    </div>
-
-                    {/* Right: Social & Registry Logs */}
-                    <div className="lg:col-span-4 space-y-12">
-
-                        {/* Control Matrix */}
-                        <section className="bg-white border border-neutral-gray/10 rounded-[3rem] p-10 space-y-6 shadow-sm">
-                            <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-ink/20 mb-8">Registry Commands</h3>
-
-                            {isOwner && (
-                                <button className="w-full flex items-center justify-between p-4 bg-neutral-beige/20 hover:bg-neutral-beige/40 rounded-2xl transition-all text-neutral-ink group">
+                        <div className="space-y-4">
+                            {records.length > 0 ? records.slice(0, 3).map((record, idx) => (
+                                <div key={idx} className="flex items-center justify-between p-3 rounded-xl hover:bg-neutral-gray/5 transition-colors">
                                     <div className="flex items-center gap-3">
-                                        <Edit3 size={18} className="text-neutral-ink/20 group-hover:text-neutral-ink transition-colors" />
-                                        <span className="text-[11px] font-black uppercase tracking-widest">Modify Registry</span>
+                                        <div className={`w-1.5 h-1.5 rounded-full ${record.score >= 80 ? 'bg-green-400' : 'bg-amber-400'}`} />
+                                        <span className="text-xs font-bold text-neutral-ink/60">
+                                            {new Date(record.timestamp).toLocaleDateString()}
+                                        </span>
                                     </div>
-                                    <ChevronRight size={16} className="text-neutral-ink/10" />
-                                </button>
-                            )}
-
-                            <button className="w-full flex items-center justify-between p-4 bg-neutral-beige/20 hover:bg-neutral-beige/40 rounded-2xl transition-all text-neutral-ink group">
-                                <div className="flex items-center gap-3">
-                                    <Trophy size={18} className="text-neutral-ink/20 group-hover:text-neutral-ink transition-colors" />
-                                    <span className="text-[11px] font-black uppercase tracking-widest">Global Top Rank</span>
+                                    <span className="text-xs font-black text-neutral-ink">{record.score}%</span>
                                 </div>
-                                <span className="text-[10px] font-black text-neutral-ink/40">#12</span>
-                            </button>
-
-                            <button className="w-full flex items-center justify-between p-4 bg-neutral-beige/20 hover:bg-neutral-beige/40 rounded-2xl transition-all text-neutral-ink group">
-                                <div className="flex items-center gap-3">
-                                    <Clock size={18} className="text-neutral-ink/20 group-hover:text-neutral-ink transition-colors" />
-                                    <span className="text-[11px] font-black uppercase tracking-widest">Time Invested</span>
-                                </div>
-                                <span className="text-[10px] font-black text-neutral-ink/40">4.2h</span>
-                            </button>
-                        </section>
-
-                        {/* Recent Reinforcement Activity */}
-                        <section>
-                            <div className="flex items-center justify-between mb-8 px-4">
-                                <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-ink/30">Reinforcement Logs</h3>
-                                <HistoryIcon size={14} className="text-neutral-ink/20" />
-                            </div>
-
-                            <div className="space-y-4">
-                                {records.length > 0 ? records.slice(0, 5).map((record, idx) => (
-                                    <div key={idx} className="bg-white border border-neutral-gray/5 p-6 rounded-3xl flex items-center justify-between hover:border-neutral-ink/10 transition-all">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-2 h-2 rounded-full bg-neutral-ink/10" />
-                                            <div>
-                                                <div className="text-[9px] font-black text-neutral-ink/20 uppercase tracking-widest">
-                                                    {new Date(record.timestamp).toLocaleDateString()}
-                                                </div>
-                                                <div className="text-xs font-bold text-neutral-ink">Reinforcement Session</div>
-                                            </div>
-                                        </div>
-                                        <div className="text-right">
-                                            <div className="text-sm font-black text-neutral-ink">{record.score}%</div>
-                                            <div className="text-[8px] font-black text-neutral-ink/20 uppercase">Recall</div>
-                                        </div>
-                                    </div>
-                                )) : (
-                                    <div className="py-20 text-center opacity-10">
-                                        <HistoryIcon size={32} className="mx-auto mb-4" />
-                                        <p className="text-[10px] font-black uppercase tracking-widest">No Reinforcement History</p>
-                                    </div>
-                                )}
-                            </div>
-
-                            {!user && (
-                                <div className="mt-8">
-                                    <div className="p-8 bg-neutral-ink text-white rounded-[2.5rem] text-center shadow-xl shadow-neutral-ink/10">
-                                        <Lock size={24} className="mx-auto mb-4 opacity-30" />
-                                        <h4 className="text-sm font-black uppercase tracking-widest mb-2 leading-relaxed italic">Identity Verification Required</h4>
-                                        <p className="text-[10px] font-medium opacity-40 mb-8 leading-relaxed">Persist your synaptic health metrics and SRS forecast by verifying your identity.</p>
-                                        <button
-                                            onClick={() => openAuth('LOGIN')}
-                                            className="w-full py-4 bg-white text-neutral-ink rounded-2xl text-[10px] font-black uppercase tracking-widest hover:opacity-90 transition-all"
-                                        >
-                                            Verify Identity
-                                        </button>
-                                    </div>
+                            )) : (
+                                <div className="text-center py-6">
+                                    <Clock size={20} className="mx-auto mb-2 text-neutral-ink/20" />
+                                    <span className="text-[10px] font-bold text-neutral-ink/30 uppercase">No history found</span>
                                 </div>
                             )}
-                        </section>
+                        </div>
 
+                        {!user && (
+                            <div className="mt-6 pt-6 border-t border-neutral-gray/10">
+                                <div className="bg-neutral-ink/5 rounded-2xl p-4 text-center">
+                                    <Lock size={16} className="mx-auto mb-2 text-neutral-ink/40" />
+                                    <p className="text-[9px] font-bold text-neutral-ink/40 mb-3 leading-relaxed">
+                                        Log in to track your mastery progress over time.
+                                    </p>
+                                    <button
+                                        onClick={() => openAuth('LOGIN')}
+                                        className="text-[9px] font-black uppercase tracking-widest text-primary-strong hover:underline"
+                                    >
+                                        Authenticate
+                                    </button>
+                                </div>
+                            </div>
+                        )}
                     </div>
-                </div>
-            </main>
-        </div>
+                </DetailSidebar>
+            </DetailGrid>
+        </DetailLayout>
     );
 }

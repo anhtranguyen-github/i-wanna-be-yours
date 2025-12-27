@@ -101,6 +101,80 @@ export default function QuootSessionPage() {
     const [soundEnabled, setSoundEnabled] = useState(true);
 
     const currentSessionId = React.useRef<string | null>(null);
+    const [unifiedResult, setUnifiedResult] = useState<any>(null);
+
+    // Submission logic
+    useEffect(() => {
+        if (gameState.status === 'RESULTS' || gameState.status === 'GAME_OVER') {
+            const submitFinish = async () => {
+                if (!deck) return; // Guard for deck
+                try {
+                    // Start with a default result for guests or fallback
+                    let resultData = null;
+
+                    // Only try API if we have a user (though service might handle it, let's be safe)
+                    // Actually, let's just try-catch the whole thing.
+                    try {
+                        const response = await quootService.submitQuootResult(deck.id, {
+                            score: gameState.score,
+                            correctCount: gameState.correctCount,
+                            maxStreak: gameState.maxStreak,
+                            totalCards: cards.length
+                        });
+                        resultData = response.result;
+                    } catch (e) {
+                        console.warn("Guest or API error submit", e);
+                        // Fallback for guest/offline
+                        resultData = {
+                            score: gameState.score,
+                            rank: 'C', // Calculate proper rank if needed
+                            xpEarned: 0,
+                            coinsEarned: 0,
+                            streakExtended: false
+                        };
+                    }
+
+
+                    // Track COMPLETED event
+                    if (currentSessionId.current) {
+                        await saveRecord({
+                            itemType: 'QUOOT',
+                            itemId: deck.id,
+                            itemTitle: deck.title,
+                            status: 'COMPLETED',
+                            score: gameState.score,
+                            sessionId: currentSessionId.current,
+                            duration: Math.round((Date.now() - gameState.startedAt) / 1000)
+                        });
+                        currentSessionId.current = null; // Clear to prevent abandonment tracking
+                    }
+
+                    if (resultData) {
+                        setUnifiedResult(mapResultIcons(resultData));
+                    }
+                } catch (err) {
+                    console.error("Failed to submit quoot result:", err);
+                }
+            };
+            submitFinish();
+        }
+    }, [gameState.status, deck?.id, gameState.score, gameState.correctCount, gameState.maxStreak, cards.length, gameState.startedAt, deck?.title]);
+
+    // Handle session abandonment on unmount
+    useEffect(() => {
+        return () => {
+            if (currentSessionId.current && deck) {
+                // Fire and forget abandonment record
+                saveRecord({
+                    itemType: 'QUOOT',
+                    itemId: deck.id,
+                    itemTitle: deck.title,
+                    status: 'ABANDONED',
+                    sessionId: currentSessionId.current
+                });
+            }
+        };
+    }, [deck]);
 
     // Current card
     const currentCard = useMemo(() => {
@@ -408,58 +482,7 @@ export default function QuootSessionPage() {
         );
     }
 
-    const [unifiedResult, setUnifiedResult] = useState<any>(null);
-
-    // Submission logic
-    useEffect(() => {
-        if (gameState.status === 'RESULTS' || gameState.status === 'GAME_OVER') {
-            const submitFinish = async () => {
-                try {
-                    const response = await quootService.submitQuootResult(deck.id, {
-                        score: gameState.score,
-                        correctCount: gameState.correctCount,
-                        maxStreak: gameState.maxStreak,
-                        totalCards: cards.length
-                    });
-
-                    // Track COMPLETED event
-                    if (currentSessionId.current) {
-                        await saveRecord({
-                            itemType: 'QUOOT',
-                            itemId: deck.id,
-                            itemTitle: deck.title,
-                            status: 'COMPLETED',
-                            score: gameState.score,
-                            sessionId: currentSessionId.current,
-                            duration: Math.round((Date.now() - gameState.startedAt) / 1000)
-                        });
-                        currentSessionId.current = null; // Clear to prevent abandonment tracking
-                    }
-
-                    setUnifiedResult(mapResultIcons(response.result));
-                } catch (err) {
-                    console.error("Failed to submit quoot result:", err);
-                }
-            };
-            submitFinish();
-        }
-    }, [gameState.status, deck?.id, gameState.score, gameState.correctCount, gameState.maxStreak, cards.length, gameState.startedAt, deck?.title]);
-
-    // Handle session abandonment on unmount
-    useEffect(() => {
-        return () => {
-            if (currentSessionId.current && deck) {
-                // Fire and forget abandonment record
-                saveRecord({
-                    itemType: 'QUOOT',
-                    itemId: deck.id,
-                    itemTitle: deck.title,
-                    status: 'ABANDONED',
-                    sessionId: currentSessionId.current
-                });
-            }
-        };
-    }, [deck]);
+    // ... (This content will be removed from here)
 
     // Results / Game Over screen
     if (gameState.status === 'RESULTS' || gameState.status === 'GAME_OVER') {
