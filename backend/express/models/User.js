@@ -30,11 +30,30 @@ const UserSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    display_name: {
+        type: String,
+        trim: true,
+        default: ''
+    },
+    bio: {
+        type: String,
+        trim: true,
+        default: ''
+    },
     followedItems: [{
         itemId: { type: mongoose.Schema.Types.ObjectId, required: true },
         itemType: { type: String, enum: ['PRACTICE', 'FLASHCARD', 'QUOOT'], required: true },
         addedAt: { type: Date, default: Date.now }
-    }]
+    }],
+    settings: {
+        theme: { type: String, enum: ['light', 'dark', 'system'], default: 'system' },
+        language: { type: String, default: 'en' },
+        soundEnabled: { type: Boolean, default: true },
+        notificationsEnabled: { type: Boolean, default: true },
+        dailyGoalMinutes: { type: Number, default: 30 },
+        preferredLevel: { type: String, enum: ['N1', 'N2', 'N3', 'N4', 'N5', ''], default: '' },
+        preferredFocus: { type: [String], default: [] }
+    }
 });
 
 // Update updated_at on save

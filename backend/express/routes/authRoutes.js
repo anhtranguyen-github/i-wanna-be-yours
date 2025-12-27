@@ -110,4 +110,32 @@ router.post('/logout', validateRequest(logoutSchema), async (req, res) => {
     }
 });
 
+// POST /auth/update-password
+const { verifyJWT } = require('../middleware/authMiddleware');
+router.post('/update-password', verifyJWT, async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        const user = await User.findById(req.user.user_id);
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Verify current password
+        const isValid = await verifyPassword(currentPassword, user.password_hash);
+        if (!isValid) {
+            return res.status(401).json({ error: 'Invalid current password' });
+        }
+
+        // Hash and Save new password
+        user.password_hash = await hashPassword(newPassword);
+        await user.save();
+
+        res.status(200).json({ message: 'Password updated successfully' });
+    } catch (err) {
+        console.error("Update Password Error:", err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 module.exports = router;

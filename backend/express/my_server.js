@@ -92,7 +92,9 @@ app.use("/e-api/v1/flashcards", flashcardRoutes);
 
 // --- User Routes ---
 const userRoutes = require("./routes/userRoutes");
+const settingsRoutes = require("./routes/settingsRoutes");
 app.use("/e-api/v1/users", userRoutes);
+app.use("/e-api/v1/users", settingsRoutes); // Nested under users or separate? Usually /settings. But let's keep it under /users/settings.
 
 // --- Record Routes ---
 const recordRoutes = require("./routes/recordRoutes");
