@@ -132,19 +132,19 @@ const JapaneseTextParser: React.FC<JapaneseTextParserProps> = ({
 
 
   return (
-    <div className="h-full bg-gray-50 font-serif text-2xl p-6 rounded-lg shadow-lg w-full mb-6">
+    <div className="h-full bg-neutral-900/50 backdrop-blur-xl border border-white/5 font-sans text-2xl p-8 rounded-2xl shadow-2xl w-full mb-6">
       {enhancedData ? (
         enhancedData.map((words: any, sentenceIndex: any) => (
           <div
             key={sentenceIndex}
-            className="bg-gray-100 p-1 rounded-lg mb-3 flex flex-wrap"
+            className="p-4 rounded-xl mb-4 flex flex-wrap gap-x-1 gap-y-4 hover:bg-white/5 transition-colors duration-300 group/sentence"
             onMouseEnter={() => setHoveredSentence(words)}
             onMouseLeave={() => setHoveredSentence(null)}
           >
             {words.map((word: any, wordIndex: any) => (
               <span
                 key={wordIndex}
-                className="relative group mx-1 my-3"
+                className="relative group/word"
                 onClick={() => {
                   setClickedWord(word.original);
                   setClickedWordDictForm(word.dictionary);
@@ -154,21 +154,22 @@ const JapaneseTextParser: React.FC<JapaneseTextParserProps> = ({
                 onMouseEnter={() => setHoveredWord(word.original)}
                 onMouseLeave={() => setHoveredWord(null)}
               >
+                {/* Furigana */}
                 <span
-                  className={`absolute -top-6 left-0 right-0 mx-auto w-auto text-center text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out text-black z-10`}
+                  className={`absolute -top-6 left-0 right-0 mx-auto w-auto text-center text-[10px] font-bold tracking-tighter opacity-0 group-hover/word:opacity-100 transition-all duration-300 ease-in-out text-cyan-400 z-10`}
                 >
                   {word.furigana}
                 </span>
 
                 <span
-                  className={`inline-flex items-center justify-center py-1 px-1 rounded transition-transform duration-300 cursor-pointer ${/^[a-zA-Z0-9'"=?!,.。、「」『』〜・（）［］〈〉《》―‥…;&:%@$#()\[\]{}\-_/\\]+$/.test(word.original)
-                    ? ""
+                  className={`inline-flex items-center justify-center py-2 px-1.5 rounded-lg transition-all duration-300 cursor-pointer font-jp ${/^[a-zA-Z0-9'"=?!,.。、「」『』〜・（）［］〈〉《》―‥…;&:%@$#()\[\]{}\-_/\\]+$/.test(word.original)
+                    ? "text-neutral-500"
                     : word.status === "known"
-                      ? "bg-transparent border border-gray-300 hover:border-gray-500 text-neutral-ink"
+                      ? "text-neutral-300 hover:text-white"
                       : word.status === "unknown"
-                        ? "bg-orange-200 hover:bg-orange-300 text-neutral-ink"
-                        : "bg-blue-200 hover:bg-blue-300 text-neutral-ink"
-                    } hover:scale-105`}
+                        ? "bg-orange-500/10 text-orange-400 border border-orange-500/20 hover:bg-orange-500/20"
+                        : "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 hover:bg-cyan-500/20 shadow-[0_0_15px_rgba(34,211,238,0.1)]"
+                    } hover:scale-110 hover:z-20`}
                 >
                   {word.original}
                 </span>
@@ -178,9 +179,10 @@ const JapaneseTextParser: React.FC<JapaneseTextParserProps> = ({
           </div>
         ))
       ) : (
-        <p className="text-red-500">
-          No text to analyze. Input text to the text input field above.
-        </p>
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <div className="text-neutral-700 font-mono text-xs uppercase tracking-[0.3em] mb-2">Neural Core Idle</div>
+          <p className="text-neutral-500 text-xs">Awaiting syntactic input for decomposition.</p>
+        </div>
       )}
     </div>
   );
