@@ -5,6 +5,9 @@ const nextConfig = {
       { source: '/e-api/:path*', destination: `${process.env.EXPRESS_API_URL}/e-api/:path*` },
       { source: '/f-api/:path*', destination: `${process.env.FLASK_API_URL}/:path*` },
       { source: '/s-api/:path*', destination: `${process.env.STUDY_PLAN_API_URL}/:path*` },  // Study Plan Service (port 5500)
+      { source: '/d-api/v1/parse-tree', destination: `${process.env.HANACHAN_API_URL}/d-api/v1/parse-tree` },
+      { source: '/d-api/v1/translate', destination: `${process.env.HANACHAN_API_URL}/d-api/v1/translate` },
+      { source: '/d-api/v1/convert/all', destination: `${process.env.HANACHAN_API_URL}/d-api/v1/convert/all` },
       { source: '/d-api/:path*', destination: `${process.env.DICTIONARY_API_URL}/:path*` },
       { source: '/h-api/:path*', destination: `${process.env.HANACHAN_API_URL}/:path*` },
     ]

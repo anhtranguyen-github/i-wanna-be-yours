@@ -1,68 +1,91 @@
-'use client';
+"use client";
 
-// pages/translate.js
-
-import { useState } from 'react';
-import UnifiedGptComponent from '@/components-parser/UnifiedGptComponent';  // Adjust the path as necessary
+import React, { useState } from 'react';
+import { Languages, Send, Sparkles, ShieldAlert } from 'lucide-react';
+import { useUser } from '@/context/UserContext';
+import { NeuralLabLayout } from '@/components/neural/NeuralLabLayout';
+import { AdaptiveScanner } from '@/components/neural/AdaptiveScanner';
+import { GuestTeaser } from '@/components/neural/GuestTeaser';
+import UnifiedGptComponent from '@/components-parser/UnifiedGptComponent';
 
 const TranslatePage = () => {
+  const { user, loading: authLoading } = useUser();
   const [inputText, setInputText] = useState(
     "日本語または韓国語のテキストを入力してください。\n일본어 또는 한국어 텍스트를 입력하세요."
   );
+  const [isThinking, setIsThinking] = useState(false);
 
   const gptTranslateUrl = '/d-api/v1/translate';
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] py-16 px-6">
-      <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-black text-neutral-ink font-display tracking-tight uppercase tracking-[0.2em] mb-4">
-            Text <span className="text-primary">Translate</span>
-          </h1>
-          <p className="text-neutral-ink font-medium">Linguistic Bridge for Japanese & Korean</p>
-        </div>
+    <NeuralLabLayout
+      title="Text Translate"
+      subtitle="Spectral Linguistic Bridge. High-nuance translation between Japanese, Korean, and English utilizing qwen3 neural logic."
+    >
+      <div className="space-y-8 relative">
+        {/* Guest Lock */}
+        {!authLoading && !user && <GuestTeaser toolName="Text Translate" />}
 
-        <div className="clay-card bg-white p-10 rounded-[2.5rem] border border-slate-100  shadow-primary/5 space-y-8">
-          <div className="space-y-4">
-            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-ink ml-2">Source Polyglot</label>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Input Side */}
+          <section className="space-y-4">
+            <div className="flex items-center justify-between px-2">
+              <label className="text-[10px] font-black uppercase tracking-[0.3em] text-cyan-400">
+                Source Polyglot
+              </label>
+              <div className="flex items-center gap-2 text-[10px] text-neutral-500 uppercase font-black tracking-widest">
+                <Languages size={12} />
+                Auto-Detecting
+              </div>
+            </div>
+
             <div className="relative group">
-              <div className="absolute -inset-0.5 bg-gradient-to-br from-primary/20 to-emerald-100 rounded-[2rem] blur opacity-25 group-focus-within:opacity-50 transition duration-500"></div>
+              <div className="absolute -inset-0.5 bg-cyan-500/10 rounded-2xl blur opacity-0 group-hover:opacity-100 transition duration-500"></div>
               <textarea
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                className="relative w-full h-48 p-8 rounded-[2rem] bg-white border border-slate-100 text-lg font-jp focus:outline-none focus:ring-0 focus:border-primary/30 transition-all  text-neutral-ink"
+                className="relative w-full h-[400px] p-8 bg-neutral-900 border border-neutral-800 rounded-2xl text-neutral-200 font-jp text-lg focus:outline-none focus:border-cyan-500/50 transition-all resize-none shadow-2xl"
                 placeholder="Enter text to translate..."
               />
             </div>
-          </div>
+          </section>
 
-          <div className="pt-8 border-t border-slate-50">
-            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60 ml-2 mb-6 block">Intelligence Output</label>
-            <UnifiedGptComponent
-              japaneseText={inputText}
-              url={gptTranslateUrl}
-              task="translate"
-            />
-          </div>
-
-          <div className="bg-primary/5 p-6 rounded-2xl border border-primary/10">
-            <div className="flex gap-3">
-              <div className="p-2 bg-white rounded-lg text-primary  h-fit">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960" fill="currentColor">
-                  <path d="M480-280q17 0 28.5-11.5T520-320q0-17-11.5-28.5T480-360q-17 0-28.5 11.5T440-320q0 17 11.5 28.5T480-280Zm-40-160h80v-240h-80v240Zm40 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-xs font-bold text-slate-700 mb-1">Lexical Accuracy Disclaimer</p>
-                <p className="text-[11px] text-neutral-ink leading-relaxed">
-                  Translations are processed via neural networks and may contain structural nuances. Do not use for high-stakes medical or legal documentation.
-                </p>
+          {/* Output Side */}
+          <section className="space-y-4">
+            <div className="flex items-center justify-between px-2">
+              <label className="text-[10px] font-black uppercase tracking-[0.3em] text-cyan-400">
+                Intelligence Output
+              </label>
+              <div className="flex items-center gap-2 text-[10px] text-cyan-500/50 uppercase font-black tracking-widest">
+                <Sparkles size={12} />
+                Neural Qwen3
               </div>
             </div>
+
+            <AdaptiveScanner isScanning={isThinking} mode="fast">
+              <div className="min-h-[400px] bg-neutral-900/50 border border-neutral-800 rounded-2xl p-2 shadow-2xl overflow-hidden">
+                <UnifiedGptComponent
+                  japaneseText={inputText}
+                  url={gptTranslateUrl}
+                  task="translate"
+                />
+              </div>
+            </AdaptiveScanner>
+          </section>
+        </div>
+
+        {/* Accuracy Disclaimer */}
+        <div className="max-w-4xl mx-auto bg-cyan-950/20 border border-cyan-500/20 p-6 rounded-2xl flex gap-4 items-start translate-y-8">
+          <ShieldAlert className="text-cyan-400 shrink-0 mt-1" size={20} />
+          <div className="space-y-1">
+            <h4 className="text-xs font-black text-cyan-100 uppercase tracking-widest">Lexical Accuracy Disclaimer</h4>
+            <p className="text-[11px] text-cyan-400/70 leading-relaxed font-light">
+              Translations are processed via local neural networks (qwen3:1.7b) and may contain structural hallucinations. Do not rely on this output for critical medical, legal, or high-stakes documentation.
+            </p>
           </div>
         </div>
       </div>
-    </div>
+    </NeuralLabLayout>
   );
 };
 
