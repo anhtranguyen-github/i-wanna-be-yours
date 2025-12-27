@@ -117,7 +117,7 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
     const conversationIdFromParams = params?.conversationId as string | undefined;
 
     const [leftSidebar, setLeftSidebarState] = useState<LeftSidebarState>('expanded');
-    const [rightSidebar, setRightSidebarState] = useState<RightSidebarState>('minimized');
+    const [rightSidebar, setRightSidebarState] = useState<RightSidebarState>('collapsed');
     const [viewport, setViewport] = useState<Viewport>('desktop');
     const [activeArtifact, setActiveArtifactState] = useState<ActiveArtifact | null>(null);
     const [stagedResourceToProcess, setStagedResourceToProcess] = useState<ResourceToStage | null>(null);

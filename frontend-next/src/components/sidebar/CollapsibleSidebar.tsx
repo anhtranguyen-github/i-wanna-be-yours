@@ -93,12 +93,12 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                 <Link
                     href="/chat"
                     className={`
-                        flex items-center justify-center gap-2 w-full py-4 px-4 bg-primary-strong text-white font-black rounded-2xl hover:opacity-90 transition-all duration-300  hover: active:scale-95 font-display uppercase tracking-widest text-[10px]
-                        ${!isExpanded ? 'p-0 h-14 w-14 mx-auto' : ''}
+                        flex items-center justify-center gap-2 w-full py-2 px-3 bg-primary-strong text-white font-black rounded-xl hover:opacity-90 transition-all duration-300 hover: active:scale-95 font-display uppercase tracking-widest text-[9px]
+                        ${!isExpanded ? 'p-0 h-12 w-12 mx-auto' : ''}
                     `}
                     title={!isExpanded ? "New Chat" : undefined}
                 >
-                    <Plus size={!isExpanded ? 24 : 18} strokeWidth={3} />
+                    <Plus size={!isExpanded ? 20 : 16} strokeWidth={3} />
                     {isExpanded && "New Chat"}
                 </Link>
             </div>
@@ -112,10 +112,10 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     {isExpanded && (
                         <button
                             onClick={() => setIsHistoryOpen(!isHistoryOpen)}
-                            className="flex items-center justify-between px-5 py-5 text-[10px] font-display font-black text-neutral-ink uppercase tracking-[0.2em] hover:bg-neutral-beige transition-colors w-full flex-shrink-0"
+                            className="flex items-center justify-between px-5 py-3 text-[9px] font-display font-black text-neutral-ink uppercase tracking-[0.2em] hover:bg-neutral-beige transition-colors w-full flex-shrink-0"
                         >
-                            <span className="flex items-center gap-3">
-                                <History size={16} />
+                            <span className="flex items-center gap-2">
+                                <History size={14} />
                                 History
                             </span>
                             {isHistoryOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
@@ -124,15 +124,15 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
 
                     {/* Search bar - fixed, not scrollable */}
                     {isExpanded && isHistoryOpen && (
-                        <div className="px-4 pt-1 pb-3 flex-shrink-0">
+                        <div className="px-4 pt-1 pb-2 flex-shrink-0">
                             <div className="relative group">
-                                <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-ink group-focus-within:text-primary-strong transition-colors" />
+                                <Search size={12} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-ink group-focus-within:text-primary-strong transition-colors" />
                                 <input
                                     type="text"
                                     placeholder={isGuest ? "Search demo chats..." : "Search..."}
                                     value={chatSearch}
                                     onChange={(e) => setChatSearch(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-3 text-xs bg-neutral-white border border-neutral-gray/30 rounded-xl focus:outline-none focus:border-primary-strong focus:ring-4 focus:ring-primary/10 transition-all font-bold"
+                                    className="w-full pl-9 pr-3 py-2 text-[11px] bg-neutral-white border border-neutral-gray/30 rounded-lg focus:outline-none focus:border-primary-strong focus:ring-4 focus:ring-primary/10 transition-all font-bold"
                                 />
                             </div>
                         </div>
@@ -148,7 +148,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                                             key={chat._id}
                                             href={`/chat/${chat._id}`}
                                             className={`
-                                                group block p-4 rounded-xl border transition-all duration-300 relative overflow-hidden
+                                                group block p-3 rounded-xl border transition-all duration-300 relative overflow-hidden
                                                 ${pathname === `/chat/${chat._id}`
                                                     ? 'bg-neutral-white border-primary-strong/30 text-primary-strong ring-1 ring-primary-strong/5'
                                                     : 'border-transparent hover:bg-neutral-white hover:border-neutral-gray/30 text-neutral-ink hover:text-neutral-ink'
@@ -156,7 +156,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                                             `}
                                         >
                                             <div className="relative z-10">
-                                                <p className={`text-sm font-black truncate font-display tracking-tight mb-1`}>
+                                                <p className={`text-[13px] font-black truncate font-display tracking-tight mb-1`}>
                                                     {chat.title}
                                                 </p>
                                                 <div className="flex items-center gap-2 opacity-90 group-hover:opacity-100 transition-opacity">
@@ -209,10 +209,10 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                     {isExpanded && (
                         <button
                             onClick={() => setIsResourcesOpen(!isResourcesOpen)}
-                            className="flex items-center justify-between px-5 py-5 text-[10px] font-display font-black text-neutral-ink uppercase tracking-[0.2em] hover:bg-neutral-beige transition-colors w-full flex-shrink-0"
+                            className="flex items-center justify-between px-5 py-3 text-[9px] font-display font-black text-neutral-ink uppercase tracking-[0.2em] hover:bg-neutral-beige transition-colors w-full flex-shrink-0"
                         >
-                            <span className="flex items-center gap-3">
-                                <FolderOpen size={16} />
+                            <span className="flex items-center gap-2">
+                                <FolderOpen size={14} />
                                 Resources
                             </span>
                             {isResourcesOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
@@ -221,15 +221,15 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
 
                     {/* Search bar - fixed, not scrollable */}
                     {isExpanded && isResourcesOpen && (
-                        <div className="px-4 pt-1 pb-3 flex-shrink-0">
+                        <div className="px-4 pt-1 pb-2 flex-shrink-0">
                             <div className="relative group">
-                                <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-ink group-focus-within:text-primary-strong transition-colors" />
+                                <Search size={12} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-ink group-focus-within:text-primary-strong transition-colors" />
                                 <input
                                     type="text"
                                     placeholder="Search resources..."
                                     value={resourceSearch}
                                     onChange={(e) => setResourceSearch(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-3 text-xs bg-neutral-white border border-neutral-gray/30 rounded-xl focus:outline-none focus:border-primary-strong focus:ring-4 focus:ring-primary/10 transition-all font-bold"
+                                    className="w-full pl-9 pr-3 py-2 text-[11px] bg-neutral-white border border-neutral-gray/30 rounded-lg focus:outline-none focus:border-primary-strong focus:ring-4 focus:ring-primary/10 transition-all font-bold"
                                 />
                             </div>
                         </div>
@@ -251,10 +251,10 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                                                     type: resource.type
                                                 }));
                                             }}
-                                            className="group relative flex items-center gap-4 p-4 rounded-xl hover:bg-card border border-transparent hover:border-border/50 transition-all text-sm text-neutral-ink hover:text-neutral-ink cursor-grab active:cursor-grabbing font-bold shadow-none"
+                                            className="group relative flex items-center gap-3 p-2.5 rounded-xl hover:bg-card border border-transparent hover:border-border/50 transition-all text-[13px] text-neutral-ink hover:text-neutral-ink cursor-grab active:cursor-grabbing font-bold shadow-none"
                                         >
-                                            <div className="p-2 bg-muted/50 rounded-lg group-hover:bg-primary/10 group-hover:text-primary transition-colors">
-                                                <FileText size={16} />
+                                            <div className="p-1.5 bg-muted/50 rounded-lg group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                                                <FileText size={14} />
                                             </div>
                                             <span className="truncate flex-1 font-jp text-xs">{resource.title}</span>
 
@@ -457,7 +457,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
             style={{ width }}
         >
             {/* Header */}
-            <div className={`flex-shrink-0 flex items-center ${isExpanded ? 'justify-between px-6' : 'justify-center'} border-b border-neutral-gray h-[80px] bg-transparent`}>
+            <div className={`flex-shrink-0 flex items-center ${isExpanded ? 'justify-between px-6' : 'justify-center'} border-b border-neutral-gray ${isOnChat ? 'h-[64px]' : 'h-[80px]'} bg-transparent transition-all duration-300`}>
                 {isExpanded ? (
                     <>
                         <Link href="/" className="flex items-center gap-3 animate-in fade-in slide-in-from-left-4 duration-500">
