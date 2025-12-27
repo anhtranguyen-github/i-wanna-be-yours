@@ -56,7 +56,7 @@ export function SearchNexus({
     return (
         <div className={`w-full max-w-7xl mx-auto space-y-4 ${className}`}>
             {/* Main Controller Bar */}
-            <div className={`bg-neutral-white rounded-[2rem] border border-neutral-gray/20 p-2 flex flex-col md:flex-row items-center gap-2 ${isMinimal ? '' : ' backdrop-blur-md bg-neutral-white/70'}`}>
+            <div className={`bg-neutral-white rounded-[2rem] border-2 border-neutral-gray/20 p-2 flex flex-col md:flex-row items-center gap-2 ${isMinimal ? '' : ' shadow-lg'}`}>
 
                 {/* Segmented Control: Public/Personal */}
                 {showSwitches && (
@@ -127,7 +127,7 @@ export function SearchNexus({
                             transition={{ duration: 0.2, ease: "easeOut" }}
                             className="absolute left-0 right-0 top-2 z-50 p-1"
                         >
-                            <div className="bg-neutral-beige/80 backdrop-blur-xl border border-neutral-gray/20 rounded-[2rem] p-6 shadow-2xl shadow-neutral-ink/10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <div className="bg-neutral-white border-2 border-neutral-gray/20 rounded-[2rem] p-8 shadow-2xl shadow-neutral-ink/20 flex flex-col gap-8">
                                 {groups.map((group) => (
                                     <div key={group.id} className="space-y-3">
                                         <div className="flex items-center justify-between border-b border-neutral-ink/10 pb-2">
