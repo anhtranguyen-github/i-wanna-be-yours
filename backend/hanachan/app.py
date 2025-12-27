@@ -52,10 +52,12 @@ def create_app(test_config=None):
     from routes.task import bp as task_bp
     from routes.suggestion import bp as suggestion_bp
     from routes.artifacts import bp as artifacts_bp
+    from routes.linguistics import bp as linguistics_bp
     app.register_blueprint(conversation_bp)
     app.register_blueprint(task_bp)
     app.register_blueprint(suggestion_bp)
     app.register_blueprint(artifacts_bp)
+    app.register_blueprint(linguistics_bp, url_prefix='/d-api')
     
     # Initialize MongoDB indexes for artifacts
     try:
