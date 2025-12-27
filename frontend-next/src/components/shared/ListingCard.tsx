@@ -2,7 +2,7 @@
 "use client";
 
 import React from 'react';
-import { ArrowRight, Layers, MoreVertical, Share2, Pencil } from 'lucide-react';
+import { ArrowRight, Layers, MoreVertical, Share2, Pencil, Zap } from 'lucide-react';
 import { ViewMode } from './ViewModeToggle';
 
 export interface ListingMetadata {
