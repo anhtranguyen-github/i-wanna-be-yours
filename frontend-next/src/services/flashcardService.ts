@@ -86,11 +86,39 @@ class FlashcardService {
         if (!response.ok) throw new Error('Failed to update flashcard set');
         return response.json();
     }
+
+    async cloneFlashcardSet(id: string): Promise<{ id: string; message: string }> {
+        const response = await authFetch(`${API_BASE}/sets/${id}/clone`, {
+            method: 'POST'
+        });
+        if (!response.ok) throw new Error('Failed to clone flashcard set');
+        return response.json();
+    }
+
+    async deleteFlashcardSet(id: string) {
+        const response = await authFetch(`${API_BASE}/sets/${id}`, {
+            method: 'DELETE'
+        });
+        if (!response.ok) throw new Error('Failed to delete flashcard set');
+        return response.json();
+    }
+
+    async getMyTags(): Promise<{ tags: string[] }> {
+        const response = await authFetch(`${API_BASE}/my-tags`);
+        if (!response.ok) throw new Error('Failed to fetch custom tags');
+        return response.json();
+    }
 }
 
 export const flashcardService = new FlashcardService();
 
 export const fetchFlashcardSets = (filters?: { level?: string; access?: string }) => flashcardService.fetchFlashcardSets(filters);
 export const fetchFlashcardSetById = (id: string) => flashcardService.fetchFlashcardSetById(id);
+export const fetchDeckById = fetchFlashcardSetById; // Alias for backward compatibility
 export const createFlashcardSet = (set: any) => flashcardService.createFlashcardSet(set);
 export const updateFlashcardSet = (id: string, updates: any) => flashcardService.updateFlashcardSet(id, updates);
+export const cloneFlashcardSet = (id: string) => flashcardService.cloneFlashcardSet(id);
+export const deleteFlashcardSet = (id: string) => flashcardService.deleteFlashcardSet(id);
+export const getFlashcardMyTags = () => flashcardService.getMyTags();
+
+

@@ -59,11 +59,37 @@ export async function updateQuootArena(id: string, updates: any) {
     return response.json();
 }
 
+export async function cloneQuootArena(id: string): Promise<{ id: string; message: string }> {
+    const response = await authFetch(`${API_BASE}/arenas/${id}/clone`, {
+        method: 'POST'
+    });
+    if (!response.ok) throw new Error('Failed to clone quoot arena');
+    return response.json();
+}
+
+export async function deleteQuootArena(id: string) {
+    const response = await authFetch(`${API_BASE}/arenas/${id}`, {
+        method: 'DELETE'
+    });
+    if (!response.ok) throw new Error('Failed to delete quoot arena');
+    return response.json();
+}
+
+export async function getQuootMyTags(): Promise<{ tags: string[] }> {
+    const response = await authFetch(`${API_BASE}/my-tags`);
+    if (!response.ok) throw new Error('Failed to fetch custom tags');
+    return response.json();
+}
+
 export const quootService = {
     fetchQuootArenas,
     fetchQuootArenaById,
     createQuootArena,
     submitQuootResult,
     fetchQuootAttemptResult,
-    updateQuootArena
+    updateQuootArena,
+    cloneQuootArena,
+    deleteQuootArena,
+    getQuootMyTags
 };
+

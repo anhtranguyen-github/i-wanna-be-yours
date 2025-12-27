@@ -235,6 +235,34 @@ export async function updateNode(id: string, updates: Partial<PracticeNode>): Pr
     return response.json();
 }
 
+/**
+ * Clone a practice node to user's collection
+ */
+export async function cloneNode(id: string): Promise<{ id: string; message: string }> {
+    const response = await authFetch(`${API_BASE}/nodes/${id}/clone`, {
+        method: 'POST'
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to clone practice node');
+    }
+
+    return response.json();
+}
+
+/**
+ * Get user's custom tags from practice nodes
+ */
+export async function getPracticeMyTags(): Promise<{ tags: string[] }> {
+    const response = await authFetch(`${API_BASE}/my-tags`);
+
+    if (!response.ok) {
+        throw new Error('Failed to fetch custom tags');
+    }
+
+    return response.json();
+}
+
 // Export as object for named import compatibility
 export const practiceService = {
     getNodes,
@@ -244,5 +272,8 @@ export const practiceService = {
     getAttempts,
     createNode,
     deleteNode,
-    updateNode
+    updateNode,
+    cloneNode,
+    getPracticeMyTags
 };
+
