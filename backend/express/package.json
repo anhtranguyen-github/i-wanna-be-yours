@@ -1,4 +1,13 @@
 {
+  "name": "hanabira-express",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node my_server.js",
+    "dev": "nodemon my_server.js",
+    "db:clean": "node scripts/cleanDatabase.js",
+    "db:seed": "node scripts/seedContent.js",
+    "db:reset": "npm run db:clean && npm run db:seed"
+  },
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
