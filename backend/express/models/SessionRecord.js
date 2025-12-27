@@ -6,7 +6,9 @@ const SessionRecordSchema = new mongoose.Schema({
     itemId: { type: mongoose.Schema.Types.ObjectId, required: true },
     itemTitle: { type: String }, // redundant but useful for display
     score: { type: Number }, // 0-100 or raw
-    status: { type: String, enum: ['COMPLETED', 'ABANDONED'], default: 'ABANDONED' },
+    status: { type: String, enum: ['STARTED', 'COMPLETED', 'ABANDONED'], default: 'STARTED' },
+    sessionId: { type: String }, // For correlating life-cycle events
+    duration: { type: Number }, // Time in seconds
     details: { type: Object }, // Freedom for generic details
     timestamp: { type: Date, default: Date.now }
 });

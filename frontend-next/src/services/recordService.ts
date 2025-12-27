@@ -1,4 +1,5 @@
 import { authFetch } from '@/lib/authFetch';
+import { v4 as uuidv4 } from 'uuid';
 const API_BASE = (process.env.NEXT_PUBLIC_EXPRESS_API_URL || '/e-api') + '/v1';
 
 export interface RecordPayload {
@@ -6,7 +7,9 @@ export interface RecordPayload {
     itemId: string;
     itemTitle?: string;
     score?: number;
-    status: 'COMPLETED' | 'ABANDONED';
+    status: 'STARTED' | 'COMPLETED' | 'ABANDONED';
+    sessionId?: string;
+    duration?: number;
     details?: any;
 }
 
@@ -20,6 +23,19 @@ export async function saveRecord(payload: RecordPayload) {
     } catch (err) {
         console.error('Failed to save record:', err);
     }
+}
+
+export async function startSession(itemType: RecordPayload['itemType'], itemId: string, itemTitle?: string) {
+    const sessionId = uuidv4();
+    const payload: RecordPayload = {
+        itemType,
+        itemId,
+        itemTitle,
+        status: 'STARTED',
+        sessionId
+    };
+    await saveRecord(payload);
+    return sessionId;
 }
 
 export async function fetchHistory(limit = 20, offset = 0) {

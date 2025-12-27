@@ -6,7 +6,7 @@ const { verifyJWT } = require('../middleware/auth');
 router.post('/', verifyJWT, async (req, res) => {
     try {
         const userId = req.user.id || req.user.userId;
-        const { itemType, itemId, itemTitle, score, status, details } = req.body;
+        const { itemType, itemId, itemTitle, score, status, sessionId, duration, details } = req.body;
 
         const record = await SessionRecord.create({
             userId,
@@ -15,6 +15,8 @@ router.post('/', verifyJWT, async (req, res) => {
             itemTitle,
             score,
             status,
+            sessionId,
+            duration,
             details
         });
 
