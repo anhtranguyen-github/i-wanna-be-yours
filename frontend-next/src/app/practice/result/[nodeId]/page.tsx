@@ -54,19 +54,29 @@ export default function PremiumResultPage() {
                 // Fetch attempt details if attemptId is present, or fetch the latest for the user
                 if (attemptId) {
                     console.log("Fetching attempt result for ID:", attemptId);
-                    const result = await practiceService.getAttemptResult(attemptId);
-                    console.log("Backend result received:", result);
-                    setUnifiedResult(mapResultIcons(result));
+                    // The service already uses skipAuthCheck: true
+                    const resultData = await practiceService.getAttemptResult(attemptId);
+                    console.log("Backend result received:", resultData);
+                    setUnifiedResult(mapResultIcons(resultData));
                 } else {
-                    // Fallback to latest attempt if no ID (e.g. direct nav)
-                    const attemptsData = await practiceService.getAttempts();
-                    console.log("Found attempts:", attemptsData);
-                    const latest = attemptsData.attempts?.find((a: any) => a.nodeId === nodeId);
-                    if (latest) {
-                        console.log("Fetching latest attempt result for ID:", latest.id);
-                        const result = await practiceService.getAttemptResult(latest.id);
-                        console.log("Backend result received (latest):", result);
-                        setUnifiedResult(mapResultIcons(result));
+                    // Fallback to latest attempt if no ID (only if user is logged in)
+                    const token = typeof window !== 'undefined' ? (localStorage.getItem('accessToken') || Cookies.get('accessToken')) : null;
+                    if (token) {
+                        const attemptsData = await practiceService.getAttempts();
+                        const latest = attemptsData.attempts?.find((a: any) => a.nodeId === nodeId);
+                        if (latest) {
+                            const resultData = await practiceService.getAttemptResult(latest.id);
+                            setUnifiedResult(mapResultIcons(resultData));
+                        }
+                    } else {
+                        // For guest, if no attemptId, we can't show much but maybe a generic score 0
+                        setUnifiedResult(mapResultIcons({
+                            result: {
+                                score: 0,
+                                accuracy: 0,
+                                feedback: { title: "Protocol Complete", message: "Anonymous analysis limited. Sign in to save progress.", suggestions: ["Create an account"] }
+                            }
+                        }));
                     }
                 }
             } catch (err) {
@@ -125,17 +135,19 @@ export default function PremiumResultPage() {
 
     if (!node || !unifiedResult) {
         return (
-            <div className="min-h-screen bg-neutral-beige/20 flex flex-col items-center justify-center p-8 text-center">
-                <div className="w-20 h-20 bg-rose-500/10 text-rose-500 rounded-3xl flex items-center justify-center mb-8 border border-rose-500/20 shadow-xl shadow-rose-500/5">
-                    <AlertTriangle size={40} />
+            <div className="min-h-screen bg-background flex flex-col items-center justify-center p-8 text-center animate-in fade-in zoom-in-95">
+                <div className="w-24 h-24 bg-destructive/10 text-destructive rounded-[2rem] flex items-center justify-center mb-8 border border-destructive/20 shadow-2xl shadow-destructive/5">
+                    <AlertTriangle size={48} />
                 </div>
-                <h2 className="text-3xl font-black text-neutral-ink font-display mb-4">Registry Inaccessible</h2>
-                <p className="text-neutral-ink/60 font-bold mb-10 max-w-sm mx-auto leading-relaxed">The synaptic record for this session is either decayed or uninitialized. Would you like to re-initiate the protocol?</p>
+                <h2 className="text-3xl font-black text-foreground font-display mb-4 italic">Registry Inaccessible</h2>
+                <p className="text-neutral-ink font-bold mb-8 max-w-sm">
+                    The requested practice diagnostic could not be synchronized. It may have been decommissioned or moved to a restricted sector.
+                </p>
                 <Link
                     href="/practice"
-                    className="px-12 py-5 bg-neutral-ink text-neutral-beige font-black font-display text-xs uppercase tracking-[0.2em] rounded-2xl hover:bg-primary-strong transition-all active:scale-95 shadow-xl"
+                    className="px-10 py-5 bg-foreground text-background font-black font-display text-xs uppercase tracking-[0.3em] rounded-2xl hover:bg-foreground/90 transition-all active:scale-95 shadow-xl shadow-foreground/10"
                 >
-                    Return to Nexus
+                    Return to Nexus Hub
                 </Link>
             </div>
         );
@@ -150,6 +162,8 @@ export default function PremiumResultPage() {
         <ResultShell
             result={unifiedResult}
             onRetry={() => router.push(`/practice/session/${nodeId}`)}
+            hubPath="/practice"
+            hubLabel="Practice Nexus"
             customActions={
                 <button
                     onClick={() => handleAskAI()}

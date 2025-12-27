@@ -71,6 +71,7 @@ export default function QuootSessionPage() {
     const [deck, setDeck] = useState<QuootDeck | null>(null);
     const [cards, setCards] = useState<QuootCard[]>([]);
     const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState<string | null>(null);
 
     // Config
     const [config, setConfig] = useState<QuootConfig>({
@@ -122,29 +123,11 @@ export default function QuootSessionPage() {
                             totalCards: cards.length
                         });
                         console.log("Quoot submission response:", response);
-                        resultData = response.result || response.data || response;
+                        setUnifiedResult(mapResultIcons(response));
                     } catch (e) {
-                        console.warn("Guest or API error submit", e);
-                        // Fallback for guest/offline
-                        resultData = {
-                            score: gameState.score,
-                            rank: 'C',
-                            xpEarned: 0,
-                            coinsEarned: 0,
-                            streakExtended: false,
-                            stats: [
-                                { label: "Accuracy", value: `${Math.round((gameState.correctCount / cards.length) * 100)}%`, icon: "Target" },
-                                { label: "Max Streak", value: gameState.maxStreak, icon: "Flame" }
-                            ],
-                            achievements: [],
-                            feedback: {
-                                title: "Ephemeral Training",
-                                message: "Sign in to persist your arena achievements.",
-                                suggestions: ["Create an account to track metrics over time"]
-                            }
-                        };
+                        console.error("Quoot submission failed:", e);
+                        // Optional: Show a "Sync Failed" toast or indicator
                     }
-
 
                     // Track COMPLETED event
                     if (currentSessionId.current) {
@@ -157,11 +140,7 @@ export default function QuootSessionPage() {
                             sessionId: currentSessionId.current,
                             duration: Math.round((Date.now() - gameState.startedAt) / 1000)
                         });
-                        currentSessionId.current = null; // Clear to prevent abandonment tracking
-                    }
-
-                    if (resultData) {
-                        setUnifiedResult(mapResultIcons(resultData));
+                        currentSessionId.current = null;
                     }
                 } catch (err) {
                     console.error("Failed to submit quoot result:", err);
@@ -198,8 +177,12 @@ export default function QuootSessionPage() {
 
         const loadData = async () => {
             setLoading(true);
+            setUnifiedResult(null);
             try {
-                const deckData = await fetchQuootArenaById(deckId);
+                // Check if we are viewing a specific result via direct link
+                const attemptId = searchParams.get('attemptId');
+
+                const deckData = await quootService.fetchQuootArenaById(deckId);
 
                 if (deckData) {
                     const mappedDeck: QuootDeck = {
@@ -224,16 +207,26 @@ export default function QuootSessionPage() {
 
                     setDeck(mappedDeck);
                     setCards(config.shuffleCards ? shuffleArray(mappedCards) : mappedCards);
+
+                    // If attemptId is present, fetch that result instead of starting game
+                    if (attemptId) {
+                        const resultData = await quootService.fetchQuootAttemptResult(attemptId);
+                        setUnifiedResult(mapResultIcons(resultData));
+                        setGameState(prev => ({ ...prev, status: 'RESULTS' }));
+                    }
+                } else {
+                    setLoadError("Arena data incomplete or corrupted.");
                 }
             } catch (err) {
                 console.error("Failed to load quoot deck:", err);
+                setLoadError("Registry Synchronization Failure");
             } finally {
                 setLoading(false);
             }
         };
 
         loadData();
-    }, [deckId, config.shuffleCards]);
+    }, [deckId, config.shuffleCards, searchParams]);
 
     // Apply mode config
     useEffect(() => {
@@ -407,18 +400,21 @@ export default function QuootSessionPage() {
     }
 
     // Error state
-    if (!deck || cards.length === 0) {
+    if (loadError || !deck || cards.length === 0) {
         return (
-            <div className="min-h-screen bg-background flex flex-col items-center justify-center p-8 text-center">
-                <div className="w-24 h-24 bg-destructive/10 text-destructive rounded-2xl flex items-center justify-center mb-8">
+            <div className="min-h-screen bg-background flex flex-col items-center justify-center p-8 text-center animate-in fade-in zoom-in-95">
+                <div className="w-24 h-24 bg-destructive/10 text-destructive rounded-[2rem] flex items-center justify-center mb-8 border border-destructive/20 shadow-2xl shadow-destructive/5">
                     <AlertTriangle size={48} />
                 </div>
-                <h2 className="text-3xl font-black text-foreground font-display mb-4">Deck Not Found</h2>
+                <h2 className="text-3xl font-black text-foreground font-display mb-4 italic">Registry Inaccessible</h2>
+                <p className="text-neutral-ink font-bold mb-8 max-w-sm">
+                    {loadError || "The requested combat arena could not be synchronized. It may have been decommissioned or moved to a restricted sector."}
+                </p>
                 <Link
                     href="/quoot"
-                    className="px-10 py-4 bg-foreground text-background font-black font-display text-sm uppercase tracking-widest rounded-2xl"
+                    className="px-10 py-5 bg-foreground text-background font-black font-display text-xs uppercase tracking-[0.3em] rounded-2xl hover:bg-foreground/90 transition-all active:scale-95 shadow-xl shadow-foreground/10"
                 >
-                    Back to Games
+                    Return to Arena Map
                 </Link>
             </div>
         );
@@ -510,6 +506,8 @@ export default function QuootSessionPage() {
             <ResultShell
                 result={unifiedResult}
                 onRetry={playAgain}
+                hubPath="/quoot"
+                hubLabel="Quoot Hub"
                 customActions={
                     <button
                         onClick={() => router.push('/quoot')}

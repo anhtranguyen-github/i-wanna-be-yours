@@ -17,9 +17,18 @@ interface ResultShellProps {
     onRetry?: () => void;
     customActions?: React.ReactNode;
     children?: React.ReactNode;
+    hubPath?: string;
+    hubLabel?: string;
 }
 
-export function ResultShell({ result, onRetry, customActions, children }: ResultShellProps) {
+export function ResultShell({
+    result,
+    onRetry,
+    customActions,
+    children,
+    hubPath = "/",
+    hubLabel = "Return Hub"
+}: ResultShellProps) {
     const { user } = useUser();
     const { openAuth } = useGlobalAuth();
 
@@ -58,14 +67,14 @@ export function ResultShell({ result, onRetry, customActions, children }: Result
                 >
                     <div className="space-y-2">
                         <Link
-                            href={user ? "/profile" : "/"}
+                            href={user ? "/profile" : hubPath}
                             className="inline-flex items-center gap-2 group"
                         >
                             <div className="w-8 h-8 rounded-lg bg-neutral-white border border-neutral-gray/10 flex items-center justify-center group-hover:bg-primary-strong group-hover:text-neutral-beige transition-all">
                                 <Home size={16} />
                             </div>
                             <span className="text-[10px] font-black uppercase tracking-[0.4em] text-neutral-ink/40 group-hover:text-neutral-ink transition-colors">
-                                {user ? "Command Center" : "Return Hub"}
+                                {user ? "Command Center" : hubLabel}
                             </span>
                         </Link>
                         <h1 className="text-4xl font-black text-neutral-ink font-display tracking-tight flex items-center gap-3">
@@ -202,10 +211,10 @@ export function ResultShell({ result, onRetry, customActions, children }: Result
                             {customActions}
 
                             <Link
-                                href={user ? "/activity" : "/"}
+                                href={user ? "/activity" : hubPath}
                                 className="h-16 flex-1 min-w-[200px] bg-primary-strong text-neutral-beige rounded-2xl font-black text-[11px] uppercase tracking-[0.3em] flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-98 transition-all shadow-xl shadow-primary/20"
                             >
-                                {user ? "Advance Objective" : "Return to Hub"}
+                                {user ? "Advance Objective" : hubLabel}
                                 <ArrowRight size={20} />
                             </Link>
                         </motion.div>
