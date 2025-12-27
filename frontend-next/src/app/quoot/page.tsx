@@ -160,7 +160,7 @@ export default function GamePage() {
     };
 
     const handleArenaSelect = (arenaId: string) => {
-        router.push(`/quoot/${arenaId}`);
+        router.push(`/quoot/details/${arenaId}`);
     };
 
     const handleCreateClick = () => {
@@ -241,7 +241,17 @@ export default function GamePage() {
                             <Link2 size={20} />
                         </button>
                         <button
-                            onClick={() => setIsHistoryOpen(true)}
+                            onClick={() => {
+                                if (!user) {
+                                    openAuth('LOGIN', {
+                                        flowType: 'QUOOT',
+                                        title: 'Battle History',
+                                        description: 'Sign in to review your past victories and track your progression.'
+                                    });
+                                } else {
+                                    setIsHistoryOpen(true);
+                                }
+                            }}
                             className="w-10 h-10 rounded-xl bg-neutral-white border border-neutral-gray/20 flex items-center justify-center text-neutral-ink hover:text-primary-strong hover:border-primary-strong transition-all"
                             title="View History"
                         >

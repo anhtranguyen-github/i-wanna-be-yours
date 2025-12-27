@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { ResultShell } from "@/components/results/ResultShell";
 import { quootService } from "@/services/quootService";
+import { startSession, saveRecord } from "@/services/recordService";
 import { mapResultIcons } from "@/utils/resultProcessor";
 import {
     generateOptions,
@@ -99,6 +100,8 @@ export default function QuootSessionPage() {
     const [currentOptions, setCurrentOptions] = useState<string[]>([]);
     const [soundEnabled, setSoundEnabled] = useState(true);
 
+    const currentSessionId = React.useRef<string | null>(null);
+
     // Current card
     const currentCard = useMemo(() => {
         return cards[gameState.currentIndex] || null;
@@ -177,6 +180,14 @@ export default function QuootSessionPage() {
                 startedAt: Date.now(),
                 questionStartedAt: Date.now()
             }));
+
+            // Track STARTED event
+            if (deck) {
+                startSession('QUOOT', deck.id, deck.title).then(sid => {
+                    currentSessionId.current = sid;
+                });
+            }
+
             setTimeRemaining(config.timePerCardSeconds);
             return;
         }
@@ -410,6 +421,21 @@ export default function QuootSessionPage() {
                         maxStreak: gameState.maxStreak,
                         totalCards: cards.length
                     });
+
+                    // Track COMPLETED event
+                    if (currentSessionId.current) {
+                        await saveRecord({
+                            itemType: 'QUOOT',
+                            itemId: deck.id,
+                            itemTitle: deck.title,
+                            status: 'COMPLETED',
+                            score: gameState.score,
+                            sessionId: currentSessionId.current,
+                            duration: Math.round((Date.now() - gameState.startedAt) / 1000)
+                        });
+                        currentSessionId.current = null; // Clear to prevent abandonment tracking
+                    }
+
                     setUnifiedResult(mapResultIcons(response.result));
                 } catch (err) {
                     console.error("Failed to submit quoot result:", err);
@@ -417,7 +443,23 @@ export default function QuootSessionPage() {
             };
             submitFinish();
         }
-    }, [gameState.status, deck?.id, gameState.score, gameState.correctCount, gameState.maxStreak, cards.length]);
+    }, [gameState.status, deck?.id, gameState.score, gameState.correctCount, gameState.maxStreak, cards.length, gameState.startedAt, deck?.title]);
+
+    // Handle session abandonment on unmount
+    useEffect(() => {
+        return () => {
+            if (currentSessionId.current && deck) {
+                // Fire and forget abandonment record
+                saveRecord({
+                    itemType: 'QUOOT',
+                    itemId: deck.id,
+                    itemTitle: deck.title,
+                    status: 'ABANDONED',
+                    sessionId: currentSessionId.current
+                });
+            }
+        };
+    }, [deck]);
 
     // Results / Game Over screen
     if (gameState.status === 'RESULTS' || gameState.status === 'GAME_OVER') {
