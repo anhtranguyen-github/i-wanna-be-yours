@@ -8,7 +8,7 @@ const { verifyJWT, optionalAuth } = require('../middleware/auth');
  */
 router.get('/sets', optionalAuth, async (req, res) => {
     try {
-        const { level, visibility } = req.query;
+        const { levels, skills, visibility } = req.query;
         let query = {};
 
         const visibilityFilters = [];
@@ -41,8 +41,15 @@ router.get('/sets', optionalAuth, async (req, res) => {
             query.$or = visibilityFilters;
         }
 
-        if (level && level !== 'ALL') {
-            query.level = level;
+        // Multi-value filtering
+        const levelParams = levels?.split(',').filter(Boolean);
+        const skillParams = skills?.split(',').filter(Boolean);
+
+        if (levelParams && levelParams.length > 0) {
+            query.levels = { $in: levelParams };
+        }
+        if (skillParams && skillParams.length > 0) {
+            query.skills = { $in: skillParams };
         }
 
         const sets = await FlashcardSet.find(query).sort({ visibility: 1, createdAt: -1 }).lean();
@@ -52,7 +59,8 @@ router.get('/sets', optionalAuth, async (req, res) => {
             title: s.title,
             description: s.description,
             icon: s.icon,
-            level: s.level,
+            levels: s.levels,
+            skills: s.skills,
             cardCount: s.cards.length,
             tags: s.tags,
             visibility: s.visibility,
@@ -155,7 +163,7 @@ router.post('/sets', verifyJWT, async (req, res) => {
     try {
         const userId = req.user.id || req.user.userId;
         const username = req.user.username || 'User';
-        const { title, description, level, icon, tags, cards, visibility } = req.body;
+        const { title, description, levels, skills, icon, tags, cards, visibility } = req.body;
 
         if (!title || !cards || !Array.isArray(cards)) {
             return res.status(400).json({ error: 'Title and cards are required' });
@@ -164,7 +172,8 @@ router.post('/sets', verifyJWT, async (req, res) => {
         const set = new FlashcardSet({
             title,
             description: description || '',
-            level: level || 'N3',
+            levels: levels || ['N3'],
+            skills: skills || ['VOCABULARY'],
             icon: icon || '🎴',
             tags: tags || [],
             visibility: visibility || 'private',
@@ -210,7 +219,8 @@ router.patch('/sets/:id', verifyJWT, async (req, res) => {
         // Apply updates
         if (updates.title) set.title = updates.title;
         if (updates.description !== undefined) set.description = updates.description;
-        if (updates.level) set.level = updates.level;
+        if (updates.levels) set.levels = updates.levels;
+        if (updates.skills) set.skills = updates.skills;
         if (updates.icon) set.icon = updates.icon;
         if (updates.tags) set.tags = updates.tags;
         if (updates.visibility) set.visibility = updates.visibility;
@@ -251,7 +261,7 @@ router.post('/sets/:id/clone', verifyJWT, async (req, res) => {
             title: `${original.title} (Copy)`,
             description: original.description,
             icon: original.icon,
-            level: original.level,
+            levels: original.levels,
             tags: original.tags || [],
             customTags: [],
             skills: original.skills || [],

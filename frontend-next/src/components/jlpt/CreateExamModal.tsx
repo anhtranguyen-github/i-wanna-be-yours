@@ -85,7 +85,7 @@ export function CreateExamModal({ isOpen, onClose, onExamCreated }: CreateExamMo
                     title: formState.title,
                     description: formState.description,
                     mode: formState.mode,
-                    level: formState.level,
+                    levels: [formState.level],
                     skills: formState.skills,
                     questions: generatedQuestions,
                     createdAt: new Date().toISOString()
@@ -98,7 +98,7 @@ export function CreateExamModal({ isOpen, onClose, onExamCreated }: CreateExamMo
                     title: formState.title,
                     description: formState.description,
                     mode: formState.mode,
-                    level: formState.level,
+                    levels: [formState.level],
                     skills: formState.skills,
                     timeLimitMinutes: formState.timeLimitMinutes || undefined,
                     isPublic: formState.isPublic,

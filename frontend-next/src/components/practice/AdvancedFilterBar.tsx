@@ -74,8 +74,8 @@ export default function AdvancedFilterBar({
                 <div className="w-48 relative">
                     <label className="block text-[10px] font-black text-neutral-ink uppercase tracking-widest mb-3 ml-1">Level Sector</label>
                     <select
-                        value={filters.level}
-                        onChange={(e) => updateFilter({ level: e.target.value as any })}
+                        value={filters.levels?.[0] || 'ALL'}
+                        onChange={(e) => updateFilter({ levels: e.target.value === 'ALL' ? [] : [e.target.value as any] })}
                         className="appearance-none w-full bg-neutral-white border border-neutral-gray/20 rounded-2xl px-6 py-4 pr-12 text-sm font-black text-neutral-ink cursor-pointer hover:border-primary focus:outline-none transition-all  font-display uppercase tracking-wider"
                     >
                         {levels.map((level) => (
@@ -89,8 +89,8 @@ export default function AdvancedFilterBar({
                 <div className="w-56 relative">
                     <label className="block text-[10px] font-black text-neutral-ink uppercase tracking-widest mb-3 ml-1">Domain Module</label>
                     <select
-                        value={filters.skill}
-                        onChange={(e) => updateFilter({ skill: e.target.value as any })}
+                        value={filters.skills?.[0] || 'ALL'}
+                        onChange={(e) => updateFilter({ skills: e.target.value === 'ALL' ? [] : [e.target.value as any] })}
                         className="appearance-none w-full bg-neutral-white border border-neutral-gray/20 rounded-2xl px-6 py-4 pr-12 text-sm font-black text-neutral-ink cursor-pointer hover:border-primary focus:outline-none transition-all  font-display uppercase tracking-wider"
                     >
                         {skills.map((skill) => (

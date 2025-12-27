@@ -33,7 +33,7 @@ interface QuootArena {
     description: string;
     cardCount: number;
     avgScore?: number;
-    level?: string;
+    levels?: string[];
     coverColor?: string;
     coverEmoji?: string;
     isPersonal?: boolean;
@@ -56,7 +56,7 @@ export default function GamePage() {
         query: "",
         activeFilters: {
             ownership: [],
-            level: [],
+            levels: [],
             skills: []
         },
         activeTab: 'ALL'
@@ -84,8 +84,8 @@ export default function GamePage() {
             ]
         },
         {
-            id: 'level',
-            label: 'Level',
+            id: 'levels',
+            label: 'Levels',
             type: 'MULTI',
             options: [
                 { id: 'N5', label: 'N5' },
@@ -121,7 +121,8 @@ export default function GamePage() {
         setIsLoading(true);
         try {
             const apiFilters = {
-                level: searchState.activeFilters.level?.[0],
+                levels: searchState.activeFilters.levels,
+                skills: searchState.activeFilters.skills,
                 access: searchState.activeFilters.access?.[0]
             };
             const fetchedArenas = await fetchQuootArenas(apiFilters);
@@ -130,7 +131,7 @@ export default function GamePage() {
                 title: a.title,
                 description: a.description || "",
                 cardCount: a.cardCount || 0,
-                level: a.level,
+                levels: a.levels,
                 coverColor: 'bg-primary/20',
                 coverEmoji: a.icon || '⚔️',
                 isPersonal: a.visibility === 'private',
@@ -214,7 +215,9 @@ export default function GamePage() {
                 title: data.title || "New Arena",
                 description: data.description || "Forged via Hanachan AI",
                 visibility: data.visibility || 'private',
-                level: (searchState.activeFilters.level?.[0] !== 'ALL' ? searchState.activeFilters.level?.[0] : 'N3') as any,
+
+                levels: searchState.activeFilters.levels?.length ? searchState.activeFilters.levels : ['N3'],
+                skills: searchState.activeFilters.skills?.length ? searchState.activeFilters.skills : ['VOCABULARY'],
                 cards: data.items?.map((item: any) => ({
                     front: item.front || item.term || item.kanji || "",
                     back: item.back || item.definition || item.meaning || "",
@@ -309,7 +312,7 @@ export default function GamePage() {
                                 iconBgColor={arena.coverColor || 'bg-primary/10'}
                                 viewMode={viewMode}
                                 onClick={() => handleArenaSelect(arena.id)}
-                                badge={arena.level ? { label: arena.level } : undefined}
+                                badge={arena.levels?.[0] ? { label: arena.levels[0] } : undefined}
                                 metadata={[
                                     { label: 'Cards', value: arena.cardCount, icon: <Layers size={14} /> },
                                     ...(arena.visibility === 'global' ? [{ label: 'Official', value: 'Verified', icon: <ShieldCheck size={14} className="text-primary-strong" /> }] : []),

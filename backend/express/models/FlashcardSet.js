@@ -12,10 +12,18 @@ const FlashcardSetSchema = new mongoose.Schema({
     title: { type: String, required: true },
     description: String,
     icon: { type: String, default: '🎴' },
-    level: { type: String, default: 'N3' },
+    levels: {
+        type: [{ type: String, enum: ['N5', 'N4', 'N3', 'N2', 'N1'] }],
+        required: true,
+        validate: [v => v.length >= 1, 'At least one level required']
+    },
     tags: [String],
     customTags: [String],
-    skills: [{ type: String, enum: ['VOCABULARY', 'GRAMMAR', 'KANJI', 'READING'] }],
+    skills: {
+        type: [{ type: String, enum: ['VOCABULARY', 'GRAMMAR', 'KANJI', 'READING', 'LISTENING'] }],
+        required: true,
+        validate: [v => v.length >= 1, 'At least one skill required']
+    },
     visibility: {
         type: String,
         enum: ['global', 'public', 'private'],

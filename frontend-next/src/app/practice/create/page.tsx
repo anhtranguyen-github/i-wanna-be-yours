@@ -93,7 +93,7 @@ export default function CreateQuizPage() {
                 title,
                 description,
                 mode: 'QUIZ',
-                level: jlptLevel === 'mixed' ? 'N3' : jlptLevel,
+                levels: jlptLevel === 'mixed' ? ['N3'] : [jlptLevel],
                 skills: category === 'mixed' ? ['VOCABULARY'] : [category.toUpperCase()],
                 timeLimitMinutes: timeLimit || undefined,
                 isPublic,

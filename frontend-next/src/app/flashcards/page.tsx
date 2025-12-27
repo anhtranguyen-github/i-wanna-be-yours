@@ -30,7 +30,7 @@ interface FlashcardSet {
     title: string;
     description: string;
     cardCount: number;
-    level?: string;
+    levels?: string[];
     tags: string[];
     visibility?: 'global' | 'public' | 'private';
     creatorName?: string;
@@ -49,7 +49,7 @@ export default function FlashcardsMenu() {
         query: "",
         activeFilters: {
             ownership: [],
-            level: [],
+            levels: [],
             skills: []
         },
         activeTab: 'ALL'
@@ -69,7 +69,8 @@ export default function FlashcardsMenu() {
         setIsLoading(true);
         try {
             const apiFilters = {
-                level: searchState.activeFilters.level?.[0],
+                levels: searchState.activeFilters.levels,
+                skills: searchState.activeFilters.skills,
                 access: searchState.activeFilters.access?.[0]
             };
             const fetched = await fetchFlashcardSets(apiFilters);
@@ -78,7 +79,7 @@ export default function FlashcardsMenu() {
                 title: s.title,
                 description: s.description || "",
                 cardCount: s.cardCount || 0,
-                level: s.level,
+                levels: s.levels, // Map levels array
                 tags: s.tags || [],
                 visibility: s.visibility,
                 creatorName: s.creatorName,
@@ -126,8 +127,8 @@ export default function FlashcardsMenu() {
             ]
         },
         {
-            id: 'level',
-            label: 'Level',
+            id: 'levels',
+            label: 'Levels',
             type: 'MULTI',
             options: [
                 { id: 'N5', label: 'N5' },
@@ -215,7 +216,8 @@ export default function FlashcardsMenu() {
                     title: data.title || "New Set",
                     description: data.description || "Created via Hanachan AI",
                     visibility: data.visibility || 'private',
-                    level: (searchState.activeFilters.level?.[0] !== 'ALL' ? searchState.activeFilters.level?.[0] : 'N3') as any,
+                    levels: searchState.activeFilters.levels?.length ? searchState.activeFilters.levels : ['N3'],
+                    skills: searchState.activeFilters.skills?.length ? searchState.activeFilters.skills : ['VOCABULARY'],
                     cards: data.items?.map((item: any) => ({
                         front: item.front || item.term || item.kanji || "",
                         back: item.back || item.definition || item.meaning || "",
@@ -309,7 +311,7 @@ export default function FlashcardsMenu() {
                                     ...(set.visibility === 'global' ? [{ label: 'Official', value: 'Verified', icon: <ShieldCheck size={14} className="text-primary-strong" /> }] : []),
                                     ...(set.creatorName && set.visibility !== 'global' ? [{ label: 'By', value: set.creatorName, icon: <UserIcon size={14} /> }] : [])
                                 ]}
-                                badge={set.level ? { label: set.level } : undefined}
+                                badge={set.levels?.[0] ? { label: set.levels[0] } : undefined}
                                 onClick={() => router.push(`/flashcards/details/${set.id}`)}
                                 onEdit={user && user.id.toString() === set.userId ? () => handleEditSet(set.id) : undefined}
                                 onShare={user && user.id.toString() === set.userId ? () => handleShareSet(set) : undefined}

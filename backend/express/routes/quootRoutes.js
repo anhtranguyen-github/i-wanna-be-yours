@@ -9,7 +9,7 @@ const { verifyJWT, optionalAuth } = require('../middleware/auth');
  */
 router.get('/arenas', optionalAuth, async (req, res) => {
     try {
-        const { level, visibility } = req.query;
+        const { levels, skills, visibility } = req.query;
         let query = {};
 
         // Visibility Logic:
@@ -47,8 +47,15 @@ router.get('/arenas', optionalAuth, async (req, res) => {
             query.$or = visibilityFilters;
         }
 
-        if (level && level !== 'ALL') {
-            query.level = level;
+        // Multi-value filtering
+        const levelParams = levels?.split(',').filter(Boolean);
+        const skillParams = skills?.split(',').filter(Boolean);
+
+        if (levelParams && levelParams.length > 0) {
+            query.levels = { $in: levelParams };
+        }
+        if (skillParams && skillParams.length > 0) {
+            query.skills = { $in: skillParams };
         }
 
         const arenas = await QuootArena.find(query).sort({ visibility: 1, createdAt: -1 }).lean();
@@ -58,7 +65,8 @@ router.get('/arenas', optionalAuth, async (req, res) => {
             title: a.title,
             description: a.description,
             icon: a.icon,
-            level: a.level,
+            levels: a.levels,
+            skills: a.skills,
             cardCount: a.cards.length,
             stats: a.stats,
             visibility: a.visibility,
@@ -105,7 +113,7 @@ router.post('/arenas', verifyJWT, async (req, res) => {
     try {
         const userId = req.user.id || req.user.userId;
         const username = req.user.username || 'User'; // Assume username is in JWT or fallback
-        const { title, description, level, icon, cards, visibility } = req.body;
+        const { title, description, levels, skills, icon, cards, visibility } = req.body;
 
         if (!title || !cards || !Array.isArray(cards)) {
             return res.status(400).json({ error: 'Title and cards are required' });
@@ -114,7 +122,8 @@ router.post('/arenas', verifyJWT, async (req, res) => {
         const arena = new QuootArena({
             title,
             description: description || '',
-            level: level || 'N3',
+            levels: levels || ['N3'],
+            skills: skills || ['VOCABULARY'],
             icon: icon || '⚔️',
             visibility: visibility || 'private',
             userId,
@@ -227,7 +236,8 @@ router.patch('/arenas/:id', verifyJWT, async (req, res) => {
         // Apply updates
         if (updates.title) arena.title = updates.title;
         if (updates.description !== undefined) arena.description = updates.description;
-        if (updates.level) arena.level = updates.level;
+        if (updates.levels) arena.levels = updates.levels;
+        if (updates.skills) arena.skills = updates.skills;
         if (updates.icon) arena.icon = updates.icon;
         if (updates.visibility) arena.visibility = updates.visibility;
         if (updates.cards) {
@@ -267,7 +277,7 @@ router.post('/arenas/:id/clone', verifyJWT, async (req, res) => {
             title: `${original.title} (Copy)`,
             description: original.description,
             icon: original.icon,
-            level: original.level,
+            levels: original.levels,
             customTags: [],
             skills: original.skills || [],
             cards: original.cards,

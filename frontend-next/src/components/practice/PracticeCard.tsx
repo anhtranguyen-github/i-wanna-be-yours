@@ -30,7 +30,7 @@ export default function PracticeCard({ config, onStart }: PracticeCardProps) {
             <div className="flex items-start justify-between mb-6 relative z-10">
                 <div className="flex-1">
                     <span className="inline-block px-3 py-1 bg-neutral-beige text-neutral-ink font-black rounded-lg text-[10px] uppercase tracking-widest mb-3 border border-neutral-gray/10">
-                        {config.tags?.level || (config as any).level}
+                        {config.tags?.levels?.[0] || (config as any).levels?.[0]}
                     </span>
                     <h3 className="text-xl font-black text-neutral-ink font-display group-hover:text-primary-strong transition-colors tracking-tight leading-tight">
                         {config.title}

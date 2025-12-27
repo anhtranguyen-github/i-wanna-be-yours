@@ -257,7 +257,7 @@ export default function UnifiedSessionPage() {
                             <h1 className="text-lg font-black text-foreground font-display">{node.title}</h1>
                             <div className="flex items-center gap-2">
                                 <span className="px-2 py-0.5 bg-primary/10 text-primary rounded text-xs font-black uppercase tracking-widest">
-                                    {node.tags.level}
+                                    {node.tags.levels?.[0]}
                                 </span>
                                 <span className="px-2 py-0.5 bg-muted text-neutral-ink rounded text-xs font-black uppercase tracking-widest">
                                     {getModeLabel()}

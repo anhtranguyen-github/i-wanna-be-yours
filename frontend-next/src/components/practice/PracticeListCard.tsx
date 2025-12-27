@@ -47,10 +47,10 @@ export default function PracticeListCard({ node, onStart }: PracticeListCardProp
             {/* Left: Identity Badge */}
             <div className={`
                 flex-shrink-0 w-16 h-16 rounded-2xl flex flex-col items-center justify-center border-2
-                ${levelColors[tags.level] || levelColors.ALL}
+                ${levelColors[tags.levels?.[0] || 'ALL'] || levelColors.ALL}
             `}>
                 <span className="text-[10px] font-black uppercase tracking-tighter leading-none mb-1">JLPT</span>
-                <span className="text-xl font-black font-display leading-none">{tags.level}</span>
+                <span className="text-xl font-black font-display leading-none">{tags.levels?.[0] || 'ALL'}</span>
             </div>
 
             {/* Middle: Content Info */}

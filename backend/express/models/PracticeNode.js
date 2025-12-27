@@ -22,8 +22,16 @@ const PracticeNodeSchema = new mongoose.Schema({
     title: { type: String, required: true },
     description: { type: String, default: '' },
     mode: { type: String, enum: ['QUIZ', 'SINGLE_EXAM', 'FULL_EXAM'], default: 'QUIZ' },
-    level: { type: String, enum: ['N5', 'N4', 'N3', 'N2', 'N1'], default: 'N5' },
-    skills: [{ type: String, enum: ['VOCABULARY', 'GRAMMAR', 'READING', 'LISTENING', 'KANJI'] }],
+    levels: {
+        type: [{ type: String, enum: ['N5', 'N4', 'N3', 'N2', 'N1'] }],
+        required: true,
+        validate: [v => v.length >= 1, 'At least one level required']
+    },
+    skills: {
+        type: [{ type: String, enum: ['VOCABULARY', 'GRAMMAR', 'READING', 'LISTENING', 'KANJI'] }],
+        required: true,
+        validate: [v => v.length >= 1, 'At least one skill required']
+    },
     customTags: [String],
     origin: { type: String, enum: ['system', 'user', 'ai'], default: 'system' },
     visibility: {
@@ -53,7 +61,7 @@ PracticeNodeSchema.pre('save', function (next) {
 });
 
 // Indexes
-PracticeNodeSchema.index({ visibility: 1, level: 1 });
+PracticeNodeSchema.index({ visibility: 1, levels: 1 });
 PracticeNodeSchema.index({ userId: 1 });
 PracticeNodeSchema.index({ origin: 1 });
 

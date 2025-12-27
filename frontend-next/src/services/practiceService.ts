@@ -29,14 +29,14 @@ export async function getNodes(
         }
 
         // Add filters
-        if (filters.level && filters.level !== 'ALL') {
-            params.append('level', filters.level);
+        if (filters.levels && filters.levels.length > 0) {
+            params.append('levels', filters.levels.join(','));
         }
         if (filters.mode && filters.mode !== 'ALL') {
             params.append('mode', filters.mode);
         }
-        if (filters.skill && filters.skill !== 'ALL') {
-            params.append('skill', filters.skill);
+        if (filters.skills && filters.skills.length > 0) {
+            params.append('skills', filters.skills.join(','));
         }
 
         const url = `${API_BASE}/nodes${params.toString() ? '?' + params.toString() : ''}`;
@@ -177,7 +177,7 @@ export async function createNode(node: {
     title: string;
     description?: string;
     mode?: string;
-    level?: string;
+    levels?: string[];
     skills?: string[];
     timeLimitMinutes?: number;
     questions: Array<{

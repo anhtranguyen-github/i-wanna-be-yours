@@ -20,9 +20,7 @@ router.get('/nodes', optionalAuth, async (req, res) => {
     try {
         const limit = parseInt(req.query.limit) || 50;
         const offset = parseInt(req.query.offset) || 0;
-        const level = req.query.level;
-        const mode = req.query.mode;
-        const visibilityFilter = req.query.visibility;
+        const { levels, skills, mode, visibility } = req.query;
 
         let query = {};
 
@@ -35,11 +33,11 @@ router.get('/nodes', optionalAuth, async (req, res) => {
             visibilityFilters.push({ visibility: 'private', userId });
         }
 
-        if (visibilityFilter === 'global') {
+        if (visibility === 'global') {
             query.visibility = 'global';
-        } else if (visibilityFilter === 'public') {
+        } else if (visibility === 'public') {
             query.visibility = 'public';
-        } else if (visibilityFilter === 'private') {
+        } else if (visibility === 'private') {
             if (!req.user) return res.status(200).json({ nodes: [], total: 0 });
             query.visibility = 'private';
             query.userId = req.user.id || req.user.userId;
@@ -56,7 +54,16 @@ router.get('/nodes', optionalAuth, async (req, res) => {
             query.$or = visibilityFilters;
         }
 
-        if (level && level !== 'ALL') query.level = level;
+        // Multi-value filtering
+        const levelParams = levels?.split(',').filter(Boolean);
+        const skillParams = skills?.split(',').filter(Boolean);
+
+        if (levelParams && levelParams.length > 0) {
+            query.levels = { $in: levelParams };
+        }
+        if (skillParams && skillParams.length > 0) {
+            query.skills = { $in: skillParams };
+        }
         if (mode && mode !== 'ALL') query.mode = mode;
 
 
@@ -76,7 +83,7 @@ router.get('/nodes', optionalAuth, async (req, res) => {
             description: node.description,
             mode: node.mode,
             tags: {
-                level: node.level,
+                levels: node.levels,
                 skills: node.skills,
                 origin: node.origin,
                 visibility: node.visibility
@@ -124,7 +131,7 @@ router.get('/nodes/:id', optionalAuth, async (req, res) => {
                 description: node.description,
                 mode: node.mode,
                 tags: {
-                    level: node.level,
+                    levels: node.levels,
                     skills: node.skills,
                     origin: node.origin,
                     visibility: node.visibility
@@ -160,7 +167,7 @@ router.post('/nodes', verifyJWT, async (req, res) => {
     try {
         const userId = req.user.id || req.user.userId;
         const username = req.user.username || 'User';
-        const { title, description, mode, level, skills, timeLimitMinutes, questions, visibility } = req.body;
+        const { title, description, mode, levels, skills, timeLimitMinutes, questions, visibility } = req.body;
 
         if (!title || !questions || !Array.isArray(questions) || questions.length === 0) {
             return res.status(400).json({ error: 'Title and at least one question are required' });
@@ -170,7 +177,7 @@ router.post('/nodes', verifyJWT, async (req, res) => {
             title,
             description: description || '',
             mode: mode || 'QUIZ',
-            level: level || 'N5',
+            levels: levels || ['N5'],
             skills: skills || [],
             origin: 'user',
             visibility: visibility || 'private',
@@ -304,7 +311,7 @@ router.get('/attempts', verifyJWT, async (req, res) => {
             id: a._id.toString(),
             nodeId: a.nodeId?._id?.toString(),
             nodeTitle: a.nodeId?.title,
-            nodeLevel: a.nodeId?.level,
+            nodeLevels: a.nodeId?.levels,
             nodeMode: a.nodeId?.mode,
             score: a.score,
             maxScore: a.maxScore,
@@ -365,7 +372,7 @@ router.patch('/nodes/:id', verifyJWT, async (req, res) => {
         if (updates.title) node.title = updates.title;
         if (updates.description !== undefined) node.description = updates.description;
         if (updates.mode) node.mode = updates.mode;
-        if (updates.level) node.level = updates.level;
+        if (updates.levels) node.levels = updates.levels;
         if (updates.skills) node.skills = updates.skills;
         if (updates.visibility) node.visibility = updates.visibility;
         if (updates.timeLimitMinutes !== undefined) node.timeLimitMinutes = updates.timeLimitMinutes;
@@ -409,7 +416,7 @@ router.post('/nodes/:id/clone', verifyJWT, async (req, res) => {
             title: `${original.title} (Copy)`,
             description: original.description,
             mode: original.mode,
-            level: original.level,
+            levels: original.levels,
             skills: original.skills || [],
             customTags: [],
             origin: 'user',

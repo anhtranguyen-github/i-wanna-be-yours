@@ -4,9 +4,10 @@ const API_BASE = '/e-api/v1/flashcards';
 
 class FlashcardService {
     // Set Management
-    async fetchFlashcardSets(filters?: { level?: string; access?: string }) {
+    async fetchFlashcardSets(filters?: { levels?: string[]; skills?: string[]; access?: string }) {
         const params = new URLSearchParams();
-        if (filters?.level && filters.level !== 'ALL') params.append('level', filters.level);
+        if (filters?.levels?.length) params.append('levels', filters.levels.join(','));
+        if (filters?.skills?.length) params.append('skills', filters.skills.join(','));
         if (filters?.access && filters.access !== 'ALL') params.append('visibility', filters.access.toLowerCase());
 
         const response = await authFetch(`${API_BASE}/sets?${params.toString()}`);
@@ -112,7 +113,7 @@ class FlashcardService {
 
 export const flashcardService = new FlashcardService();
 
-export const fetchFlashcardSets = (filters?: { level?: string; access?: string }) => flashcardService.fetchFlashcardSets(filters);
+export const fetchFlashcardSets = (filters?: { levels?: string[]; skills?: string[]; access?: string }) => flashcardService.fetchFlashcardSets(filters);
 export const fetchFlashcardSetById = (id: string) => flashcardService.fetchFlashcardSetById(id);
 export const fetchDeckById = fetchFlashcardSetById; // Alias for backward compatibility
 export const createFlashcardSet = (set: any) => flashcardService.createFlashcardSet(set);

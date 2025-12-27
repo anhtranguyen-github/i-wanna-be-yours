@@ -70,7 +70,7 @@ export function ExamChatAssistant({
                 correctOptionId: `${questionId}-a`,
                 explanation: `This tests your understanding of ${skill.toLowerCase()} at the ${level} level.`,
                 tags: {
-                    level,
+                    levels: [level],
                     skills: [skill],
                     origin: 'ai',
                 },

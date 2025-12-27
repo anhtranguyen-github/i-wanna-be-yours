@@ -98,7 +98,7 @@ export function MyResultsList({
                             </div>
                             <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.15em] text-neutral-ink font-display">
                                 <span className="px-2.5 py-1 bg-muted rounded  text-neutral-ink">
-                                    {attempt.tags?.level || (attempt as any).level}
+                                    {attempt.tags?.levels?.[0] || (attempt as any).levels?.[0]}
                                 </span>
                                 <span className="flex items-center gap-1.5 grayscale opacity-60">
                                     <Clock size={12} />

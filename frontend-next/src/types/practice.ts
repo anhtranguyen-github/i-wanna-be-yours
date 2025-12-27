@@ -21,7 +21,7 @@ export type ProtocolOrigin = 'system' | 'chatbot' | 'manual' | 'ai';
 // --- Unified Metadata & Tags ---
 
 export interface PracticeTags {
-    level: JLPTLevel | 'ALL';
+    levels: JLPTLevel[];
     skills: SkillType[];
     category?: string; // e.g. "Kanj", "Particles"
     origin: ProtocolOrigin;
@@ -52,7 +52,7 @@ export interface PracticeNode {
     description: string;
     // Unified Backend structure
     mode: Exclude<PracticeMode, 'ALL'>;
-    level: JLPTLevel;
+    levels: JLPTLevel[];
     skills: SkillType[];
     isPublic: boolean;
     tags?: PracticeTags;
@@ -192,8 +192,8 @@ export interface UserCreatedExam {
 
 export interface FilterState {
     mode: PracticeMode;
-    level: JLPTLevel | 'ALL';
-    skill: SkillType | 'ALL';
+    levels: JLPTLevel[];
+    skills: SkillType[];
     timing?: 'ALL' | 'TIMED' | 'UNLIMITED';
     status?: 'ALL' | 'COMPLETED' | 'IN_PROGRESS' | 'NEVER_ATTEMPTED';
     origin?: 'ALL' | ProtocolOrigin;

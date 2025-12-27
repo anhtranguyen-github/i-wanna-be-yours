@@ -44,7 +44,7 @@ export default function PracticeHubPage() {
         query: "",
         activeFilters: {
             ownership: [],
-            level: [],
+            levels: [],
             mode: [],
             skills: []
         },
@@ -65,8 +65,8 @@ export default function PracticeHubPage() {
             ]
         },
         {
-            id: 'level',
-            label: 'Level',
+            id: 'levels',
+            label: 'Levels',
             type: 'MULTI',
             options: [
                 { id: 'N5', label: 'N5' },
@@ -111,7 +111,8 @@ export default function PracticeHubPage() {
         try {
             const apiFilters: FilterState = {
                 mode: (searchState.activeFilters.mode?.[0] || 'ALL') as any,
-                level: (searchState.activeFilters.level?.[0] || 'ALL') as any,
+                levels: searchState.activeFilters.levels || [],
+                skills: searchState.activeFilters.skills || [],
                 ownership: searchState.activeFilters.ownership || []
             } as any;
 
@@ -201,7 +202,7 @@ export default function PracticeHubPage() {
                 description: data.description || "Custom training sequence",
                 isPublic: data.visibility === 'public' || data.visibility === 'global',
                 mode: (searchState.activeFilters.mode?.[0] !== 'ALL' ? searchState.activeFilters.mode?.[0] : 'QUIZ') as any,
-                level: (searchState.activeFilters.level?.[0] !== 'ALL' ? searchState.activeFilters.level?.[0] : 'N3') as any,
+                levels: searchState.activeFilters.levels?.length ? searchState.activeFilters.levels : ['N3'],
                 skills: ['VOCABULARY'] as any[],
                 questions: data.items?.map((item: any, i: number) => ({
                     content: item.question || item.front || item.term || "",
@@ -301,7 +302,7 @@ export default function PracticeHubPage() {
                                 icon={<BrainCircuit size={24} />}
                                 iconBgColor="bg-neutral-beige/50"
                                 viewMode={viewMode}
-                                badge={{ label: node.tags?.level || node.level }}
+                                badge={{ label: node.tags?.levels?.[0] || node.levels?.[0] }}
                                 metadata={[
                                     { label: 'Questions', value: node.stats.questionCount, icon: <Layers size={14} /> },
                                     ...(node.isPublic ? [{ label: 'Official', value: 'Verified', icon: <ShieldCheck size={14} className="text-primary-strong" /> }] : []),
