@@ -147,9 +147,11 @@ router.get('/study/due', optionalAuth, async (req, res) => {
 /**
  * POST /flashcards/study/answer
  */
-router.post('/study/answer', verifyJWT, async (req, res) => {
+router.post('/study/answer', optionalAuth, async (req, res) => {
     try {
         const { cardId, quality } = req.body;
+        // In the future, we will implement actual SRS logic here for logged in users
+        // For now, it's just a placeholder acknowledgment
         res.status(200).json({ message: 'Answer recorded', cardId, quality });
     } catch (err) {
         res.status(500).json({ error: 'Internal server error' });

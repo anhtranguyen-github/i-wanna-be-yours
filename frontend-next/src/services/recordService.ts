@@ -17,14 +17,23 @@ export interface RecordPayload {
 
 export async function saveRecord(payload: RecordPayload) {
     try {
+        const token = typeof window !== 'undefined'
+            ? (localStorage.getItem('accessToken') || Cookies.get('accessToken'))
+            : null;
+
+        if (!token) {
+            console.log('[RecordService] Guest mode detected, skipping backend persistence');
+            return;
+        }
+
         await authFetch(`${API_BASE}/records`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),
-            skipAuthCheck: true // Double safety
+            skipAuthCheck: true
         } as any);
     } catch (err) {
-        console.error('Failed to save record:', err);
+        console.warn('[RecordService] Failed to save record:', err);
     }
 }
 

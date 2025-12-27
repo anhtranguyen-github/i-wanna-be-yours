@@ -105,7 +105,9 @@ export async function getNodes(
  * Fetch a specific node with its questions for a practice session
  */
 export async function getNodeSessionData(id: string): Promise<{ node: PracticeNode, questions: Question[] }> {
-    const response = await authFetch(`${API_BASE}/nodes/${id}`);
+    const response = await authFetch(`${API_BASE}/nodes/${id}`, {
+        skipAuthCheck: true
+    } as any);
 
     if (!response.ok) {
         throw new Error('Practice node not found');
@@ -151,7 +153,9 @@ export async function saveAttempt(attempt: PracticeAttempt): Promise<{
  * Get a specific attempt's unified result
  */
 export async function getAttemptResult(attemptId: string): Promise<any> {
-    const response = await authFetch(`${API_BASE}/attempts/${attemptId}`);
+    const response = await authFetch(`${API_BASE}/attempts/${attemptId}`, {
+        skipAuthCheck: true
+    } as any);
     if (!response.ok) {
         throw new Error('Failed to fetch attempt result');
     }

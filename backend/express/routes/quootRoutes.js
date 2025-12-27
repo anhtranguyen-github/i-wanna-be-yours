@@ -154,28 +154,14 @@ const { calculateQuootResult } = require('../utils/resultCalculator');
 /**
  * POST /quoot/arenas/:id/submit
  */
-router.post('/arenas/:id/submit', verifyJWT, async (req, res) => {
+router.post('/arenas/:id/submit', optionalAuth, async (req, res) => {
     try {
         const { id } = req.params;
-        const userId = req.user.id || req.user.userId;
+        const userId = req.user ? (req.user.id || req.user.userId) : null;
         const { score, correctCount, maxStreak, totalCards } = req.body;
 
         const arena = await QuootArena.findById(id).lean();
         if (!arena) return res.status(404).json({ error: 'Arena not found' });
-
-        const accuracy = Math.round((correctCount / totalCards) * 100);
-
-        const attempt = new QuootAttempt({
-            arenaId: id,
-            userId,
-            score,
-            correctCount,
-            totalCards,
-            maxStreak,
-            accuracy
-        });
-
-        await attempt.save();
 
         // Calculate unified result for frontend
         const unifiedResult = calculateQuootResult(arena, {
@@ -185,9 +171,35 @@ router.post('/arenas/:id/submit', verifyJWT, async (req, res) => {
             totalCards
         });
 
+        // Only save to DB if user is authenticated
+        if (userId) {
+            const accuracy = Math.round((correctCount / totalCards) * 100);
+            const attempt = new QuootAttempt({
+                arenaId: id,
+                userId,
+                score,
+                correctCount,
+                totalCards,
+                maxStreak,
+                accuracy
+            });
+            await attempt.save();
+
+            return res.status(200).json({
+                attemptId: attempt._id.toString(),
+                result: unifiedResult
+            });
+        }
+
+        // Guest response
         res.status(200).json({
-            attemptId: attempt._id.toString(),
-            result: unifiedResult
+            attemptId: 'guest-session',
+            result: {
+                ...unifiedResult,
+                xpEarned: 0, // Guests don't earn XP
+                coinsEarned: 0,
+                streakExtended: false
+            }
         });
     } catch (err) {
         console.error('Submit Quoot Attempt Error:', err);
@@ -198,8 +210,20 @@ router.post('/arenas/:id/submit', verifyJWT, async (req, res) => {
 /**
  * GET /quoot/attempts/:id
  */
-router.get('/attempts/:id', verifyJWT, async (req, res) => {
+router.get('/attempts/:id', optionalAuth, async (req, res) => {
     try {
+        if (req.params.id === 'guest-session') {
+            return res.status(200).json({
+                result: {
+                    score: 0,
+                    accuracy: 0,
+                    feedback: { title: "Protocol Complete", message: "Analysis requires authentication.", suggestions: ["Sign in to save records"] }
+                }
+            });
+        }
+
+        if (!req.user) return res.status(401).json({ error: 'Authentication required' });
+
         const userId = req.user.id || req.user.userId;
         const attempt = await QuootAttempt.findById(req.params.id)
             .populate('arenaId')

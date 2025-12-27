@@ -9,7 +9,18 @@ export function mapResultIcons(input: any): UnifiedSessionResult {
     // 1. Safety check for null/undefined input
     if (!input) {
         console.warn("mapResultIcons: input is null or undefined");
-        return input;
+        return {
+            score: 0,
+            accuracy: 0,
+            xpEarned: 0,
+            stats: [],
+            achievements: [],
+            feedback: {
+                title: "Loading Data...",
+                message: "Analyzing session protocol...",
+                suggestions: []
+            }
+        } as any;
     }
 
     // 2. Extract the actual payload (backend sometimes wraps in { result: ... } or { data: ... })

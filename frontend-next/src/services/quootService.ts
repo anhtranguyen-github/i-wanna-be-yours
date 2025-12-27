@@ -15,7 +15,9 @@ export async function fetchQuootArenas(filters?: { levels?: string[]; skills?: s
 }
 
 export async function fetchQuootArenaById(id: string) {
-    const response = await authFetch(`${API_BASE}/arenas/${id}`);
+    const response = await authFetch(`${API_BASE}/arenas/${id}`, {
+        skipAuthCheck: true
+    } as any);
     if (!response.ok) throw new Error('Failed to fetch quoot arena');
     return response.json();
 }
@@ -30,23 +32,21 @@ export async function createQuootArena(arena: any) {
     return response.json();
 }
 
-export async function submitQuootResult(arenaId: string, result: {
-    score: number;
-    correctCount: number;
-    maxStreak: number;
-    totalCards: number;
-}) {
-    const response = await authFetch(`${API_BASE}/arenas/${arenaId}/submit`, {
+export async function submitQuootResult(id: string, result: any) {
+    const response = await authFetch(`${API_BASE}/arenas/${id}/submit`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(result)
-    });
+        body: JSON.stringify(result),
+        skipAuthCheck: true
+    } as any);
     if (!response.ok) throw new Error('Failed to submit quoot result');
     return response.json();
 }
 
 export async function fetchQuootAttemptResult(attemptId: string) {
-    const response = await authFetch(`${API_BASE}/attempts/${attemptId}`);
+    const response = await authFetch(`${API_BASE}/attempts/${attemptId}`, {
+        skipAuthCheck: true
+    } as any);
     if (!response.ok) throw new Error('Failed to fetch quoot attempt result');
     return response.json();
 }

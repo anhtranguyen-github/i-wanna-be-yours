@@ -17,7 +17,9 @@ class FlashcardService {
     }
 
     async fetchFlashcardSetById(id: string) {
-        const response = await authFetch(`${API_BASE}/sets/${id}`);
+        const response = await authFetch(`${API_BASE}/sets/${id}`, {
+            skipAuthCheck: true
+        } as any);
         if (!response.ok) throw new Error('Failed to fetch flashcard set');
         return response.json();
     }
@@ -38,7 +40,9 @@ class FlashcardService {
         const params = new URLSearchParams();
         if (deckId) params.append('deckId', deckId);
 
-        const response = await authFetch(`${API_BASE}/study/due?${params.toString()}`);
+        const response = await authFetch(`${API_BASE}/study/due?${params.toString()}`, {
+            skipAuthCheck: true
+        } as any);
         if (!response.ok) throw new Error('Failed to fetch due cards');
         return response.json();
     }
@@ -47,8 +51,9 @@ class FlashcardService {
         const response = await authFetch(`${API_BASE}/study/answer`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ cardId, quality })
-        });
+            body: JSON.stringify({ cardId, quality }),
+            skipAuthCheck: true
+        } as any);
         if (!response.ok) throw new Error('Failed to submit answer');
         return response.json();
     }
