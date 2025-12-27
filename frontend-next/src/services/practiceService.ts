@@ -125,6 +125,52 @@ export async function saveAttempt(attempt: PracticeAttempt): Promise<{
     attemptId: string;
     result: any;
 }> {
+    // GUEST HANDLING
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    if (!token) {
+        try {
+            // Re-fetch questions to grade securely (or reliably)
+            const { questions } = await getNodeSessionData(attempt.nodeId);
+            let correct = 0;
+            const total = questions.length;
+
+            Object.values(attempt.answers).forEach(ans => {
+                const q = questions.find(q => q.id === ans.questionId);
+                if (q && q.correctOptionId === ans.selectedOptionId) {
+                    correct++;
+                }
+            });
+
+            const percentage = Math.round((correct / total) * 100) || 0;
+            const isPassed = percentage >= 60;
+
+            const mockResult = {
+                id: 'guest-attempt',
+                nodeId: attempt.nodeId,
+                percentage: percentage,
+                correctCount: correct,
+                totalQuestions: total,
+                timeTakenSeconds: attempt.timeTakenSeconds,
+                completedAt: new Date().toISOString(),
+                status: isPassed ? 'PASSED' : 'FAILED',
+                answers: attempt.answers
+            };
+
+            if (typeof window !== 'undefined') {
+                sessionStorage.setItem('guest-practice-result', JSON.stringify(mockResult));
+            }
+
+            return {
+                attemptId: 'guest-attempt',
+                result: mockResult
+            };
+        } catch (e) {
+            console.error("Guest grading failed", e);
+            // Fallback
+            return { attemptId: 'guest-attempt', result: { percentage: 0 } };
+        }
+    }
+
     const response = await authFetch(`${API_BASE}/nodes/${attempt.nodeId}/submit`, {
         method: 'POST',
         headers: {
@@ -150,6 +196,14 @@ export async function saveAttempt(attempt: PracticeAttempt): Promise<{
  * Get a specific attempt's unified result
  */
 export async function getAttemptResult(attemptId: string): Promise<any> {
+    if (attemptId === 'guest-attempt') {
+        if (typeof window !== 'undefined') {
+            const stored = sessionStorage.getItem('guest-practice-result');
+            if (stored) return JSON.parse(stored);
+        }
+        return { percentage: 0 };
+    }
+
     const response = await authFetch(`${API_BASE}/attempts/${attemptId}`);
     if (!response.ok) {
         throw new Error('Failed to fetch attempt result');

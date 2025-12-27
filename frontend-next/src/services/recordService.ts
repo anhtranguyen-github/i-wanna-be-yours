@@ -1,5 +1,7 @@
 import { authFetch } from '@/lib/authFetch';
 import { v4 as uuidv4 } from 'uuid';
+import Cookies from 'js-cookie';
+
 const API_BASE = (process.env.NEXT_PUBLIC_EXPRESS_API_URL || '/e-api') + '/v1';
 
 export interface RecordPayload {
@@ -14,12 +16,23 @@ export interface RecordPayload {
 }
 
 export async function saveRecord(payload: RecordPayload) {
+    // Check for auth token to identify guest vs user
+    const token = typeof window !== 'undefined'
+        ? (localStorage.getItem('accessToken') || Cookies.get('accessToken'))
+        : null;
+
+    if (!token) {
+        // Guest mode: do not save record
+        return;
+    }
+
     try {
         await authFetch(`${API_BASE}/records`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
+            body: JSON.stringify(payload),
+            skipAuthCheck: true // Double safety
+        } as any);
     } catch (err) {
         console.error('Failed to save record:', err);
     }

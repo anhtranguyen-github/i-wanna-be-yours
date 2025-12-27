@@ -35,6 +35,38 @@ export async function submitQuootResult(arenaId: string, result: {
     maxStreak: number;
     totalCards: number;
 }) {
+    // GUEST HANDLING: If no token, return mock result without hitting API
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    if (!token) {
+        const percentage = Math.round((result.correctCount / result.totalCards) * 100) || 0;
+        let rank = 'C';
+        if (percentage >= 95) rank = 'S+';
+        else if (percentage >= 90) rank = 'S';
+        else if (percentage >= 80) rank = 'A';
+        else if (percentage >= 70) rank = 'B';
+        else if (percentage >= 60) rank = 'C';
+        else rank = 'D';
+
+        return {
+            result: {
+                score: result.score,
+                rank,
+                correctCount: result.correctCount,
+                totalCards: result.totalCards,
+                maxStreak: result.maxStreak,
+                xpEarned: 0,
+                coinsEarned: 0,
+                streakExtended: false,
+                stats: [
+                    { label: "Accuracy", value: `${percentage}%`, icon: "Target" },
+                    { label: "Max Streak", value: result.maxStreak, icon: "Flame" },
+                    { label: "Score", value: result.score, icon: "Trophy" }
+                ],
+                achievements: []
+            }
+        };
+    }
+
     const response = await authFetch(`${API_BASE}/arenas/${arenaId}/submit`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
