@@ -24,6 +24,7 @@ const PracticeNodeSchema = new mongoose.Schema({
     mode: { type: String, enum: ['QUIZ', 'SINGLE_EXAM', 'FULL_EXAM'], default: 'QUIZ' },
     level: { type: String, enum: ['N5', 'N4', 'N3', 'N2', 'N1'], default: 'N5' },
     skills: [{ type: String, enum: ['VOCABULARY', 'GRAMMAR', 'READING', 'LISTENING', 'KANJI'] }],
+    customTags: [String],
     origin: { type: String, enum: ['system', 'user', 'ai'], default: 'system' },
     visibility: {
         type: String,
@@ -32,6 +33,7 @@ const PracticeNodeSchema = new mongoose.Schema({
     },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
     creatorName: { type: String, default: 'System' },
+    clonedFrom: { type: mongoose.Schema.Types.ObjectId, ref: 'PracticeNode', default: null },
     timeLimitMinutes: { type: Number, default: null },
     questions: [QuestionSchema],
     stats: {
@@ -42,6 +44,7 @@ const PracticeNodeSchema = new mongoose.Schema({
 }, {
     timestamps: true
 });
+
 
 // Pre-save hook to update questionCount
 PracticeNodeSchema.pre('save', function (next) {

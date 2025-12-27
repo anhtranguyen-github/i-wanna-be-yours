@@ -14,6 +14,8 @@ const FlashcardSetSchema = new mongoose.Schema({
     icon: { type: String, default: '🎴' },
     level: { type: String, default: 'N3' },
     tags: [String],
+    customTags: [String],
+    skills: [{ type: String, enum: ['VOCABULARY', 'GRAMMAR', 'KANJI', 'READING'] }],
     visibility: {
         type: String,
         enum: ['global', 'public', 'private'],
@@ -21,12 +23,14 @@ const FlashcardSetSchema = new mongoose.Schema({
     },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     creatorName: { type: String, default: 'System' },
+    clonedFrom: { type: mongoose.Schema.Types.ObjectId, ref: 'FlashcardSet', default: null },
     cards: [FlashcardSchema],
     stats: {
         totalReviews: { type: Number, default: 0 },
         activeUsers: { type: Number, default: 0 }
     }
 }, { timestamps: true });
+
 
 module.exports = {
     FlashcardSet: mongoose.model('FlashcardSet', FlashcardSetSchema)

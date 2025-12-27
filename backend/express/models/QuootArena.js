@@ -12,6 +12,8 @@ const QuootArenaSchema = new mongoose.Schema({
     description: String,
     icon: { type: String, default: '⚔️' },
     level: { type: String, default: 'N3' },
+    customTags: [String],
+    skills: [{ type: String, enum: ['VOCABULARY', 'GRAMMAR', 'KANJI', 'READING'] }],
     visibility: {
         type: String,
         enum: ['global', 'public', 'private'],
@@ -19,12 +21,14 @@ const QuootArenaSchema = new mongoose.Schema({
     },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     creatorName: { type: String, default: 'System' },
+    clonedFrom: { type: mongoose.Schema.Types.ObjectId, ref: 'QuootArena', default: null },
     cards: [QuootCardSchema],
     stats: {
         playCount: { type: Number, default: 0 },
         avgScore: { type: Number, default: 0 }
     }
 }, { timestamps: true });
+
 
 module.exports = {
     QuootArena: mongoose.model('QuootArena', QuootArenaSchema)
