@@ -434,7 +434,7 @@ export default function StudyPage() {
     const displayB = Array.isArray(sideB) ? sideB.join(", ") : sideB;
 
     return (
-        <div className="min-h-screen bg-[#F8FAFC] flex flex-col p-6 sm:p-12 selection:bg-primary/20 overflow-hidden font-display relative">
+        <div className="min-h-screen bg-neutral-beige/20 flex flex-col selection:bg-primary/20 overflow-hidden font-display relative">
 
             <OptionsModal
                 isOpen={isSettingsOpen}
@@ -445,129 +445,143 @@ export default function StudyPage() {
             />
 
             {/* --- TOP HUD --- */}
-            <header className="flex items-center justify-between gap-8 mb-12 animate-in fade-in slide-in-from-top-4 duration-700">
+            <header className="bg-white/80 backdrop-blur-md border-b border-neutral-gray/10 px-8 py-4 sticky top-0 z-[60] flex items-center justify-between gap-8">
                 <div className="flex items-center gap-4">
-                    <Link href="/flashcards" className="w-12 h-12 bg-white border border-border/50 rounded-2xl flex items-center justify-center hover:bg-slate-50 transition-all shadow-sm">
-                        <ArrowLeft size={20} />
+                    <Link href="/flashcards" className="w-10 h-10 bg-neutral-beige/10 border border-neutral-gray/20 rounded-xl flex items-center justify-center hover:bg-neutral-white transition-all shadow-sm">
+                        <ArrowLeft size={18} className="text-neutral-ink" />
                     </Link>
                     <div className="hidden sm:block">
-                        <h1 className="text-xl font-black text-foreground tracking-tight">{currentCard.set_name || 'Personal Registry'}</h1>
-                        <p className="text-[10px] font-black text-neutral-ink/40 uppercase tracking-widest">Sector Study Phase</p>
+                        <h1 className="text-lg font-black text-neutral-ink tracking-tight truncate max-w-[200px] md:max-w-md">{currentCard.set_name || 'Personal Registry'}</h1>
+                        <p className="text-[9px] font-black text-neutral-ink/30 uppercase tracking-[0.2em]">Diagnostic Session</p>
                     </div>
                 </div>
 
                 {/* Progress Cluster */}
-                <div className="flex-1 flex flex-col items-center gap-2 max-w-sm">
+                <div className="flex-1 flex flex-col items-center gap-1.5 max-w-sm">
                     <div className="flex items-center justify-between w-full px-1">
-                        <span className="text-[10px] font-black text-neutral-ink uppercase tracking-widest">{currentIndex + 1} / {queue.length}</span>
-                        <div className="flex gap-2">
-                            <div className="flex items-center gap-1.5 px-2 py-0.5 bg-rose-50 border border-rose-100 rounded-lg text-rose-600 text-[9px] font-black uppercase tracking-widest">
-                                <span className="w-1.5 h-1.5 bg-rose-500 rounded-full animate-pulse" />
+                        <span className="text-[9px] font-black text-neutral-ink uppercase tracking-widest">{currentIndex + 1} / {queue.length}</span>
+                        <div className="flex gap-1.5">
+                            <div className="flex items-center gap-1 px-2 py-0.5 bg-rose-50 border border-rose-100/50 rounded-lg text-rose-500 text-[8px] font-black uppercase tracking-widest">
                                 {learningCount}
                             </div>
-                            <div className="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-50 border border-emerald-100 rounded-lg text-emerald-600 text-[9px] font-black uppercase tracking-widest">
-                                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                            <div className="flex items-center gap-1 px-2 py-0.5 bg-emerald-50 border border-emerald-100/50 rounded-lg text-emerald-500 text-[8px] font-black uppercase tracking-widest">
                                 {knownCount}
                             </div>
                         </div>
                     </div>
-                    <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
+                    <div className="h-1.5 w-full bg-neutral-beige/30 rounded-full overflow-hidden border border-neutral-gray/5">
                         <div
-                            className="h-full bg-primary transition-all duration-700 ease-out"
+                            className="h-full bg-primary-strong transition-all duration-700 ease-out shadow-[0_0_10px_rgba(255,107,157,0.3)]"
                             style={{ width: `${((currentIndex + 1) / queue.length) * 100}%` }}
                         />
                     </div>
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <button className="hidden md:flex h-12 px-6 bg-slate-900 text-white rounded-2xl items-center gap-3 font-black text-[10px] uppercase tracking-widest hover:bg-slate-800 transition-all shadow-xl shadow-slate-900/10">
-                        <Sparkles size={16} />
+                    <button className="hidden md:flex h-10 px-5 bg-neutral-ink text-white rounded-xl items-center gap-2 font-black text-[9px] uppercase tracking-widest hover:bg-neutral-ink/90 transition-all shadow-lg shadow-neutral-ink/10">
+                        <Sparkles size={14} className="text-primary" />
                         Synthesize Questions
                     </button>
                     <button
                         onClick={() => setIsSettingsOpen(true)}
-                        className="w-12 h-12 bg-white border border-border/50 rounded-2xl flex items-center justify-center hover:bg-slate-50 transition-all shadow-sm"
+                        className="w-10 h-10 bg-neutral-white border border-neutral-gray/20 rounded-xl flex items-center justify-center hover:border-primary/40 transition-all shadow-sm text-neutral-ink"
                     >
-                        <Settings size={20} />
+                        <Settings size={18} />
                     </button>
                 </div>
             </header>
 
             {/* --- CORE STAGE --- */}
-            <main className="flex-1 flex flex-col items-center justify-center max-w-4xl mx-auto w-full mb-24 relative">
+            <main className="flex-1 flex flex-col items-center justify-center px-6 py-12 relative overflow-hidden">
 
-                {/* Auto-Play Indicator */}
-                {isAutoPlaying && (
-                    <div className="absolute -top-12 flex items-center gap-2 px-4 py-2 bg-slate-900 border border-slate-800 text-white rounded-xl text-[9px] font-black uppercase tracking-[0.2em] shadow-xl animate-in slide-in-from-top-2 duration-300">
-                        <Play size={10} className="fill-current animate-pulse text-primary" />
-                        Auto-Iteration Active
-                    </div>
-                )}
+                {/* Background Decor */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
 
-                <div
-                    onClick={() => setFlipped(!flipped)}
-                    className="w-full aspect-[16/10] sm:aspect-[16/9] perspective-2000 cursor-pointer group"
-                >
-                    <div className={`relative w-full h-full transition-all duration-700 preserve-3d ${flipped ? 'rotate-y-180' : ''}`}>
-
-                        {/* Front Face */}
-                        <div className="absolute w-full h-full backface-hidden bg-white border border-border/50 rounded-[4rem] flex flex-col items-center justify-center p-12 shadow-2xl shadow-slate-200/50 group-hover:border-primary/20 transition-all">
-                            <div className="absolute top-12 left-12">
-                                <div className="text-[10px] font-black text-neutral-ink/30 uppercase tracking-[0.3em]">Front Perspective</div>
+                <div className="w-full max-w-2xl relative z-10">
+                    {/* Auto-Play Indicator */}
+                    <AnimatePresence>
+                        {isAutoPlaying && (
+                            <div className="absolute -top-16 left-1/2 -translate-x-1/2 flex items-center gap-3 px-5 py-2.5 bg-neutral-ink border border-neutral-ink/20 text-white rounded-full text-[9px] font-black uppercase tracking-[0.2em] shadow-2xl animate-in slide-in-from-top-4 duration-500">
+                                <span className="flex h-2 w-2 relative">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                                </span>
+                                Auto-Iteration Protocol Active
                             </div>
+                        )}
+                    </AnimatePresence>
 
-                            <div className="text-center space-y-8">
-                                <h2 className="text-7xl sm:text-9xl font-black text-slate-900 font-jp tracking-tighter drop-shadow-sm">
-                                    {sideA}
-                                </h2>
-                                {settings.showBothSides && (
-                                    <div className="pt-8 border-t border-slate-100 animate-in fade-in duration-500">
-                                        <p className="text-3xl font-bold text-neutral-ink/40 tracking-tight">{displayB}</p>
+                    <div
+                        onClick={() => setFlipped(!flipped)}
+                        className="relative w-full aspect-[4/3] sm:aspect-[1.4] perspective-2000 cursor-pointer group"
+                    >
+                        <div className={`relative w-full h-full transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] preserve-3d ${flipped ? 'rotate-y-180' : ''}`}>
+
+                            {/* Front Face: Primary Lexicon */}
+                            <div className="absolute w-full h-full backface-hidden bg-white border-2 border-neutral-gray/10 rounded-[3rem] flex flex-col items-center justify-center p-8 sm:p-16 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)] group-hover:border-primary/20 transition-all">
+                                <div className="absolute top-10 left-10">
+                                    <div className="text-[10px] font-bold text-neutral-ink/20 uppercase tracking-[0.4em]">Primary Lexicon</div>
+                                </div>
+
+                                <div className="text-center space-y-10 w-full px-4">
+                                    <h2 className="text-6xl sm:text-8xl font-black text-neutral-ink font-jp tracking-tighter leading-tight">
+                                        {sideA}
+                                    </h2>
+
+                                    {settings.showBothSides && (
+                                        <div className="pt-10 border-t-2 border-neutral-beige/20 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                                            <p className="text-2xl sm:text-4xl font-bold text-neutral-ink/30 italic tracking-tight">{displayB}</p>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="absolute bottom-10 left-0 right-0 flex justify-center">
+                                    <div className="flex items-center gap-3 bg-neutral-beige/10 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest text-neutral-ink/30 opacity-0 group-hover:opacity-100 transition-all duration-500">
+                                        <Keyboard size={12} className="text-primary-strong" />
+                                        <span>Strike <kbd className="font-sans px-1.5 py-0.5 bg-white border border-neutral-gray/20 rounded-md text-neutral-ink font-bold shadow-sm">SPACE</kbd> to reveal</span>
                                     </div>
-                                )}
-                            </div>
-
-                            <div className="absolute bottom-12 left-12 right-12 flex items-center justify-center gap-3">
-                                <div className="flex items-center gap-3 bg-muted px-6 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest text-neutral-ink/50 group-hover:text-primary transition-colors">
-                                    <Keyboard size={14} />
-                                    <span>Press <kbd className="font-sans px-1.5 py-0.5 bg-white border border-border/50 rounded-md text-foreground">SPACE</kbd> to reveal</span>
                                 </div>
                             </div>
-                        </div>
 
-                        {/* Back Face */}
-                        <div className="absolute w-full h-full backface-hidden rotate-y-180 bg-slate-900 border border-slate-800 rounded-[4rem] flex flex-col items-center justify-center p-12 shadow-2xl shadow-slate-900/40 relative overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent " />
+                            {/* Back Face: Synaptic Resolution */}
+                            <div className="absolute w-full h-full backface-hidden rotate-y-180 bg-neutral-ink border-2 border-neutral-ink/5 rounded-[3rem] flex flex-col items-center justify-center p-8 sm:p-16 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] relative overflow-hidden group/back">
+                                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent pointer-events-none" />
+                                <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-primary/5 blur-[80px] rounded-full pointer-events-none" />
 
-                            <div className="absolute top-12 left-12 z-10">
-                                <div className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em]">Synaptic Solution</div>
-                            </div>
+                                <div className="absolute top-10 left-10 z-10">
+                                    <div className="text-[10px] font-bold text-white/20 uppercase tracking-[0.4em]">Synaptic Resolution</div>
+                                </div>
 
-                            <div className="text-center space-y-8 relative z-10 w-full px-8">
-                                <h2 className="text-5xl sm:text-7xl font-black text-white leading-tight tracking-tight">
-                                    {displayB}
-                                </h2>
+                                <div className="text-center space-y-10 relative z-10 w-full">
+                                    <h2 className="text-4xl sm:text-6xl font-black text-white leading-[1.15] tracking-tight drop-shadow-xl">
+                                        {displayB}
+                                    </h2>
 
-                                {currentCard.reading && (
-                                    <div className="inline-block px-10 py-5 bg-white/5 backdrop-blur-md rounded-3xl border border-white/10">
-                                        <span className="text-primary font-jp text-4xl font-black">{currentCard.reading}</span>
-                                    </div>
-                                )}
+                                    {currentCard.reading && (
+                                        <div className="inline-block px-8 py-4 bg-white/5 backdrop-blur-md rounded-[2rem] border border-white/10 shadow-inner">
+                                            <span className="text-primary font-jp text-3xl sm:text-5xl font-black">{currentCard.reading}</span>
+                                        </div>
+                                    )}
 
-                                {(currentCard.mnemonic || currentCard.example) && (
-                                    <div className="max-w-lg mx-auto p-6 bg-white/5 border border-white/5 rounded-3xl text-xs font-medium text-white/50 leading-relaxed italic animate-in fade-in duration-1000">
-                                        "{currentCard.mnemonic || currentCard.example}"
-                                    </div>
-                                )}
-                            </div>
+                                    {(currentCard.mnemonic || currentCard.example) && (
+                                        <div className="max-w-md mx-auto p-6 bg-white/5 border border-white/5 rounded-3xl text-[11px] font-semibold text-white/40 leading-relaxed italic animate-in fade-in zoom-in-95 duration-700">
+                                            "{currentCard.mnemonic || currentCard.example}"
+                                        </div>
+                                    )}
+                                </div>
 
-                            <div className="absolute top-12 right-12 z-10 flex gap-3">
-                                <button className="w-12 h-12 bg-white/5 hover:bg-white/10 rounded-2xl flex items-center justify-center text-white/40 hover:text-white transition-all">
-                                    <Volume2 size={20} />
-                                </button>
-                                <button className="w-12 h-12 bg-white/5 hover:bg-white/10 rounded-2xl flex items-center justify-center text-white/40 hover:text-white transition-all">
-                                    <Star size={20} />
-                                </button>
+                                <div className="absolute top-10 right-10 z-10 flex flex-col gap-2">
+                                    <button className="w-10 h-10 bg-white/5 hover:bg-white/10 rounded-xl flex items-center justify-center text-white/20 hover:text-white transition-all hover:scale-105 active:scale-95">
+                                        <Volume2 size={18} />
+                                    </button>
+                                    <button className="w-10 h-10 bg-white/5 hover:bg-white/10 rounded-xl flex items-center justify-center text-white/20 hover:text-white transition-all hover:scale-105 active:scale-95">
+                                        <Star size={18} />
+                                    </button>
+                                </div>
+
+                                <div className="absolute bottom-10 left-0 right-0 flex justify-center opacity-40">
+                                    <div className="text-[10px] font-black uppercase tracking-widest text-white/30">Registry Match Confirmed</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -575,47 +589,48 @@ export default function StudyPage() {
             </main>
 
             {/* --- COMMAND DECK (FOOTER) --- */}
-            <footer className="w-full fixed bottom-0 left-0 p-8 sm:p-12 pointer-events-none flex items-end justify-between z-50">
+            <footer className="w-full fixed bottom-0 left-0 p-8 sm:p-12 pointer-events-none flex flex-col sm:flex-row items-center sm:items-end justify-between z-50 gap-6">
+                {/* SRS Gate */}
                 <div className="pointer-events-auto">
-                    <div className="flex flex-col gap-4">
-                        <div className="flex items-center gap-4 bg-white/80 backdrop-blur-xl border border-white rounded-3xl p-3 shadow-2xl shadow-slate-200/50">
-                            <Toggle
-                                enabled={settings.srsActive}
-                                setEnabled={(val) => setSettings({ ...settings, srsActive: val })}
-                            />
-                            <div className="pr-4 border-r border-slate-100">
-                                <span className="text-[9px] font-black uppercase tracking-widest block text-neutral-ink">Track</span>
-                                <span className="text-[10px] font-black uppercase tracking-widest block text-primary leading-none">Progress</span>
-                            </div>
+                    <div className="bg-white/90 backdrop-blur-xl border border-white rounded-[2rem] p-3 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] flex items-center gap-4 group hover:shadow-[0_20px_50px_-10px_rgba(255,107,157,0.2)] transition-all">
+                        <Toggle
+                            enabled={settings.srsActive}
+                            setEnabled={(val) => setSettings({ ...settings, srsActive: val })}
+                        />
+                        <div className="pr-5 border-r border-neutral-beige/40">
+                            <span className="text-[9px] font-black uppercase tracking-[0.2em] block text-neutral-ink/40 group-hover:text-neutral-ink transition-colors">Track</span>
+                            <span className="text-[11px] font-black uppercase tracking-[0.1em] block text-primary-strong leading-none">Intelligence</span>
                         </div>
                     </div>
                 </div>
 
                 {/* Evaluation Cluster */}
-                <div className={`pointer-events-auto transition-all duration-700 ease-spring ${flipped ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-12 scale-95 pointer-events-none'}`}>
-                    <div className="flex items-center gap-4 p-4 bg-slate-900 border border-slate-800 rounded-[3.5rem] shadow-2xl shadow-slate-900/40">
+                <div className={`pointer-events-auto transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${flipped ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-16 scale-90 pointer-events-none'}`}>
+                    <div className="flex items-center gap-4 p-4 bg-neutral-ink border-2 border-white/10 rounded-[4rem] shadow-2xl relative">
+                        <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/20 via-transparent to-emerald-500/20 rounded-[4rem] blur-xl opacity-50 -z-10" />
+
                         {settings.srsActive ? (
                             <>
                                 <button
                                     onClick={(e) => { e.stopPropagation(); handleEvaluate(false); }}
-                                    className="px-10 py-6 bg-rose-500 hover:bg-rose-600 text-white rounded-[2.5rem] flex items-center gap-4 transition-all hover:scale-105 active:scale-95 group shadow-lg shadow-rose-500/20"
+                                    className="px-10 py-7 bg-rose-500 hover:bg-rose-600 text-white rounded-full flex items-center gap-4 transition-all hover:scale-[1.03] active:scale-95 group shadow-xl shadow-rose-500/30"
                                 >
                                     <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center">
                                         <XCircle size={20} />
                                     </div>
                                     <div className="text-left">
-                                        <div className="text-[10px] font-black uppercase tracking-widest opacity-60">Reset Signal</div>
-                                        <div className="text-sm font-black uppercase tracking-widest">Still Learning</div>
+                                        <div className="text-[9px] font-black uppercase tracking-[0.2em] opacity-60">Reset Signal</div>
+                                        <div className="text-[13px] font-black uppercase tracking-widest whitespace-nowrap">Still Learning</div>
                                     </div>
                                 </button>
 
                                 <button
                                     onClick={(e) => { e.stopPropagation(); handleEvaluate(true); }}
-                                    className="px-10 py-6 bg-emerald-500 hover:bg-emerald-600 text-white rounded-[2.5rem] flex items-center gap-4 transition-all hover:scale-105 active:scale-95 group shadow-lg shadow-emerald-500/20"
+                                    className="px-10 py-7 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full flex items-center gap-4 transition-all hover:scale-[1.03] active:scale-95 group shadow-xl shadow-emerald-500/30"
                                 >
                                     <div className="text-right">
-                                        <div className="text-[10px] font-black uppercase tracking-widest opacity-60">Neural Match</div>
-                                        <div className="text-sm font-black uppercase tracking-widest">Know perfectly</div>
+                                        <div className="text-[9px] font-black uppercase tracking-[0.2em] opacity-60">Neural Match</div>
+                                        <div className="text-[13px] font-black uppercase tracking-widest whitespace-nowrap">Know perfectly</div>
                                     </div>
                                     <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center">
                                         <CheckCircle2 size={20} />
@@ -623,11 +638,11 @@ export default function StudyPage() {
                                 </button>
                             </>
                         ) : (
-                            <div className="flex items-center gap-4">
-                                <button onClick={handlePrev} className="w-16 h-16 bg-white/10 hover:bg-white/20 text-white rounded-3xl flex items-center justify-center transition-all active:scale-95">
+                            <div className="flex items-center gap-4 px-4 py-2">
+                                <button onClick={handlePrev} className="w-14 h-14 bg-white/10 hover:bg-white/20 text-white rounded-2xl flex items-center justify-center transition-all active:scale-90 shadow-inner">
                                     <ArrowLeft size={24} />
                                 </button>
-                                <button onClick={handleNext} className="w-16 h-16 bg-white/10 hover:bg-white/20 text-white rounded-3xl flex items-center justify-center transition-all active:scale-95">
+                                <button onClick={handleNext} className="w-14 h-14 bg-white/10 hover:bg-white/20 text-white rounded-2xl flex items-center justify-center transition-all active:scale-90 shadow-inner">
                                     <ArrowRight size={24} />
                                 </button>
                             </div>
@@ -636,25 +651,27 @@ export default function StudyPage() {
                 </div>
 
                 {/* Automation Cluster */}
-                <div className="pointer-events-auto flex items-center gap-4 bg-white/80 backdrop-blur-xl border border-white rounded-[2.5rem] p-3 shadow-2xl shadow-slate-200/50">
+                <div className="pointer-events-auto flex items-center gap-3 bg-white/90 backdrop-blur-xl border border-white rounded-[2.5rem] p-2.5 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)]">
                     <button
                         onClick={handleUndo}
-                        className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center hover:bg-slate-100 transition-all text-neutral-ink"
+                        className="w-11 h-11 bg-neutral-beige/10 border border-neutral-gray/10 rounded-xl flex items-center justify-center hover:bg-neutral-beige/20 transition-all text-neutral-ink/60 hover:text-neutral-ink shadow-sm"
+                        title="Neural Undo"
                     >
-                        <Undo2 size={18} />
+                        <Undo2 size={16} />
                     </button>
-                    <div className="w-px h-8 bg-slate-100" />
                     <button
                         onClick={handleShuffle}
-                        className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center hover:bg-slate-100 transition-all text-neutral-ink"
+                        className="w-11 h-11 bg-neutral-beige/10 border border-neutral-gray/10 rounded-xl flex items-center justify-center hover:bg-neutral-beige/20 transition-all text-neutral-ink/60 hover:text-neutral-ink shadow-sm"
+                        title="Registry Shuffle"
                     >
-                        <Shuffle size={18} />
+                        <Shuffle size={16} />
                     </button>
+                    <div className="w-px h-6 bg-neutral-gray/10 mx-1" />
                     <button
                         onClick={() => setIsAutoPlaying(!isAutoPlaying)}
-                        className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all shadow-md ${isAutoPlaying ? 'bg-primary text-white scale-110' : 'bg-slate-900 text-white hover:bg-slate-800'}`}
+                        className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all shadow-lg active:scale-95 ${isAutoPlaying ? 'bg-primary-strong text-white scale-110 shadow-primary/30' : 'bg-neutral-ink text-white hover:bg-neutral-ink/90'}`}
                     >
-                        {isAutoPlaying ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" />}
+                        {isAutoPlaying ? <Pause size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" />}
                     </button>
                 </div>
             </footer>
@@ -665,6 +682,8 @@ export default function StudyPage() {
                 .rotate-y-180 { transform: rotateY(180deg); }
                 .perspective-2000 { perspective: 2000px; }
                 
+                .ease-spring { transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1); }
+
                 .custom-scrollbar::-webkit-scrollbar {
                     width: 6px;
                 }
