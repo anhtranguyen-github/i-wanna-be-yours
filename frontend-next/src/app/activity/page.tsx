@@ -131,24 +131,6 @@ export default function ActivityHubPage() {
                     ))}
                 </div>
 
-                {/* Optional: Mission Status / Call to Action */}
-                <div className="mt-20 p-12 bg-neutral-white border border-neutral-gray/20 rounded-[3rem] text-center max-w-4xl mx-auto relative overflow-hidden group">
-                    {/* Background Glow */}
-                    <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-primary/5 rounded-full blur-[80px]" />
-                    <div className="absolute -top-24 -right-24 w-64 h-64 bg-secondary/5 rounded-full blur-[80px]" />
-
-                    <div className="relative z-10">
-                        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary-strong mb-4 block">Operation Readiness</span>
-                        <h2 className="text-3xl font-black text-neutral-ink font-display mb-4">Master Your Learning Trajectory</h2>
-                        <p className="text-neutral-ink/60 font-bold max-w-xl mx-auto mb-8 leading-relaxed">
-                            Whether through high-speed battles, structured drills, or deep SRS sessions,
-                            choose the activity that aligns with your current cognitive objectives.
-                        </p>
-                        <div className="inline-flex items-center gap-2 px-6 py-3 bg-neutral-ink text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-primary-strong transition-colors cursor-default">
-                            All Systems Nominal
-                        </div>
-                    </div>
-                </div>
             </main>
         </div>
     );
