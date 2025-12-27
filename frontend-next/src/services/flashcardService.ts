@@ -35,31 +35,6 @@ class FlashcardService {
     // --- Study & SRS ---
 
     async getDueFlashcards(deckId?: string) {
-        // GUEST HANDLING
-        const token = typeof window !== 'undefined' ? (localStorage.getItem('accessToken') || Cookies.get('accessToken')) : null;
-        if (!token && deckId) {
-            // For guests, we simply return all cards in the deck as "due"
-            // We need to fetch the deck detail to get the cards
-            try {
-                const deck = await this.fetchFlashcardSetById(deckId); // This endpoint must be public/accessible
-                if (deck && deck.cards) {
-                    return deck.cards.map((c: any) => ({
-                        _id: c._id || c.id,
-                        front: c.front,
-                        back: c.back,
-                        reading: c.reading,
-                        deck_name: deck.title,
-                        card_type: 'GLOBAL',
-                        userId: 'guest' // Mark as guest so UI knows not to show SRS buttons
-                    }));
-                }
-                return [];
-            } catch (e) {
-                console.error("Guest load failed", e);
-                return [];
-            }
-        }
-
         const params = new URLSearchParams();
         if (deckId) params.append('deckId', deckId);
 
@@ -69,12 +44,6 @@ class FlashcardService {
     }
 
     async answerCard(cardId: string, quality: number) {
-        // GUEST HANDLING
-        const token = typeof window !== 'undefined' ? (localStorage.getItem('accessToken') || Cookies.get('accessToken')) : null;
-        if (!token) {
-            return { success: true, message: "Guest answer recorded locally" };
-        }
-
         const response = await authFetch(`${API_BASE}/study/answer`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -137,9 +106,6 @@ class FlashcardService {
     }
 
     async getMyTags(): Promise<{ tags: string[] }> {
-        const token = typeof window !== 'undefined' ? (localStorage.getItem('accessToken') || Cookies.get('accessToken')) : null;
-        if (!token) return { tags: [] };
-
         const response = await authFetch(`${API_BASE}/my-tags`);
         if (!response.ok) throw new Error('Failed to fetch custom tags');
         return response.json();

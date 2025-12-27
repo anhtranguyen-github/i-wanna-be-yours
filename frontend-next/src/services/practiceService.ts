@@ -126,74 +126,6 @@ export async function saveAttempt(attempt: PracticeAttempt): Promise<{
     attemptId: string;
     result: any;
 }> {
-    // GUEST HANDLING
-    const token = typeof window !== 'undefined' ? (localStorage.getItem('accessToken') || Cookies.get('accessToken')) : null;
-    if (!token) {
-        try {
-            // Re-fetch questions to grade securely (or reliably)
-            const { questions } = await getNodeSessionData(attempt.nodeId);
-            let correct = 0;
-            const total = questions.length;
-
-            Object.values(attempt.answers).forEach(ans => {
-                const q = questions.find(q => q.id === ans.questionId);
-                if (q && q.correctOptionId === ans.selectedOptionId) {
-                    correct++;
-                }
-            });
-
-            const percentage = Math.round((correct / total) * 100) || 0;
-            const isPassed = percentage >= 60;
-
-            const mockResult = {
-                score: correct * 10, // Mock score
-                rank: percentage >= 90 ? 'S' : percentage >= 80 ? 'A' : percentage >= 70 ? 'B' : percentage >= 60 ? 'C' : 'D',
-                correctCount: correct,
-                totalCards: total,
-                maxStreak: 0,
-                xpEarned: 0,
-                coinsEarned: 0,
-                streakExtended: false,
-                stats: [
-                    { label: "Accuracy", value: `${percentage}%`, icon: "Target" },
-                    { label: "Completion", value: `${correct}/${total}`, icon: "CheckCircle2" },
-                    { label: "Time", value: `${attempt.timeTakenSeconds}s`, icon: "Clock" }
-                ],
-                achievements: [],
-                feedback: {
-                    title: isPassed ? "Neural Convergence" : "System Recalibration",
-                    message: isPassed ? "Your cognitive patterns show strong alignment with the target syllabus. Stability is optimal." : "Pattern recognition is below threshold. Recommend iterative reinforcement protocols.",
-                    suggestions: [
-                        "Examine the 'Optimization Vectors' below for specific breakdowns",
-                        "Use FOCUS mode to minimize linguistic noise during sessions",
-                        "Sign in to unlock achievement commendations"
-                    ]
-                },
-                answers: Object.values(attempt.answers).map(a => {
-                    const q = questions.find(q => q.id === a.questionId);
-                    return {
-                        questionId: a.questionId,
-                        isCorrect: q?.correctOptionId === a.selectedOptionId,
-                        selectedOptionId: a.selectedOptionId
-                    };
-                })
-            };
-
-            if (typeof window !== 'undefined') {
-                sessionStorage.setItem('guest-practice-result', JSON.stringify(mockResult));
-            }
-
-            return {
-                attemptId: 'guest-attempt',
-                result: mockResult
-            };
-        } catch (e) {
-            console.error("Guest grading failed", e);
-            // Fallback
-            return { attemptId: 'guest-attempt', result: { percentage: 0 } };
-        }
-    }
-
     const response = await authFetch(`${API_BASE}/nodes/${attempt.nodeId}/submit`, {
         method: 'POST',
         headers: {
@@ -219,14 +151,6 @@ export async function saveAttempt(attempt: PracticeAttempt): Promise<{
  * Get a specific attempt's unified result
  */
 export async function getAttemptResult(attemptId: string): Promise<any> {
-    if (attemptId === 'guest-attempt') {
-        if (typeof window !== 'undefined') {
-            const stored = sessionStorage.getItem('guest-practice-result');
-            if (stored) return JSON.parse(stored);
-        }
-        return { percentage: 0 };
-    }
-
     const response = await authFetch(`${API_BASE}/attempts/${attemptId}`);
     if (!response.ok) {
         throw new Error('Failed to fetch attempt result');

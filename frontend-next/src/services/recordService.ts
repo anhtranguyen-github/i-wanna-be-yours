@@ -16,16 +16,6 @@ export interface RecordPayload {
 }
 
 export async function saveRecord(payload: RecordPayload) {
-    // Check for auth token to identify guest vs user
-    const token = typeof window !== 'undefined'
-        ? (localStorage.getItem('accessToken') || Cookies.get('accessToken'))
-        : null;
-
-    if (!token) {
-        // Guest mode: do not save record
-        return;
-    }
-
     try {
         await authFetch(`${API_BASE}/records`, {
             method: 'POST',
