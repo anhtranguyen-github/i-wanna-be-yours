@@ -113,6 +113,7 @@ export function StudyPlanDashboard() {
 
             if (planData) {
                 setPlan(planData);
+                localStorage.removeItem('pending_study_plan_setup');
 
                 // Load additional data in parallel
                 const [tasksRes, sessionsRes, streakRes, reflectionsRes] = await Promise.all([
@@ -155,7 +156,7 @@ export function StudyPlanDashboard() {
         }
 
         // Check for pending guest setup
-        if (!userLoading && user) {
+        if (!userLoading && user && !loading && !plan) {
             const pendingSetup = localStorage.getItem('pending_study_plan_setup');
             if (pendingSetup) {
                 try {
