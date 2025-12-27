@@ -61,5 +61,28 @@ router.get('/followed', verifyJWT, async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+/**
+ * POST /users/unfollow
+ * Unfollow/Remove bookmark from an item
+ */
+router.post('/unfollow', verifyJWT, async (req, res) => {
+    try {
+        const userId = req.user.id || req.user.userId;
+        const { itemId, itemType } = req.body;
+
+        if (!itemId || !itemType) {
+            return res.status(400).json({ error: 'itemId and itemType are required' });
+        }
+
+        await User.findByIdAndUpdate(userId, {
+            $pull: { followedItems: { itemId, itemType } }
+        });
+
+        res.status(200).json({ message: 'Item unfollowed successfully' });
+    } catch (err) {
+        console.error('Unfollow Item Error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 module.exports = router;

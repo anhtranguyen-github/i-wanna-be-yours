@@ -246,5 +246,87 @@ router.patch('/arenas/:id', verifyJWT, async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+/**
+ * POST /quoot/arenas/:id/clone
+ * Clone a quoot arena to user's collection
+ */
+router.post('/arenas/:id/clone', verifyJWT, async (req, res) => {
+    try {
+        const userId = req.user.id || req.user.userId;
+        const username = req.user.username || 'User';
+
+        const original = await QuootArena.findById(req.params.id).lean();
+        if (!original) return res.status(404).json({ error: 'Arena not found' });
+
+        // Can only clone global or public items (not private unless owner)
+        if (original.visibility === 'private' && original.userId?.toString() !== userId) {
+            return res.status(403).json({ error: 'Cannot clone private item' });
+        }
+
+        const clone = new QuootArena({
+            title: `${original.title} (Copy)`,
+            description: original.description,
+            icon: original.icon,
+            level: original.level,
+            customTags: [],
+            skills: original.skills || [],
+            cards: original.cards,
+            visibility: 'private',
+            userId: userId,
+            creatorName: username,
+            clonedFrom: original._id
+        });
+
+        await clone.save();
+        res.status(201).json({
+            id: clone._id.toString(),
+            message: 'Cloned successfully'
+        });
+    } catch (err) {
+        console.error('Clone Quoot Arena Error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+/**
+ * GET /quoot/my-tags
+ * Get all custom tags from user's quoot arenas
+ */
+router.get('/my-tags', verifyJWT, async (req, res) => {
+    try {
+        const userId = req.user.id || req.user.userId;
+        const arenas = await QuootArena.find({ userId }).select('customTags').lean();
+        const allTags = [...new Set(arenas.flatMap(a => a.customTags || []))];
+        res.json({ tags: allTags });
+    } catch (err) {
+        console.error('Get My Tags Error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+/**
+ * DELETE /quoot/arenas/:id
+ * Delete a quoot arena
+ */
+router.delete('/arenas/:id', verifyJWT, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user.id || req.user.userId;
+
+        const arena = await QuootArena.findById(id);
+        if (!arena) return res.status(404).json({ error: 'Arena not found' });
+
+        // Check ownership
+        if (arena.userId.toString() !== userId) {
+            return res.status(403).json({ error: 'Forbidden' });
+        }
+
+        await QuootArena.findByIdAndDelete(id);
+        res.status(200).json({ message: 'Arena deleted successfully' });
+    } catch (err) {
+        console.error('Delete Quoot Arena Error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 module.exports = router;

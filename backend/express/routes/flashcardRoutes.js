@@ -230,5 +230,88 @@ router.patch('/sets/:id', verifyJWT, async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+/**
+ * POST /flashcards/sets/:id/clone
+ * Clone a flashcard set to user's collection
+ */
+router.post('/sets/:id/clone', verifyJWT, async (req, res) => {
+    try {
+        const userId = req.user.id || req.user.userId;
+        const username = req.user.username || 'User';
+
+        const original = await FlashcardSet.findById(req.params.id).lean();
+        if (!original) return res.status(404).json({ error: 'Set not found' });
+
+        // Can only clone global or public items (not private unless owner)
+        if (original.visibility === 'private' && original.userId?.toString() !== userId) {
+            return res.status(403).json({ error: 'Cannot clone private item' });
+        }
+
+        const clone = new FlashcardSet({
+            title: `${original.title} (Copy)`,
+            description: original.description,
+            icon: original.icon,
+            level: original.level,
+            tags: original.tags || [],
+            customTags: [],
+            skills: original.skills || [],
+            cards: original.cards,
+            visibility: 'private',
+            userId: userId,
+            creatorName: username,
+            clonedFrom: original._id
+        });
+
+        await clone.save();
+        res.status(201).json({
+            id: clone._id.toString(),
+            message: 'Cloned successfully'
+        });
+    } catch (err) {
+        console.error('Clone Flashcard Set Error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+/**
+ * GET /flashcards/my-tags
+ * Get all custom tags from user's flashcard sets
+ */
+router.get('/my-tags', verifyJWT, async (req, res) => {
+    try {
+        const userId = req.user.id || req.user.userId;
+        const sets = await FlashcardSet.find({ userId }).select('customTags').lean();
+        const allTags = [...new Set(sets.flatMap(s => s.customTags || []))];
+        res.json({ tags: allTags });
+    } catch (err) {
+        console.error('Get My Tags Error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+/**
+ * DELETE /flashcards/sets/:id
+ * Delete a flashcard set
+ */
+router.delete('/sets/:id', verifyJWT, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user.id || req.user.userId;
+
+        const set = await FlashcardSet.findById(id);
+        if (!set) return res.status(404).json({ error: 'Set not found' });
+
+        // Check ownership
+        if (set.userId.toString() !== userId) {
+            return res.status(403).json({ error: 'Forbidden' });
+        }
+
+        await FlashcardSet.findByIdAndDelete(id);
+        res.status(200).json({ message: 'Set deleted successfully' });
+    } catch (err) {
+        console.error('Delete Flashcard Set Error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 module.exports = router;

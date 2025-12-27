@@ -388,5 +388,89 @@ router.patch('/nodes/:id', verifyJWT, async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+/**
+ * POST /practice/nodes/:id/clone
+ * Clone a practice node to user's collection
+ */
+router.post('/nodes/:id/clone', verifyJWT, async (req, res) => {
+    try {
+        const userId = req.user.id || req.user.userId;
+        const username = req.user.username || 'User';
+
+        const original = await PracticeNode.findById(req.params.id).lean();
+        if (!original) return res.status(404).json({ error: 'Practice node not found' });
+
+        // Can only clone global or public items (not private unless owner)
+        if (original.visibility === 'private' && original.userId?.toString() !== userId) {
+            return res.status(403).json({ error: 'Cannot clone private item' });
+        }
+
+        const clone = new PracticeNode({
+            title: `${original.title} (Copy)`,
+            description: original.description,
+            mode: original.mode,
+            level: original.level,
+            skills: original.skills || [],
+            customTags: [],
+            origin: 'user',
+            questions: original.questions,
+            timeLimitMinutes: original.timeLimitMinutes,
+            visibility: 'private',
+            userId: userId,
+            creatorName: username,
+            clonedFrom: original._id
+        });
+
+        await clone.save();
+        res.status(201).json({
+            id: clone._id.toString(),
+            message: 'Cloned successfully'
+        });
+    } catch (err) {
+        console.error('Clone Practice Node Error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+/**
+ * GET /practice/my-tags
+ * Get all custom tags from user's practice nodes
+ */
+router.get('/my-tags', verifyJWT, async (req, res) => {
+    try {
+        const userId = req.user.id || req.user.userId;
+        const nodes = await PracticeNode.find({ userId }).select('customTags').lean();
+        const allTags = [...new Set(nodes.flatMap(n => n.customTags || []))];
+        res.json({ tags: allTags });
+    } catch (err) {
+        console.error('Get My Tags Error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+/**
+ * DELETE /practice/nodes/:id
+ * Delete a practice node
+ */
+router.delete('/nodes/:id', verifyJWT, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user.id || req.user.userId;
+
+        const node = await PracticeNode.findById(id);
+        if (!node) return res.status(404).json({ error: 'Practice node not found' });
+
+        // Check ownership
+        if (node.userId && node.userId.toString() !== userId) {
+            return res.status(403).json({ error: 'Forbidden' });
+        }
+
+        await PracticeNode.findByIdAndDelete(id);
+        res.status(200).json({ message: 'Practice node deleted successfully' });
+    } catch (err) {
+        console.error('Delete Practice Node Error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 module.exports = router;
