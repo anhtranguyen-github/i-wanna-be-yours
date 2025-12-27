@@ -1,4 +1,5 @@
 import { authFetch } from '@/lib/authFetch';
+import Cookies from 'js-cookie';
 
 const API_BASE = '/e-api/v1/quoot';
 
@@ -36,7 +37,7 @@ export async function submitQuootResult(arenaId: string, result: {
     totalCards: number;
 }) {
     // GUEST HANDLING: If no token, return mock result without hitting API
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const token = typeof window !== 'undefined' ? (localStorage.getItem('accessToken') || Cookies.get('accessToken')) : null;
     if (!token) {
         const percentage = Math.round((result.correctCount / result.totalCards) * 100) || 0;
         let rank = 'C';
@@ -109,6 +110,9 @@ export async function deleteQuootArena(id: string) {
 }
 
 export async function getQuootMyTags(): Promise<{ tags: string[] }> {
+    const token = typeof window !== 'undefined' ? (localStorage.getItem('accessToken') || Cookies.get('accessToken')) : null;
+    if (!token) return { tags: [] };
+
     const response = await authFetch(`${API_BASE}/my-tags`);
     if (!response.ok) throw new Error('Failed to fetch custom tags');
     return response.json();

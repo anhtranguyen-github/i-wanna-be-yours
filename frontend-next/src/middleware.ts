@@ -19,7 +19,6 @@ const PROTECTED_ROUTES = [
     '/admin',
     '/study-plan/dashboard',
     '/settings',
-    '/flashcards/study',
 ];
 
 // Define public routes that must always be accessible

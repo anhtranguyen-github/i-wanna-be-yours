@@ -10,6 +10,7 @@ import {
     FilterState
 } from '@/types/practice';
 import { authFetch } from '@/lib/authFetch';
+import Cookies from 'js-cookie';
 
 const API_BASE = '/e-api/v1/practice';
 
@@ -126,7 +127,7 @@ export async function saveAttempt(attempt: PracticeAttempt): Promise<{
     result: any;
 }> {
     // GUEST HANDLING
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const token = typeof window !== 'undefined' ? (localStorage.getItem('accessToken') || Cookies.get('accessToken')) : null;
     if (!token) {
         try {
             // Re-fetch questions to grade securely (or reliably)
@@ -215,6 +216,9 @@ export async function getAttemptResult(attemptId: string): Promise<any> {
  * Get user's attempt history
  */
 export async function getAttempts(): Promise<{ attempts: any[], total: number }> {
+    const token = typeof window !== 'undefined' ? (localStorage.getItem('accessToken') || Cookies.get('accessToken')) : null;
+    if (!token) return { attempts: [], total: 0 };
+
     const response = await authFetch(`${API_BASE}/attempts`);
 
     if (!response.ok) {
@@ -308,6 +312,9 @@ export async function cloneNode(id: string): Promise<{ id: string; message: stri
  * Get user's custom tags from practice nodes
  */
 export async function getPracticeMyTags(): Promise<{ tags: string[] }> {
+    const token = typeof window !== 'undefined' ? (localStorage.getItem('accessToken') || Cookies.get('accessToken')) : null;
+    if (!token) return { tags: [] };
+
     const response = await authFetch(`${API_BASE}/my-tags`);
 
     if (!response.ok) {

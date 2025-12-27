@@ -52,6 +52,12 @@ export async function startSession(itemType: RecordPayload['itemType'], itemId: 
 }
 
 export async function fetchHistory(limit = 20, offset = 0) {
+    const token = typeof window !== 'undefined'
+        ? (localStorage.getItem('accessToken') || Cookies.get('accessToken'))
+        : null;
+
+    if (!token) return [];
+
     const res = await authFetch(`${API_BASE}/records/history?limit=${limit}&offset=${offset}`);
     if (!res.ok) throw new Error('Failed to fetch history');
     return res.json();

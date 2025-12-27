@@ -1,4 +1,5 @@
 import { authFetch } from '@/lib/authFetch';
+import Cookies from 'js-cookie';
 
 const API_BASE = '/e-api/v1/flashcards';
 
@@ -35,7 +36,7 @@ class FlashcardService {
 
     async getDueFlashcards(deckId?: string) {
         // GUEST HANDLING
-        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        const token = typeof window !== 'undefined' ? (localStorage.getItem('accessToken') || Cookies.get('accessToken')) : null;
         if (!token && deckId) {
             // For guests, we simply return all cards in the deck as "due"
             // We need to fetch the deck detail to get the cards
@@ -69,7 +70,7 @@ class FlashcardService {
 
     async answerCard(cardId: string, quality: number) {
         // GUEST HANDLING
-        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        const token = typeof window !== 'undefined' ? (localStorage.getItem('accessToken') || Cookies.get('accessToken')) : null;
         if (!token) {
             return { success: true, message: "Guest answer recorded locally" };
         }
@@ -136,6 +137,9 @@ class FlashcardService {
     }
 
     async getMyTags(): Promise<{ tags: string[] }> {
+        const token = typeof window !== 'undefined' ? (localStorage.getItem('accessToken') || Cookies.get('accessToken')) : null;
+        if (!token) return { tags: [] };
+
         const response = await authFetch(`${API_BASE}/my-tags`);
         if (!response.ok) throw new Error('Failed to fetch custom tags');
         return response.json();
