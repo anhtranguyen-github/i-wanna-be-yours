@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { flashcardService } from "@/services/flashcardService";
 import {
     RotateCcw,
@@ -501,13 +502,18 @@ export default function StudyPage() {
                     {/* Auto-Play Indicator */}
                     <AnimatePresence>
                         {isAutoPlaying && (
-                            <div className="absolute -top-16 left-1/2 -translate-x-1/2 flex items-center gap-3 px-5 py-2.5 bg-neutral-ink border border-neutral-ink/20 text-white rounded-full text-[9px] font-black uppercase tracking-[0.2em] shadow-2xl animate-in slide-in-from-top-4 duration-500">
+                            <motion.div
+                                initial={{ opacity: 0, y: -20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                className="absolute -top-16 left-1/2 -translate-x-1/2 flex items-center gap-3 px-5 py-2.5 bg-neutral-ink border border-neutral-ink/20 text-white rounded-full text-[9px] font-black uppercase tracking-[0.2em] shadow-2xl"
+                            >
                                 <span className="flex h-2 w-2 relative">
                                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                                     <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
                                 </span>
                                 Auto-Iteration Protocol Active
-                            </div>
+                            </motion.div>
                         )}
                     </AnimatePresence>
 
