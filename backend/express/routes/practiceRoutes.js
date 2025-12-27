@@ -213,10 +213,10 @@ router.post('/nodes', verifyJWT, async (req, res) => {
 
 const { calculatePracticeResult } = require('../utils/resultCalculator');
 
-router.post('/nodes/:id/submit', verifyJWT, async (req, res) => {
+router.post('/nodes/:id/submit', optionalAuth, async (req, res) => {
     try {
         const { id } = req.params;
-        const userId = req.user.id || req.user.userId;
+        const userId = req.user ? (req.user.id || req.user.userId) : null;
         const { answers, timeSpentSeconds } = req.body;
 
         const node = await PracticeNode.findById(id);
@@ -244,24 +244,39 @@ router.post('/nodes/:id/submit', verifyJWT, async (req, res) => {
         const percentage = Math.round((score / maxScore) * 100);
         const status = percentage >= 60 ? 'PASSED' : 'FAILED';
 
-        const attempt = new PracticeAttempt({
+        // Draft the attempt object for calculation
+        const attemptData = {
             nodeId: id,
             userId,
             answers: scoredAnswers,
             score, maxScore, percentage, correctCount, incorrectCount, unansweredCount,
             timeSpentSeconds: timeSpentSeconds || 0,
-            status
-        });
+            status,
+            completedAt: new Date()
+        };
 
-        await attempt.save();
-        await PracticeNode.findByIdAndUpdate(id, { $inc: { 'stats.attemptCount': 1 } });
+        // Only save to DB if user is authenticated
+        if (userId) {
+            const attempt = new PracticeAttempt(attemptData);
+            await attempt.save();
+            await PracticeNode.findByIdAndUpdate(id, { $inc: { 'stats.attemptCount': 1 } });
 
-        // Generate the unified result that the frontend will display
-        const unifiedResult = calculatePracticeResult(node, attempt);
+            const unifiedResult = calculatePracticeResult(node, attempt);
+            return res.status(200).json({
+                attemptId: attempt._id.toString(),
+                result: unifiedResult
+            });
+        }
 
+        // Guest response: Calculate result without saving record
+        const unifiedResult = calculatePracticeResult(node, attemptData);
         res.status(200).json({
-            attemptId: attempt._id.toString(),
-            result: unifiedResult
+            attemptId: 'guest-session',
+            result: {
+                ...unifiedResult,
+                xpEarned: 0,
+                streakExtended: false
+            }
         });
     } catch (err) {
         console.error('Submit Attempt Error:', err);
@@ -273,8 +288,20 @@ router.post('/nodes/:id/submit', verifyJWT, async (req, res) => {
  * GET /practice/attempts/:id
  * Fetch a specific attempt with full unified result
  */
-router.get('/attempts/:id', verifyJWT, async (req, res) => {
+router.get('/attempts/:id', optionalAuth, async (req, res) => {
     try {
+        if (req.params.id === 'guest-session') {
+            return res.status(200).json({
+                result: {
+                    score: 0,
+                    accuracy: 0,
+                    feedback: { title: "Protocol Complete", message: "Analysis requires authentication.", suggestions: ["Sign in to save records"] }
+                }
+            });
+        }
+
+        if (!req.user) return res.status(401).json({ error: 'Authentication required' });
+
         const userId = req.user.id || req.user.userId;
         const attempt = await PracticeAttempt.findById(req.params.id)
             .populate('nodeId')
