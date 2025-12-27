@@ -63,7 +63,16 @@ export async function submitQuootResult(arenaId: string, result: {
                     { label: "Max Streak", value: result.maxStreak, icon: "Flame" },
                     { label: "Score", value: result.score, icon: "Trophy" }
                 ],
-                achievements: []
+                achievements: [],
+                feedback: {
+                    title: percentage >= 80 ? "Strategic Domination" : "Arena Integration",
+                    message: percentage >= 80 ? "Your response latency and precision indicate high neural synchronization. Proceed to higher difficulty tiers." : "Foundational patterns detected. Continue training to stabilize your recall accuracy.",
+                    suggestions: [
+                        "Review incorrect patterns in the syllabus",
+                        "Try a faster response time to earn streak bonuses",
+                        "Register to track your rank over time"
+                    ]
+                }
             }
         };
     }

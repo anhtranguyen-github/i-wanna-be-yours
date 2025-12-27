@@ -146,15 +146,37 @@ export async function saveAttempt(attempt: PracticeAttempt): Promise<{
             const isPassed = percentage >= 60;
 
             const mockResult = {
-                id: 'guest-attempt',
-                nodeId: attempt.nodeId,
-                percentage: percentage,
+                score: correct * 10, // Mock score
+                rank: percentage >= 90 ? 'S' : percentage >= 80 ? 'A' : percentage >= 70 ? 'B' : percentage >= 60 ? 'C' : 'D',
                 correctCount: correct,
-                totalQuestions: total,
-                timeTakenSeconds: attempt.timeTakenSeconds,
-                completedAt: new Date().toISOString(),
-                status: isPassed ? 'PASSED' : 'FAILED',
-                answers: attempt.answers
+                totalCards: total,
+                maxStreak: 0,
+                xpEarned: 0,
+                coinsEarned: 0,
+                streakExtended: false,
+                stats: [
+                    { label: "Accuracy", value: `${percentage}%`, icon: "Target" },
+                    { label: "Completion", value: `${correct}/${total}`, icon: "CheckCircle2" },
+                    { label: "Time", value: `${attempt.timeTakenSeconds}s`, icon: "Clock" }
+                ],
+                achievements: [],
+                feedback: {
+                    title: isPassed ? "Neural Convergence" : "System Recalibration",
+                    message: isPassed ? "Your cognitive patterns show strong alignment with the target syllabus. Stability is optimal." : "Pattern recognition is below threshold. Recommend iterative reinforcement protocols.",
+                    suggestions: [
+                        "Examine the 'Optimization Vectors' below for specific breakdowns",
+                        "Use FOCUS mode to minimize linguistic noise during sessions",
+                        "Sign in to unlock achievement commendations"
+                    ]
+                },
+                answers: Object.values(attempt.answers).map(a => {
+                    const q = questions.find(q => q.id === a.questionId);
+                    return {
+                        questionId: a.questionId,
+                        isCorrect: q?.correctOptionId === a.selectedOptionId,
+                        selectedOptionId: a.selectedOptionId
+                    };
+                })
             };
 
             if (typeof window !== 'undefined') {

@@ -13,6 +13,7 @@ interface AnalysisBlockProps {
 }
 
 export function AnalysisBlock({ feedback }: AnalysisBlockProps) {
+    if (!feedback) return null;
     return (
         <motion.div
             initial={{ y: 20, opacity: 0 }}

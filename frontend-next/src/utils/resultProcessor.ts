@@ -5,12 +5,14 @@ import * as LucideIcons from "lucide-react";
  * Maps icon names from backend strings to Lucide components
  */
 export function mapResultIcons(result: UnifiedSessionResult): UnifiedSessionResult {
-    const stats = result.stats.map(stat => ({
+    if (!result) return result;
+
+    const stats = (result.stats || []).map(stat => ({
         ...stat,
         icon: (LucideIcons as any)[stat.icon as unknown as string] || LucideIcons.HelpCircle
     }));
 
-    const achievements = result.achievements.map(achievement => ({
+    const achievements = (result.achievements || []).map(achievement => ({
         ...achievement,
         icon: (LucideIcons as any)[achievement.icon as unknown as string] || LucideIcons.Trophy
     }));
