@@ -16,6 +16,8 @@ interface StudyControlsProps {
     onPrev: () => void;
 }
 
+import { useSidebar, SIDEBAR_WIDTHS } from "@/components/sidebar/SidebarContext";
+
 export const StudyControls: React.FC<StudyControlsProps> = ({
     flipped,
     srsActive,
@@ -28,8 +30,17 @@ export const StudyControls: React.FC<StudyControlsProps> = ({
     onNext,
     onPrev
 }) => {
+    const { state } = useSidebar();
+    const sidebarWidth = SIDEBAR_WIDTHS[state];
+
     return (
-        <footer className="w-full fixed bottom-0 left-0 p-4 sm:p-8 md:p-12 pointer-events-none flex flex-col sm:flex-row items-center sm:items-end justify-between z-50 gap-4 sm:gap-6">
+        <footer
+            className="fixed bottom-0 p-4 sm:p-8 md:p-12 pointer-events-none flex flex-col sm:flex-row items-center sm:items-end justify-between z-50 gap-4 sm:gap-6 transition-all duration-300"
+            style={{
+                left: `${sidebarWidth}px`,
+                width: `calc(100% - ${sidebarWidth}px)`
+            }}
+        >
             {/* SRS Gate */}
             <div className="pointer-events-auto">
                 <div className="bg-white/90 backdrop-blur-xl border border-white rounded-[2rem] p-3 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] flex items-center gap-4 group hover:shadow-[0_20px_50px_-10px_rgba(255,107,157,0.2)] transition-all">
@@ -39,9 +50,9 @@ export const StudyControls: React.FC<StudyControlsProps> = ({
                     >
                         <div className={`w-5 h-5 rounded-full bg-white shadow-sm transition-transform ${srsActive ? 'translate-x-5' : 'translate-x-0'}`} />
                     </button>
-                    <div className="pr-5 border-r border-neutral-beige/40">
-                        <span className="text-[9px] font-black uppercase tracking-[0.2em] block text-neutral-ink/40 group-hover:text-neutral-ink transition-colors">Track</span>
-                        <span className="text-[11px] font-black uppercase tracking-[0.1em] block text-primary-strong leading-none">Intelligence</span>
+                    <div className="pl-5 border-l border-neutral-beige/40 flex flex-col justify-center">
+                        <span className="text-[9px] font-black uppercase tracking-[0.2em] block text-neutral-ink/40 group-hover:text-neutral-ink transition-colors leading-[1.2]">Track</span>
+                        <span className="text-[11px] font-black uppercase tracking-[0.1em] block text-primary-strong leading-[1.2]">Intelligence</span>
                     </div>
                 </div>
             </div>
