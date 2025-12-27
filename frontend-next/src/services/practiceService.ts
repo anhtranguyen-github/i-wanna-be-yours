@@ -216,6 +216,25 @@ export async function deleteNode(id: string): Promise<void> {
     }
 }
 
+/**
+ * Update an existing practice node
+ */
+export async function updateNode(id: string, updates: Partial<PracticeNode>): Promise<{ id: string }> {
+    const response = await authFetch(`${API_BASE}/nodes/${id}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updates)
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to update practice node');
+    }
+
+    return response.json();
+}
+
 // Export as object for named import compatibility
 export const practiceService = {
     getNodes,
@@ -224,5 +243,6 @@ export const practiceService = {
     getAttemptResult,
     getAttempts,
     createNode,
-    deleteNode
+    deleteNode,
+    updateNode
 };

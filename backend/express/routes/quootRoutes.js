@@ -62,7 +62,8 @@ router.get('/arenas', optionalAuth, async (req, res) => {
             cardCount: a.cards.length,
             stats: a.stats,
             visibility: a.visibility,
-            creatorName: a.creatorName
+            creatorName: a.creatorName,
+            userId: a.userId?.toString()
         }));
 
         res.status(200).json(transformed);
@@ -202,6 +203,46 @@ router.get('/attempts/:id', verifyJWT, async (req, res) => {
         res.status(200).json(unifiedResult);
     } catch (err) {
         console.error('Get Quoot Attempt Detail Error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+/**
+ * PATCH /quoot/arenas/:id
+ */
+router.patch('/arenas/:id', verifyJWT, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user.id || req.user.userId;
+        const updates = req.body;
+
+        const arena = await QuootArena.findById(id);
+        if (!arena) return res.status(404).json({ error: 'Arena not found' });
+
+        // Check ownership
+        if (arena.userId.toString() !== userId) {
+            return res.status(403).json({ error: 'Forbidden' });
+        }
+
+        // Apply updates
+        if (updates.title) arena.title = updates.title;
+        if (updates.description !== undefined) arena.description = updates.description;
+        if (updates.level) arena.level = updates.level;
+        if (updates.icon) arena.icon = updates.icon;
+        if (updates.visibility) arena.visibility = updates.visibility;
+        if (updates.cards) {
+            arena.cards = updates.cards.map(c => ({
+                front: c.front,
+                back: c.back,
+                reading: c.reading || '',
+                type: c.type || 'vocabulary'
+            }));
+        }
+
+        await arena.save();
+        res.status(200).json({ message: 'Arena updated successfully', id });
+    } catch (err) {
+        console.error('Update Quoot Arena Error:', err);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

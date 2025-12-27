@@ -2,7 +2,7 @@
 "use client";
 
 import React from 'react';
-import { ArrowRight, Layers, MoreVertical } from 'lucide-react';
+import { ArrowRight, Layers, MoreVertical, Share2, Pencil } from 'lucide-react';
 import { ViewMode } from './ViewModeToggle';
 
 export interface ListingMetadata {
@@ -25,6 +25,8 @@ interface ListingCardProps {
         color?: string;
     };
     actionIcon?: React.ReactNode;
+    onEdit?: () => void;
+    onShare?: () => void;
 }
 
 export function ListingCard({
@@ -36,8 +38,14 @@ export function ListingCard({
     onClick,
     viewMode,
     badge,
-    actionIcon = <ArrowRight size={20} />
+    actionIcon = <ArrowRight size={20} />,
+    onEdit,
+    onShare
 }: ListingCardProps) {
+    const handleActionClick = (e: React.MouseEvent, action?: () => void) => {
+        e.stopPropagation();
+        if (action) action();
+    };
 
     if (viewMode === 'LIST') {
         return (
@@ -74,6 +82,29 @@ export function ListingCard({
                             {badge.label}
                         </span>
                     )}
+
+                    {/* Action buttons */}
+                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        {onShare && (
+                            <button
+                                onClick={(e) => handleActionClick(e, onShare)}
+                                className="p-2 text-neutral-ink/40 hover:text-primary-strong hover:bg-primary-strong/10 rounded-lg transition-colors"
+                                title="Share"
+                            >
+                                <Share2 size={16} />
+                            </button>
+                        )}
+                        {onEdit && (
+                            <button
+                                onClick={(e) => handleActionClick(e, onEdit)}
+                                className="p-2 text-neutral-ink/40 hover:text-primary-strong hover:bg-primary-strong/10 rounded-lg transition-colors"
+                                title="Edit"
+                            >
+                                <Pencil size={16} />
+                            </button>
+                        )}
+                    </div>
+
                     <div className="text-neutral-ink/40 group-hover:text-primary-strong group-hover:translate-x-1 transition-all">
                         {actionIcon}
                     </div>
@@ -96,15 +127,35 @@ export function ListingCard({
                 <div className={`w-14 h-14 ${iconBgColor} rounded-2xl flex items-center justify-center text-neutral-ink group-hover:bg-primary-strong group-hover:text-white transition-all`}>
                     {icon}
                 </div>
-                {badge ? (
-                    <span className={`px-3 py-1.5 bg-neutral-white border border-neutral-gray/20 text-neutral-ink rounded-xl text-[9px] font-black uppercase tracking-widest`}>
-                        {badge.label}
-                    </span>
-                ) : (
-                    <button className="p-2 text-neutral-ink/40 hover:text-neutral-ink transition-colors relative z-10">
-                        <MoreVertical size={20} />
-                    </button>
-                )}
+
+                <div className="flex items-center gap-2 z-10">
+                    {badge && (
+                        <span className={`px-3 py-1.5 bg-neutral-white border border-neutral-gray/20 text-neutral-ink rounded-xl text-[9px] font-black uppercase tracking-widest`}>
+                            {badge.label}
+                        </span>
+                    )}
+
+                    <div className="flex items-center gap-1 bg-neutral-beige/30 p-1 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity">
+                        {onShare && (
+                            <button
+                                onClick={(e) => handleActionClick(e, onShare)}
+                                className="p-2 text-neutral-ink/40 hover:text-primary-strong hover:bg-white rounded-lg transition-all"
+                                title="Share"
+                            >
+                                <Share2 size={16} />
+                            </button>
+                        )}
+                        {onEdit && (
+                            <button
+                                onClick={(e) => handleActionClick(e, onEdit)}
+                                className="p-2 text-neutral-ink/40 hover:text-primary-strong hover:bg-white rounded-lg transition-all"
+                                title="Edit"
+                            >
+                                <Pencil size={16} />
+                            </button>
+                        )}
+                    </div>
+                </div>
             </div>
 
             <h3 className="text-2xl font-black text-neutral-ink font-display mb-3 group-hover:text-primary-strong transition-colors">

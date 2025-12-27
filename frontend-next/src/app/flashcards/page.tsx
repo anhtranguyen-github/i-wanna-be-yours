@@ -15,14 +15,14 @@ import {
     ShieldCheck,
     Link2
 } from 'lucide-react';
-import { RetrievalModal } from '@/components/shared';
+import { RetrievalModal, ShareModal } from '@/components/shared';
 import { SearchNexus } from '@/components/shared/SearchNexus';
 import { SearchNexusState, FilterGroup } from '@/types/search';
 import { useUser } from '@/context/UserContext';
 import { useGlobalAuth } from '@/context/GlobalAuthContext';
 import { CreateButton, InformativeLoginCard, PageHeader, ViewModeToggle, CreateContentPanel, ListingCard, HistoryModal } from '@/components/shared';
 import type { ViewMode } from '@/components/shared';
-import { fetchFlashcardSets, createFlashcardSet } from '@/services/flashcardService';
+import { fetchFlashcardSets, createFlashcardSet, updateFlashcardSet, fetchFlashcardSetById } from '@/services/flashcardService';
 
 interface FlashcardSet {
     id: string;
@@ -33,6 +33,7 @@ interface FlashcardSet {
     tags: string[];
     visibility?: 'global' | 'public' | 'private';
     creatorName?: string;
+    userId?: string;
 }
 
 export default function FlashcardsMenu() {
@@ -57,6 +58,10 @@ export default function FlashcardsMenu() {
     const [isRetrievalOpen, setIsRetrievalOpen] = useState(false);
     const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
+    // Share & Edit State
+    const [shareTarget, setShareTarget] = useState<{ id: string, title: string } | null>(null);
+    const [editingSet, setEditingSet] = useState<any | null>(null);
+
     const loadSets = async () => {
         setIsLoading(true);
         try {
@@ -73,7 +78,8 @@ export default function FlashcardsMenu() {
                 level: s.level,
                 tags: s.tags || [],
                 visibility: s.visibility,
-                creatorName: s.creatorName
+                creatorName: s.creatorName,
+                userId: s.userId
             }));
             setSets(mappedSets);
         } catch (err) {
@@ -155,23 +161,54 @@ export default function FlashcardsMenu() {
         }
     };
 
+    const handleEditSet = async (setId: string) => {
+        try {
+            const fullSet = await fetchFlashcardSetById(setId);
+            setEditingSet(fullSet);
+            setIsCreatePanelOpen(true);
+        } catch (err) {
+            console.error("Failed to fetch full set for editing:", err);
+        }
+    };
+
+    const handleShareSet = (set: FlashcardSet) => {
+        setShareTarget({ id: set.id, title: set.title });
+    };
+
     const handleSaveContent = async (data: any) => {
         try {
-            await createFlashcardSet({
-                title: data.title || "New Set",
-                description: data.description || "Created via Hanachan AI",
-                visibility: data.visibility || 'private',
-                level: (searchState.activeFilters.level?.[0] !== 'ALL' ? searchState.activeFilters.level?.[0] : 'N3') as any,
-                cards: data.items?.map((item: any) => ({
-                    front: item.front || item.term || item.kanji || "",
-                    back: item.back || item.definition || item.meaning || "",
-                    reading: item.reading || item.hiragana || "",
-                    mnemonic: item.mnemonic || ""
-                })),
-                tags: ['personal']
-            });
+            if (editingSet) {
+                // Update
+                await updateFlashcardSet(editingSet.id, {
+                    title: data.title,
+                    description: data.description,
+                    visibility: data.visibility,
+                    cards: data.items?.map((item: any) => ({
+                        front: item.front || item.term || item.kanji || "",
+                        back: item.back || item.definition || item.meaning || "",
+                        reading: item.reading || item.hiragana || "",
+                        mnemonic: item.mnemonic || ""
+                    }))
+                });
+            } else {
+                // Create
+                await createFlashcardSet({
+                    title: data.title || "New Set",
+                    description: data.description || "Created via Hanachan AI",
+                    visibility: data.visibility || 'private',
+                    level: (searchState.activeFilters.level?.[0] !== 'ALL' ? searchState.activeFilters.level?.[0] : 'N3') as any,
+                    cards: data.items?.map((item: any) => ({
+                        front: item.front || item.term || item.kanji || "",
+                        back: item.back || item.definition || item.meaning || "",
+                        reading: item.reading || item.hiragana || "",
+                        mnemonic: item.mnemonic || ""
+                    })),
+                    tags: ['personal']
+                });
+            }
             await loadSets();
             setIsCreatePanelOpen(false);
+            setEditingSet(null);
         } catch (err) {
             console.error("Failed to save flashcard set:", err);
             throw err;
@@ -206,7 +243,7 @@ export default function FlashcardsMenu() {
                         >
                             <History size={20} />
                         </button>
-                        <CreateButton label="Create Set" onClick={handleCreateClick} />
+                        <CreateButton label="Create Set" onClick={() => { setEditingSet(null); handleCreateClick(); }} />
                     </>
                 }
             >
@@ -245,6 +282,8 @@ export default function FlashcardsMenu() {
                                 ]}
                                 badge={set.level ? { label: set.level } : undefined}
                                 onClick={() => router.push(`/flashcards/study?deckId=${set.id}`)}
+                                onEdit={user && user.id.toString() === set.userId ? () => handleEditSet(set.id) : undefined}
+                                onShare={user && user.id.toString() === set.userId ? () => handleShareSet(set) : undefined}
                             />
                         ))}
                     </div>
@@ -275,9 +314,10 @@ export default function FlashcardsMenu() {
 
             <CreateContentPanel
                 isOpen={isCreatePanelOpen}
-                onClose={() => setIsCreatePanelOpen(false)}
+                onClose={() => { setIsCreatePanelOpen(false); setEditingSet(null); }}
                 type="FLASHCARDS"
                 onSave={handleSaveContent}
+                initialData={editingSet}
             />
 
             <RetrievalModal
@@ -289,6 +329,14 @@ export default function FlashcardsMenu() {
             <HistoryModal
                 isOpen={isHistoryOpen}
                 onClose={() => setIsHistoryOpen(false)}
+            />
+
+            <ShareModal
+                isOpen={!!shareTarget}
+                onClose={() => setShareTarget(null)}
+                contentId={shareTarget?.id || ''}
+                contentType="flashcard-deck"
+                title={shareTarget?.title || ''}
             />
         </div>
     );

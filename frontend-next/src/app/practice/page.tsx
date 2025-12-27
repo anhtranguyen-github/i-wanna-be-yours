@@ -16,7 +16,7 @@ import { FilterState, PracticeNode } from "@/types/practice";
 import * as practiceService from "@/services/practiceService";
 import { SearchNexus } from "@/components/shared/SearchNexus";
 import { SearchNexusState, FilterGroup } from "@/types/search";
-import { InformativeLoginCard, CreateButton, PageHeader, ViewModeToggle, CreateContentPanel, ListingCard, RetrievalModal, HistoryModal } from "@/components/shared";
+import { InformativeLoginCard, CreateButton, PageHeader, ViewModeToggle, CreateContentPanel, ListingCard, RetrievalModal, HistoryModal, ShareModal } from "@/components/shared";
 import { Link2, History } from "lucide-react";
 import type { ViewMode } from "@/components/shared";
 import { useUser } from "@/context/UserContext";
@@ -34,6 +34,10 @@ export default function PracticeHubPage() {
     const [isCreatePanelOpen, setIsCreatePanelOpen] = useState(false);
     const [isRetrievalOpen, setIsRetrievalOpen] = useState(false);
     const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+
+    // Share & Edit State
+    const [shareTarget, setShareTarget] = useState<{ id: string, title: string } | null>(null);
+    const [editingNode, setEditingNode] = useState<any | null>(null);
 
     const [searchState, setSearchState] = useState<SearchNexusState>({
         query: "",
@@ -136,15 +140,40 @@ export default function PracticeHubPage() {
         }
     };
 
+    const handleEditNode = async (nodeId: string) => {
+        try {
+            const result = await practiceService.getNodeSessionData(nodeId);
+            // Transform internal format for CreateContentPanel
+            const transformedItems = result.questions.map(q => ({
+                question: q.content,
+                options: q.options.map(o => o.text),
+                correctIndex: q.options.findIndex(o => o.id === q.correctOptionId),
+                explanation: q.explanation || ""
+            }));
+
+            setEditingNode({
+                ...result.node,
+                items: transformedItems
+            });
+            setIsCreatePanelOpen(true);
+        } catch (err) {
+            console.error("Failed to fetch full node for editing:", err);
+        }
+    };
+
+    const handleShareNode = (node: PracticeNode) => {
+        setShareTarget({ id: node.id, title: node.title });
+    };
+
     const handleSaveContent = async (data: any) => {
         try {
-            await practiceService.createNode({
+            const nodeData = {
                 title: data.title || "New Protocol",
                 description: data.description || "Custom training sequence",
                 isPublic: data.visibility === 'public' || data.visibility === 'global',
                 mode: (searchState.activeFilters.mode?.[0] !== 'ALL' ? searchState.activeFilters.mode?.[0] : 'QUIZ') as any,
                 level: (searchState.activeFilters.level?.[0] !== 'ALL' ? searchState.activeFilters.level?.[0] : 'N3') as any,
-                skills: ['VOCABULARY'],
+                skills: ['VOCABULARY'] as any[],
                 questions: data.items?.map((item: any, i: number) => ({
                     content: item.question || item.front || item.term || "",
                     options: item.options?.map((opt: any, oi: number) => ({
@@ -154,9 +183,17 @@ export default function PracticeHubPage() {
                     correctOptionId: (item.correctIndex !== undefined) ? `o-${item.correctIndex}` : (item.correctOptionId || "o-0"),
                     explanation: item.explanation || ""
                 })) || []
-            });
+            };
+
+            if (editingNode) {
+                await practiceService.updateNode(editingNode.id, nodeData as any);
+            } else {
+                await practiceService.createNode(nodeData);
+            }
+
             fetchNodes();
             setIsCreatePanelOpen(false);
+            setEditingNode(null);
         } catch (error) {
             console.error("Failed to save protocol:", error);
             throw error;
@@ -187,7 +224,7 @@ export default function PracticeHubPage() {
                         >
                             <History size={20} />
                         </button>
-                        <CreateButton label="Create Protocol" onClick={handleCreateClick} />
+                        <CreateButton label="Create Protocol" onClick={() => { setEditingNode(null); handleCreateClick(); }} />
                     </>
                 }
             >
@@ -229,6 +266,8 @@ export default function PracticeHubPage() {
                                     ...((node as any).creatorName && !node.isPublic ? [{ label: 'By', value: (node as any).creatorName, icon: <UserIcon size={14} /> }] : [])
                                 ]}
                                 onClick={() => handleStartNode(node.id)}
+                                onEdit={user && user.id.toString() === (node as any).userId ? () => handleEditNode(node.id) : undefined}
+                                onShare={user && user.id.toString() === (node as any).userId ? () => handleShareNode(node) : undefined}
                             />
                         ))}
                     </div>
@@ -265,9 +304,10 @@ export default function PracticeHubPage() {
 
             <CreateContentPanel
                 isOpen={isCreatePanelOpen}
-                onClose={() => setIsCreatePanelOpen(false)}
+                onClose={() => { setIsCreatePanelOpen(false); setEditingNode(null); }}
                 type="PRACTICE"
                 onSave={handleSaveContent}
+                initialData={editingNode}
             />
 
             <RetrievalModal
@@ -279,6 +319,14 @@ export default function PracticeHubPage() {
             <HistoryModal
                 isOpen={isHistoryOpen}
                 onClose={() => setIsHistoryOpen(false)}
+            />
+
+            <ShareModal
+                isOpen={!!shareTarget}
+                onClose={() => setShareTarget(null)}
+                contentId={shareTarget?.id || ''}
+                contentType="practice-arena"
+                title={shareTarget?.title || ''}
             />
         </div>
     );

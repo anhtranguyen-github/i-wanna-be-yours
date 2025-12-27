@@ -56,7 +56,8 @@ router.get('/sets', optionalAuth, async (req, res) => {
             cardCount: s.cards.length,
             tags: s.tags,
             visibility: s.visibility,
-            creatorName: s.creatorName
+            creatorName: s.creatorName,
+            userId: s.userId?.toString()
         }));
 
         res.status(200).json(transformed);
@@ -185,6 +186,47 @@ router.post('/sets', verifyJWT, async (req, res) => {
         });
     } catch (err) {
         console.error('Create Flashcard Set Error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+/**
+ * PATCH /flashcards/sets/:id
+ */
+router.patch('/sets/:id', verifyJWT, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user.id || req.user.userId;
+        const updates = req.body;
+
+        const set = await FlashcardSet.findById(id);
+        if (!set) return res.status(404).json({ error: 'Set not found' });
+
+        // Check ownership
+        if (set.userId.toString() !== userId) {
+            return res.status(403).json({ error: 'Forbidden' });
+        }
+
+        // Apply updates
+        if (updates.title) set.title = updates.title;
+        if (updates.description !== undefined) set.description = updates.description;
+        if (updates.level) set.level = updates.level;
+        if (updates.icon) set.icon = updates.icon;
+        if (updates.tags) set.tags = updates.tags;
+        if (updates.visibility) set.visibility = updates.visibility;
+        if (updates.cards) {
+            set.cards = updates.cards.map(c => ({
+                front: c.front,
+                back: c.back,
+                reading: c.reading || '',
+                mnemonic: c.mnemonic || ''
+            }));
+        }
+
+        await set.save();
+        res.status(200).json({ message: 'Set updated successfully', id });
+    } catch (err) {
+        console.error('Update Flashcard Set Error:', err);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

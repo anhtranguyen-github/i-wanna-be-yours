@@ -49,10 +49,21 @@ export async function fetchQuootAttemptResult(attemptId: string) {
     return response.json();
 }
 
+export async function updateQuootArena(id: string, updates: any) {
+    const response = await authFetch(`${API_BASE}/arenas/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates)
+    });
+    if (!response.ok) throw new Error('Failed to update quoot arena');
+    return response.json();
+}
+
 export const quootService = {
     fetchQuootArenas,
     fetchQuootArenaById,
     createQuootArena,
     submitQuootResult,
-    fetchQuootAttemptResult
+    fetchQuootAttemptResult,
+    updateQuootArena
 };

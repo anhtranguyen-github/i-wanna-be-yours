@@ -13,14 +13,14 @@ import {
     Link2,
     History
 } from "lucide-react";
-import { RetrievalModal } from "@/components/shared";
+import { RetrievalModal, ShareModal } from "@/components/shared";
 import { SearchNexus } from "@/components/shared/SearchNexus";
 import { SearchNexusState, FilterGroup } from "@/types/search";
 import { InformativeLoginCard, CreateButton, PageHeader, ViewModeToggle, CreateContentPanel, ListingCard, HistoryModal } from "@/components/shared";
 import type { ViewMode } from "@/components/shared";
 import { useUser } from "@/context/UserContext";
 import { useGlobalAuth } from "@/context/GlobalAuthContext";
-import { fetchQuootArenas, createQuootArena } from "@/services/quootService";
+import { fetchQuootArenas, createQuootArena, updateQuootArena, fetchQuootArenaById } from "@/services/quootService";
 
 // =============================================================================
 // TYPES
@@ -38,6 +38,7 @@ interface QuootArena {
     isPersonal?: boolean;
     visibility?: 'global' | 'public' | 'private';
     creatorName?: string;
+    userId?: string;
 }
 
 
@@ -62,6 +63,10 @@ export default function GamePage() {
     const [isCreatePanelOpen, setIsCreatePanelOpen] = useState(false);
     const [isRetrievalOpen, setIsRetrievalOpen] = useState(false);
     const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+
+    // Share & Edit State
+    const [shareTarget, setShareTarget] = useState<{ id: string, title: string } | null>(null);
+    const [editingArena, setEditingArena] = useState<any | null>(null);
 
     const filterGroups: FilterGroup[] = [
         {
@@ -111,7 +116,8 @@ export default function GamePage() {
                 coverEmoji: a.icon || '⚔️',
                 isPersonal: a.visibility === 'private',
                 visibility: a.visibility,
-                creatorName: a.creatorName
+                creatorName: a.creatorName,
+                userId: a.userId
             }));
             setArenas(mappedArenas);
         } catch (err) {
@@ -169,9 +175,23 @@ export default function GamePage() {
         }
     };
 
+    const handleEditArena = async (arenaId: string) => {
+        try {
+            const fullArena = await fetchQuootArenaById(arenaId);
+            setEditingArena(fullArena);
+            setIsCreatePanelOpen(true);
+        } catch (err) {
+            console.error("Failed to fetch full arena for editing:", err);
+        }
+    };
+
+    const handleShareArena = (arena: QuootArena) => {
+        setShareTarget({ id: arena.id, title: arena.title });
+    };
+
     const handleSaveContent = async (data: any) => {
         try {
-            await createQuootArena({
+            const arenaData = {
                 title: data.title || "New Arena",
                 description: data.description || "Forged via Hanachan AI",
                 visibility: data.visibility || 'private',
@@ -182,9 +202,17 @@ export default function GamePage() {
                     reading: item.reading || item.hiragana || "",
                     type: 'vocabulary'
                 }))
-            });
+            };
+
+            if (editingArena) {
+                await updateQuootArena(editingArena.id, arenaData);
+            } else {
+                await createQuootArena(arenaData);
+            }
+
             await loadArenas();
             setIsCreatePanelOpen(false);
+            setEditingArena(null);
         } catch (err) {
             console.error("Failed to save arena:", err);
             throw err;
@@ -219,7 +247,7 @@ export default function GamePage() {
                         >
                             <History size={20} />
                         </button>
-                        <CreateButton label="Create Arena" onClick={handleCreateClick} />
+                        <CreateButton label="Create Arena" onClick={() => { setEditingArena(null); handleCreateClick(); }} />
                     </>
                 }
             >
@@ -258,6 +286,8 @@ export default function GamePage() {
                                     ...(arena.visibility === 'global' ? [{ label: 'Official', value: 'Verified', icon: <ShieldCheck size={14} className="text-primary-strong" /> }] : []),
                                     ...(arena.creatorName && arena.visibility !== 'global' ? [{ label: 'By', value: arena.creatorName, icon: <UserIcon size={14} /> }] : [])
                                 ]}
+                                onEdit={user && user.id.toString() === arena.userId ? () => handleEditArena(arena.id) : undefined}
+                                onShare={user && user.id.toString() === arena.userId ? () => handleShareArena(arena) : undefined}
                             />
                         ))}
                     </div>
@@ -294,9 +324,10 @@ export default function GamePage() {
 
             <CreateContentPanel
                 isOpen={isCreatePanelOpen}
-                onClose={() => setIsCreatePanelOpen(false)}
+                onClose={() => { setIsCreatePanelOpen(false); setEditingArena(null); }}
                 type="QUOOT"
                 onSave={handleSaveContent}
+                initialData={editingArena}
             />
 
             <RetrievalModal
@@ -308,6 +339,14 @@ export default function GamePage() {
             <HistoryModal
                 isOpen={isHistoryOpen}
                 onClose={() => setIsHistoryOpen(false)}
+            />
+
+            <ShareModal
+                isOpen={!!shareTarget}
+                onClose={() => setShareTarget(null)}
+                contentId={shareTarget?.id || ''}
+                contentType="quoot-arena"
+                title={shareTarget?.title || ''}
             />
         </div>
     );

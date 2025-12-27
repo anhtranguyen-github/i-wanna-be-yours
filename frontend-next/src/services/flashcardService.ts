@@ -76,6 +76,16 @@ class FlashcardService {
         if (!response.ok) throw new Error('Failed to create card');
         return response.json();
     }
+
+    async updateFlashcardSet(id: string, updates: any) {
+        const response = await authFetch(`${API_BASE}/sets/${id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updates)
+        });
+        if (!response.ok) throw new Error('Failed to update flashcard set');
+        return response.json();
+    }
 }
 
 export const flashcardService = new FlashcardService();
@@ -83,3 +93,4 @@ export const flashcardService = new FlashcardService();
 export const fetchFlashcardSets = (filters?: { level?: string; access?: string }) => flashcardService.fetchFlashcardSets(filters);
 export const fetchFlashcardSetById = (id: string) => flashcardService.fetchFlashcardSetById(id);
 export const createFlashcardSet = (set: any) => flashcardService.createFlashcardSet(set);
+export const updateFlashcardSet = (id: string, updates: any) => flashcardService.updateFlashcardSet(id, updates);

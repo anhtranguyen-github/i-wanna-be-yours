@@ -88,6 +88,7 @@ router.get('/nodes', optionalAuth, async (req, res) => {
                 attemptCount: node.stats?.attemptCount || 0
             },
             creatorName: node.creatorName,
+            userId: node.userId?.toString(),
             createdAt: node.createdAt
         }));
 
@@ -339,6 +340,51 @@ router.delete('/nodes/:id', verifyJWT, async (req, res) => {
         res.status(200).json({ message: 'Practice protocol deleted successfully' });
     } catch (err) {
         console.error('Delete Node Error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+/**
+ * PATCH /practice/nodes/:id
+ */
+router.patch('/nodes/:id', verifyJWT, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user.id || req.user.userId;
+        const updates = req.body;
+
+        const node = await PracticeNode.findById(id);
+        if (!node) return res.status(404).json({ error: 'Practice node not found' });
+
+        // Check ownership
+        if (node.userId && node.userId.toString() !== userId) {
+            return res.status(403).json({ error: 'Forbidden' });
+        }
+
+        // Apply updates
+        if (updates.title) node.title = updates.title;
+        if (updates.description !== undefined) node.description = updates.description;
+        if (updates.mode) node.mode = updates.mode;
+        if (updates.level) node.level = updates.level;
+        if (updates.skills) node.skills = updates.skills;
+        if (updates.visibility) node.visibility = updates.visibility;
+        if (updates.timeLimitMinutes !== undefined) node.timeLimitMinutes = updates.timeLimitMinutes;
+        if (updates.questions) {
+            node.questions = updates.questions.map((q, i) => ({
+                id: q.id || `q-${Date.now()}-${i}`,
+                type: q.type || 'MULTIPLE_CHOICE',
+                content: q.content,
+                passage: q.passage || null,
+                options: q.options || [],
+                correctOptionId: q.correctOptionId,
+                explanation: q.explanation || ''
+            }));
+        }
+
+        await node.save();
+        res.status(200).json({ message: 'Practice node updated successfully', id });
+    } catch (err) {
+        console.error('Update Practice Node Error:', err);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
