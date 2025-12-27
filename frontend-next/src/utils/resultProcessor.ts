@@ -1,37 +1,59 @@
-import { UnifiedSessionResult } from "@/types/results";
+import { UnifiedSessionResult, SessionStat, Achievement } from "@/types/results";
 import * as LucideIcons from "lucide-react";
 
 /**
  * Maps icon names from backend strings to Lucide components
+ * v3: extremely robust for nested results and missing fields
  */
-export function mapResultIcons(result: UnifiedSessionResult): UnifiedSessionResult {
-    if (!result) return result;
+export function mapResultIcons(input: any): UnifiedSessionResult {
+    // 1. Safety check for null/undefined input
+    if (!input) {
+        console.warn("mapResultIcons: input is null or undefined");
+        return input;
+    }
 
-    const stats = (result.stats || []).map(stat => ({
-        ...stat,
-        icon: (LucideIcons as any)[stat.icon as unknown as string] || LucideIcons.HelpCircle
-    }));
+    // 2. Extract the actual payload (backend sometimes wraps in { result: ... } or { data: ... })
+    const data = input.result || input.data || input;
 
-    const achievements = (result.achievements || []).map(achievement => ({
-        ...achievement,
-        icon: (LucideIcons as any)[achievement.icon as unknown as string] || LucideIcons.Trophy
-    }));
+    // 3. Map stats with safety
+    const stats: SessionStat[] = Array.isArray(data.stats)
+        ? data.stats.map((stat: any) => ({
+            ...stat,
+            icon: (LucideIcons as any)[stat.icon] || LucideIcons.HelpCircle
+        }))
+        : [];
 
+    // 4. Map achievements with safety
+    const achievements: Achievement[] = Array.isArray(data.achievements)
+        ? data.achievements.map((achievement: any) => ({
+            ...achievement,
+            icon: (LucideIcons as any)[achievement.icon] || LucideIcons.Trophy
+        }))
+        : [];
+
+    // 5. Ensure feedback exists
+    const feedback = data.feedback || {
+        title: "Protocol Complete",
+        message: "Analysis pending secure synchronization.",
+        suggestions: ["Register to unlock deep insights"]
+    };
+
+    // 6. Return unified structure
     return {
-        ...result,
+        ...data,
         stats,
-        achievements
+        achievements,
+        feedback,
+        score: data.score ?? 0,
+        accuracy: data.accuracy ?? 0,
+        xpEarned: data.xpEarned ?? 0
     } as UnifiedSessionResult;
 }
 
-// Keep these for backward compatibility during transition if needed,
-// but they should eventually be phased out in favor of backend calculation.
+// Stubs for legacy code
 export function processPracticeResult(node: any, sessionData: any, questions: any[]): UnifiedSessionResult {
-    // This is now just a placeholder or should be used for guest sessions if we really don't want to hit the backend
-    // But the user said "Front end only show what backend send", so guest sessions should also hit a calculation endpoint.
     return {} as any;
 }
-
 export function processQuootResult(deck: any, gameState: any, cards: any[]): UnifiedSessionResult {
     return {} as any;
 }

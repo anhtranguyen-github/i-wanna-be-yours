@@ -53,14 +53,19 @@ export default function PremiumResultPage() {
 
                 // Fetch attempt details if attemptId is present, or fetch the latest for the user
                 if (attemptId) {
+                    console.log("Fetching attempt result for ID:", attemptId);
                     const result = await practiceService.getAttemptResult(attemptId);
+                    console.log("Backend result received:", result);
                     setUnifiedResult(mapResultIcons(result));
                 } else {
                     // Fallback to latest attempt if no ID (e.g. direct nav)
                     const attemptsData = await practiceService.getAttempts();
-                    const latest = attemptsData.attempts.find((a: any) => a.nodeId === nodeId);
+                    console.log("Found attempts:", attemptsData);
+                    const latest = attemptsData.attempts?.find((a: any) => a.nodeId === nodeId);
                     if (latest) {
+                        console.log("Fetching latest attempt result for ID:", latest.id);
                         const result = await practiceService.getAttemptResult(latest.id);
+                        console.log("Backend result received (latest):", result);
                         setUnifiedResult(mapResultIcons(result));
                     }
                 }

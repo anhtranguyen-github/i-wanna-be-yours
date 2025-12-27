@@ -121,16 +121,27 @@ export default function QuootSessionPage() {
                             maxStreak: gameState.maxStreak,
                             totalCards: cards.length
                         });
-                        resultData = response.result;
+                        console.log("Quoot submission response:", response);
+                        resultData = response.result || response.data || response;
                     } catch (e) {
                         console.warn("Guest or API error submit", e);
                         // Fallback for guest/offline
                         resultData = {
                             score: gameState.score,
-                            rank: 'C', // Calculate proper rank if needed
+                            rank: 'C',
                             xpEarned: 0,
                             coinsEarned: 0,
-                            streakExtended: false
+                            streakExtended: false,
+                            stats: [
+                                { label: "Accuracy", value: `${Math.round((gameState.correctCount / cards.length) * 100)}%`, icon: "Target" },
+                                { label: "Max Streak", value: gameState.maxStreak, icon: "Flame" }
+                            ],
+                            achievements: [],
+                            feedback: {
+                                title: "Ephemeral Training",
+                                message: "Sign in to persist your arena achievements.",
+                                suggestions: ["Create an account to track metrics over time"]
+                            }
                         };
                     }
 
