@@ -18,7 +18,7 @@ export interface Achievement {
 
 export interface UnifiedSessionResult {
     sessionId: string;
-    type: 'PRACTICE' | 'QUOOT' | 'JLPT' | 'DAILY_CHALLENGE';
+    type: 'PRACTICE' | 'QUOOT' | 'JLPT' | 'DAILY_CHALLENGE' | 'FLASHCARD';
     score: number; // 0-100
     accuracy: number; // 0-100
     timeSeconds: number;
