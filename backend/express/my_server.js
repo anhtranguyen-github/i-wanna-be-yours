@@ -98,6 +98,10 @@ app.use("/e-api/v1/users", userRoutes);
 const recordRoutes = require("./routes/recordRoutes");
 app.use("/e-api/v1/records", recordRoutes);
 
+// --- Share Routes ---
+const shareRoutes = require("./routes/shareRoutes");
+app.use("/e-api/v1/share", shareRoutes);
+
 // --- Flask Proxy ---
 // Route all /e-api/v1/f/ requests to the Flask service on port 5100
 app.use("/e-api/v1/f", verifyJWT, createProxyMiddleware({
