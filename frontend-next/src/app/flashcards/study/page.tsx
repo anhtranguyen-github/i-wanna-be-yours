@@ -21,7 +21,7 @@ import {
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ResultShell } from '@/components/results/ResultShell';
 import { UnifiedSessionResult } from '@/types/results';
-import { saveRecord } from '@/services/recordService';
+import { saveRecord, startSession } from '@/services/recordService';
 import Link from 'next/link';
 
 export default function StudyPage() {
@@ -34,6 +34,9 @@ export default function StudyPage() {
     const [sessionComplete, setSessionComplete] = useState(false);
     const [correctCount, setCorrectCount] = useState(0);
 
+    const currentSessionId = React.useRef<string | null>(null);
+    const sessionStartedAt = React.useRef<number>(0);
+
     const deckId = searchParams.get('deckId');
 
     useEffect(() => {
@@ -41,17 +44,59 @@ export default function StudyPage() {
     }, [deckId]);
 
     useEffect(() => {
-        if (sessionComplete) {
-            const accuracy = queue.length > 0 ? Math.round((correctCount / queue.length) * 100) : 0;
-            saveRecord({
-                itemType: 'FLASHCARD',
-                itemId: deckId || '000000000000000000000000',
-                score: accuracy,
-                status: 'COMPLETED',
-                details: { count: queue.length }
+        if (!loading && queue.length > 0 && !currentSessionId.current) {
+            sessionStartedAt.current = Date.now();
+            // We don't have deck title easily here unless we fetch it or pass it.
+            // For now, use 'Flashcard Session'
+            startSession('FLASHCARD', deckId || '000000000000000000000000', 'Flashcard Session').then(sid => {
+                currentSessionId.current = sid;
             });
         }
+    }, [loading, queue.length, deckId]);
+
+    useEffect(() => {
+        if (sessionComplete) {
+            const accuracy = queue.length > 0 ? Math.round((correctCount / queue.length) * 100) : 0;
+
+            if (currentSessionId.current) {
+                saveRecord({
+                    itemType: 'FLASHCARD',
+                    itemId: deckId || '000000000000000000000000',
+                    itemTitle: 'Flashcard Session',
+                    score: accuracy,
+                    status: 'COMPLETED',
+                    sessionId: currentSessionId.current,
+                    duration: Math.round((Date.now() - sessionStartedAt.current) / 1000),
+                    details: { count: queue.length }
+                });
+                currentSessionId.current = null;
+            } else {
+                // Fallback for legacy compatibility if startSession failed
+                saveRecord({
+                    itemType: 'FLASHCARD',
+                    itemId: deckId || '000000000000000000000000',
+                    score: accuracy,
+                    status: 'COMPLETED',
+                    details: { count: queue.length }
+                });
+            }
+        }
     }, [sessionComplete, queue.length, correctCount, deckId]);
+
+    // Handle session abandonment
+    useEffect(() => {
+        return () => {
+            if (currentSessionId.current) {
+                saveRecord({
+                    itemType: 'FLASHCARD',
+                    itemId: deckId || '000000000000000000000000',
+                    itemTitle: 'Flashcard Session',
+                    status: 'ABANDONED',
+                    sessionId: currentSessionId.current
+                });
+            }
+        };
+    }, [deckId]);
 
     const loadDueCards = async () => {
         setLoading(true);

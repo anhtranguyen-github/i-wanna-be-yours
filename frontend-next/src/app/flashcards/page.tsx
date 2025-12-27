@@ -237,7 +237,17 @@ export default function FlashcardsMenu() {
                             <Link2 size={20} />
                         </button>
                         <button
-                            onClick={() => setIsHistoryOpen(true)}
+                            onClick={() => {
+                                if (!user) {
+                                    openAuth('LOGIN', {
+                                        flowType: 'FLASHCARDS',
+                                        title: 'Reinforcement Logs',
+                                        description: 'Sign in to access your detailed recall performance and reinforcement history.'
+                                    });
+                                } else {
+                                    setIsHistoryOpen(true);
+                                }
+                            }}
                             className="w-10 h-10 rounded-xl bg-neutral-white border border-neutral-gray/20 flex items-center justify-center text-neutral-ink hover:text-primary-strong hover:border-primary-strong transition-all"
                             title="View History"
                         >
@@ -281,7 +291,7 @@ export default function FlashcardsMenu() {
                                     ...(set.creatorName && set.visibility !== 'global' ? [{ label: 'By', value: set.creatorName, icon: <UserIcon size={14} /> }] : [])
                                 ]}
                                 badge={set.level ? { label: set.level } : undefined}
-                                onClick={() => router.push(`/flashcards/study?deckId=${set.id}`)}
+                                onClick={() => router.push(`/flashcards/details/${set.id}`)}
                                 onEdit={user && user.id.toString() === set.userId ? () => handleEditSet(set.id) : undefined}
                                 onShare={user && user.id.toString() === set.userId ? () => handleShareSet(set) : undefined}
                             />
