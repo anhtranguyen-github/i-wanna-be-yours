@@ -272,7 +272,7 @@ export function StudyPlanDashboard() {
     return (
         <div className="min-h-screen bg-secondary pb-12">
             {/* Header */}
-            <div className="bg-neutral-white border-b border-neutral-gray/30 sticky top-16 z-20">
+            <div className="bg-neutral-white border-b border-neutral-gray/30 sticky top-16 z-40 shadow-sm">
                 <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-neutral-beige border border-neutral-gray/20 rounded-2xl text-primary-strong flex items-center justify-center">
@@ -299,7 +299,7 @@ export function StudyPlanDashboard() {
 
             {/* Main Content */}
             <main className="max-w-7xl mx-auto px-6 py-8">
-                <div className="grid lg:grid-cols-12 gap-6">
+                <div className="grid lg:grid-cols-12 gap-6 min-w-0">
                     {/* Left Column */}
                     <div className="lg:col-span-8 space-y-6">
                         {/* Objective & OKR */}
