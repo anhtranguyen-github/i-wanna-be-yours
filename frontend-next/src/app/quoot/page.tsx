@@ -312,6 +312,8 @@ export default function GamePage() {
                                 iconBgColor={arena.coverColor || 'bg-primary/10'}
                                 viewMode={viewMode}
                                 onClick={() => handleArenaSelect(arena.id)}
+                                onQuickAction={() => router.push(`/quoot/${arena.id}`)}
+                                quickActionLabel="Enter Arena"
                                 badge={arena.levels?.[0] ? { label: arena.levels[0] } : undefined}
                                 metadata={[
                                     { label: 'Cards', value: arena.cardCount, icon: <Layers size={14} /> },

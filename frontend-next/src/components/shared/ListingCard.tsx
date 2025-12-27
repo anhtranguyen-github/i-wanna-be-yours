@@ -27,6 +27,9 @@ interface ListingCardProps {
     actionIcon?: React.ReactNode;
     onEdit?: () => void;
     onShare?: () => void;
+    onQuickAction?: () => void;
+    quickActionIcon?: React.ReactNode;
+    quickActionLabel?: string;
 }
 
 export function ListingCard({
@@ -40,7 +43,10 @@ export function ListingCard({
     badge,
     actionIcon = <ArrowRight size={20} />,
     onEdit,
-    onShare
+    onShare,
+    onQuickAction,
+    quickActionIcon,
+    quickActionLabel = "Quick Study"
 }: ListingCardProps) {
     const handleActionClick = (e: React.MouseEvent, action?: () => void) => {
         e.stopPropagation();
@@ -85,6 +91,15 @@ export function ListingCard({
 
                     {/* Action buttons */}
                     <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        {onQuickAction && (
+                            <button
+                                onClick={(e) => handleActionClick(e, onQuickAction)}
+                                className="px-4 py-2 bg-primary-strong text-white rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center gap-2 hover:bg-neutral-ink transition-all shadow-lg shadow-primary-strong/20"
+                            >
+                                {quickActionIcon || <Zap size={14} fill="currentColor" />}
+                                {quickActionLabel}
+                            </button>
+                        )}
                         {onShare && (
                             <button
                                 onClick={(e) => handleActionClick(e, onShare)}
@@ -166,13 +181,25 @@ export function ListingCard({
             </p>
 
             <div className="flex items-center justify-between mt-auto pt-6 border-t border-neutral-gray/10">
-                <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-neutral-ink/60">
-                    {metadata.map((meta, i) => (
-                        <span key={i} className="flex items-center gap-2">
-                            {meta.icon}
-                            {meta.value} {meta.label}
-                        </span>
-                    ))}
+                <div className="flex items-center gap-2">
+                    {onQuickAction ? (
+                        <button
+                            onClick={(e) => handleActionClick(e, onQuickAction)}
+                            className="px-6 py-2.5 bg-neutral-ink text-white rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:bg-primary-strong transition-all shadow-xl shadow-neutral-ink/10"
+                        >
+                            {quickActionIcon || <Zap size={14} fill="currentColor" />}
+                            {quickActionLabel}
+                        </button>
+                    ) : (
+                        <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-neutral-ink/60">
+                            {metadata.map((meta, i) => (
+                                <span key={i} className="flex items-center gap-2">
+                                    {meta.icon}
+                                    {meta.value} {meta.label}
+                                </span>
+                            ))}
+                        </div>
+                    )}
                 </div>
                 <div className="text-neutral-ink group-hover:translate-x-2 transition-transform">
                     {actionIcon}

@@ -309,6 +309,8 @@ export default function PracticeHubPage() {
                                     ...((node as any).creatorName && !node.isPublic ? [{ label: 'By', value: (node as any).creatorName, icon: <UserIcon size={14} /> }] : [])
                                 ]}
                                 onClick={() => handleStartNode(node.id)}
+                                onQuickAction={() => router.push(`/practice/session/${node.id}`)}
+                                quickActionLabel="Begin Protocol"
                                 onEdit={user && user.id.toString() === (node as any).userId ? () => handleEditNode(node.id) : undefined}
                                 onShare={user && user.id.toString() === (node as any).userId ? () => handleShareNode(node) : undefined}
                             />

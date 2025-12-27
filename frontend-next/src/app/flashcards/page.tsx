@@ -313,6 +313,8 @@ export default function FlashcardsMenu() {
                                 ]}
                                 badge={set.levels?.[0] ? { label: set.levels[0] } : undefined}
                                 onClick={() => router.push(`/flashcards/details/${set.id}`)}
+                                onQuickAction={() => router.push(`/flashcards/study?deckId=${set.id}`)}
+                                quickActionLabel="Start Session"
                                 onEdit={user && user.id.toString() === set.userId ? () => handleEditSet(set.id) : undefined}
                                 onShare={user && user.id.toString() === set.userId ? () => handleShareSet(set) : undefined}
                             />
