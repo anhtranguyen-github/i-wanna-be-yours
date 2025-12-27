@@ -22,6 +22,7 @@ import { ResultShell } from "@/components/results/ResultShell";
 import { mapResultIcons } from "@/utils/resultProcessor";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSearchParams } from "next/navigation";
+import Cookies from "js-cookie";
 
 export default function PremiumResultPage() {
     const params = useParams();
