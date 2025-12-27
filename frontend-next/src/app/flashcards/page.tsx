@@ -11,6 +11,7 @@ import {
     MoreVertical,
     Globe,
     User as UserIcon,
+    Users,
     ArrowRightLeft,
     ShieldCheck,
     Link2
@@ -47,11 +48,13 @@ export default function FlashcardsMenu() {
     const [searchState, setSearchState] = useState<SearchNexusState>({
         query: "",
         activeFilters: {
-            level: ['ALL'],
-            access: ['ALL']
+            ownership: [],
+            level: [],
+            skills: []
         },
         activeTab: 'ALL'
     });
+    const [customTags, setCustomTags] = useState<string[]>([]);
     const [showLoginPrompt, setShowLoginPrompt] = useState(false);
     const [viewMode, setViewMode] = useState<ViewMode>('GRID');
     const [isCreatePanelOpen, setIsCreatePanelOpen] = useState(false);
@@ -113,19 +116,18 @@ export default function FlashcardsMenu() {
 
     const filterGroups: FilterGroup[] = [
         {
-            id: 'access',
-            label: 'Scope',
-            type: 'SINGLE',
+            id: 'ownership',
+            label: 'Owned by',
+            type: 'MULTI',
             options: [
-                { id: 'ALL', label: 'All', icon: <Layers size={14} /> },
                 { id: 'GLOBAL', label: 'Official', icon: <ShieldCheck size={14} className="text-primary-strong" /> },
-                { id: 'PUBLIC', label: 'Public', icon: <Globe size={14} /> },
-                { id: 'PRIVATE', label: 'Personal', icon: <UserIcon size={14} /> }
+                { id: 'COMMUNITY', label: 'Community', icon: <Users size={14} /> },
+                ...(user ? [{ id: 'MINE', label: 'Mine', icon: <UserIcon size={14} /> }] : [])
             ]
         },
         {
             id: 'level',
-            label: 'JLPT Level',
+            label: 'Level',
             type: 'MULTI',
             options: [
                 { id: 'N5', label: 'N5' },
@@ -134,19 +136,36 @@ export default function FlashcardsMenu() {
                 { id: 'N2', label: 'N2' },
                 { id: 'N1', label: 'N1' }
             ]
-        }
+        },
+        {
+            id: 'skills',
+            label: 'Skills',
+            type: 'MULTI',
+            options: [
+                { id: 'VOCABULARY', label: 'Vocab' },
+                { id: 'GRAMMAR', label: 'Grammar' },
+                { id: 'KANJI', label: 'Kanji' },
+                { id: 'READING', label: 'Reading' }
+            ]
+        },
+        ...(user && customTags.length > 0 ? [{
+            id: 'custom_tags',
+            label: 'My Tags',
+            type: 'MULTI' as const,
+            options: customTags.map(tag => ({ id: tag, label: tag }))
+        }] : [])
     ];
 
     const handleSearchChange = (newState: SearchNexusState) => {
-        const accessFilter = newState.activeFilters.access?.[0];
+        const ownershipFilter = newState.activeFilters.ownership || [];
 
-        if (accessFilter === 'PRIVATE' && !user) {
+        if (ownershipFilter.includes('MINE') && !user) {
             setShowLoginPrompt(true);
             return;
         }
 
         setSearchState(newState);
-        if (accessFilter !== 'PRIVATE') setShowLoginPrompt(false);
+        if (!ownershipFilter.includes('MINE')) setShowLoginPrompt(false);
     };
 
     const handleCreateClick = () => {

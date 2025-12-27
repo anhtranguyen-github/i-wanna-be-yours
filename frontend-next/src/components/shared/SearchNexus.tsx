@@ -117,54 +117,57 @@ export function SearchNexus({
             </div>
 
             {/* Expanded Parameters Drawer */}
-            <AnimatePresence>
-                {isExpanded && showFilters && (
-                    <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="overflow-hidden"
-                    >
-                        <div className="bg-neutral-white border border-neutral-gray/10 rounded-[2rem] p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                            {groups.map((group) => (
-                                <div key={group.id} className="space-y-4">
-                                    <div className="flex items-center justify-between border-b border-neutral-gray/10 pb-2">
-                                        <h4 className="text-[10px] font-black text-neutral-ink uppercase tracking-[0.2em] flex items-center gap-2">
-                                            {group.label}
-                                        </h4>
-                                    </div>
-                                    <div className="flex flex-wrap gap-2">
-                                        {group.options.map((option) => {
-                                            const isActive = state.activeFilters[group.id]?.includes(option.id);
-                                            const isPersonalOption = option.id === 'PERSONAL' || option.id === 'personal';
-                                            const isRestricted = isPersonalOption && !isLoggedIn;
+            <div className="relative">
+                <AnimatePresence>
+                    {isExpanded && showFilters && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -10, scale: 0.98 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: -10, scale: 0.98 }}
+                            transition={{ duration: 0.2, ease: "easeOut" }}
+                            className="absolute left-0 right-0 top-2 z-50 p-1"
+                        >
+                            <div className="bg-neutral-white border border-neutral-gray/10 rounded-[2rem] p-6 shadow-2xl shadow-neutral-ink/5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                {groups.map((group) => (
+                                    <div key={group.id} className="space-y-3">
+                                        <div className="flex items-center justify-between border-b border-neutral-gray/5 pb-2">
+                                            <h4 className="text-[9px] font-black text-neutral-ink/30 uppercase tracking-[0.2em] flex items-center gap-2">
+                                                {group.label}
+                                            </h4>
+                                        </div>
+                                        <div className="flex flex-wrap gap-1.5">
+                                            {group.options.map((option) => {
+                                                const isActive = state.activeFilters[group.id]?.includes(option.id);
+                                                const isPersonalOption = option.id === 'PRIVATE' || option.id === 'private';
+                                                const isRestricted = isPersonalOption && !isLoggedIn;
+                                                const Icon = option.icon;
 
-                                            return (
-                                                <button
-                                                    key={option.id}
-                                                    onClick={() => {
-                                                        if (isRestricted) {
-                                                            onPersonalTabAttempt();
-                                                            return;
-                                                        }
-                                                        toggleFilter(group.id, option.id);
-                                                    }}
-                                                    className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all border relative ${isActive ? 'bg-neutral-ink text-white border-neutral-ink' : 'bg-neutral-white text-neutral-ink border-neutral-gray/10 hover:border-primary-strong/40'} ${isRestricted ? 'opacity-50' : ''}`}
-                                                >
-                                                    {option.icon && <span className="mr-2">{option.icon}</span>}
-                                                    {option.label}
-                                                    {isRestricted && <span className="absolute -top-1 -right-1 w-2 h-2 bg-accent rounded-full" />}
-                                                </button>
-                                            );
-                                        })}
+                                                return (
+                                                    <button
+                                                        key={option.id}
+                                                        onClick={() => {
+                                                            if (isRestricted) {
+                                                                onPersonalTabAttempt();
+                                                                return;
+                                                            }
+                                                            toggleFilter(group.id, option.id);
+                                                        }}
+                                                        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all border relative flex items-center gap-2 ${isActive ? 'bg-neutral-ink text-white border-neutral-ink' : 'bg-neutral-white text-neutral-ink/60 border-neutral-gray/10 hover:border-primary-strong/40'} ${isRestricted ? 'opacity-50' : ''}`}
+                                                    >
+                                                        {Icon && <span className="flex-shrink-0">{Icon}</span>}
+                                                        {option.label}
+                                                        {isRestricted && <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-accent rounded-full" />}
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                                ))}
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
         </div>
     );
 }

@@ -9,6 +9,7 @@ import {
     Globe,
     Zap,
     User as UserIcon,
+    Users,
     ShieldCheck,
     Link2,
     History
@@ -54,10 +55,13 @@ export default function GamePage() {
     const [searchState, setSearchState] = useState<SearchNexusState>({
         query: "",
         activeFilters: {
-            access: ['ALL']
+            ownership: [],
+            level: [],
+            skills: []
         },
         activeTab: 'ALL'
     });
+    const [customTags, setCustomTags] = useState<string[]>([]);
     const [showLoginPrompt, setShowLoginPrompt] = useState(false);
     const [viewMode, setViewMode] = useState<ViewMode>('GRID');
     const [isCreatePanelOpen, setIsCreatePanelOpen] = useState(false);
@@ -70,20 +74,19 @@ export default function GamePage() {
 
     const filterGroups: FilterGroup[] = [
         {
-            id: 'access',
-            label: 'Scope',
-            type: 'SINGLE',
+            id: 'ownership',
+            label: 'Owned by',
+            type: 'MULTI',
             options: [
-                { id: 'ALL', label: 'All', icon: <Layers size={14} /> },
                 { id: 'GLOBAL', label: 'Official', icon: <ShieldCheck size={14} className="text-primary-strong" /> },
-                { id: 'PUBLIC', label: 'Public', icon: <Globe size={14} /> },
-                { id: 'PRIVATE', label: 'Personal', icon: <UserIcon size={14} /> }
+                { id: 'COMMUNITY', label: 'Community', icon: <Users size={14} /> },
+                ...(user ? [{ id: 'MINE', label: 'Mine', icon: <UserIcon size={14} /> }] : [])
             ]
         },
         {
             id: 'level',
             label: 'Level',
-            type: 'SINGLE',
+            type: 'MULTI',
             options: [
                 { id: 'N5', label: 'N5' },
                 { id: 'N4', label: 'N4' },
@@ -91,7 +94,23 @@ export default function GamePage() {
                 { id: 'N2', label: 'N2' },
                 { id: 'N1', label: 'N1' }
             ]
-        }
+        },
+        {
+            id: 'skills',
+            label: 'Skills',
+            type: 'MULTI',
+            options: [
+                { id: 'VOCABULARY', label: 'Vocab' },
+                { id: 'GRAMMAR', label: 'Grammar' },
+                { id: 'KANJI', label: 'Kanji' }
+            ]
+        },
+        ...(user && customTags.length > 0 ? [{
+            id: 'custom_tags',
+            label: 'My Tags',
+            type: 'MULTI' as const,
+            options: customTags.map(tag => ({ id: tag, label: tag }))
+        }] : [])
     ];
 
 
@@ -148,15 +167,15 @@ export default function GamePage() {
     }, [arenas, searchState.query]);
 
     const handleSearchChange = (newState: SearchNexusState) => {
-        const accessFilter = newState.activeFilters.access?.[0];
+        const ownershipFilter = newState.activeFilters.ownership || [];
 
-        if (accessFilter === 'PRIVATE' && !user) {
+        if (ownershipFilter.includes('MINE') && !user) {
             setShowLoginPrompt(true);
             return;
         }
 
         setSearchState(newState);
-        if (accessFilter !== 'PRIVATE') setShowLoginPrompt(false);
+        if (!ownershipFilter.includes('MINE')) setShowLoginPrompt(false);
     };
 
     const handleArenaSelect = (arenaId: string) => {
