@@ -24,11 +24,12 @@ interface CreateContentPanelProps {
     onClose: () => void;
     type: 'QUOOT' | 'FLASHCARDS' | 'PRACTICE';
     onSave: (data: any) => Promise<void>;
+    initialData?: any;
 }
 
 type Mode = 'AI_GENERATE' | 'PASTE_JSON' | 'MANUAL';
 
-export function CreateContentPanel({ isOpen, onClose, type, onSave }: CreateContentPanelProps) {
+export function CreateContentPanel({ isOpen, onClose, type, onSave, initialData }: CreateContentPanelProps) {
     const [mode, setMode] = useState<Mode>('AI_GENERATE');
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -52,22 +53,33 @@ export function CreateContentPanel({ isOpen, onClose, type, onSave }: CreateCont
 
     const typeLabel = type === 'QUOOT' ? 'Arena' : type === 'FLASHCARDS' ? 'Set' : 'Protocol';
 
-    // Reset state when opening
+    // Reset/Initialize state when opening
     useEffect(() => {
         if (isOpen) {
-            setTitle("");
-            setDescription("");
-            setVisibility('private');
-            setPrompt("");
-            setJsonInput("");
-            setManualInput("");
-            setManualItems([]);
-            resetCurrentItem();
-            setGeneratedContent(null);
-            setError(null);
-            setIsPreviewMode(false);
+            if (initialData) {
+                setTitle(initialData.title || "");
+                setDescription(initialData.description || "");
+                setVisibility(initialData.visibility || 'private');
+                setManualItems(initialData.items || initialData.cards || []);
+                setMode('MANUAL');
+                setGeneratedContent(null);
+                setError(null);
+                setIsPreviewMode(false);
+            } else {
+                setTitle("");
+                setDescription("");
+                setVisibility('private');
+                setPrompt("");
+                setJsonInput("");
+                setManualInput("");
+                setManualItems([]);
+                resetCurrentItem();
+                setGeneratedContent(null);
+                setError(null);
+                setIsPreviewMode(false);
+            }
         }
-    }, [isOpen]);
+    }, [isOpen, initialData]);
 
     const resetCurrentItem = () => {
         setCurrentItem({
@@ -182,8 +194,8 @@ export function CreateContentPanel({ isOpen, onClose, type, onSave }: CreateCont
                 {/* Header */}
                 <header className="bg-neutral-white border-b border-neutral-gray/20 p-8 flex items-center justify-between">
                     <div>
-                        <h2 className="text-3xl font-black text-neutral-ink font-display">Construct {typeLabel}</h2>
-                        <p className="text-neutral-ink/60 font-bold">Forge your personal learning arsenal</p>
+                        <h2 className="text-3xl font-black text-neutral-ink font-display">{initialData ? 'Refine' : 'Construct'} {typeLabel}</h2>
+                        <p className="text-neutral-ink/60 font-bold">{initialData ? 'Update your masterpiece' : 'Forge your personal learning arsenal'}</p>
                     </div>
                     <button onClick={onClose} className="w-12 h-12 bg-neutral-beige rounded-xl flex items-center justify-center hover:bg-neutral-gray/10 transition-colors">
                         <X size={24} />
@@ -370,7 +382,7 @@ export function CreateContentPanel({ isOpen, onClose, type, onSave }: CreateCont
                 <footer className="bg-neutral-white border-t border-neutral-gray/20 p-8">
                     <button onClick={handleSave} disabled={!generatedContent || !isPreviewMode || isSaving} className="w-full py-4 bg-primary-strong text-white rounded-2xl font-black uppercase tracking-widest hover:bg-neutral-ink transition-all disabled:opacity-50 flex items-center justify-center gap-3 shadow-xl shadow-primary/20">
                         {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
-                        {isSaving ? "Finalizing..." : `Save ${typeLabel}`}
+                        {isSaving ? "Finalizing..." : `${initialData ? 'Update' : 'Save'} ${typeLabel}`}
                     </button>
                     <p className="mt-4 text-center text-[10px] font-black uppercase tracking-widest text-neutral-ink/20">Ownership guaranteed: Managed via Hanabira Core.</p>
                 </footer>

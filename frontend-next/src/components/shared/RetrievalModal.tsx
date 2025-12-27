@@ -2,11 +2,13 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Search, CheckCircle, AlertCircle, Loader2, Download, Layers } from 'lucide-react';
+import { X, Search, CheckCircle, AlertCircle, Loader2, Download, Layers, Lock } from 'lucide-react';
 import * as practiceService from '@/services/practiceService';
 import { flashcardService } from '@/services/flashcardService';
 import * as quootService from '@/services/quootService';
 import { authFetch } from '@/lib/authFetch';
+import { useUser } from '@/context/UserContext';
+import { useGlobalAuth } from '@/context/GlobalAuthContext';
 
 interface RetrievalModalProps {
     isOpen: boolean;
@@ -15,10 +17,21 @@ interface RetrievalModalProps {
 }
 
 export function RetrievalModal({ isOpen, onClose, type }: RetrievalModalProps) {
+    const { user } = useUser();
+    const { openAuth } = useGlobalAuth();
     const [id, setId] = useState('');
     const [status, setStatus] = useState<'IDLE' | 'LOADING' | 'FOUND' | 'ERROR' | 'SUCCESS'>('IDLE');
     const [errorMsg, setErrorMsg] = useState('');
     const [previewData, setPreviewData] = useState<any>(null);
+
+    // Escape key listener
+    React.useEffect(() => {
+        const handleEsc = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') onClose();
+        };
+        window.addEventListener('keydown', handleEsc);
+        return () => window.removeEventListener('keydown', handleEsc);
+    }, [onClose]);
 
     const handleVerify = async () => {
         if (!id.trim()) return;
@@ -49,6 +62,7 @@ export function RetrievalModal({ isOpen, onClose, type }: RetrievalModalProps) {
     };
 
     const handleImport = async () => {
+        if (!user) return;
         try {
             setStatus('LOADING');
             // Call user follow endpoint
@@ -77,89 +91,133 @@ export function RetrievalModal({ isOpen, onClose, type }: RetrievalModalProps) {
 
     if (!isOpen) return null;
 
+    const handleBackdropClick = (e: React.MouseEvent) => {
+        if (e.target === e.currentTarget) onClose();
+    };
+
     return (
         <AnimatePresence>
-            <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-neutral-ink/50 backdrop-blur-sm">
+            <div
+                className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-neutral-ink/40 backdrop-blur-sm"
+                onClick={handleBackdropClick}
+            >
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    className="bg-neutral-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden border border-neutral-gray/20"
+                    initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                    className="bg-neutral-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden border border-neutral-gray/10"
                 >
-                    <div className="bg-neutral-beige/30 px-6 py-4 flex items-center justify-between border-b border-neutral-gray/10">
-                        <h3 className="text-lg font-black text-neutral-ink font-display flex items-center gap-2">
-                            <Search size={20} className="text-primary-strong" />
-                            Registry Retrieval
-                        </h3>
-                        <button onClick={onClose} className="text-neutral-ink/60 hover:text-neutral-ink">
+                    <div className="bg-gradient-to-br from-neutral-beige/30 to-white px-8 py-6 flex items-center justify-between border-b border-neutral-gray/5">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-primary-strong/10 rounded-xl flex items-center justify-center text-primary-strong">
+                                <Search size={24} />
+                            </div>
+                            <div>
+                                <h3 className="text-xl font-black text-neutral-ink font-display leading-none">
+                                    Registry Access
+                                </h3>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-neutral-ink/30 mt-1">Unified Retrieval System</p>
+                            </div>
+                        </div>
+                        <button onClick={onClose} className="w-10 h-10 bg-neutral-beige/20 rounded-full flex items-center justify-center text-neutral-ink/40 hover:text-neutral-ink transition-colors">
                             <X size={20} />
                         </button>
                     </div>
 
-                    <div className="p-6 space-y-4">
-                        <div className="space-y-2">
-                            <label className="text-xs font-bold uppercase tracking-widest text-neutral-ink/60">Registry ID</label>
-                            <div className="flex gap-2">
-                                <input
-                                    value={id}
-                                    onChange={(e) => setId(e.target.value)}
-                                    placeholder="Enter content ID..."
-                                    className="flex-1 bg-neutral-beige/20 border border-neutral-gray/20 rounded-xl px-4 py-2 text-neutral-ink font-bold focus:outline-none focus:border-primary-strong transition-colors"
-                                />
+                    <div className="p-8 space-y-6">
+                        {!user ? (
+                            <div className="text-center space-y-6 py-4">
+                                <div className="w-16 h-16 bg-neutral-beige/50 rounded-2xl flex items-center justify-center mx-auto text-neutral-ink/20">
+                                    <Lock size={32} />
+                                </div>
+                                <div className="space-y-2">
+                                    <h4 className="text-lg font-black text-neutral-ink">Authentication Required</h4>
+                                    <p className="text-sm font-bold text-neutral-ink/60 px-4">
+                                        Registry lookups and collection monitoring require an active Hanabira Core account.
+                                    </p>
+                                </div>
                                 <button
-                                    onClick={handleVerify}
-                                    disabled={status === 'LOADING' || !id}
-                                    className="bg-neutral-ink text-white px-4 py-2 rounded-xl font-bold hover:bg-neutral-ink/80 transition-colors disabled:opacity-50"
+                                    onClick={() => openAuth('LOGIN', { title: 'Registry Access', description: 'Unlock the ability to import shared content by ID.' })}
+                                    className="w-full bg-primary-strong text-white py-4 rounded-2xl font-black shadow-lg shadow-primary/20 hover:bg-neutral-ink transition-all active:scale-[0.98]"
                                 >
-                                    {status === 'LOADING' ? <Loader2 size={20} className="animate-spin" /> : 'Verify'}
+                                    Sign In to Hanapita
                                 </button>
                             </div>
-                        </div>
-
-                        {status === 'ERROR' && (
-                            <div className="flex items-center gap-2 text-red-500 bg-red-50 p-3 rounded-xl text-sm font-bold">
-                                <AlertCircle size={16} />
-                                {errorMsg}
-                            </div>
-                        )}
-
-                        {status === 'SUCCESS' && (
-                            <div className="flex items-center gap-2 text-green-600 bg-green-50 p-3 rounded-xl text-sm font-bold">
-                                <CheckCircle size={16} />
-                                Successfully imported to your collection
-                            </div>
-                        )}
-
-                        {status === 'FOUND' && previewData && (
-                            <motion.div
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="bg-neutral-white border border-neutral-gray/20 rounded-xl p-4 space-y-3"
-                            >
-                                <div className="flex items-start gap-4">
-                                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-2xl">
-                                        {previewData.icon || previewData.coverEmoji || <Layers size={24} className="text-primary-strong" />}
-                                    </div>
-                                    <div className="flex-1">
-                                        <h4 className="font-black text-neutral-ink font-display text-lg">{previewData.title}</h4>
-                                        <p className="text-sm text-neutral-ink/60 font-medium line-clamp-2">{previewData.description}</p>
-                                        <div className="flex items-center gap-2 mt-2">
-                                            {previewData.level && <span className="bg-neutral-beige px-2 py-0.5 rounded-md text-xs font-bold text-neutral-ink">{previewData.level}</span>}
-                                            <span className="text-xs font-bold text-neutral-ink/40">
-                                                {previewData.creatorName || 'Unknown Author'}
-                                            </span>
-                                        </div>
+                        ) : (
+                            <>
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-neutral-ink/40 ml-1">Universal Content Identifier</label>
+                                    <div className="flex gap-2">
+                                        <input
+                                            value={id}
+                                            onChange={(e) => setId(e.target.value)}
+                                            placeholder="Enter item ID (e.g. 64a...)"
+                                            className="flex-1 bg-neutral-beige/10 border border-neutral-gray/20 rounded-2xl px-5 py-3 text-neutral-ink font-bold focus:outline-none focus:border-primary-strong focus:ring-4 focus:ring-primary-strong/5 transition-all text-sm"
+                                        />
+                                        <button
+                                            onClick={handleVerify}
+                                            disabled={status === 'LOADING' || !id}
+                                            className="bg-neutral-ink text-white px-6 py-3 rounded-2xl font-black hover:bg-primary-strong transition-all disabled:opacity-50 active:scale-[0.98]"
+                                        >
+                                            {status === 'LOADING' ? <Loader2 size={20} className="animate-spin" /> : 'Search'}
+                                        </button>
                                     </div>
                                 </div>
 
-                                <button
-                                    onClick={handleImport}
-                                    className="w-full bg-primary-strong text-white py-3 rounded-xl font-black shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all flex items-center justify-center gap-2"
-                                >
-                                    <Download size={18} />
-                                    Import Reference
-                                </button>
-                            </motion.div>
+                                {status === 'ERROR' && (
+                                    <motion.div
+                                        initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: 'auto' }}
+                                        className="flex items-center gap-3 text-red-500 bg-red-50 p-4 rounded-2xl text-xs font-black uppercase tracking-wider border border-red-100"
+                                    >
+                                        <AlertCircle size={18} />
+                                        {errorMsg}
+                                    </motion.div>
+                                )}
+
+                                {status === 'SUCCESS' && (
+                                    <motion.div
+                                        initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: 'auto' }}
+                                        className="flex items-center gap-3 text-green-600 bg-green-50 p-4 rounded-2xl text-xs font-black uppercase tracking-wider border border-green-100"
+                                    >
+                                        <CheckCircle size={18} />
+                                        Collection updated successfully
+                                    </motion.div>
+                                )}
+
+                                {status === 'FOUND' && previewData && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        className="bg-neutral-beige/10 border border-neutral-gray/10 rounded-2xl p-6 space-y-4"
+                                    >
+                                        <div className="flex items-start gap-4">
+                                            <div className="w-14 h-14 bg-white border border-neutral-gray/10 rounded-2xl flex items-center justify-center text-3xl shadow-sm">
+                                                {previewData.icon || previewData.coverEmoji || <Layers size={28} className="text-primary-strong" />}
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <h4 className="font-black text-neutral-ink font-display text-lg truncate">{previewData.title}</h4>
+                                                <p className="text-xs text-neutral-ink/60 font-bold line-clamp-2 mt-1 leading-relaxed">{previewData.description || 'No description available.'}</p>
+                                                <div className="flex items-center gap-2 mt-3">
+                                                    {previewData.level && <span className="bg-primary-strong text-white px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest leading-none">{previewData.level}</span>}
+                                                    <span className="text-[10px] font-black text-neutral-ink/30 uppercase tracking-widest">
+                                                        {previewData.creatorName || 'Official'}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <button
+                                            onClick={handleImport}
+                                            className="w-full bg-primary-strong text-white py-4 rounded-2xl font-black shadow-xl shadow-primary/20 hover:bg-neutral-ink transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
+                                        >
+                                            <Download size={20} />
+                                            Import to My Collection
+                                        </button>
+                                    </motion.div>
+                                )}
+                            </>
                         )}
                     </div>
                 </motion.div>

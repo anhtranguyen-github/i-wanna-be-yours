@@ -15,3 +15,4 @@ export type { ListingMetadata } from './ListingCard';
 export { RetrievalModal } from './RetrievalModal';
 export { HistoryPanel } from './HistoryPanel';
 export { HistoryModal } from './HistoryModal';
+export { ShareModal } from './ShareModal';
