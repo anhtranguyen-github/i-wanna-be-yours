@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { practiceService } from "@/services/practiceService";
+import { startSession, saveRecord } from "@/services/recordService";
 import { PracticeNode, Question, UserAnswer, DisplayMode, QuestionStatus } from "@/types/practice";
 
 export default function UnifiedSessionPage() {
@@ -27,6 +28,10 @@ export default function UnifiedSessionPage() {
     const [questions, setQuestions] = useState<Question[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [loadError, setLoadError] = useState<string | null>(null);
+
+    // Lifecycle tracking
+    const currentSessionId = React.useRef<string | null>(null);
+    const sessionStartedAt = React.useRef<number>(0);
 
     useEffect(() => {
         if (!nodeId) return;
@@ -49,6 +54,31 @@ export default function UnifiedSessionPage() {
 
         loadData();
     }, [nodeId]);
+
+    // Track session start
+    useEffect(() => {
+        if (!isLoading && node && !currentSessionId.current) {
+            sessionStartedAt.current = Date.now();
+            startSession('PRACTICE', node.id, node.title).then(sid => {
+                currentSessionId.current = sid;
+            });
+        }
+    }, [isLoading, node]);
+
+    // Track session abandonment
+    useEffect(() => {
+        return () => {
+            if (currentSessionId.current && node) {
+                saveRecord({
+                    itemType: 'PRACTICE',
+                    itemId: node.id,
+                    itemTitle: node.title,
+                    status: 'ABANDONED',
+                    sessionId: currentSessionId.current
+                });
+            }
+        };
+    }, [node]);
 
     // State
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -130,6 +160,22 @@ export default function UnifiedSessionPage() {
 
             // Redirect to results page with the attempt ID
             // This ensures we fetch the data specifically for this attempt from the backend
+
+            // Track COMPLETED event
+            if (currentSessionId.current) {
+                const score = response.result?.percentage || 0;
+                await saveRecord({
+                    itemType: 'PRACTICE',
+                    itemId: nodeId,
+                    itemTitle: node?.title,
+                    status: 'COMPLETED',
+                    score,
+                    sessionId: currentSessionId.current,
+                    duration: Math.round((Date.now() - sessionStartedAt.current) / 1000)
+                });
+                currentSessionId.current = null; // Clear to prevent abandonment tracking
+            }
+
             router.push(`/practice/result/${nodeId}?attemptId=${response.attemptId}`);
         } catch (e) {
             console.error("Failed to save practice results:", e);

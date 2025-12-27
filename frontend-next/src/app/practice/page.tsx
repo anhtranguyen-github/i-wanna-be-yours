@@ -113,7 +113,7 @@ export default function PracticeHubPage() {
     }, [fetchNodes]);
 
     const handleStartNode = (id: string) => {
-        router.push(`/practice/session/${id}`);
+        router.push(`/practice/details/${id}`);
     };
 
     const handleSearchChange = (newState: SearchNexusState) => {
@@ -218,7 +218,17 @@ export default function PracticeHubPage() {
                             <Link2 size={20} />
                         </button>
                         <button
-                            onClick={() => setIsHistoryOpen(true)}
+                            onClick={() => {
+                                if (!user) {
+                                    openAuth('LOGIN', {
+                                        flowType: 'PRACTICE',
+                                        title: 'Calibration Logs',
+                                        description: 'Sign in to access your detailed performance metrics and calibration history.'
+                                    });
+                                } else {
+                                    setIsHistoryOpen(true);
+                                }
+                            }}
                             className="w-10 h-10 rounded-xl bg-neutral-white border border-neutral-gray/20 flex items-center justify-center text-neutral-ink hover:text-primary-strong hover:border-primary-strong transition-all"
                             title="View History"
                         >
