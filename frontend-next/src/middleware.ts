@@ -15,7 +15,7 @@ import { verifyAccessToken } from './lib/jwt';
 
 // Define protected routes that require authentication
 const PROTECTED_ROUTES = [
-    '/dashboard',
+    '/profile',
     '/admin',
     '/study-plan/dashboard',
     '/settings',

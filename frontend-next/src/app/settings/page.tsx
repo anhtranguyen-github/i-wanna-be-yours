@@ -131,7 +131,7 @@ export default function SettingsPage() {
                         icon={User}
                         label="Profile"
                         description={user.email}
-                        href="/dashboard"
+                        href="/profile"
                         iconColor="text-blue-500"
                     />
                     <SettingsItem

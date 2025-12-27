@@ -88,9 +88,9 @@ export const UTILITY_CONFIG: NavSection[] = [
     {
         id: 'profile',
         label: 'Profile',
-        href: '/dashboard',
+        href: '/profile',
         icon: User,
-        matchPaths: ['/dashboard'],
+        matchPaths: ['/profile', '/dashboard'],
     },
 ];
 

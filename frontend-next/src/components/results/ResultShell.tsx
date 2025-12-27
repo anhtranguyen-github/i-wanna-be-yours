@@ -52,7 +52,7 @@ export function ResultShell({ result, onRetry, customActions, children }: Result
                 >
                     <div className="space-y-2">
                         <Link
-                            href="/dashboard"
+                            href="/profile"
                             className="inline-flex items-center gap-2 group"
                         >
                             <div className="w-8 h-8 rounded-lg bg-neutral-white border border-neutral-gray/10 flex items-center justify-center group-hover:bg-primary-strong group-hover:text-neutral-beige transition-all">
@@ -116,8 +116,8 @@ export function ResultShell({ result, onRetry, customActions, children }: Result
                                             className="p-8 bg-neutral-white/60 backdrop-blur-md border border-neutral-gray/10 rounded-[2.5rem] flex items-center gap-6 group hover:border-secondary/40 hover:bg-neutral-white transition-all duration-500"
                                         >
                                             <div className={`w-14 h-14 rounded-[1.25rem] flex items-center justify-center flex-shrink-0 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6 ${achievement.rarity === 'LEGENDARY'
-                                                    ? 'bg-amber-100 text-amber-600 shadow-inner'
-                                                    : 'bg-primary/10 text-primary-strong shadow-inner'
+                                                ? 'bg-amber-100 text-amber-600 shadow-inner'
+                                                : 'bg-primary/10 text-primary-strong shadow-inner'
                                                 }`}>
                                                 <achievement.icon size={28} />
                                             </div>

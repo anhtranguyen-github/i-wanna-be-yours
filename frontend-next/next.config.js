@@ -54,6 +54,11 @@ const nextConfig = {
         destination: '/chat',
         permanent: true,
       },
+      {
+        source: '/dashboard',
+        destination: '/study-plan',
+        permanent: true,
+      },
     ];
   },
   eslint: {
