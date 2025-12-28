@@ -30,6 +30,7 @@ import {
     Achievement
 } from "@/types/learnerProgressTypes";
 import { PageHeader } from "@/components/shared";
+import { NeuralMemoryTab } from "@/components/profile/NeuralMemoryTab";
 
 // =============================================================================
 // SUB-COMPONENTS
@@ -212,6 +213,9 @@ export default function ProfilePage() {
             />
 
             <main className="max-w-6xl mx-auto px-6 py-12">
+                <div className="mb-12">
+                    <NeuralMemoryTab />
+                </div>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
 
                     {/* LEFT COLUMN: Identity & Stats */}
