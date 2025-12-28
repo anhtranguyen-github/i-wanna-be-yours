@@ -18,6 +18,16 @@ def start_conversation():
     conversation = service.create_conversation(user_id, title)
     return jsonify(conversation), 201
 
+@bp.route('/user/<UserId>', methods=['GET'])
+@login_required
+def list_user_conversations(UserId):
+    curr_user_id = request.user.get("userId") or request.user.get("id")
+    if str(UserId) != str(curr_user_id):
+        return jsonify({"error": "Unauthorized"}), 403
+    service = ConversationService()
+    conversations = service.list_user_conversations(UserId)
+    return jsonify(conversations)
+
 @bp.route('/<conversation_id>/messages', methods=['POST'])
 @login_required
 def add_message(conversation_id):
@@ -55,12 +65,4 @@ def get_conversation(conversation_id):
         return jsonify(conversation)
     return jsonify({"error": "Conversation not found"}), 404
 
-@bp.route('/user/<UserId>', methods=['GET'])
-@login_required
-def list_user_conversations(UserId):
-    curr_user_id = request.user.get("userId") or request.user.get("id")
-    if str(UserId) != str(curr_user_id):
-        return jsonify({"error": "Unauthorized"}), 403
-    service = ConversationService()
-    conversations = service.list_user_conversations(UserId)
-    return jsonify(conversations)
+
