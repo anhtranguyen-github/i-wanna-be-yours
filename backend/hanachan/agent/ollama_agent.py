@@ -43,7 +43,10 @@ class HanachanAgent:
                 # Retrieve relevant chunks from the selected resources
                 resource_context = self.memory_manager.retrieve_resource_context(prompt, user_id, resource_ids)
                 if resource_context:
+                    logger.info("📄 [Agent] Injecting resource context into Prompt.")
                     system_text += f"\n\n## RELEVANT RESOURCE EXCERPTS:\n{resource_context}"
+                else:
+                    logger.warning("⚠️ [Agent] No resource context found for request with resource_ids.")
             except Exception as e:
                 logger.error(f"Resource Retrieval Error: {e}")
             
