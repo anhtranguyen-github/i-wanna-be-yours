@@ -5,6 +5,10 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from database.database import init_app, db
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 def create_app(test_config=None):
     app = Flask(__name__)

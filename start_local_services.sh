@@ -71,7 +71,7 @@ kill_existing_processes() {
     log "🧹 Cleaning up existing zombie processes..."
     
     # 1. Kill by Ports first (most reliable)
-    local ports=(3000 5100 5200 5400 5500 8000)
+    local ports=(3000 5100 5200 5400 5500 8000 7474 7687 6333)
     for port in "${ports[@]}"; do
         if lsof -t -i:$port >/dev/null; then
             log "  Killing process on port $port..."
@@ -130,7 +130,7 @@ cleanup() {
 
     # 3. Fallback: Kill by Ports
     log "Checking for leftover services on ports..."
-    pids=$(lsof -t -i:3000 -i:8000 -i:5100 -i:5200 -i:5400 -i:5500 2>/dev/null || true)
+    pids=$(lsof -t -i:3000 -i:8000 -i:5100 -i:5200 -i:5400 -i:5500 -i:7474 -i:7687 -i:6333 2>/dev/null || true)
     if [ -n "$pids" ]; then
         for pid in $pids; do
             log "  🛑 Killing leftover process on port PID: $pid"
@@ -175,6 +175,18 @@ shutdown_all() {
         else
             log "⚠️  Failed to stop Ollama (or it wasn't running)."
         fi
+    ) &
+
+    # Stop Neo4j
+    (
+        log "🛑 Stopping Neo4j..."
+        docker compose stop neo4j >/dev/null 2>&1 && log "✅ Neo4j stopped." || true
+    ) &
+
+    # Stop Qdrant
+    (
+        log "🛑 Stopping Qdrant..."
+        docker compose stop qdrant >/dev/null 2>&1 && log "✅ Qdrant stopped." || true
     ) &
     
     wait
@@ -221,6 +233,9 @@ check_and_free_port 5200 "dictionary-python" &
 check_and_free_port 5500 "study-plan-service" &
 check_and_free_port 8000 "express-db" &
 check_and_free_port 5400 "hanachan" &
+check_and_free_port 7474 "neo4j-http" &
+check_and_free_port 7687 "neo4j-bolt" &
+check_and_free_port 6333 "qdrant" &
 wait
 log "✅ All ports checked/freed."
 
@@ -264,6 +279,28 @@ DB_PIDS+=($!)
             log "❌ Failed to start Ollama."
             exit 1
         fi
+    fi
+) &
+DB_PIDS+=($!)
+
+# --- Neo4j ---
+(
+    if docker ps --format '{{.Names}}' | grep -q "neo4j"; then
+        log "✅ Neo4j is already running."
+    else
+        log "🚀 Starting Neo4j..."
+        docker compose up -d neo4j >/dev/null 2>&1 && log "✅ Neo4j started." || { log "❌ Failed to start Neo4j"; exit 1; }
+    fi
+) &
+DB_PIDS+=($!)
+
+# --- Qdrant ---
+(
+    if docker ps --format '{{.Names}}' | grep -q "qdrant"; then
+        log "✅ Qdrant is already running."
+    else
+        log "🚀 Starting Qdrant..."
+        docker compose up -d qdrant >/dev/null 2>&1 && log "✅ Qdrant started." || { log "❌ Failed to start Qdrant"; exit 1; }
     fi
 ) &
 DB_PIDS+=($!)
