@@ -37,6 +37,7 @@ interface ChatInputProps {
     isLoading?: boolean;
     disabled?: boolean;
     placeholder?: string;
+    isGuest?: boolean;
 }
 
 export function ChatInput({
@@ -49,7 +50,8 @@ export function ChatInput({
     onRemoveAttachment,
     isLoading = false,
     disabled = false,
-    placeholder = "Ask Hanachan anything..."
+    placeholder = "Ask Hanachan anything...",
+    isGuest = false
 }: ChatInputProps) {
     const inputRef = useRef<HTMLTextAreaElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -145,7 +147,7 @@ export function ChatInput({
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder={placeholder}
+                    placeholder={isGuest ? "Login to synchronize with Hanachan..." : placeholder}
                     rows={1}
                     className="flex-1 bg-transparent py-3 text-brand-dark placeholder:text-neutral-ink resize-none focus:outline-none text-sm max-h-[200px]"
                 />
@@ -160,11 +162,21 @@ export function ChatInput({
                     </button>
                     <button
                         onClick={onSend}
-                        disabled={!canSend}
-                        className="p-2 bg-brand-green text-white rounded-xl hover:bg-brand-green/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                        title="Send message"
+                        disabled={!isGuest && !canSend}
+                        className={`p-2 rounded-xl transition-all font-bold text-xs ${isGuest
+                                ? "bg-primary text-white px-4 hover:scale-105 active:scale-95 flex items-center gap-2"
+                                : "bg-brand-green text-white hover:bg-brand-green/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                            }`}
+                        title={isGuest ? "Unlock Neural Access" : "Send message"}
                     >
-                        <Send size={18} />
+                        {isGuest ? (
+                            <>
+                                <Sparkles size={16} />
+                                Synchronize
+                            </>
+                        ) : (
+                            <Send size={18} />
+                        )}
                     </button>
                 </div>
             </div>

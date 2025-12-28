@@ -138,6 +138,11 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
     }, [searchParams, user, messages.length, streamState.isStreaming, historyLoading]);
 
     const handleSend = async (overrideInput?: string) => {
+        if (isGuest) {
+            openAuth('LOGIN', { flowType: 'CHAT', title: 'Neural Synchronization' });
+            return;
+        }
+
         const text = overrideInput !== undefined ? overrideInput : inputValue;
         if (!text.trim() || streamState.isStreaming) return;
 
@@ -170,6 +175,11 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
     const ALLOWED_EXTENSIONS = ['.pdf', '.txt', '.png', '.jpg', '.jpeg', '.docx'];
 
     const handleFileUpload = (files: File[]) => {
+        if (isGuest) {
+            openAuth('LOGIN', { flowType: 'CHAT', title: 'Knowledge Upload' });
+            return;
+        }
+
         const validFiles: File[] = [];
 
         for (const file of files) {
@@ -279,10 +289,19 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
                     value={inputValue}
                     onChange={setInputValue}
                     onSend={() => handleSend()}
+                    onQuickAction={(type) => {
+                        if (isGuest) {
+                            openAuth('LOGIN', { flowType: 'CHAT', title: `Create ${type}` });
+                            return;
+                        }
+                        // Handle quick action (implementation usually via prompt injection)
+                        handleSend(`Please generate a ${type} based on our conversation.`);
+                    }}
                     onFileSelect={handleFileUpload}
                     attachedFiles={attachedFiles}
                     onRemoveAttachment={removeFile}
                     isLoading={streamState.isStreaming}
+                    isGuest={isGuest}
                     placeholder={isGuest ? "Ask Hanachan anything..." : "Synchronize your thoughts..."}
                 />
             </div>
