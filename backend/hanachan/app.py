@@ -58,11 +58,13 @@ def create_app(test_config=None):
     from routes.suggestion import bp as suggestion_bp
     from routes.artifacts import bp as artifacts_bp
     from routes.linguistics import bp as linguistics_bp
+    from routes.resource import bp as resource_bp
     app.register_blueprint(conversation_bp)
     app.register_blueprint(task_bp)
     app.register_blueprint(suggestion_bp)
     app.register_blueprint(artifacts_bp)
     app.register_blueprint(linguistics_bp, url_prefix='/d-api')
+    app.register_blueprint(resource_bp)
     
     # Initialize MongoDB indexes for artifacts (conditional)
     if os.environ.get("ENABLE_MONGO", "false").lower() == "true":

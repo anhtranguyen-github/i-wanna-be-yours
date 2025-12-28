@@ -6,8 +6,23 @@ from memory.episodic import EpisodicMemory
 from database.database import db
 from models.resource import Resource
 import os
+import jwt
+import time
 
+# Configure logging at module level to ensure visibility in RQ worker
+logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s : %(message)s')
 logger = logging.getLogger(__name__)
+
+JWT_SECRET = os.getenv("JWT_SECRET", "your-development-secret-key")
+
+def generate_system_token():
+    payload = {
+        "id": "system-worker",
+        "userId": "system-worker",
+        "role": "admin", # Admin role usually bypasses checks or is allowed
+        "exp": int(time.time()) + 300
+    }
+    return jwt.encode(payload, JWT_SECRET, algorithm="HS256")
 
 def ingest_resource(resource_id: str):
     """
@@ -20,6 +35,7 @@ def ingest_resource(resource_id: str):
     logger.info(f"⚡ [WORKER] Starting ingestion for resource: {resource_id}")
     
     processor = ResourceProcessor()
+    token = generate_system_token()
     
     # We need to make sure it doesn't use localhost if running in Docker
     from app import create_app
@@ -28,7 +44,7 @@ def ingest_resource(resource_id: str):
     with app.app_context():
         try:
             # 1. Extraction
-            res_data = processor.get_resource_content(resource_id)
+            res_data = processor.get_resource_content(resource_id, token=token)
             if not res_data or not res_data.get('content'):
                 logger.error(f"❌ [WORKER] Failed to get content for resource {resource_id}")
                 return False
@@ -37,6 +53,8 @@ def ingest_resource(resource_id: str):
             title = res_data['title']
             user_id = res_data.get('userId') # Critical for privacy
             
+            logger.info(f"📄 [WORKER] Extracted {len(content)} chars from {title}")
+
             if not user_id:
                 logger.error(f"❌ [WORKER] No userId found for resource {resource_id}. Aborting ingestion.")
                 return False
