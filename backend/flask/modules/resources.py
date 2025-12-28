@@ -207,12 +207,17 @@ class ResourcesModule:
         @login_required
         def get_resource(id):
             user_id = request.user.get("userId") or request.user.get("id")
+            role = request.user.get("role")
+            
             try:
-                resource = self.resources_collection.find_one({
+                query = {
                     "_id": ObjectId(id),
-                    "userId": user_id,
                     "deletedAt": None
-                })
+                }
+                if role != 'admin':
+                    query["userId"] = user_id
+
+                resource = self.resources_collection.find_one(query)
                 if not resource:
                     return jsonify({"error": "Resource not found"}), 404
                 
@@ -237,12 +242,17 @@ class ResourcesModule:
         @login_required
         def download_resource(id):
             user_id = request.user.get("userId") or request.user.get("id")
+            role = request.user.get("role")
+            
             try:
-                resource = self.resources_collection.find_one({
+                query = {
                     "_id": ObjectId(id),
-                    "userId": user_id,
                     "deletedAt": None
-                })
+                }
+                if role != 'admin':
+                    query["userId"] = user_id
+
+                resource = self.resources_collection.find_one(query)
                 if not resource:
                     return jsonify({"error": "Resource not found"}), 404
                 
