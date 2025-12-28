@@ -33,6 +33,15 @@ on_error() {
 }
 
 # Function to check if a port is in use and free it
+is_safe_to_kill() {
+    local pid=$1
+    local cmd=$(ps -p "$pid" -o args= 2>/dev/null)
+    if [[ "$cmd" == *".vscode-server"* ]]; then
+        return 1
+    fi
+    return 0
+}
+
 check_and_free_port() {
     local port=$1
     local name=$2
@@ -41,45 +50,68 @@ check_and_free_port() {
     local pids=$(lsof -t -i:$port 2>/dev/null)
     
     if [ -n "$pids" ]; then
-        log "⚠️  Port $port ($name) is in use by PID(s) $pids. Killing them..."
+        log "⚠️  Port $port ($name) is in use by PID(s) $pids. Checking safety..."
         
-        # Try graceful kill first
-        kill $pids 2>/dev/null || true
+        for pid in $pids; do
+            if is_safe_to_kill "$pid"; then
+                log "  Killing PID $pid..."
+                kill $pid 2>/dev/null || true
+            else
+                log "  ⚠️  Skipping PID $pid (IDE process) on port $port."
+            fi
+        done
+        
         sleep 1
         
         # Check if still alive, then force kill
         local still_alive=$(lsof -t -i:$port 2>/dev/null)
         if [ -n "$still_alive" ]; then
-             log "⚠️  Port $port ($name) still active. Force killing..."
-             kill -9 $still_alive 2>/dev/null || true
+             for pid in $still_alive; do
+                if is_safe_to_kill "$pid"; then
+                    log "  Force killing PID $pid..."
+                    kill -9 $pid 2>/dev/null || true
+                else
+                    log "  ⚠️  Skipping force kill for PID $pid (IDE process)."
+                fi
+             done
         fi
         
-        # Final check
+        # Final check (only warn if we failed to kill a SAFE process, but hard to distinguish here, just warn)
         if lsof -t -i:$port >/dev/null; then
-            log "❌ Failed to free port $port. Manual intervention required."
-            return 1
+             # Check if the remaining process is the unsafe one
+             local remaining=$(lsof -t -i:$port)
+             local all_safe=true
+             for pid in $remaining; do
+                 if is_safe_to_kill "$pid"; then
+                     all_safe=false
+                 fi
+             done
+             
+             if [ "$all_safe" = true ]; then
+                 log "ℹ️ Port $port is held by IDE processes (safe to ignore)."
+             else
+                 log "❌ Failed to free port $port. Manual intervention required."
+                 return 1
+             fi
         fi
         
-        log "✅ Port $port freed."
+        log "✅ Port check complete for $port."
     else
         log "✅ Port $port is free."
     fi
 }
 
 # Aggressively kill known service markers
+# Aggressively kill known service markers
 kill_existing_processes() {
-    log "🧹 Cleaning up existing zombie processes..."
+    log "🧹 Aggressively cleaning up existing processes and services..."
     
-    # 1. Kill by Ports first (most reliable)
-    local ports=(3000 5100 5200 5400 5500 8000 7474 7687 6333)
-    for port in "${ports[@]}"; do
-        if lsof -t -i:$port >/dev/null; then
-            log "  Killing process on port $port..."
-            lsof -t -i:$port | xargs -r kill -9 2>/dev/null || true
-        fi
-    done
+    # 1. Stop Docker Infrastructure (Cleanest way)
+    log "  Stopping Docker containers (ollama, neo4j, qdrant, redis)..."
+    docker stop ollama_fixed neo4j qdrant redis >/dev/null 2>&1 || true
     
-    # 2. Kill by Name (to catch non-listening zombies or startup scripts)
+    # 2. Kill by Name
+    log "  Killing processes by name..."
     local patterns=(
         "next-server"
         "flask/bin/gunicorn"
@@ -87,19 +119,43 @@ kill_existing_processes() {
         "express-db/my_server.js"
         "dictionary-db/main_server.js"
         "hanachan/app.py"
-        "node main_server.js" # generic node servers
-        "node my_server.js"
+        "node main_server.js"
+        "mongod"
+        "rq worker"
+        "gunicorn"
+        "uvicorn"
     )
     
     for pattern in "${patterns[@]}"; do
-        if pgrep -f "$pattern" >/dev/null; then
-             log "  Killing legacy process matching: $pattern"
-             pkill -9 -f "$pattern" 2>/dev/null || true
+        pkill -9 -f "$pattern" 2>/dev/null || true
+    done
+
+    # Remove stale mongo lock if present after killing
+    if [ -f "$DB_ROOT/mongod.lock" ]; then
+         log "  🗑️ Removing stale mongod lock file..."
+         rm -f "$DB_ROOT/mongod.lock"
+    fi
+    
+    # 3. Kill by Ports (Linux + Windows/WSL)
+    local ports=(3000 5100 5200 5400 5500 8000 7474 7687 6333 6379 27017)
+    for port in "${ports[@]}"; do
+        # A. Linux Check
+        local pids_on_port=$(lsof -t -i:$port 2>/dev/null)
+        if [ -n "$pids_on_port" ]; then
+            log "  Checking port $port (Linux)..."
+            for pid in $pids_on_port; do
+                if is_safe_to_kill "$pid"; then
+                    log "    Force killing PID $pid..."
+                    kill -9 "$pid" 2>/dev/null || true
+                else
+                    log "    ⚠️  Skipping PID $pid (IDE process) on port $port."
+                fi
+            done
         fi
+        
+
     done
     
-    # Small wait to let OS clean up
-    sleep 1
     log "✅ Cleanup phase complete."
 }
 
@@ -128,6 +184,7 @@ cleanup() {
     pkill -f "express-db/my_server.js" && log "  🛑 Killed express server" || true
     pkill -f "dictionary-db/main_server.js" && log "  🛑 Killed dictionary server" || true
     pkill -f "rq worker" && log "  🛑 Killed rq worker" || true
+    pkill -f "uvicorn" && log "  🛑 Killed uvicorn" || true
 
     # 3. Fallback: Kill by Ports
     log "Checking for leftover services on ports..."
@@ -256,9 +313,12 @@ log "=== Initializing Databases & Infrastructure in Parallel ==="
 
 # --- MongoDB ---
 (
-    if pgrep mongod > /dev/null; then
-        log "✅ MongoDB is already running."
+    if lsof -i:27017 > /dev/null; then
+        log "✅ MongoDB is already running on port 27017."
     else
+        # Ensure no zombie mongod is confusing things
+        pkill mongod 2>/dev/null || true
+        
         log "🚀 Starting MongoDB..."
         mongod --dbpath "$DB_ROOT" \
                --bind_ip_all \

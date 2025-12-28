@@ -3,6 +3,12 @@
 # Entrypoint for RQ Worker
 
 echo "Starting RQ Worker..."
+# Load environment variables from .env if it exists
+if [ -f .env ]; then
+  echo "Loading .env..."
+  export $(grep -v '^#' .env | xargs)
+fi
+
 # Wait for Redis
 # (Simple wait, for robustness we could use a wait-for-it script)
 sleep 5
