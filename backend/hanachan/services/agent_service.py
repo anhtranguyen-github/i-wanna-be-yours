@@ -359,10 +359,49 @@ class AgentService:
         full_content = ""
         resource_ids = request_data.context_config.resource_ids if request_data.context_config else []
         
+        # Fetch Chat History (Short-Term Memory) with Token Budget
+        chat_history = []
+        MAX_HISTORY_TOKENS = 2000
+        
+        if conv_id:
+            try:
+                from utils.token_counter import estimate_tokens
+                
+                # Fetch larger batch (e.g., 50) to allow for filtering
+                recent_msgs = ChatMessage.query.filter_by(conversation_id=int(conv_id))\
+                    .order_by(ChatMessage.created_at.desc())\
+                    .limit(50)\
+                    .all()
+                
+                if user_msg_id:
+                     recent_msgs = [m for m in recent_msgs if m.id != user_msg_id]
+
+                current_tokens = 0
+                temp_history = []
+                
+                # Iterate backwards (newest first)
+                for msg in recent_msgs:
+                    content = msg.content or ""
+                    tokens = estimate_tokens(content)
+                    
+                    if current_tokens + tokens > MAX_HISTORY_TOKENS:
+                        break
+                    
+                    current_tokens += tokens
+                    temp_history.append({"role": msg.role, "content": content})
+                
+                # Restore chronological order
+                for msg in reversed(temp_history):
+                    chat_history.append(msg)
+                    
+            except Exception as e:
+                print(f"Error fetching chat history: {e}")
+
         for chunk in agent.invoke(
             prompt=request_data.prompt,
             user_id=request_data.user_id,
             resource_ids=resource_ids,
+            chat_history=chat_history,
             stream=True
         ):
             full_content += chunk

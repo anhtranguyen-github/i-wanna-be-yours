@@ -1,6 +1,6 @@
 import os
 import logging
-from typing import List, Any, Generator
+from typing import List, Any, Generator, Dict
 from services.resource_processor import ResourceProcessor
 from langchain_core.messages import SystemMessage, HumanMessage
 from memory.manager import MemoryManager
@@ -29,9 +29,11 @@ class HanachanAgent:
                prompt: str, 
                user_id: str, 
                resource_ids: List[str] = None,
+               chat_history: List[Dict[str, str]] = None,
                stream: bool = False) -> Any:
         
         resource_ids = resource_ids or []
+        chat_history = chat_history or []
         system_text = self._get_system_prompt()
         
         # 1. Gather Resource Context
@@ -53,10 +55,21 @@ class HanachanAgent:
             logger.error(f"Memory retrieval failed: {e}")
 
         # 3. Construct Messages
-        messages = [
-            SystemMessage(content=system_text),
-            HumanMessage(content=prompt)
-        ]
+        from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+        
+        messages = [SystemMessage(content=system_text)]
+        
+        # Inject Chat History
+        for msg in chat_history:
+            role = msg.get('role')
+            content = msg.get('content')
+            if role == 'user':
+                messages.append(HumanMessage(content=content))
+            elif role == 'assistant':
+                messages.append(AIMessage(content=content))
+        
+        # Current Message
+        messages.append(HumanMessage(content=prompt))
 
         try:
             if stream:
