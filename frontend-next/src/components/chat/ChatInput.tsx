@@ -67,11 +67,11 @@ export function ChatInput({
     const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            if (!disabled && !isLoading) {
+            if (!disabled && !isLoading && !hasUploading) {
                 onSend();
             }
         }
-    }, [onSend, disabled, isLoading]);
+    }, [onSend, disabled, isLoading, hasUploading]);
 
     const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && onFileSelect) {
@@ -164,8 +164,8 @@ export function ChatInput({
                         onClick={onSend}
                         disabled={!isGuest && !canSend}
                         className={`p-2 rounded-xl transition-all font-bold text-xs ${isGuest
-                                ? "bg-primary text-white px-4 hover:scale-105 active:scale-95 flex items-center gap-2"
-                                : "bg-brand-green text-white hover:bg-brand-green/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                            ? "bg-primary text-white px-4 hover:scale-105 active:scale-95 flex items-center gap-2"
+                            : "bg-brand-green text-white hover:bg-brand-green/90 disabled:opacity-50 disabled:cursor-not-allowed"
                             }`}
                         title={isGuest ? "Unlock Neural Access" : "Send message"}
                     >

@@ -146,12 +146,26 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
         const text = overrideInput !== undefined ? overrideInput : inputValue;
         if (!text.trim() || streamState.isStreaming) return;
 
+        if (attachedFiles.some(f => f.uploading)) {
+            addNotification({
+                message: "Please wait for files to finish uploading.",
+                type: 'warning'
+            });
+            return;
+        }
+
         // Optimistically add user message
         const userMsg: ChatMessage = {
             id: `user-${Date.now()}`,
             role: 'user',
             content: text,
-            timestamp: new Date()
+            timestamp: new Date(),
+            attachments: attachedFiles.map(f => ({
+                id: f.id,
+                title: f.title,
+                type: f.file?.type.startsWith('image/') ? 'image' : 'file',
+                size: f.file?.size
+            }))
         };
         setMessages(prev => [...prev, userMsg]);
 
@@ -159,11 +173,15 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
         setAttachedFiles([]);
 
         try {
+            const resourceIds = attachedFiles
+                .map(f => f.backendId)
+                .filter((id): id is string => !!id);
+
             await streamMessage(
                 text,
                 effectiveConversationId,
                 sessionId || `temp-${Date.now()}`,
-                attachedFiles.map(f => f.id)
+                resourceIds
             );
         } catch (error) {
             console.error("Failed to send message:", error);
@@ -174,7 +192,7 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
     const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
     const ALLOWED_EXTENSIONS = ['.pdf', '.txt', '.png', '.jpg', '.jpeg', '.docx'];
 
-    const handleFileUpload = (files: File[]) => {
+    const handleFileUpload = async (files: File[]) => {
         if (isGuest) {
             openAuth('LOGIN', { flowType: 'CHAT', title: 'Knowledge Upload' });
             return;
@@ -201,16 +219,39 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
             validFiles.push(file);
         }
 
+        if (validFiles.length === 0) return;
+
+        // Create temporary entries with uploading status
         const newFiles: AttachedFile[] = validFiles.map(file => ({
             id: Math.random().toString(36).substr(2, 9),
             file,
             title: file.name,
-            uploading: false
+            uploading: true
         }));
+
         setAttachedFiles(prev => [...prev, ...newFiles]);
 
-        if (validFiles.length > 0) {
-            addNotification({ message: `Attached ${validFiles.length} file(s).`, type: 'success' });
+        // Upload files in parallel or sequence
+        for (const attached of newFiles) {
+            try {
+                const result = await aiTutorService.uploadFile(attached.file!);
+                setAttachedFiles(prev => prev.map(f =>
+                    f.id === attached.id
+                        ? { ...f, uploading: false, backendId: result.id }
+                        : f
+                ));
+            } catch (error) {
+                console.error(`Failed to upload ${attached.title}:`, error);
+                setAttachedFiles(prev => prev.map(f =>
+                    f.id === attached.id
+                        ? { ...f, uploading: false, error: true }
+                        : f
+                ));
+                addNotification({
+                    message: `Failed to upload ${attached.title}`,
+                    type: 'error'
+                });
+            }
         }
     };
 

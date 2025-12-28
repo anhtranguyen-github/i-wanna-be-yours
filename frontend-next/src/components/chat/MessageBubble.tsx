@@ -20,12 +20,21 @@ import {
     Layers
 } from 'lucide-react';
 
+export interface Attachment {
+    id: string;
+    title: string;
+    type: 'image' | 'file';
+    url?: string;
+    size?: number;
+}
+
 export interface ChatMessage {
     id: string;
     role: 'user' | 'assistant' | 'system';
     content: string;
     timestamp: Date;
     artifacts?: Artifact[];
+    attachments?: Attachment[];
 }
 
 interface MessageBubbleProps {
@@ -78,7 +87,30 @@ function MessageBubbleComponent({ message, onOpenArtifact }: MessageBubbleProps)
                     <p className="text-sm leading-relaxed whitespace-pre-wrap font-medium">{message.content}</p>
                 </div>
 
-                {/* Artifact Cards */}
+                {/* Attachments (User) */}
+                {message.attachments && message.attachments.length > 0 && (
+                    <div className={`mt-2 flex flex-wrap gap-2 ${isUser ? 'justify-end' : 'justify-start'}`}>
+                        {message.attachments.map((file) => (
+                            <div key={file.id} className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-xl max-w-[200px]">
+                                <div className="w-8 h-8 flex items-center justify-center bg-slate-50 rounded-lg shrink-0">
+                                    {file.type === 'image' ? (
+                                        <span className="text-xs">🖼️</span>
+                                    ) : (
+                                        <FileText size={16} className="text-slate-500" />
+                                    )}
+                                </div>
+                                <div className="min-w-0">
+                                    <p className="text-xs font-semibold text-slate-700 truncate">{file.title}</p>
+                                    {file.size && (
+                                        <p className="text-[10px] text-slate-400">{(file.size / 1024).toFixed(0)}KB</p>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {/* Artifact Cards (Assistant) */}
                 {message.artifacts && message.artifacts.length > 0 && (
                     <div className="mt-3 space-y-2 w-full max-w-sm">
                         <p className="text-xs font-bold text-neutral-ink uppercase tracking-wider ml-1">Generated Content</p>
