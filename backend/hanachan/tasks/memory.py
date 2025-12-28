@@ -18,12 +18,37 @@ def process_interaction(session_id: str, user_message: str, agent_response: str)
     """
     Background task to process a chat interaction for episodic and semantic memory.
     """
+    import time
     print(f"⚡ [WORKER] Starting memory processing for Session: {session_id}")
     logger.info(f"⚡ [WORKER] Starting memory processing for Session: {session_id}")
     
-    # Lazy initializations
+    # Pre-flight check for Qdrant with retry
+    q_host = os.environ.get("QDRANT_HOST", "qdrant")
+    q_port = os.environ.get("QDRANT_PORT", "6333")
+    for attempt in range(3):
+        try:
+            import urllib.request
+            with urllib.request.urlopen(f"http://{q_host}:{q_port}/collections", timeout=5) as resp:
+                print(f"✅ [WORKER] Qdrant Pre-flight check PASSED (attempt {attempt+1})")
+                break
+        except Exception as e:
+            print(f"⚠️ [WORKER] Qdrant Pre-flight check FAILED (attempt {attempt+1}): {e}")
+            if attempt < 2:
+                time.sleep(2)
+
+    # Lazy initializations with retry for EpisodicMemory
     llm = ModelFactory.create_chat_model(temperature=0)
-    episodic = EpisodicMemory()
+    episodic = None
+    for attempt in range(3):
+        try:
+            episodic = EpisodicMemory()
+            print(f"✅ [WORKER] EpisodicMemory initialized (attempt {attempt+1})")
+            break
+        except Exception as e:
+            print(f"⚠️ [WORKER] EpisodicMemory init failed (attempt {attempt+1}): {e}")
+            if attempt < 2:
+                time.sleep(3)
+    
     semantic = SemanticMemory()
     
     interaction_text = f"User: {user_message}\nAssistant: {agent_response}"
@@ -71,9 +96,6 @@ Empty list if no relevant information found."""),
         logger.error(f"❌ [WORKER] Semantic extraction failed: {e}")
 
     # --- 3. Episode Management ---
-    # Note: In a real app, we might need a way to find the message_id. 
-    # For now, we skip explicit ID tracking unless we pass them from the agent.
-    # But we can at least ensure an episode exists.
     try:
         from app import create_app
         app = create_app()
@@ -82,6 +104,7 @@ Empty list if no relevant information found."""),
     except Exception as e:
         logger.error(f"❌ [WORKER] Episode management failed: {e}")
 
+    print(f"✅ [WORKER] Finished processing interaction for session {session_id}")
     return True
 
 def _parse_json_safely(text: str):

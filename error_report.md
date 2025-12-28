@@ -73,3 +73,7 @@ This document tracks all errors, bugs, and failures encountered during the imple
 - **Error**: `Errno 111 Connection refused` specifically when the worker calls `QdrantVectorStore`.
 - **Observation**: Handled by manually resolving the hostname in `EpisodicMemory` but still occasionally fails. Likely a race condition or an issues with `httpx`/gRPC defaults in the `langchain-qdrant` library.
 - **Action**: Forcing `prefer_grpc=False` and adding heartheat checks.
+## 12. .env File Overriding Docker Environment Variables
+- **Error**: Worker code reading `QDRANT_HOST=localhost` despite docker-compose setting it to `qdrant`.
+- **Cause**: The `.env` file in `backend/hanachan/` was being copied into the Docker image. `python-dotenv` was loading this file and overriding the OS environment variables set by Docker Compose.
+- **Solution**: Added `.env` to `.dockerignore` to prevent it from being included in the Docker image.

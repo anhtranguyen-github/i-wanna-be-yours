@@ -21,6 +21,8 @@ class EpisodicMemory:
         qdrant_host = os.environ.get("QDRANT_HOST", "localhost")
         qdrant_port = int(os.environ.get("QDRANT_PORT", 6333))
         
+        print(f"DEBUG: QDRANT_HOST from env = '{qdrant_host}', raw = '{os.environ.get('QDRANT_HOST')}'")
+        
         # Resolve hostname to IP to avoid discovery issues in some Docker/IPv6 environments
         try:
             target_ip = socket.gethostbyname(qdrant_host)
