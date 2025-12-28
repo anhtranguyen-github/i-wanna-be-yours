@@ -30,16 +30,29 @@ class ResourceProcessor:
             metadata = meta_res.json()
             
             # Download file
-            download_res = requests.get(f"{RESOURCES_API}/f-api/v1/resources/{resource_id}/download")
+            from modules.security import FileSecurity
+            
+            download_res = requests.get(
+                f"{RESOURCES_API}/f-api/v1/resources/{resource_id}/download",
+                timeout=30 # Security: Timeout to prevent hanging
+            )
             if not download_res.ok:
                 logging.error(f"Failed to download file for {resource_id}: {download_res.status_code}")
                 return None
             
-            # Extract text based on type
-            content = ""
-            media_base64 = None
-            mime_type = metadata.get('mimeType', '').lower()
             file_bytes = download_res.content
+            
+            # Security: Validate Magic Bytes
+            if not FileSecurity.validate_content(file_bytes):
+                logging.error(f"FileSecurity: Rejected resource {resource_id} due to invalid magic bytes.")
+                return None
+
+            # Security: Size check
+            if not FileSecurity.is_safe_size(len(file_bytes)):
+                logging.error(f"FileSecurity: Rejected resource {resource_id} due to size limit.")
+                return None
+
+            # Extract text based on type
             
             if 'image' in mime_type:
                 import base64
