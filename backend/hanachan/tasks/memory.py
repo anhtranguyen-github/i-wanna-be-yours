@@ -12,7 +12,9 @@ from schemas.memory import Relationship
 from services.episode_service import EpisodeService
 from database.database import db
 
-logger = logging.getLogger(__name__)
+# Configure logging for RQ worker
+logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s : %(message)s')
+logger = logging.getLogger("hanachan.memory")
 
 def process_interaction(session_id: str, user_id: str, user_message: str, agent_response: str):
     """
@@ -52,9 +54,26 @@ def process_interaction(session_id: str, user_id: str, user_message: str, agent_
             if attempt < 2:
                 time.sleep(3)
     
+    from memory.semantic import SemanticMemory
+    from services.memory_evaluator import MemoryEvaluator
+    
     semantic = SemanticMemory()
+    evaluator = MemoryEvaluator()
     
     interaction_text = f"User: {user_message}\nAssistant: {agent_response}"
+    
+    # --- 0. Decision Point ---
+    eval_result = evaluator.evaluate_interaction(user_message, agent_response)
+    is_memorable = eval_result.get("is_memorable", False)
+    scope = eval_result.get("scope", "none")
+    reason = eval_result.get("reason", "No reason provided")
+    category = eval_result.get("category", "generic")
+    
+    if not is_memorable or scope == "none":
+        logger.info(f"⏭️ [GATEKEEPER] Skipping memory for session {session_id}. Reason: {reason}")
+        return True
+
+    logger.info(f"🎯 [GATEKEEPER] Accepted memory ({scope}/{category}). Reason: {reason}")
     
     # --- 1. Episodic Summarization ---
     try:
@@ -65,38 +84,47 @@ def process_interaction(session_id: str, user_id: str, user_message: str, agent_
         messages = summary_prompt.format_messages(interaction=interaction_text)
         summary = llm.invoke(messages).content
         
-        episodic.add_memory(summary, user_id=user_id, metadata={"session_id": session_id, "timestamp": datetime.utcnow().isoformat()})
+        meta = {
+            "session_id": session_id, 
+            "timestamp": datetime.utcnow().isoformat(),
+            "scope": scope,
+            "category": category
+        }
+        
+        episodic.add_memory(summary, user_id=user_id, metadata=meta)
         logger.info(f"✅ [WORKER] Episodic memory updated: {summary[:50]}...")
     except Exception as e:
         logger.error(f"❌ [WORKER] Episodic processing failed: {e}")
 
     # --- 2. Semantic Extraction ---
-    try:
-        extraction_prompt = ChatPromptTemplate.from_messages([
-            ("system", """Extract key entities and relationships from the interaction.
-Target entities: User, Topic, Level, Goal, Preference.
-Relationships: LIKES, WANTS_TO_LEARN, HAS_GOAL, IS_AT_LEVEL.
-Return strictly JSON in the format: {{"relationships": [{{"source": {{"id": "...", "type": "..."}}, "target": {{"id": "...", "type": "..."}}, "type": "..."}}]}}
-Empty list if no relevant information found."""),
-            ("human", "{interaction}")
-        ])
-        
-        messages = extraction_prompt.format_messages(interaction=interaction_text)
-        response = llm.invoke(messages).content
-        
-        kg_data = _parse_json_safely(response)
-        if kg_data and "relationships" in kg_data:
-            valid_rels = []
-            for rel in kg_data["relationships"]:
-                try:
-                    valid_rels.append(Relationship(**rel))
-                except:
-                    continue
-            if valid_rels:
-                semantic.add_relationships(valid_rels, user_id=user_id)
-                logger.info(f"✅ [WORKER] Semantic memory updated with {len(valid_rels)} relationships.")
-    except Exception as e:
-        logger.error(f"❌ [WORKER] Semantic extraction failed: {e}")
+    # Only run semantic extraction if scope is permanent
+    if scope == "permanent":
+        try:
+            extraction_prompt = ChatPromptTemplate.from_messages([
+                ("system", """Extract key entities and relationships from the interaction.
+    Target entities: User, Topic, Level, Goal, Preference.
+    Relationships: LIKES, WANTS_TO_LEARN, HAS_GOAL, IS_AT_LEVEL.
+    Return strictly JSON in the format: {{"relationships": [{{"source": {{"id": "...", "type": "..."}}, "target": {{"id": "...", "type": "..."}}, "type": "..."}}]}}
+    Empty list if no relevant information found."""),
+                ("human", "{interaction}")
+            ])
+            
+            messages = extraction_prompt.format_messages(interaction=interaction_text)
+            response = llm.invoke(messages).content
+            
+            kg_data = _parse_json_safely(response)
+            if kg_data and "relationships" in kg_data:
+                valid_rels = []
+                for rel in kg_data["relationships"]:
+                    try:
+                        valid_rels.append(Relationship(**rel))
+                    except:
+                        continue
+                if valid_rels:
+                    semantic.add_relationships(valid_rels, user_id=user_id)
+                    logger.info(f"✅ [WORKER] Semantic memory updated with {len(valid_rels)} relationships.")
+        except Exception as e:
+            logger.error(f"❌ [WORKER] Semantic extraction failed: {e}")
 
     # --- 3. Episode Management ---
     try:
