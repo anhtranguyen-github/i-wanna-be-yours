@@ -117,13 +117,11 @@ export function NeuralMemoryTab() {
                             )}
 
                             <ForceGraph2D
-                                ref={graphRef}
                                 graphData={graphData}
                                 nodeLabel="label"
                                 nodeAutoColorBy="group"
                                 linkDirectionalArrowLength={3.5}
                                 linkDirectionalArrowRelPos={1}
-                                onNodeClick={handleNodeClick}
                                 backgroundColor="#f8fafc" // slate-50
                                 nodeCanvasObject={(node: any, ctx, globalScale) => {
                                     const label = node.label;
