@@ -19,8 +19,7 @@ def process_interaction(session_id: str, user_message: str, agent_response: str)
     Background task to process a chat interaction for episodic and semantic memory.
     """
     import time
-    print(f"⚡ [WORKER] Starting memory processing for Session: {session_id}")
-    logger.info(f"⚡ [WORKER] Starting memory processing for Session: {session_id}")
+    logger.info(f"Starting memory processing for Session: {session_id}")
     
     # Pre-flight check for Qdrant with retry
     q_host = os.environ.get("QDRANT_HOST", "qdrant")
@@ -29,10 +28,10 @@ def process_interaction(session_id: str, user_message: str, agent_response: str)
         try:
             import urllib.request
             with urllib.request.urlopen(f"http://{q_host}:{q_port}/collections", timeout=5) as resp:
-                print(f"✅ [WORKER] Qdrant Pre-flight check PASSED (attempt {attempt+1})")
+                logger.debug(f"Qdrant Pre-flight check PASSED (attempt {attempt+1})")
                 break
         except Exception as e:
-            print(f"⚠️ [WORKER] Qdrant Pre-flight check FAILED (attempt {attempt+1}): {e}")
+            logger.warning(f"Qdrant Pre-flight check FAILED (attempt {attempt+1}): {e}")
             if attempt < 2:
                 time.sleep(2)
 
@@ -42,10 +41,10 @@ def process_interaction(session_id: str, user_message: str, agent_response: str)
     for attempt in range(3):
         try:
             episodic = EpisodicMemory()
-            print(f"✅ [WORKER] EpisodicMemory initialized (attempt {attempt+1})")
+            logger.debug(f"EpisodicMemory initialized (attempt {attempt+1})")
             break
         except Exception as e:
-            print(f"⚠️ [WORKER] EpisodicMemory init failed (attempt {attempt+1}): {e}")
+            logger.warning(f"EpisodicMemory init failed (attempt {attempt+1}): {e}")
             if attempt < 2:
                 time.sleep(3)
     
@@ -105,6 +104,7 @@ Empty list if no relevant information found."""),
         logger.error(f"❌ [WORKER] Episode management failed: {e}")
 
     print(f"✅ [WORKER] Finished processing interaction for session {session_id}")
+    logger.info(f"Finished processing interaction for session {session_id}")
     return True
 
 def _parse_json_safely(text: str):

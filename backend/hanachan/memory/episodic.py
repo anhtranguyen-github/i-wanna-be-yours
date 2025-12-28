@@ -21,16 +21,12 @@ class EpisodicMemory:
         qdrant_host = os.environ.get("QDRANT_HOST", "localhost")
         qdrant_port = int(os.environ.get("QDRANT_PORT", 6333))
         
-        print(f"DEBUG: QDRANT_HOST from env = '{qdrant_host}', raw = '{os.environ.get('QDRANT_HOST')}'")
-        
         # Resolve hostname to IP to avoid discovery issues in some Docker/IPv6 environments
         try:
             target_ip = socket.gethostbyname(qdrant_host)
-            print(f"⚡ [EPISODIC] Connecting to Qdrant at {qdrant_host} ({target_ip}):{qdrant_port}")
-            logger.info(f"⚡ [EPISODIC] Connecting to Qdrant at {qdrant_host} ({target_ip}):{qdrant_port}")
+            logger.info(f"Connecting to Qdrant at {qdrant_host} ({target_ip}):{qdrant_port}")
         except Exception as e:
-            print(f"⚠️ [EPISODIC] DNS resolution failed for {qdrant_host}: {e}")
-            logger.warning(f"⚠️ [EPISODIC] DNS resolution failed for {qdrant_host}, falling back to hostname: {e}")
+            logger.warning(f"DNS resolution failed for {qdrant_host}, falling back to hostname: {e}")
             target_ip = qdrant_host
 
         self.client = QdrantClient(
