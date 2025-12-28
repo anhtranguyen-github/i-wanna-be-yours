@@ -20,3 +20,8 @@ curl -v --connect-timeout 5 --max-time 10 -X POST "$API_URL" \
   }'
 
 echo -e "\n\nLogin request finished."
+
+
+# testuser2@hanabira.org
+# TestPass123!
+
