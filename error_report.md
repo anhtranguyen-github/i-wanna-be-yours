@@ -69,3 +69,7 @@ This document tracks all errors, bugs, and failures encountered during the imple
 - **Rate Limit Blueprint Access**: Still verifying if `current_app.limiter` is reactive enough for all blueprint routes in high-load scenarios.
 - **Optimization**: Enforced usage of `uv` for all package management in Dockerfile and future scripts to ensure deterministic and high-speed builds.
 - **Fix**: Resolved `EpisodicMemory` connection block by forcing `prefer_grpc=False` and manually resolving the Qdrant hostname to an IP address before initializing the client.
+## 11. Persistent Qdrant Worker Connection Refused
+- **Error**: `Errno 111 Connection refused` specifically when the worker calls `QdrantVectorStore`.
+- **Observation**: Handled by manually resolving the hostname in `EpisodicMemory` but still occasionally fails. Likely a race condition or an issues with `httpx`/gRPC defaults in the `langchain-qdrant` library.
+- **Action**: Forcing `prefer_grpc=False` and adding heartheat checks.
