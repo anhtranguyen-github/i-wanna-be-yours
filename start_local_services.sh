@@ -433,7 +433,7 @@ log "✅ Started express-db (PID: $pid)"
     # Sync dependencies
     uv pip install -r requirements.txt > /dev/null 2>&1
 
-    uv run gunicorn -w 1 -b 0.0.0.0:5100 --timeout 120 server:app \
+    uv run gunicorn -w 1 -b 0.0.0.0:5100 --timeout 120 --access-logfile - --error-logfile - server:app \
     > "$LOG_ROOT/flask-dynamic-db/flask_5100.log" 2>&1
     on_error "flask-dynamic-db" $?
 ) &

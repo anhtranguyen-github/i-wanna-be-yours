@@ -39,6 +39,11 @@ export async function middleware(request: NextRequest) {
     if (
         pathname.startsWith('/_next') ||
         pathname.startsWith('/api') ||
+        pathname.startsWith('/f-api') ||
+        pathname.startsWith('/e-api') ||
+        pathname.startsWith('/h-api') ||
+        pathname.startsWith('/s-api') ||
+        pathname.startsWith('/d-api') ||
         pathname.startsWith('/favicon.ico') ||
         pathname.startsWith('/public') ||
         pathname.includes('.') || // Matches files with extensions (png, jpg, js, css, etc.)

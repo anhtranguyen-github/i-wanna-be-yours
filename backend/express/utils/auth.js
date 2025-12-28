@@ -22,7 +22,7 @@ async function verifyPassword(password, hash) {
 
 function createAccessToken(payload) {
     return jwt.sign(payload, FINAL_SECRET, {
-        expiresIn: '15m',
+        expiresIn: '24h',
         algorithm: 'HS256'
     });
 }
