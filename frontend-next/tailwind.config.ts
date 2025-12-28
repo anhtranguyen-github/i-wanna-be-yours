@@ -59,6 +59,13 @@ const config: Config = {
 					jade: '#2FAE9E',    // A-03 Jade Green
 					shadow: '#B85C7A',  // A-04 Sakura Shadow
 				},
+				// BRAND COLORS
+				brand: {
+					green: '#8FC8A9',   // P-03 Leaf Green
+					peach: '#F6B1C3',   // P-01 Sakura Pink
+					dark: '#4A4A4A',    // N-04 Ink Gray
+					blue: '#3b82f6',    // Standard Blue for better contrast if needed
+				},
 				// SHADCN COMPATIBILITY WRAPPERS
 				background: '#FFF1E6', // S-01
 				foreground: '#4A4A4A', // N-04

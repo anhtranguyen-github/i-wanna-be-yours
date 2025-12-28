@@ -69,13 +69,13 @@ function MessageBubbleComponent({ message, onOpenArtifact }: MessageBubbleProps)
             {/* Message Content */}
             <div className={`flex-1 max-w-[80%] ${isUser ? 'flex flex-col items-end' : ''}`}>
                 <div className={`
-                    px-4 py-3 rounded-2xl
+                    px-4 py-3 rounded-2xl shadow-sm border
                     ${isUser
-                        ? 'bg-brand-green text-white rounded-tr-md'
-                        : 'bg-slate-50 text-brand-dark rounded-tl-md'
+                        ? 'bg-brand-blue text-white border-brand-blue/20 rounded-tr-md'
+                        : 'bg-white text-brand-dark border-neutral-beige/50 rounded-tl-md'
                     }
                 `}>
-                    <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                    <p className="text-sm leading-relaxed whitespace-pre-wrap font-medium">{message.content}</p>
                 </div>
 
                 {/* Artifact Cards */}

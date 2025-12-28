@@ -8,9 +8,10 @@ import { usePathname } from 'next/navigation';
 import { useSidebar, SIDEBAR_WIDTHS } from './SidebarContext';
 import { useUser } from '@/context/UserContext';
 import { useGlobalAuth } from '@/context/GlobalAuthContext';
-import { useChatLayout } from '@/components/chat/ChatLayoutContext';
 import { useRouter } from 'next/navigation';
 import { resourceService } from '@/services/resourceService';
+import { useChatConversation } from '@/components/chat/ChatConversationContext';
+import { useChatLayout } from '@/components/chat/ChatLayoutContext';
 import {
     ChevronsLeft,
     ChevronsRight,
@@ -40,6 +41,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
     const { user, logout } = useUser();
     const { openAuth } = useGlobalAuth();
     const { stageResource, openResourcePreview } = useChatLayout();
+    const { refreshSession } = useChatConversation();
     const router = useRouter();
     const isGuest = !user;
 
@@ -92,6 +94,7 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
             <div className="flex-shrink-0 flex flex-col pt-4 px-4 pb-3 gap-3 bg-background z-10 relative">
                 <Link
                     href="/chat"
+                    onClick={() => refreshSession()}
                     className={`
                         flex items-center justify-center gap-2 w-full py-2 px-3 bg-primary-strong text-white font-black rounded-xl hover:opacity-90 transition-all duration-300 hover: active:scale-95 font-display uppercase tracking-widest text-[9px]
                         ${!isExpanded ? 'p-0 h-12 w-12 mx-auto' : ''}

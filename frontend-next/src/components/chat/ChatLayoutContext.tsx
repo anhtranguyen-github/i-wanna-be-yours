@@ -142,7 +142,7 @@ export function ChatLayoutProvider({ children }: ChatLayoutProviderProps) {
 
     const resetRightSidebar = useCallback(() => {
         setActiveArtifactState(null);
-        setRightSidebarState('minimized');
+        setRightSidebarState('collapsed');
         setStagedResourceToProcess(null);
         setPreviewResource(null);
         if (typeof window !== 'undefined') {

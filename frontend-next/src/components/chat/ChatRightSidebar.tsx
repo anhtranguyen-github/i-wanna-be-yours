@@ -58,7 +58,7 @@ export function ChatRightSidebar() {
             <div className="flex flex-col h-full border-l border-border bg-sidebar ">
                 {/* Header */}
                 <div className="flex items-center justify-between p-5 border-b border-neutral-gray/30 bg-neutral-beige">
-                    <h3 className="font-display font-black text-neutral-ink tracking-widest text-xs uppercase">Resources</h3>
+                    <h3 className="font-display font-black text-neutral-ink tracking-widest text-xs uppercase">Artifacts List</h3>
                     <div className="flex gap-1">
                         <button
                             onClick={() => setRightSidebar('collapsed')}
@@ -93,7 +93,7 @@ export function ChatRightSidebar() {
                             <div className="text-center py-12 px-4">
                                 <FileText size={40} className="mx-auto text-neutral-ink mb-3" />
                                 <p className="text-sm font-bold text-neutral-ink">
-                                    No resources yet. Let&apos;s create some together!
+                                    No artifacts yet. Let&apos;s create some together!
                                 </p>
                             </div>
                         )}
