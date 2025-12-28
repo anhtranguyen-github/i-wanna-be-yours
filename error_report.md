@@ -93,3 +93,27 @@ This document tracks all errors, bugs, and failures encountered during the imple
 - **Cause**: The `Episode` model was added but the PostgreSQL database was not migrated.
 - **Solution (Pending)**: Run DB migrations or table creation script.
 
+
+## RESOLVED ISSUES
+
+### Issue 1: Episodes Table
+- **Status**: ✅ FIXED
+- **Solution**: Created `scripts/create_tables.py` and ran it inside container
+- **Result**: Tables created successfully including `episodes` and `memory_jobs`
+
+### Issue 2: Neo4j APOC Plugin
+- **Status**: ✅ FIXED
+- **Solution**: Updated docker-compose.yml with Neo4j 5.15.0, APOC plugin config, and security settings
+- **Result**: Neo4j now starts with APOC plugin enabled
+
+### Issue 3: MongoDB Index Warning
+- **Status**: ✅ FIXED
+- **Solution**: Made MongoDB initialization conditional via `ENABLE_MONGO` env var (default: false)
+- **Result**: No more MongoDB warning on startup
+
+## FINAL VERIFICATION
+- All health checks pass
+- Background worker successfully processes interactions
+- Qdrant connection stable
+- Neo4j operational with APOC
+

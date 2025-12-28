@@ -64,12 +64,13 @@ def create_app(test_config=None):
     app.register_blueprint(artifacts_bp)
     app.register_blueprint(linguistics_bp, url_prefix='/d-api')
     
-    # Initialize MongoDB indexes for artifacts
-    try:
-        from database.mongo import init_mongo_indexes
-        init_mongo_indexes()
-    except Exception as e:
-        print(f"⚠️ MongoDB index init skipped: {e}")
+    # Initialize MongoDB indexes for artifacts (conditional)
+    if os.environ.get("ENABLE_MONGO", "false").lower() == "true":
+        try:
+            from database.mongo import init_mongo_indexes
+            init_mongo_indexes()
+        except Exception as e:
+            print(f"⚠️ MongoDB index init skipped: {e}")
     
     @app.route('/health')
     def health():
