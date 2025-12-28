@@ -224,6 +224,18 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
         return 'READY';
     }, [streamState.isStreaming, historyLoading]);
 
+    const allMessages = useMemo(() => {
+        if (!streamState.isStreaming || !streamState.currentText) return messages;
+
+        const streamingMsg: ChatMessage = {
+            id: 'streaming-assistant',
+            role: 'assistant',
+            content: streamState.currentText,
+            timestamp: new Date()
+        };
+        return [...messages, streamingMsg];
+    }, [messages, streamState.isStreaming, streamState.currentText]);
+
     return (
         <div className="flex-1 flex flex-col h-full bg-[#fafafa] relative overflow-hidden group/chat">
             {/* Atmosphere Background */}
@@ -276,8 +288,8 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
                     </div>
                 ) : (
                     <VirtualizedMessageList
-                        messages={messages}
-                        isLoading={streamState.isStreaming}
+                        messages={allMessages}
+                        isLoading={streamState.isStreaming && !streamState.currentText}
                         onOpenArtifact={openArtifact}
                     />
                 )}

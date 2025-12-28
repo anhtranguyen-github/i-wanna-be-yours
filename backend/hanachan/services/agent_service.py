@@ -1,4 +1,5 @@
 from datetime import datetime
+import logging
 import json
 from typing import List, Dict, Any
 from schemas.chat import AgentRequest, AgentResponse, ResponseItemDTO, ArtifactContent, ChatMessageDTO
@@ -14,6 +15,8 @@ from models.content.vocabulary import VocabularySet, VocabularyItem
 from models.content.quiz import QuizSet, QuizQuestion, QuizOption
 from database.database import db
 import traceback
+
+logger = logging.getLogger(__name__)
 
 class AgentService:
     def __init__(self):
@@ -356,8 +359,10 @@ class AgentService:
             yield f"__METADATA__:{json.dumps({'conversationId': conv.session_id})}\n"
 
         # 3. Stream from Agent
+        logger.info(f"🚀 Starting stream from agent for session {request_data.session_id}")
         agent = HanachanAgent()
         full_content = ""
+        chunk_count = 0
         resource_ids = request_data.context_config.resource_ids if request_data.context_config else []
         
         # Fetch Chat History (Short-Term Memory) with Token Budget
@@ -406,8 +411,12 @@ class AgentService:
             chat_history=chat_history,
             stream=True
         ):
-            full_content += chunk
-            yield chunk
+            if chunk:
+                chunk_count += 1
+                full_content += chunk
+                yield chunk
+        
+        logger.info(f"✅ Finished stream. Sent {chunk_count} chunks, total length: {len(full_content)}")
 
         # 4. Finalize Persistence
         if conv_id and user_msg_id:

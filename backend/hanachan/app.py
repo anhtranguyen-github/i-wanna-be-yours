@@ -5,7 +5,15 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from database.database import init_app, db
 import os
+import logging
 from dotenv import load_dotenv
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s : %(message)s",
+)
+logger = logging.getLogger(__name__)
 
 # Load environment variables from .env file
 load_dotenv()
