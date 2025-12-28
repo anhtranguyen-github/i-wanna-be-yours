@@ -21,6 +21,7 @@ import { aiTutorService } from '@/services/aiTutorService';
 import { Artifact, ArtifactType } from '@/types/artifact';
 import { HanachanStatus } from './HanachanStatus';
 import { InformativeLoginCard } from '@/components/shared/InformativeLoginCard';
+import { useNotification } from '@/context/NotificationContext';
 import {
     Layers,
     CheckSquare,
@@ -164,14 +165,43 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
         }
     };
 
+    const { addNotification } = useNotification();
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+    const ALLOWED_EXTENSIONS = ['.pdf', '.txt', '.png', '.jpg', '.jpeg', '.docx'];
+
     const handleFileUpload = (files: File[]) => {
-        const newFiles: AttachedFile[] = files.map(file => ({
+        const validFiles: File[] = [];
+
+        for (const file of files) {
+            const extension = '.' + file.name.split('.').pop()?.toLowerCase();
+            if (!ALLOWED_EXTENSIONS.includes(extension)) {
+                addNotification({
+                    message: `File type ${extension} not supported. Use ${ALLOWED_EXTENSIONS.join(', ')}`,
+                    type: 'warning'
+                });
+                continue;
+            }
+            if (file.size > MAX_FILE_SIZE) {
+                addNotification({
+                    message: `File ${file.name} exceeds 10MB limit.`,
+                    type: 'warning'
+                });
+                continue;
+            }
+            validFiles.push(file);
+        }
+
+        const newFiles: AttachedFile[] = validFiles.map(file => ({
             id: Math.random().toString(36).substr(2, 9),
             file,
             title: file.name,
             uploading: false
         }));
         setAttachedFiles(prev => [...prev, ...newFiles]);
+
+        if (validFiles.length > 0) {
+            addNotification({ message: `Attached ${validFiles.length} file(s).`, type: 'success' });
+        }
     };
 
     const removeFile = (id: string) => {

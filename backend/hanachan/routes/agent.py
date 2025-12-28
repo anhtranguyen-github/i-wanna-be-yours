@@ -26,20 +26,8 @@ def stream():
         agent_req = AgentRequest(**data)
         service = AgentService()
         
-        # This would require refactoring AgentService to split logic.
-        # For a quick "Alpha" implementation, we'll use the OllamaAgent directly
-        # and ignore persistence/artifacts for the live stream (they'll be saved on complete)
-        from agent.ollama_agent import OllamaAgent
-        agent = OllamaAgent()
-        
         def generate():
-            # 1. Send metadata/artifacts first if possible (simplified for now: just text)
-            for chunk in agent.invoke(
-                prompt=agent_req.prompt,
-                user_id=agent_req.user_id,
-                resource_ids=agent_req.context_config.resource_ids if agent_req.context_config else [],
-                stream=True
-            ):
+            for chunk in service.stream_agent(agent_req):
                 yield chunk
 
         return Response(stream_with_context(generate()), mimetype='text/event-stream')

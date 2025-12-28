@@ -14,9 +14,10 @@ const config: Config = {
 	theme: {
 		extend: {
 			fontFamily: {
-				sans: ['Nunito', 'sans-serif'],
-				display: ['Fredoka', 'sans-serif'],
-				body: ['Nunito', 'sans-serif'],
+				sans: ['var(--font-nunito)', 'sans-serif'],
+				display: ['var(--font-fredoka)', 'sans-serif'],
+				body: ['var(--font-nunito)', 'sans-serif'],
+				jp: ['Noto Sans JP', 'sans-serif'],
 			},
 			boxShadow: {
 				'hard': '4px 4px 0px 0px #1e293b',
@@ -103,6 +104,13 @@ const config: Config = {
 						height: '0'
 					}
 				}
+			},
+			transitionTimingFunction: {
+				'spring': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+			},
+			transitionDuration: {
+				'2000': '2000ms',
+				'4000': '4000ms',
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',

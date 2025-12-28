@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 from typing import List, Dict, Any
 from schemas.chat import AgentRequest, AgentResponse, ResponseItemDTO, ArtifactContent, ChatMessageDTO
 from services.conversation_service import ConversationService
@@ -18,6 +19,34 @@ class AgentService:
     def __init__(self):
         self.conv_service = ConversationService()
 
+    def _get_or_create_conversation(self, request_data: AgentRequest) -> Any:
+        """Helper to manage conversation and user message persistence"""
+        from models.conversation import Conversation
+        conv = Conversation.query.filter_by(session_id=request_data.session_id).first()
+        if not conv:
+            conv_service = ConversationService()
+            words = request_data.prompt.split()
+            initial_title = " ".join(words[:5]) if words else "New Conversation"
+            if len(initial_title) > 40:
+                initial_title = initial_title[:37] + "..."
+                
+            conv_dict = conv_service.create_conversation(request_data.user_id, initial_title)
+            conv = Conversation.query.get(conv_dict['id'])
+            conv.session_id = request_data.session_id
+            db.session.commit()
+        
+        # Save User Message
+        user_msg = ChatMessage(
+            conversation_id=conv.id,
+            role="user",
+            content=request_data.prompt,
+            context_configuration=request_data.context_config.dict() if request_data.context_config else None
+        )
+        db.session.add(user_msg)
+        conv.updated_at = datetime.utcnow()
+        db.session.commit()
+        return conv, user_msg
+
     def invoke_agent(self, request_data: AgentRequest) -> AgentResponse:
         # Fallback tracking
         conv_id = "temp-conv-id"
@@ -26,33 +55,8 @@ class AgentService:
         
         # 1. Try to persist to DB (Conversation & User Message)
         try:
-            from models.conversation import Conversation
-            conv = Conversation.query.filter_by(session_id=request_data.session_id).first()
-            if not conv:
-                conv_service = ConversationService()
-                words = request_data.prompt.split()
-                initial_title = " ".join(words[:5]) if words else "New Conversation"
-                if len(initial_title) > 40:
-                    initial_title = initial_title[:37] + "..."
-                    
-                conv_dict = conv_service.create_conversation(request_data.user_id, initial_title)
-                # Re-query to get object
-                conv = Conversation.query.get(conv_dict['id'])
-                conv.session_id = request_data.session_id
-                db.session.commit()
-            
+            conv, user_msg = self._get_or_create_conversation(request_data)
             conv_id = str(conv.id)
-
-            # Save User Message
-            user_msg = ChatMessage(
-                conversation_id=conv.id,
-                role="user",
-                content=request_data.prompt,
-                context_configuration=request_data.context_config.dict() if request_data.context_config else None
-            )
-            db.session.add(user_msg)
-            conv.updated_at = datetime.utcnow()
-            db.session.commit()
             user_msg_id = user_msg.id
             
         except Exception as e:
@@ -87,6 +91,7 @@ class AgentService:
         try:
             # If we have a valid conversation, save response
             if user_msg_id: 
+                from models.conversation import Conversation
                 conv = Conversation.query.get(int(conv_id))
                 asst_msg = ChatMessage(
                     conversation_id=conv.id,
@@ -328,3 +333,54 @@ class AgentService:
             proposedTasks=tasks_data,
             suggestions=suggestions_data
         )
+
+    def stream_agent(self, request_data: AgentRequest):
+        """Streaming version with full persistence"""
+        from agent.ollama_agent import OllamaAgent
+        from models.conversation import Conversation
+        
+        # 1. Initialize Persistence
+        conv_id = None
+        user_msg_id = None
+        
+        try:
+            conv, user_msg = self._get_or_create_conversation(request_data)
+            conv_id = str(conv.id)
+            user_msg_id = user_msg.id
+        except Exception as e:
+            print(f"Streaming Persistence Error (Pre-stream): {e}")
+
+        # 2. Yield Metadata (Frontend needs conversationId early)
+        if conv_id:
+            yield f"__METADATA__:{json.dumps({'conversationId': conv_id})}\n"
+
+        # 3. Stream from Agent
+        agent = OllamaAgent()
+        full_content = ""
+        resource_ids = request_data.context_config.resource_ids if request_data.context_config else []
+        
+        for chunk in agent.invoke(
+            prompt=request_data.prompt,
+            user_id=request_data.user_id,
+            resource_ids=resource_ids,
+            stream=True
+        ):
+            full_content += chunk
+            yield chunk
+
+        # 4. Finalize Persistence
+        if conv_id and user_msg_id:
+            try:
+                # We need to ensure we are in a request context often for db.session
+                # but since this runs in the generator (stream_with_context), it should be fine.
+                asst_msg = ChatMessage(
+                    conversation_id=int(conv_id),
+                    role="assistant",
+                    content=full_content
+                )
+                db.session.add(asst_msg)
+                db.session.commit()
+                print(f"Streaming Persistence Complete for Conv {conv_id}")
+            except Exception as e:
+                print(f"Streaming Persistence Error (Post-stream): {e}")
+                db.session.rollback()

@@ -72,14 +72,16 @@ export const Hero = () => {
                                     src="/hanachan_hero_illustration.png"
                                     alt="Hanachan Strategic Intelligence"
                                     fill
-                                    className="object-cover group-hover:scale-110 transition-transform duration-[2000ms]"
+                                    priority
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                                    className="object-cover group-hover:scale-110 transition-transform duration-2000"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                             </div>
                         </div>
 
                         {/* Floating Micro-Cards */}
-                        <div className="absolute -top-8 -left-8 bg-white p-4 rounded-2xl border border-slate-100  animate-bounce duration-[4000ms]">
+                        <div className="absolute -top-8 -left-8 bg-white p-4 rounded-2xl border border-slate-100  animate-bounce duration-4000">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
                                     <Target size={20} />

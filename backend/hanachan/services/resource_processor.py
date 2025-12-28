@@ -35,21 +35,27 @@ class ResourceProcessor:
             
             # Extract text based on type
             content = ""
-            mime_type = metadata.get('mimeType', '')
+            media_base64 = None
+            mime_type = metadata.get('mimeType', '').lower()
             file_bytes = download_res.content
             
-            if 'pdf' in mime_type or metadata.get('type') == 'document':
+            if 'image' in mime_type:
+                import base64
+                media_base64 = base64.b64encode(file_bytes).decode('utf-8')
+            elif 'pdf' in mime_type or metadata.get('type') == 'document':
                 content = self._extract_text(file_bytes, mime_type, metadata.get('originalFilename', ''))
             
             # Fallback for plain text or unknown
-            if not content and mime_type.startswith('text/'):
+            if not content and not media_base64 and mime_type.startsWith('text/'):
                  content = file_bytes.decode('utf-8', errors='ignore')
 
             return {
                 "id": resource_id,
                 "title": metadata['title'],
                 "type": metadata['type'],
-                "content": content
+                "mimeType": mime_type,
+                "content": content,
+                "mediaBase64": media_base64
             }
         except Exception as e:
             logging.error(f"Error processing resource {resource_id}: {e}")

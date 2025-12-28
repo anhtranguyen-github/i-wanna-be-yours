@@ -4,7 +4,6 @@
 
 /* Note: variables.css has been consolidated into this file */
 
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Nunito:wght@300;400;500;600;700;800&display=swap');
 
 @layer base {
   :root {
@@ -73,7 +72,7 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: "Nunito", sans-serif;
+    font-family: var(--font-nunito), sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }

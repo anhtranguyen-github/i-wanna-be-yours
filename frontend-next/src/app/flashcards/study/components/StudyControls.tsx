@@ -58,7 +58,7 @@ export const StudyControls: React.FC<StudyControlsProps> = ({
             </div>
 
             {/* Evaluation Cluster */}
-            <div className={`pointer-events-auto transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${flipped ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-16 scale-90 pointer-events-none'}`}>
+            <div className={`pointer-events-auto transition-all duration-700 ease-spring ${flipped ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-16 scale-90 pointer-events-none'}`}>
                 <div className="flex items-center gap-4 p-3 sm:p-4 bg-neutral-ink border-2 border-white/10 rounded-[3rem] sm:rounded-[4rem] shadow-2xl relative">
                     <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/20 via-transparent to-emerald-500/20 rounded-[4rem] blur-xl opacity-50 -z-10" />
 

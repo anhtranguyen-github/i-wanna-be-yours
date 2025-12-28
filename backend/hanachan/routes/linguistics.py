@@ -42,11 +42,35 @@ def get_translation():
     }), 200
 
 @bp.route('/v1/convert/all', methods=['POST'])
-def get_phonetic_metadata():
+def convert_all():
     """Endpoint for phonetic conversion in Text Parser"""
-    data = request.get_json()
-    if not data or 'text' not in data:
+    data = request.json
+    text = data.get('text', '')
+    if not text:
         return jsonify({"error": "No text provided"}), 400
-    
-    result = linguistics_service.phonetic_conversion(data['text'])
-    return jsonify(result), 200
+    res = linguistics_service.phonetic_conversion(text)
+    return jsonify(res)
+
+@bp.route('/v1/convert/hiragana', methods=['POST'])
+def convert_to_hiragana():
+    data = request.json
+    text = data.get('text', '')
+    if not text:
+        return jsonify({"error": "No text provided"}), 400
+    # Reuse the phonetic converter logic which already extracts hiragana
+    res = linguistics_service.phonetic_conversion(text)
+    return jsonify({"hiragana": res.get("hiragana", text)})
+
+@bp.route('/v1/extract-kanji', methods=['POST'])
+def extract_kanji():
+    data = request.json
+    text = data.get('text', '')
+    if not text:
+        return jsonify({"error": "No text provided"}), 400
+    # Simple regex to find all kanji characters: range [0x4e00, 0x9faf]
+    import re
+    kanji_list = re.findall(r'[\u4e00-\u9faf]', text)
+    # Return unique kanji preserved in order
+    seen = set()
+    unique_kanji = [x for x in kanji_list if not (x in seen or seen.add(x))]
+    return jsonify(unique_kanji)

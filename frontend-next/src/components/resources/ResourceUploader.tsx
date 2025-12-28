@@ -6,35 +6,65 @@ import { Upload, X, FileText, CheckCircle, AlertCircle } from 'lucide-react';
 import { resourceService } from '@/services/resourceService';
 import { useUser } from '@/context/UserContext';
 import { useSWRConfig } from 'swr';
+import { useNotification } from '@/context/NotificationContext';
 
 interface ResourceUploaderProps {
     onClose: () => void;
     onUploadComplete?: () => void;
 }
 
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+const ALLOWED_EXTENSIONS = ['.pdf', '.txt', '.png', '.jpg', '.jpeg', '.docx'];
+
 export function ResourceUploader({ onClose, onUploadComplete }: ResourceUploaderProps) {
     const { user } = useUser();
     const { mutate } = useSWRConfig();
+    const { addNotification } = useNotification();
     const [isDragging, setIsDragging] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
+    const validateFile = (file: File): string | null => {
+        const extension = '.' + file.name.split('.').pop()?.toLowerCase();
+        if (!ALLOWED_EXTENSIONS.includes(extension)) {
+            return `File type ${extension} is not supported. Please use ${ALLOWED_EXTENSIONS.join(', ')}.`;
+        }
+        if (file.size > MAX_FILE_SIZE) {
+            return `File ${file.name} is too large. Maximum size is 10MB.`;
+        }
+        return null;
+    };
+
     const handleUpload = async (files: FileList | null) => {
         if (!files || files.length === 0) return;
         if (!user) {
             setError("You must be logged in to upload files.");
+            addNotification({ message: "You must be logged in to upload files.", type: 'error' });
             return;
         }
 
-        setIsUploading(true);
         setError(null);
+
+        // Validate all files first
+        for (let i = 0; i < files.length; i++) {
+            const validationError = validateFile(files[i]);
+            if (validationError) {
+                setError(validationError);
+                addNotification({ message: validationError, type: 'warning' });
+                return;
+            }
+        }
+
+        setIsUploading(true);
 
         try {
             // Upload files sequentially
             for (let i = 0; i < files.length; i++) {
                 await resourceService.upload(files[i], String(user.id));
             }
+
+            addNotification({ message: "Files uploaded successfully!", type: 'success' });
 
             // Revalidate resources list
             mutate((key: any) => {
@@ -104,7 +134,7 @@ export function ResourceUploader({ onClose, onUploadComplete }: ResourceUploader
                                 <Upload className="text-primary" size={32} />
                             </div>
                             <p className="text-lg font-black text-foreground mb-2 font-display">Click to upload or drag & drop</p>
-                            <p className="text-xs font-bold text-neutral-ink uppercase tracking-widest leading-relaxed">PDF, DOCX, TXT, Images (max 50MB)</p>
+                            <p className="text-xs font-bold text-neutral-ink uppercase tracking-widest leading-relaxed">PDF, DOCX, TXT, PNG, JPG (max 10MB)</p>
                         </div>
                     )}
                 </div>

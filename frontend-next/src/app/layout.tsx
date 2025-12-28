@@ -1,7 +1,7 @@
 // layout.tsx
 
 import "./globals.css";
-import { Inter } from "next/font/google";
+import { Nunito, Fredoka } from "next/font/google";
 
 // Import directly from file to avoid barrel file issues
 import { AppShell } from "@/components/sidebar/AppShell";
@@ -41,12 +41,22 @@ export const metadata = {
 
 const GA_MEASUREMENT_ID = process.env.GA_MEASUREMENT_ID;
 
-const inter = Inter({ subsets: ["latin"] });
+const nunito = Nunito({
+  subsets: ["latin"],
+  variable: '--font-nunito',
+  display: 'swap',
+});
+
+const fredoka = Fredoka({
+  subsets: ["latin"],
+  variable: '--font-fredoka',
+  display: 'swap',
+});
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${nunito.variable} ${fredoka.variable} font-sans`}>
         <Providers>
           <NotificationProvider>
             <GlobalAuthProvider>

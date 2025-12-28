@@ -114,6 +114,29 @@ export function useChatStream(options: UseChatStreamOptions = {}): UseChatStream
                     if (done) break;
 
                     const chunk = decoder.decode(value, { stream: true });
+
+                    // Handle Metadata
+                    if (chunk.startsWith('__METADATA__:')) {
+                        try {
+                            const metadataLine = chunk.split('\n')[0];
+                            const metadataJson = metadataLine.replace('__METADATA__:', '');
+                            const metadata = JSON.parse(metadataJson);
+
+                            if (metadata.conversationId && !conversationId) {
+                                options.onConversationCreated?.(metadata.conversationId.toString());
+                            }
+
+                            // If there's content after the newline, add it to fullText
+                            const remaining = chunk.substring(metadataLine.length + 1);
+                            if (remaining) {
+                                fullText += remaining;
+                            }
+                            continue;
+                        } catch (e) {
+                            console.error("Failed to parse metadata chunk", e);
+                        }
+                    }
+
                     fullText += chunk;
 
                     setStreamState((prev) => ({

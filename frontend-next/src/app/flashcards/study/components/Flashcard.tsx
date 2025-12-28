@@ -49,7 +49,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({
                 className="relative w-full aspect-[4/5] xs:aspect-[4/3] sm:aspect-[1.4] perspective-2000 cursor-pointer group"
             >
                 <div
-                    className="relative w-full h-full transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] preserve-3d"
+                    className="relative w-full h-full transition-all duration-700 ease-spring preserve-3d"
                     style={{ transform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}
                 >
 
