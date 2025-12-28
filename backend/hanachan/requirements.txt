@@ -23,3 +23,6 @@ langchain-qdrant
 langgraph
 rich
 langchain-openai
+redis
+rq
+python-magic
