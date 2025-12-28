@@ -92,15 +92,20 @@ services:
       - NEO4J_PASSWORD=password
       - QDRANT_HOST=qdrant
       - QDRANT_PORT=6333
-      - EMBEDDING_MODEL=nomic-embed-text
-      - EMBEDDING_DIMENSION=768
-      - LLM_PROVIDER=ollama
+      - EMBEDDING_MODEL=${EMBEDDING_MODEL:-text-embedding-3-small}
+      - EMBEDDING_DIMENSION=${EMBEDDING_DIMENSION:-1536}
+      - LLM_PROVIDER=${LLM_PROVIDER:-openai}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_MODEL_NAME=${OPENAI_MODEL_NAME:-gpt-4-turbo}
       - RESOURCES_API_URL=http://flask-dynamic-db:5100
+      - FLASK_RUN_PORT=5400
+      - REDIS_URL=redis://redis:6379/0
+      - PYTHONUNBUFFERED=1
     depends_on:
       - hanachan-db
       - neo4j
       - qdrant
+      - redis
     restart: unless-stopped
     networks:
       - hanachan-network
@@ -189,7 +194,12 @@ services:
       - QDRANT_HOST=qdrant
       - QDRANT_PORT=6333
       - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - PYTHONPATH=.
+      - LLM_PROVIDER=${LLM_PROVIDER:-openai}
+      - OPENAI_MODEL_NAME=${OPENAI_MODEL_NAME:-gpt-4-turbo}
+      - EMBEDDING_MODEL=${EMBEDDING_MODEL:-text-embedding-3-small}
+      - EMBEDDING_DIMENSION=${EMBEDDING_DIMENSION:-1536}
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app
       - RESOURCES_API_URL=http://flask-dynamic-db:5100
     depends_on:
       - redis

@@ -1,4 +1,7 @@
 from flask import Blueprint, request, jsonify, current_app
+from services.agent_service import AgentService
+from schemas.chat import AgentRequest
+from utils.middleware import validate_resource_access
 
 bp = Blueprint('agent', __name__, url_prefix='/agent')
 
@@ -9,6 +12,7 @@ def invoke():
         @current_app.limiter.limit("10 per minute")
         def limited_invoke():
             pass # Placeholder for limit trigger
+        limited_invoke()
     data = request.json
     try:
         agent_req = AgentRequest(**data)

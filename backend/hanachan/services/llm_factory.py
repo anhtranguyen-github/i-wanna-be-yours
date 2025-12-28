@@ -47,3 +47,24 @@ class ModelFactory:
         else:
             logger.error(f"Unknown LLM_PROVIDER: {provider}")
             raise ValueError(f"Unsupported LLM provider: {provider}")
+
+    @staticmethod
+    def create_embeddings():
+        """
+        Creates an embedding model based on LLM_PROVIDER.
+        """
+        provider = os.environ.get("LLM_PROVIDER", "ollama").lower()
+        
+        if provider == "openai":
+            from langchain_openai import OpenAIEmbeddings
+            api_key = os.environ.get("OPENAI_API_KEY")
+            return OpenAIEmbeddings(api_key=api_key)
+            
+        elif provider == "ollama":
+            from langchain_ollama import OllamaEmbeddings
+            base_url = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
+            model_name = os.environ.get("EMBEDDING_MODEL", "nomic-embed-text")
+            return OllamaEmbeddings(model=model_name, base_url=base_url)
+            
+        else:
+            raise ValueError(f"Unsupported embedding provider: {provider}")

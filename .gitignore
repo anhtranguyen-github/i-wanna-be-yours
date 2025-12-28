@@ -47,3 +47,5 @@ mcp-builder/
 .gemini/
 
 .personalized-tutor/
+
+.env

@@ -18,6 +18,7 @@ def process_interaction(session_id: str, user_message: str, agent_response: str)
     """
     Background task to process a chat interaction for episodic and semantic memory.
     """
+    print(f"⚡ [WORKER] Starting memory processing for Session: {session_id}")
     logger.info(f"⚡ [WORKER] Starting memory processing for Session: {session_id}")
     
     # Lazy initializations

@@ -1,4 +1,5 @@
 import os
+import socket
 from langchain_core.documents import Document
 import logging
 
@@ -7,23 +8,33 @@ logger = logging.getLogger(__name__)
 class EpisodicMemory:
     def __init__(self, collection_name="episodic_memory"):
         # Lazy imports to prevent startup hang
-        from langchain_ollama import OllamaEmbeddings
         from langchain_qdrant import QdrantVectorStore
         from qdrant_client import QdrantClient
+        from services.llm_factory import ModelFactory
         
         self.collection_name = collection_name
-        self.embedding_model = os.environ.get("EMBEDDING_MODEL", "nomic-embed-text")
-        self.embedding_dimension = int(os.environ.get("EMBEDDING_DIMENSION", 768))
-        self.ollama_base_url = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
+        self.embedding_dimension = int(os.environ.get("EMBEDDING_DIMENSION", 1536))
         
-        self.embeddings = OllamaEmbeddings(
-            model=self.embedding_model,
-            base_url=self.ollama_base_url
-        )
+        # Use Factory for embeddings (handles OpenAI vs Ollama)
+        self.embeddings = ModelFactory.create_embeddings()
         
+        qdrant_host = os.environ.get("QDRANT_HOST", "localhost")
+        qdrant_port = int(os.environ.get("QDRANT_PORT", 6333))
+        
+        # Resolve hostname to IP to avoid discovery issues in some Docker/IPv6 environments
+        try:
+            target_ip = socket.gethostbyname(qdrant_host)
+            print(f"⚡ [EPISODIC] Connecting to Qdrant at {qdrant_host} ({target_ip}):{qdrant_port}")
+            logger.info(f"⚡ [EPISODIC] Connecting to Qdrant at {qdrant_host} ({target_ip}):{qdrant_port}")
+        except Exception as e:
+            print(f"⚠️ [EPISODIC] DNS resolution failed for {qdrant_host}: {e}")
+            logger.warning(f"⚠️ [EPISODIC] DNS resolution failed for {qdrant_host}, falling back to hostname: {e}")
+            target_ip = qdrant_host
+
         self.client = QdrantClient(
-            host=os.environ.get("QDRANT_HOST", "localhost"),
-            port=int(os.environ.get("QDRANT_PORT", 6333))
+            host=target_ip,
+            port=qdrant_port,
+            prefer_grpc=False # HTTP/1.1 is more stable for this setup
         )
         
         # Initialize collection
@@ -38,13 +49,18 @@ class EpisodicMemory:
     def _init_collection(self):
         try:
             from qdrant_client.http.models import Distance, VectorParams
-            collections = [c.name for c in self.client.get_collections().collections]
-            if self.collection_name not in collections:
+            # Check if collection exists
+            collections = self.client.get_collections().collections
+            exists = any(c.name == self.collection_name for c in collections)
+            
+            if not exists:
                 logger.info(f"Creating Qdrant collection: {self.collection_name} with dim={self.embedding_dimension}")
                 self.client.create_collection(
                     collection_name=self.collection_name,
                     vectors_config=VectorParams(size=self.embedding_dimension, distance=Distance.COSINE)
                 )
+            else:
+                logger.debug(f"Qdrant collection {self.collection_name} already exists.")
         except Exception as e:
             logger.error(f"Error initializing Qdrant collection: {e}")
 
