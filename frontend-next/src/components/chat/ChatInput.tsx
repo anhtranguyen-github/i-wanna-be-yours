@@ -64,6 +64,8 @@ export function ChatInput({
         }
     }, [value]);
 
+    const hasUploading = attachedFiles.some(f => f.uploading);
+
     const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
@@ -81,7 +83,6 @@ export function ChatInput({
         }
     }, [onFileSelect]);
 
-    const hasUploading = attachedFiles.some(f => f.uploading);
     const canSend = (value.trim() || attachedFiles.length > 0) && !isLoading && !hasUploading && !disabled;
 
     return (
