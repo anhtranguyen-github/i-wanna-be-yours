@@ -42,3 +42,4 @@ class ResourceUpdateSchema(Schema):
     title = fields.Str(required=False)
     description = fields.Str(required=False)
     tags = fields.List(fields.Str(), required=False)
+    ingestionStatus = fields.Str(required=False)

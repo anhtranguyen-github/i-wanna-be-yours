@@ -24,6 +24,7 @@ export interface AttachedFile {
     error?: boolean;
     backendId?: string;
     title: string;
+    ingestionStatus?: 'pending' | 'processing' | 'completed' | 'failed';
 }
 
 interface ChatInputProps {
@@ -65,15 +66,16 @@ export function ChatInput({
     }, [value]);
 
     const hasUploading = attachedFiles.some(f => f.uploading);
+    const hasIngesting = attachedFiles.some(f => f.ingestionStatus === 'processing' || f.ingestionStatus === 'pending');
 
     const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            if (!disabled && !isLoading && !hasUploading) {
+            if (!disabled && !isLoading && !hasUploading && !hasIngesting) {
                 onSend();
             }
         }
-    }, [onSend, disabled, isLoading, hasUploading]);
+    }, [onSend, disabled, isLoading, hasUploading, hasIngesting]);
 
     const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && onFileSelect) {
@@ -83,7 +85,7 @@ export function ChatInput({
         }
     }, [onFileSelect]);
 
-    const canSend = (value.trim() || attachedFiles.length > 0) && !isLoading && !hasUploading && !disabled;
+    const canSend = (value.trim() || attachedFiles.length > 0) && !isLoading && !hasUploading && !hasIngesting && !disabled;
 
     return (
         <div className="border-t border-slate-100 pt-4 px-4 pb-6 bg-white z-10 w-full max-w-3xl mx-auto">
@@ -102,10 +104,14 @@ export function ChatInput({
                             <div className="flex-1 min-w-0">
                                 <p className="text-xs font-medium text-slate-700 truncate">{file.title}</p>
                                 <p className="text-[10px] text-neutral-ink">
-                                    {file.file ? `${(file.file.size / 1024).toFixed(1)} KB` : 'Resource'}
+                                    {file.uploading ? 'Uploading...' :
+                                        file.ingestionStatus === 'processing' ? 'Ingesting...' :
+                                            file.ingestionStatus === 'pending' ? 'Queued...' :
+                                                file.ingestionStatus === 'failed' ? 'Failed' :
+                                                    file.file ? `${(file.file.size / 1024).toFixed(1)} KB` : 'Resource'}
                                 </p>
                             </div>
-                            {file.uploading ? (
+                            {file.uploading || file.ingestionStatus === 'processing' || file.ingestionStatus === 'pending' ? (
                                 <div className="w-6 h-6 flex items-center justify-center">
                                     <Loader2 size={14} className="animate-spin text-brand-green" />
                                 </div>

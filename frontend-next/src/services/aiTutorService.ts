@@ -1,7 +1,11 @@
-import { Conversation, Message, Resource } from "@/types/aiTutorTypes";
+import { Conversation, Message, Resource as TypeResource } from "@/types/aiTutorTypes";
 import { Artifact } from "@/types/artifact";
 import Cookies from 'js-cookie';
 import { authFetch } from '@/lib/authFetch';
+
+export interface Resource extends TypeResource {
+    ingestionStatus?: 'pending' | 'processing' | 'completed' | 'failed';
+}
 
 class AITutorService {
     public readonly API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/h-api';
@@ -61,7 +65,13 @@ class AITutorService {
             role: m.role as any,
             content: m.content,
             timestamp: m.created_at ? new Date(m.created_at).getTime() : Date.now(),
-            artifacts: (m.artifacts || []).map((a: any) => this.mapArtifact(a))
+            artifacts: (m.artifacts || []).map((a: any) => this.mapArtifact(a)),
+            attachments: m.contextConfiguration?.resources?.map((r: any) => ({
+                id: r.id || r._id,
+                title: r.title,
+                type: r.type,
+                size: r.size
+            }))
         };
     }
 
@@ -173,8 +183,27 @@ class AITutorService {
             type: r.type,
             content: r.content,
             title: r.title,
-            created_at: new Date(r.createdAt || Date.now()).getTime()
+            created_at: new Date(r.createdAt || Date.now()).getTime(),
+            ingestionStatus: r.ingestionStatus
         }));
+    }
+
+    async getResource(id: string): Promise<Resource | null> {
+        try {
+            const res = await authFetch(`${this.API_BASE_URL}/resources/${id}`, {
+                headers: this.getHeaders()
+            });
+            if (!res.ok) return null;
+            const r = await res.json();
+            return {
+                _id: r.id.toString(),
+                type: r.type,
+                content: r.content,
+                title: r.title,
+                created_at: new Date(r.createdAt || Date.now()).getTime(),
+                ingestionStatus: r.ingestionStatus
+            };
+        } catch (e) { return null; }
     }
 
     async createResource(type: string, content: string, title: string): Promise<Resource> {
@@ -228,12 +257,28 @@ class AITutorService {
         // The URL field for download is constructed via another endpoint, 
         // but for now we can just return the ID as the URL or empty string if not strictly needed immediately by UI for simple display
         // Chat UI might use 'url' to display a link?
+        // Helper to trigger ingestion
+        const triggerIngestion = async (id: string) => {
+            try {
+                // Determine API endpoint - use Hanachan API
+                // Assuming internal proxy or direct call
+                const ingestRes = await authFetch(`${this.API_BASE_URL}/resource/ingest/${id}`, {
+                    method: 'POST',
+                    headers: this.getHeaders()
+                });
+                if (!ingestRes.ok) console.warn("Failed to auto-trigger ingestion", id);
+            } catch (e) { console.error("Ingestion trigger error", e); }
+        };
+
+        // Trigger background ingestion immediately
+        triggerIngestion(data.id);
+
         return { id: data.id, url: data.filePath || "" };
     }
 
     // --- Chat API (Backend) ---
 
-    async streamChat(query: string, thinking: boolean = false, conversationId?: string, sessionId?: string, resourceIds: string[] = []): Promise<{ reader: ReadableStreamDefaultReader<Uint8Array>; artifacts: Artifact[]; conversationId?: string }> {
+    async streamChat(query: string, thinking: boolean = false, conversationId?: string, sessionId?: string, resourceIds: string[] = [], resources: any[] = []): Promise<{ reader: ReadableStreamDefaultReader<Uint8Array>; artifacts: Artifact[]; conversationId?: string }> {
         const user = await this.getCurrentUser();
         if (!user) throw new Error("User not logged in");
         if (!sessionId) throw new Error("Session ID missing");
@@ -246,7 +291,8 @@ class AITutorService {
                 user_id: user.id,
                 prompt: query,
                 context_config: {
-                    resource_ids: resourceIds
+                    resource_ids: resourceIds,
+                    resources: resources
                 }
             }),
         });

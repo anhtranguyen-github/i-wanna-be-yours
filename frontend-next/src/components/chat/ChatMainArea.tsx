@@ -177,11 +177,19 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
                 .map(f => f.backendId)
                 .filter((id): id is string => !!id);
 
+            const resources = attachedFiles.map(f => ({
+                id: f.backendId,
+                title: f.title,
+                type: f.file?.type.startsWith('image/') ? 'image' : 'document',
+                size: f.file?.size
+            }));
+
             await streamMessage(
                 text,
                 effectiveConversationId,
                 sessionId || `temp-${Date.now()}`,
-                resourceIds
+                resourceIds,
+                resources
             );
         } catch (error) {
             console.error("Failed to send message:", error);
@@ -237,7 +245,7 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
                 const result = await aiTutorService.uploadFile(attached.file!);
                 setAttachedFiles(prev => prev.map(f =>
                     f.id === attached.id
-                        ? { ...f, uploading: false, backendId: result.id }
+                        ? { ...f, uploading: false, backendId: result.id, ingestionStatus: 'pending' }
                         : f
                 ));
             } catch (error) {
@@ -254,6 +262,47 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
             }
         }
     };
+
+    // Polling for ingestion status
+    useEffect(() => {
+        // Files that need polling: have backendId and not in terminal state
+        const processingFiles = attachedFiles.filter(f =>
+            f.backendId &&
+            f.ingestionStatus &&
+            f.ingestionStatus !== 'completed' &&
+            f.ingestionStatus !== 'failed'
+        );
+
+        if (processingFiles.length === 0) return;
+
+        const interval = setInterval(async () => {
+            let hasChanges = false;
+            const updates = new Map<string, string>();
+
+            await Promise.all(processingFiles.map(async (file) => {
+                try {
+                    const resource = await aiTutorService.getResource(file.backendId!);
+                    if (resource && resource.ingestionStatus && resource.ingestionStatus !== file.ingestionStatus) {
+                        updates.set(file.id, resource.ingestionStatus);
+                        hasChanges = true;
+                    }
+                } catch (e) {
+                    console.error("Polling error for", file.id, e);
+                }
+            }));
+
+            if (hasChanges) {
+                setAttachedFiles(prev => prev.map(f => {
+                    if (updates.has(f.id)) {
+                        return { ...f, ingestionStatus: updates.get(f.id) as any };
+                    }
+                    return f;
+                }));
+            }
+        }, 2000);
+
+        return () => clearInterval(interval);
+    }, [attachedFiles]);
 
     const removeFile = (id: string) => {
         setAttachedFiles(prev => prev.filter(f => f.id !== id));

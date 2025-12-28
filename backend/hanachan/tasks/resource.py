@@ -43,9 +43,25 @@ def ingest_resource(resource_id: str):
     
     with app.app_context():
         try:
+            # Helper to update status
+            def update_status(status):
+                try:
+                    res = requests.put(
+                        f"{os.getenv('RESOURCES_API_URL')}/v1/resources/{resource_id}",
+                        json={"ingestionStatus": status},
+                        headers={"Authorization": f"Bearer {token}"}
+                    )
+                    if not res.ok:
+                        logger.warning(f"⚠️ [WORKER] Failed to update status to {status}: {res.status_code}")
+                except Exception as ex:
+                    logger.error(f"⚠️ [WORKER] Error updating status: {ex}")
+
+            update_status("processing")
+
             # 1. Extraction
             res_data = processor.get_resource_content(resource_id, token=token)
             if not res_data or not res_data.get('content'):
+                update_status("failed")
                 logger.error(f"❌ [WORKER] Failed to get content for resource {resource_id}")
                 return False
             
@@ -56,6 +72,7 @@ def ingest_resource(resource_id: str):
             logger.info(f"📄 [WORKER] Extracted {len(content)} chars from {title}")
 
             if not user_id:
+                update_status("failed")
                 logger.error(f"❌ [WORKER] No userId found for resource {resource_id}. Aborting ingestion.")
                 return False
 
@@ -73,6 +90,7 @@ def ingest_resource(resource_id: str):
             chunks = text_splitter.split_text(content)
             
             if not chunks:
+                update_status("completed") # Valid but empty
                 logger.warning(f"⚠️ [WORKER] Resource {resource_id} yielded no text chunks.")
                 return True
 
@@ -98,8 +116,10 @@ def ingest_resource(resource_id: str):
                     metadata=meta
                 )
             
+            update_status("completed")
             logger.info(f"✅ [WORKER] Resource {resource_id} fully ingested.")
             return True
         except Exception as e:
             logger.error(f"❌ [WORKER] Ingestion error: {e}")
+            update_status("failed")
             return False

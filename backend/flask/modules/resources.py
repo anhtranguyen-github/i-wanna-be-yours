@@ -142,7 +142,8 @@ class ResourcesModule:
                     "metadata": {},
                     "createdAt": datetime.now(timezone.utc),
                     "updatedAt": datetime.now(timezone.utc),
-                    "deletedAt": None
+                    "deletedAt": None,
+                    "ingestionStatus": "pending"
                 }
                 
                 result = self.resources_collection.insert_one(resource_doc)
@@ -193,6 +194,7 @@ class ResourcesModule:
                         "type": doc.get("type"),
                         "fileSize": doc.get("fileSize"),
                         "tags": doc.get("tags", []),
+                        "ingestionStatus": doc.get("ingestionStatus", "pending"),
                         "createdAt": doc.get("createdAt").isoformat() if doc.get("createdAt") else None
                     })
                 
@@ -235,6 +237,7 @@ class ResourcesModule:
                     "fileSize": resource.get("fileSize"),
                     "filePath": resource.get("filePath"),
                     "tags": resource.get("tags", []),
+                    "ingestionStatus": resource.get("ingestionStatus", "pending"),
                     "createdAt": resource.get("createdAt").isoformat() if resource.get("createdAt") else None,
                     "updatedAt": resource.get("updatedAt").isoformat() if resource.get("updatedAt") else None
                 }), 200
@@ -288,6 +291,8 @@ class ResourcesModule:
                     update_fields["description"] = str(data["description"])
                 if "tags" in data:
                     update_fields["tags"] = [str(t) for t in data["tags"]]
+                if "ingestionStatus" in data:
+                    update_fields["ingestionStatus"] = str(data["ingestionStatus"])
                 
                 result = self.resources_collection.update_one(
                     {"_id": ObjectId(id), "userId": user_id, "deletedAt": None},
