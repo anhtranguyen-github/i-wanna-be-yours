@@ -9,8 +9,9 @@ import json
 import logging
 import time
 
-# Set up logging
-logging.basicConfig(level=logging.INFO)
+import logging
+from rq import Retry
+
 logger = logging.getLogger("hanachan.memory")
 
 # Define Pydantic models for Knowledge Graph extraction
@@ -106,7 +107,8 @@ class MemoryManager:
                 process_interaction,
                 session_id=session_id,
                 user_message=user_message,
-                agent_response=agent_response
+                agent_response=agent_response,
+                retry=Retry(max=3, interval=[60, 300, 600]) # Retry after 1, 5, 10 mins
             )
             logger.info(f"MemoryManager: Enqueued background task {job.id} for session {session_id}")
             

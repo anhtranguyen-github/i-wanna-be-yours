@@ -1,13 +1,14 @@
-from flask import Blueprint, request, jsonify
-from services.agent_service import AgentService
-from schemas.chat import AgentRequest
-from utils.middleware import validate_resource_access
+from flask import Blueprint, request, jsonify, current_app
 
 bp = Blueprint('agent', __name__, url_prefix='/agent')
 
 @bp.route('/invoke', methods=['POST'])
 @validate_resource_access
 def invoke():
+    if hasattr(current_app, 'limiter'):
+        @current_app.limiter.limit("10 per minute")
+        def limited_invoke():
+            pass # Placeholder for limit trigger
     data = request.json
     try:
         agent_req = AgentRequest(**data)

@@ -24,12 +24,13 @@ def create_app(test_config=None):
     Talisman(app, content_security_policy=csp, force_https=False)  # Set force_https=True in production
 
     # Limiter for rate limiting
-    limiter = Limiter(
+    app.limiter = Limiter(
         get_remote_address,
         app=app,
         default_limits=["2000 per day", "100 per hour"],
         storage_uri="memory://",
     )
+    limiter = app.limiter
 
     # CORS configuration
     allowed_origins = os.environ.get("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
