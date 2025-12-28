@@ -18,11 +18,13 @@ RESOURCES_API = os.environ.get("RESOURCES_API_URL", "http://localhost:5100")
 class ResourceProcessor:
     """Handles downloading and processing resources for AI context"""
     
-    def get_resource_content(self, resource_id: str) -> dict:
+    def get_resource_content(self, resource_id: str, token: str = None) -> dict:
         """Download resource and extract text"""
         try:
+            headers = {"Authorization": f"Bearer {token}"} if token else {}
+            
             # Get metadata
-            meta_res = requests.get(f"{RESOURCES_API}/f-api/v1/resources/{resource_id}")
+            meta_res = requests.get(f"{RESOURCES_API}/v1/resources/{resource_id}", headers=headers)
             if not meta_res.ok:
                 logging.error(f"Failed to fetch metadata for {resource_id}: {meta_res.status_code}")
                 return None
@@ -34,7 +36,8 @@ class ResourceProcessor:
             from modules.security import FileSecurity
             
             download_res = requests.get(
-                f"{RESOURCES_API}/f-api/v1/resources/{resource_id}/download",
+                f"{RESOURCES_API}/v1/resources/{resource_id}/download",
+                headers=headers,
                 timeout=30 # Security: Timeout to prevent hanging
             )
             if not download_res.ok:

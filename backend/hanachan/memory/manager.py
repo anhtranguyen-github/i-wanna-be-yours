@@ -62,6 +62,16 @@ class MemoryManager:
                 self.active = True
                 logger.info("MemoryManager: Live memory services are active.")
 
+        except Exception as e:
+            logger.error(f"MemoryManager: Live services init failed: {e}")
+
+        # 3. Initialize LLM
+        try:
+            self.llm = ModelFactory.create_chat_model(temperature=0)
+            logger.debug("MemoryManager: Memory LLM initialized.")
+        except Exception as e:
+            logger.error(f"MemoryManager: Memory LLM init failed: {e}")
+
     def retrieve_resource_context(self, query: str, user_id: str, resource_ids: List[str]) -> str:
         """Retrieves relevant chunks from attached resources."""
         if not self.resource_memory or not resource_ids or not user_id:
@@ -78,15 +88,6 @@ class MemoryManager:
         except Exception as e:
             logger.error(f"Error retrieving resource context: {e}")
             return ""
-        except Exception as e:
-            logger.error(f"MemoryManager: Live services init failed: {e}")
-
-        # 3. Initialize LLM
-        try:
-            self.llm = ModelFactory.create_chat_model(temperature=0)
-            logger.debug("MemoryManager: Memory LLM initialized.")
-        except Exception as e:
-            logger.error(f"MemoryManager: Memory LLM init failed: {e}")
 
     def retrieve_context(self, query: str, user_id: str) -> str:
         """Retrieves formatted context from both memory stores, scoped to user."""

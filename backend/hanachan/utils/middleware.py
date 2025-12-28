@@ -3,7 +3,7 @@ from flask import request, jsonify, g
 import requests
 import os
 
-RESOURCES_INTERNAL_API = "http://localhost:5100/f-api/v1/resources"
+RESOURCES_INTERNAL_API = "http://localhost:5100/v1/resources"
 ALLOWED_EXTENSIONS = {'.pdf', '.txt', '.png', '.jpg', '.jpeg', '.docx'}
 
 def validate_resource_access(f):
@@ -29,12 +29,16 @@ def validate_resource_access(f):
 
         if not resource_ids:
             return f(*args, **kwargs)
+            
+        # Get Auth token to forward
+        auth_header = request.headers.get('Authorization')
+        headers = {'Authorization': auth_header} if auth_header else {}
 
         for rid in resource_ids:
             try:
                 # 1. Fetch metadata from internal resource service
                 # We use internal port 5100 where the flask-dynamic-db lives
-                resp = requests.get(f"{RESOURCES_INTERNAL_API}/{rid}")
+                resp = requests.get(f"{RESOURCES_INTERNAL_API}/{rid}", headers=headers)
                 if not resp.ok:
                     return jsonify({"error": f"Resource {rid} not found or inaccessible"}), 404
                 

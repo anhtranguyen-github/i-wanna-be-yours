@@ -90,7 +90,7 @@ class EpisodicMemory:
             # Start with User ID filter (Always required)
             must_conditions = [
                 models.FieldCondition(
-                    key="user_id",
+                    key="metadata.user_id",
                     match=models.MatchValue(value=str(user_id))
                 )
             ]
