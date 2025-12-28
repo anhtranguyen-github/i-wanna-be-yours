@@ -5,9 +5,8 @@
  * Split from ChatLayoutContext to reduce re-renders.
  */
 
-"use client";
-
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 interface ConversationContextType {
     /**
@@ -26,6 +25,10 @@ interface ConversationContextType {
      * Update the session ID
      */
     setSessionId: (id: string | null) => void;
+    /**
+     * Refresh the session ID with a new UUID
+     */
+    refreshSession: () => void;
 }
 
 const ChatConversationContext = createContext<ConversationContextType | null>(null);
@@ -52,8 +55,15 @@ export function ChatConversationProvider({
     );
     const [sessionId, setSessionId] = useState<string | null>(null);
 
+    // Initialize/Regenerate sessionId if null
+    useEffect(() => {
+        if (!sessionId) {
+            setSessionId(uuidv4());
+        }
+    }, [sessionId]);
+
     // Sync with prop (which comes from URL params)
-    React.useEffect(() => {
+    useEffect(() => {
         setEffectiveConversationId(initialConversationId);
     }, [initialConversationId]);
 
@@ -65,6 +75,10 @@ export function ChatConversationProvider({
         setSessionId(id);
     }, []);
 
+    const refreshSession = useCallback(() => {
+        setSessionId(uuidv4());
+    }, []);
+
     return (
         <ChatConversationContext.Provider
             value={{
@@ -72,6 +86,7 @@ export function ChatConversationProvider({
                 setEffectiveConversationId: updateConversationId,
                 sessionId,
                 setSessionId: updateSessionId,
+                refreshSession,
             }}
         >
             {children}

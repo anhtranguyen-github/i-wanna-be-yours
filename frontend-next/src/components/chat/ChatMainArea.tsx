@@ -162,7 +162,7 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
             await streamMessage(
                 text,
                 effectiveConversationId,
-                sessionId || 'default-session',
+                sessionId || `temp-${Date.now()}`,
                 attachedFiles.map(f => f.id)
             );
         } catch (error) {
