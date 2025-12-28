@@ -77,3 +77,19 @@ This document tracks all errors, bugs, and failures encountered during the imple
 - **Error**: Worker code reading `QDRANT_HOST=localhost` despite docker-compose setting it to `qdrant`.
 - **Cause**: The `.env` file in `backend/hanachan/` was being copied into the Docker image. `python-dotenv` was loading this file and overriding the OS environment variables set by Docker Compose.
 - **Solution**: Added `.env` to `.dockerignore` to prevent it from being included in the Docker image.
+
+## 13. Qdrant Collection Dimension Mismatch
+- **Error**: `Existing Qdrant collection is configured for dense vectors with 768 dimensions. Selected embeddings are 1536-dimensional.`
+- **Cause**: The `episodic_memory` collection was originally created with Ollama's `nomic-embed-text` (768 dimensions). After switching to OpenAI embeddings (1536 dimensions), they became incompatible.
+- **Solution**: Deleted the old collection (`c.delete_collection('episodic_memory')`) and let the code re-create it with the correct dimensions.
+
+## 14. Neo4j APOC Plugin Warning
+- **Error**: `Failed to connect to Neo4j: Could not use APOC procedures.`
+- **Cause**: The `langchain-neo4j` library requires the APOC plugin for graph operations. Our Neo4j container does not have it installed.
+- **Solution (Pending)**: Add APOC plugin to Neo4j service or adjust `SemanticMemory` to use raw Cypher queries without APOC.
+
+## 15. Episodes Table Missing
+- **Error**: `relation "episodes" does not exist`
+- **Cause**: The `Episode` model was added but the PostgreSQL database was not migrated.
+- **Solution (Pending)**: Run DB migrations or table creation script.
+
