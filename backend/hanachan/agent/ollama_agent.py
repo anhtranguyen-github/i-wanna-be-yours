@@ -1,20 +1,21 @@
 import os
-import json
 import logging
-import requests
-from typing import List, Dict, Any, Generator
+from typing import List, Any, Generator
 from services.resource_processor import ResourceProcessor
-
-OLLAMA_BASE_URL = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
-CHAT_MODEL = os.environ.get("CHAT_MODEL", "qwen3:1.7b")
-VISION_MODEL = os.environ.get("VISION_MODEL", "qwen3-vl:2b")
+from langchain_core.messages import SystemMessage, HumanMessage
+from memory.manager import MemoryManager
+from services.llm_factory import ModelFactory
 
 logger = logging.getLogger(__name__)
 
-class OllamaAgent:
+class HanachanAgent:
     def __init__(self):
         self.processor = ResourceProcessor()
+        self.memory_manager = MemoryManager()
         self.skills_dir = os.path.join(os.path.dirname(__file__), "skills")
+        
+        # Initialize LangChain Chat Model via Factory
+        self.llm = ModelFactory.create_chat_model(temperature=0.7)
 
     def _get_system_prompt(self) -> str:
         try:
@@ -31,70 +32,56 @@ class OllamaAgent:
                stream: bool = False) -> Any:
         
         resource_ids = resource_ids or []
-        system_prompt = self._get_system_prompt()
+        system_text = self._get_system_prompt()
         
         # 1. Gather Resource Context
         context_data = []
-        images = []
-        has_images = False
-        
         for rid in resource_ids:
             res = self.processor.get_resource_content(rid)
-            if not res:
-                continue
-                
-            if res.get('mediaBase64'):
-                images.append(res['mediaBase64'])
-                has_images = True
-                context_data.append(f"--- ATTACHED IMAGE: {res['title']} ---")
-            elif res.get('content'):
-                context_data.append(f"--- RESOURCE: {res['title']} ---\n{res['content']}")
+            if res and res.get('content'):
+                    context_data.append(f"--- RESOURCE: {res['title']} ---\n{res['content']}")
         
-        context_str = "\n\n".join(context_data)
-        if context_str:
-            system_prompt += f"\n\n## ATTACHED RESOURCES (GROUNDING CONTEXT):\n{context_str}"
+        if context_data:
+            system_text += f"\n\n## ATTACHED RESOURCES:\n" + "\n\n".join(context_data)
+            
+        # 2. Gather Memory Context
+        try:
+            memory_context = self.memory_manager.retrieve_context(prompt)
+            if memory_context:
+                system_text += f"\n\n{memory_context}"
+        except Exception as e:
+            logger.error(f"Memory retrieval failed: {e}")
 
-        # 2. Select Model (Switch to VL if images present)
-        model_name = VISION_MODEL if has_images else CHAT_MODEL
-
-        # 3. Call Ollama
+        # 3. Construct Messages
         messages = [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": prompt}
+            SystemMessage(content=system_text),
+            HumanMessage(content=prompt)
         ]
-        
-        # Add images to the last message if any
-        if images:
-            messages[-1]["images"] = images
 
         try:
-            response = requests.post(
-                f"{OLLAMA_BASE_URL}/api/chat",
-                json={
-                    "model": model_name,
-                    "messages": messages,
-                    "stream": stream,
-                    "options": {"temperature": 0.7}
-                },
-                stream=stream,
-                timeout=120
-            )
-
             if stream:
-                return self._stream_generator(response)
+                return self._stream_generator(messages, prompt)
             else:
-                return response.json().get("message", {}).get("content", "I encountered a neural synchronization error.")
+                response = self.llm.invoke(messages)
+                content = response.content
+                # Save interaction to memory
+                self.memory_manager.save_interaction(prompt, content)
+                return content
         except Exception as e:
-            logger.error(f"Ollama Agent Error: {e}")
-            return "My neural core is currently recalibrating. Please try again in a moment."
+            logger.error(f"Agent Error: {e}")
+            return f"My neural core is currently recalibrating. (Error: {str(e)})"
 
-    def _stream_generator(self, response: requests.Response) -> Generator[str, None, None]:
-        for line in response.iter_lines():
-            if line:
-                try:
-                    chunk = json.loads(line.decode('utf-8'))
-                    if not chunk.get('done'):
-                        yield chunk.get('message', {}).get('content', '')
-                except Exception as e:
-                    logger.error(f"Error decoding stream line: {e}")
-                    continue
+    def _stream_generator(self, messages: List[Any], user_prompt: str) -> Generator[str, None, None]:
+        full_response = ""
+        try:
+            for chunk in self.llm.stream(messages):
+                content = chunk.content
+                full_response += content
+                yield content
+            
+            # Save interaction after streaming completes
+            self.memory_manager.save_interaction(user_prompt, full_response)
+            
+        except Exception as e:
+            logger.error(f"Streaming error: {e}")
+            yield "I encountered a neural synchronization error."
