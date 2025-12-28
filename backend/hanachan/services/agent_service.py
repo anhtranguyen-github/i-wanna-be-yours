@@ -342,6 +342,7 @@ class AgentService:
         # 1. Initialize Persistence
         conv_id = None
         user_msg_id = None
+        conv = None
         
         try:
             conv, user_msg = self._get_or_create_conversation(request_data)
@@ -350,9 +351,9 @@ class AgentService:
         except Exception as e:
             print(f"Streaming Persistence Error (Pre-stream): {e}")
 
-        # 2. Yield Metadata (Frontend needs conversationId early)
-        if conv_id:
-            yield f"__METADATA__:{json.dumps({'conversationId': conv_id})}\n"
+        # 2. Yield Metadata (Frontend needs conversationId early - Use Session UUID)
+        if conv and conv.session_id:
+            yield f"__METADATA__:{json.dumps({'conversationId': conv.session_id})}\n"
 
         # 3. Stream from Agent
         agent = HanachanAgent()
