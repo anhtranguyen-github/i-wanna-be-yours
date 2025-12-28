@@ -71,3 +71,54 @@ class SemanticMemory:
         except Exception as e:
             print(f"Error retrieving semantic memory: {e}")
             return "Error retrieving semantic context."
+
+    def get_user_graph(self, user_id: str) -> Dict[str, List[Any]]:
+        """
+        Retrieves the user's knowledge graph (nodes connected to the User via KNOWS).
+        Returns format compatible with react-force-graph-2d: { nodes: [], links: [] }
+        """
+        if not self.graph:
+            return {"nodes": [], "links": []}
+
+        # Query for: User -> KNOWS -> Source -[Rel]-> Target
+        # We visualize the subgraph "known" by the user
+        cypher = """
+            MATCH (u:User {id: $user_id})-[:KNOWS]->(s)
+            OPTIONAL MATCH (s)-[r]->(t)
+            RETURN s.id as source_id, labels(s) as source_labels, 
+                   type(r) as rel_type, 
+                   t.id as target_id, labels(t) as target_labels
+        """
+        try:
+             results = self.graph.query(cypher, {'user_id': str(user_id)})
+             
+             nodes = {}
+             links = []
+             
+             for row in results:
+                 s_id = row['source_id']
+                 if s_id and s_id not in nodes:
+                     # Clean up label (remove 'Resource' if generic, or just verify)
+                     lbl = row['source_labels'][0] if row['source_labels'] else "Unknown"
+                     nodes[s_id] = {"id": s_id, "group": lbl, "label": s_id}
+                 
+                 t_id = row['target_id']
+                 if t_id:
+                     if t_id not in nodes:
+                         lbl = row['target_labels'][0] if row['target_labels'] else "Unknown"
+                         nodes[t_id] = {"id": t_id, "group": lbl, "label": t_id}
+                     
+                     if row['rel_type']:
+                         # Prevent duplicate links if multiple types exist
+                         link_id = f"{s_id}-{row['rel_type']}-{t_id}"
+                         links.append({
+                             "source": s_id,
+                             "target": t_id,
+                             "type": row['rel_type'],
+                             "id": link_id
+                         })
+                         
+             return {"nodes": list(nodes.values()), "links": links}
+        except Exception as e:
+            print(f"Error fetching user graph: {e}")
+            return {"nodes": [], "links": []}

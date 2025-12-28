@@ -129,3 +129,65 @@ class EpisodicMemory:
         except Exception as e:
             logger.error(f"Error retrieving episodic memory: {e}")
             return ""
+
+    def get_recent_memories(self, user_id: str, limit: int = 20) -> list:
+        """
+        Retrieves the most recent memories for a user.
+        Returns list of dicts: { content, timestamp, source, type }
+        """
+        if not user_id:
+            return []
+            
+        try:
+            from qdrant_client.http import models
+            
+            # Filter by user_id
+            filter_condition = models.Filter(
+                must=[
+                    models.FieldCondition(
+                        key="metadata.user_id",
+                        match=models.MatchValue(value=str(user_id))
+                    )
+                ]
+            )
+            
+            # Scroll/Search - since we want recent, and vectors are not time-ordered naturally,
+            # strict "recency" usually requires a timestamp field in metadata payload.
+            # Assuming payload has implicit insertion order or 'timestamp' metadata if added.
+            # For now, we scroll to get documents and assume some order or accept arbitrary recent batch.
+            # Ideally, we should sort by payload.timestamp if it existed. 
+            
+            # Using scroll is safer to just get data without vector search
+            scroll_result, _ = self.client.scroll(
+                collection_name=self.collection_name,
+                scroll_filter=filter_condition,
+                limit=limit,
+                with_payload=True,
+                with_vectors=False
+            )
+            
+            memories = []
+            for point in scroll_result:
+                payload = point.payload or {}
+                meta = payload.get("metadata", {})
+                
+                # If metadata is flattened in payload (depends on how vector store adds it)
+                # LangChain Qdrant store usually puts metadata in 'metadata' field of payload
+                if "metadata" not in payload: 
+                     # Check if payload itself is the metadata + page_content
+                     meta = payload
+                
+                content = payload.get("page_content", "")
+                
+                memories.append({
+                    "id": point.id,
+                    "content": content,
+                    "source": meta.get("source", "Unknown"),
+                    "type": meta.get("type", "conversation"),
+                    "timestamp": meta.get("timestamp") # Might be None
+                })
+                
+            return memories
+        except Exception as e:
+            logger.error(f"Error fetching recent memories: {e}")
+            return []

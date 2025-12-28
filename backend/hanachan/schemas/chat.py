@@ -12,6 +12,7 @@ class ContextConfigurationDTO(BaseModel):
     temperature: Optional[float] = 0.7
     max_tokens: Optional[int] = 1000
     resource_ids: Optional[List[str]] = []
+    resources: Optional[List[Dict[str, Any]]] = []
 
 class ChatMessageDTO(BaseModel):
     id: Optional[int] = None
