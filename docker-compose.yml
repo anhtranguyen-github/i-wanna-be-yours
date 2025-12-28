@@ -101,11 +101,13 @@ services:
       - FLASK_RUN_PORT=5400
       - REDIS_URL=redis://redis:6379/0
       - PYTHONUNBUFFERED=1
+      - MONGO_URI=mongodb://mongodb:27017
     depends_on:
       - hanachan-db
       - neo4j
       - qdrant
       - redis
+      - mongodb
     restart: unless-stopped
     networks:
       - hanachan-network
@@ -213,6 +215,16 @@ services:
     networks:
       - hanachan-network
 
+  mongodb:
+    image: mongo:6.0
+    ports:
+      - '127.0.0.1:27017:27017'
+    volumes:
+      - mongodb_data:/data/db
+    restart: unless-stopped
+    networks:
+      - hanachan-network
+
 volumes:
   user_db:
   mysql_data:
@@ -220,6 +232,7 @@ volumes:
   neo4j_data:
   qdrant_data:
   redis_data:
+  mongodb_data:
 
 
 networks:

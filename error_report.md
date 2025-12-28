@@ -117,3 +117,12 @@ This document tracks all errors, bugs, and failures encountered during the imple
 - Qdrant connection stable
 - Neo4j operational with APOC
 
+
+## 16. Artifacts API 500 Error (MongoDB Connection in Docker)
+- **Error**: `GET /artifacts/conversation/... 500 (Internal Server Error)`
+- **Cause**: When running hanachan in Docker, it couldn't connect to MongoDB at `localhost:27017` because 'localhost' in Docker refers to the container, not the host.
+- **Solution**: 
+  - For Docker deployment: Added `mongodb` service to `docker-compose.yml` and set `MONGO_URI=mongodb://mongodb:27017`
+  - For local dev: Use `start_local_services.sh` which runs MongoDB locally and Flask can access it at `localhost:27017`
+- **Status**: ✅ Fixed for local dev. Docker deployment requires MongoDB container to be running.
+
