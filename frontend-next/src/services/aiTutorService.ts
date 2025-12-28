@@ -78,7 +78,7 @@ class AITutorService {
         const conversationsRaw = await res.json();
 
         let convos: Conversation[] = conversationsRaw.map((c: any) => ({
-            _id: c.id.toString(),
+            _id: c.sessionId || c.id.toString(), // Prefer SessionUUID
             sessionId: c.sessionId,
             title: c.title || 'Untitled',
             messages: c.lastMessage ? [this.mapMessage(c.lastMessage)] : [],
@@ -106,7 +106,7 @@ class AITutorService {
         const messages: Message[] = (data.history || []).map((m: any) => this.mapMessage(m));
 
         return {
-            _id: data.id.toString(),
+            _id: data.sessionId || data.id.toString(), // Prefer SessionUUID
             sessionId: data.sessionId,
             title: data.title || 'Conversation',
             messages,
@@ -131,7 +131,7 @@ class AITutorService {
         const c = await res.json();
 
         return {
-            _id: c.id.toString(),
+            _id: c.sessionId || c.id.toString(), // Prefer SessionUUID
             sessionId: c.sessionId,
             title: c.title,
             messages: [],
