@@ -64,10 +64,15 @@ Update `SemanticMemory.retrieve`:
 
 ### Phase 5: Multimodal Resource Ingestion
 1.  **PDF-to-Image Processing**: Update `ResourceProcessor` to detect and extract images from PDF pages using `PyMuPDF` or `pdf2image`.
-2.  **Visual Embedding Pipeline**:
+2.  **Token & Performance Optimization (Cost Control)**:
+    *   **Resizing**: Automatically resize all visual assets to a maximum of 1024px (long side) while maintaining aspect ratio to minimize VLM token costs.
+    *   **Format Optimization**: Convert images to WebP or optimized JPEG with reduced quality (e.g., 75-80%) to reduce storage and transmission overhead.
+    *   **Adaptive Resolution**: Use "Low Detail" mode for VLMs (like OpenAI's `detail: low`) for general scenes to save 100+ tokens per image, reserving "High Detail" only for text-heavy diagrams.
+    *   **Caching**: Implement MD5 hashing for images to detect duplicates across resources and reuse existing visual descriptions.
+3.  **Visual Embedding Pipeline**:
     - **A. Textual Proxy**: Generate 1-2 sentence summaries of images using a VLM.
     - **B. Native Multimodal (Future)**: Use `clip-vit-base-patch32` or similar for direct image-to-vector embedding.
-3.  **Graph Linking**: Link `image_chunk` nodes to the main `Document` node in Neo4j, allowing the agent to "see" that a specific figure supports a specific text claim.
+4.  **Graph Linking**: Link `image_chunk` nodes to the main `Document` node in Neo4j, allowing the agent to "see" that a specific figure supports a specific text claim.
 
 ### Phase 6: Cross-Modal Semantic Search
 1.  **Query Handling**: When a user asks "Show me the diagram of the architecture," the semantic search should return the visual descriptions of the relevant figures.
