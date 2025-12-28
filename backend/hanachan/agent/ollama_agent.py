@@ -37,19 +37,20 @@ class HanachanAgent:
         chat_history = chat_history or []
         system_text = self._get_system_prompt()
         
-        # 1. Gather Resource Context
-        context_data = []
-        for rid in resource_ids:
-            res = self.processor.get_resource_content(rid)
-            if res and res.get('content'):
-                    context_data.append(f"--- RESOURCE: {res['title']} ---\n{res['content']}")
-        
-        if context_data:
-            system_text += f"\n\n## ATTACHED RESOURCES:\n" + "\n\n".join(context_data)
+        # 1. Gather Resource Context (RAG)
+        if resource_ids:
+            try:
+                # Retrieve relevant chunks from the selected resources
+                resource_context = self.memory_manager.retrieve_resource_context(prompt, user_id, resource_ids)
+                if resource_context:
+                    system_text += f"\n\n## RELEVANT RESOURCE EXCERPTS:\n{resource_context}"
+            except Exception as e:
+                logger.error(f"Resource Retrieval Error: {e}")
             
         # 2. Gather Memory Context
         try:
-            memory_context = self.memory_manager.retrieve_context(prompt)
+            # Pass user_id for scoped retrieval
+            memory_context = self.memory_manager.retrieve_context(prompt, user_id=user_id)
             if memory_context:
                 system_text += f"\n\n{memory_context}"
         except Exception as e:
@@ -74,18 +75,18 @@ class HanachanAgent:
 
         try:
             if stream:
-                return self._stream_generator(messages, prompt, session_id)
+                return self._stream_generator(messages, prompt, session_id, user_id)
             else:
                 response = self.llm.invoke(messages)
                 content = response.content
-                # Save interaction to memory
-                self.memory_manager.save_interaction(session_id, prompt, content)
+                # Save interaction to memory with user_id
+                self.memory_manager.save_interaction(session_id, user_id, prompt, content)
                 return content
         except Exception as e:
             logger.error(f"Agent Error: {e}")
             return f"My neural core is currently recalibrating. (Error: {str(e)})"
 
-    def _stream_generator(self, messages: List[Any], user_prompt: str, session_id: str) -> Generator[str, None, None]:
+    def _stream_generator(self, messages: List[Any], user_prompt: str, session_id: str, user_id: str) -> Generator[str, None, None]:
         full_response = ""
         try:
             for chunk in self.llm.stream(messages):
@@ -94,7 +95,7 @@ class HanachanAgent:
                 yield content
             
             # Save interaction after streaming completes
-            self.memory_manager.save_interaction(session_id, user_prompt, full_response)
+            self.memory_manager.save_interaction(session_id, user_id, user_prompt, full_response)
             
         except Exception as e:
             logger.error(f"Streaming error: {e}")

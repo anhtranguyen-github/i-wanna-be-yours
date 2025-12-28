@@ -14,12 +14,16 @@ from database.database import db
 
 logger = logging.getLogger(__name__)
 
-def process_interaction(session_id: str, user_message: str, agent_response: str):
+def process_interaction(session_id: str, user_id: str, user_message: str, agent_response: str):
     """
     Background task to process a chat interaction for episodic and semantic memory.
     """
     import time
-    logger.info(f"Starting memory processing for Session: {session_id}")
+    if not user_id:
+        logger.error(f"❌ [WORKER] Missing user_id for session {session_id}. Aborting memory update.")
+        return False
+        
+    logger.info(f"Starting memory processing for Session: {session_id}, User: {user_id}")
     
     # Pre-flight check for Qdrant with retry
     q_host = os.environ.get("QDRANT_HOST", "qdrant")
@@ -61,7 +65,7 @@ def process_interaction(session_id: str, user_message: str, agent_response: str)
         messages = summary_prompt.format_messages(interaction=interaction_text)
         summary = llm.invoke(messages).content
         
-        episodic.add_memory(summary, metadata={"session_id": session_id, "timestamp": datetime.utcnow().isoformat()})
+        episodic.add_memory(summary, user_id=user_id, metadata={"session_id": session_id, "timestamp": datetime.utcnow().isoformat()})
         logger.info(f"✅ [WORKER] Episodic memory updated: {summary[:50]}...")
     except Exception as e:
         logger.error(f"❌ [WORKER] Episodic processing failed: {e}")
@@ -89,7 +93,7 @@ Empty list if no relevant information found."""),
                 except:
                     continue
             if valid_rels:
-                semantic.add_relationships(valid_rels)
+                semantic.add_relationships(valid_rels, user_id=user_id)
                 logger.info(f"✅ [WORKER] Semantic memory updated with {len(valid_rels)} relationships.")
     except Exception as e:
         logger.error(f"❌ [WORKER] Semantic extraction failed: {e}")
@@ -103,7 +107,6 @@ Empty list if no relevant information found."""),
     except Exception as e:
         logger.error(f"❌ [WORKER] Episode management failed: {e}")
 
-    print(f"✅ [WORKER] Finished processing interaction for session {session_id}")
     logger.info(f"Finished processing interaction for session {session_id}")
     return True
 

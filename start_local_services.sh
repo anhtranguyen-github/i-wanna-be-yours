@@ -127,6 +127,7 @@ cleanup() {
     # We target the specific server scripts to be safer if possible, or fall back to ports
     pkill -f "express-db/my_server.js" && log "  🛑 Killed express server" || true
     pkill -f "dictionary-db/main_server.js" && log "  🛑 Killed dictionary server" || true
+    pkill -f "rq worker" && log "  🛑 Killed rq worker" || true
 
     # 3. Fallback: Kill by Ports
     log "Checking for leftover services on ports..."
@@ -187,6 +188,12 @@ shutdown_all() {
     (
         log "🛑 Stopping Qdrant..."
         docker compose stop qdrant >/dev/null 2>&1 && log "✅ Qdrant stopped." || true
+    ) &
+
+    # Stop Redis
+    (
+        log "🛑 Stopping Redis..."
+        docker compose stop redis >/dev/null 2>&1 && log "✅ Redis stopped." || true
     ) &
     
     wait
@@ -301,6 +308,17 @@ DB_PIDS+=($!)
     else
         log "🚀 Starting Qdrant..."
         docker compose up -d qdrant >/dev/null 2>&1 && log "✅ Qdrant started." || { log "❌ Failed to start Qdrant"; exit 1; }
+    fi
+) &
+DB_PIDS+=($!)
+
+# --- Redis ---
+(
+    if docker ps --format '{{.Names}}' | grep -q "redis"; then
+        log "✅ Redis is already running."
+    else
+        log "🚀 Starting Redis..."
+        docker compose up -d redis >/dev/null 2>&1 && log "✅ Redis started." || { log "❌ Failed to start Redis"; exit 1; }
     fi
 ) &
 DB_PIDS+=($!)
@@ -445,6 +463,27 @@ log "✅ Started python-dictionary (PID: $pid)"
 pid=$!
 PIDS+=($pid)
 log "✅ Started hanachan (PID: $pid)"
+
+# --- Start HANACHAN WORKER ---
+(
+    log "🚀 Starting hanachan-worker..."
+    cd backend/hanachan || exit 1
+    
+    if [ -f .venv/bin/activate ]; then
+        . .venv/bin/activate
+    fi
+    
+    # Ensure REDIS_URL is set (default for local)
+    export REDIS_URL="redis://localhost:6379/0"
+    # Ensure OBJC_DISABLE_INITIALIZE_FORK_SAFETY is set for macOS/some Linux
+    export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+    
+    ./run_worker.sh > "$LOG_ROOT/hanachan/worker.log" 2>&1
+    on_error "hanachan-worker" $?
+) &
+pid=$!
+PIDS+=($pid)
+log "✅ Started hanachan-worker (PID: $pid)"
 
 # --- Start FRONTEND-NEXT (port 3000) ---
 (

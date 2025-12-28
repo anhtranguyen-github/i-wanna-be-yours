@@ -53,6 +53,7 @@ class MemoryManager:
             
             logger.debug("MemoryManager: Initializing EpisodicMemory...")
             self.episodic = EpisodicMemory()
+            self.resource_memory = EpisodicMemory(collection_name="resource_vectors")
             
             logger.debug("MemoryManager: Initializing SemanticMemory...")
             self.semantic = SemanticMemory()
@@ -60,6 +61,23 @@ class MemoryManager:
             if self.episodic or self.semantic:
                 self.active = True
                 logger.info("MemoryManager: Live memory services are active.")
+
+    def retrieve_resource_context(self, query: str, user_id: str, resource_ids: List[str]) -> str:
+        """Retrieves relevant chunks from attached resources."""
+        if not self.resource_memory or not resource_ids or not user_id:
+            return ""
+            
+        try:
+            # We filter by resource_id to only search within attached docs
+            return self.resource_memory.retrieve(
+                query=query, 
+                user_id=user_id, 
+                k=5, 
+                metadata_filter={"resource_id": resource_ids}
+            )
+        except Exception as e:
+            logger.error(f"Error retrieving resource context: {e}")
+            return ""
         except Exception as e:
             logger.error(f"MemoryManager: Live services init failed: {e}")
 
@@ -70,15 +88,15 @@ class MemoryManager:
         except Exception as e:
             logger.error(f"MemoryManager: Memory LLM init failed: {e}")
 
-    def retrieve_context(self, query: str) -> str:
-        """Retrieves formatted context from both memory stores."""
-        if not self.active:
+    def retrieve_context(self, query: str, user_id: str) -> str:
+        """Retrieves formatted context from both memory stores, scoped to user."""
+        if not self.active or not user_id:
             return ""
 
         start_time = time.time()
         try:
-            episodic_context = self.episodic.retrieve(query) if self.episodic else ""
-            semantic_context = self.semantic.retrieve(query, limit=5) if self.semantic else ""
+            episodic_context = self.episodic.retrieve(query, user_id=user_id) if self.episodic else ""
+            semantic_context = self.semantic.retrieve(user_id=user_id, query=query, limit=5) if self.semantic else ""
             
             context_parts = []
             if episodic_context:
@@ -87,7 +105,7 @@ class MemoryManager:
                 context_parts.append(f"Relevant Facts from Knowledge Graph:\n{semantic_context}")
                 
             elapsed = time.time() - start_time
-            logger.info(f"MemoryManager: Retrieval completed in {elapsed:.2f}s")
+            logger.info(f"MemoryManager: Retrieval completed in {elapsed:.2f}s for user {user_id}")
             
             if context_parts:
                 return "--- MEMORY CONTEXT ---\n" + "\n\n".join(context_parts) + "\n"
@@ -96,7 +114,7 @@ class MemoryManager:
             logger.error(f"MemoryManager: Context retrieval error: {e}")
             return ""
 
-    def save_interaction(self, session_id: str, user_message: str, agent_response: str):
+    def save_interaction(self, session_id: str, user_id: str, user_message: str, agent_response: str):
         """
         Offload memory processing to the background worker.
         """
@@ -110,6 +128,7 @@ class MemoryManager:
             job = self.queue.enqueue(
                 process_interaction,
                 session_id=session_id,
+                user_id=user_id,
                 user_message=user_message,
                 agent_response=agent_response,
                 retry=Retry(max=3, interval=[60, 300, 600])

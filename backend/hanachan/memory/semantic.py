@@ -15,45 +15,55 @@ class SemanticMemory:
         except Exception as e:
             print(f"Failed to connect to Neo4j: {e}")
 
-    def add_relationships(self, relationships: List[Any]):
+    def add_relationships(self, relationships: List[Any], user_id: str):
         """
-        Adds relationships to the graph.
+        Adds relationships to the graph, scoped to a user.
         relationships: List of Relationship objects (Pydantic models from extraction)
         """
-        if not self.graph:
+        if not self.graph or not user_id:
             return
 
         for rel in relationships:
             try:
+                # Construct query directly with user scoping
+                # MERGE the User node
+                # MERGE the Source/Target nodes
+                # MERGE the User->Source connection (User KNOWS Fact)
                 cypher = """
-                MERGE (s:{source_type} {id: $source_id})
-                MERGE (t:{target_type} {id: $target_id})
-                MERGE (s)-[r:{rel_type}]->(t)
-                """
-                query = cypher.format(
-                    source_type=rel.source.type.replace(' ', '_'),
-                    target_type=rel.target.type.replace(' ', '_'),
-                    rel_type=rel.type.replace(' ', '_')
+                MERGE (u:User {id: $user_id})
+                MERGE (s:%s {id: $source_id})
+                MERGE (t:%s {id: $target_id})
+                MERGE (u)-[:KNOWS]->(s)
+                MERGE (s)-[r:%s]->(t)
+                """ % (
+                    rel.source.type.replace(' ', '_'),
+                    rel.target.type.replace(' ', '_'),
+                    rel.type.replace(' ', '_')
                 )
-                self.graph.query(query, {
+                
+                self.graph.query(cypher, {
+                    'user_id': str(user_id),
                     'source_id': rel.source.id,
                     'target_id': rel.target.id
                 })
             except Exception as e:
                 print(f"Error adding relationship to Neo4j: {e}")
 
-    def retrieve(self, query: str = None, limit: int = 10) -> str:
+    def retrieve(self, user_id: str, query: str = None, limit: int = 10) -> str:
         if not self.graph:
             return "Semantic memory unavailable."
         
-        # Simple retrieval - get everything for now, or could enhance to search by entities in query
-        # For this phase, we just dump recent/all relationships up to limit to provide context
+        if not user_id:
+            return "No user ID provided for memory context."
+        
+        # Retrieval scoped to what the User KNOWS
         try:
-            result = self.graph.query("""
-                MATCH (n)-[r]->(m)
+            cypher = """
+                MATCH (u:User {id: $user_id})-[:KNOWS]->(n)-[r]->(m)
                 RETURN n.id as source, type(r) as relationship, m.id as target
                 LIMIT $limit
-            """, {'limit': limit})
+            """
+            result = self.graph.query(cypher, {'user_id': str(user_id), 'limit': limit})
             
             if result:
                 return "\n".join([f"{r['source']} --[{r['relationship']}]--> {r['target']}" for r in result])

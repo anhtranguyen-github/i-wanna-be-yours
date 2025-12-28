@@ -28,6 +28,7 @@ class ResourceProcessor:
                 return None
             
             metadata = meta_res.json()
+            mime_type = metadata.get('mimeType', '')
             
             # Download file
             from modules.security import FileSecurity
@@ -53,6 +54,8 @@ class ResourceProcessor:
                 return None
 
             # Extract text based on type
+            content = ""
+            media_base64 = None
             
             if 'image' in mime_type:
                 import base64
@@ -61,11 +64,12 @@ class ResourceProcessor:
                 content = self._extract_text(file_bytes, mime_type, metadata.get('originalFilename', ''))
             
             # Fallback for plain text or unknown
-            if not content and not media_base64 and mime_type.startsWith('text/'):
+            if not content and not media_base64 and mime_type.startswith('text/'):
                  content = file_bytes.decode('utf-8', errors='ignore')
 
             return {
                 "id": resource_id,
+                "userId": metadata.get('userId'),
                 "title": metadata['title'],
                 "type": metadata['type'],
                 "mimeType": mime_type,

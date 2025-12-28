@@ -62,19 +62,70 @@ class EpisodicMemory:
         except Exception as e:
             logger.error(f"Error initializing Qdrant collection: {e}")
 
-    def add_memory(self, summary: str, metadata: dict = None):
+    def add_memory(self, summary: str, user_id: str, metadata: dict = None):
+        if not user_id:
+            logger.error("Attempted to add memory without user_id!")
+            return
+            
         if not metadata:
             metadata = {}
+        
+        # Enforce user_id in metadata
+        metadata["user_id"] = str(user_id)
+        
         doc = Document(page_content=summary, metadata=metadata)
         try:
             self.vector_store.add_documents([doc])
         except Exception as e:
             logger.error(f"Failed to add document to Qdrant: {e}")
 
-    def retrieve(self, query: str, k: int = 3) -> str:
+    def retrieve(self, query: str, user_id: str, k: int = 3, metadata_filter: dict = None) -> str:
+        if not user_id:
+            logger.warning("Attempted to retrieve memory without user_id - returning empty result for safety.")
+            return ""
+            
         try:
-            docs = self.vector_store.similarity_search(query, k=k)
-            return "\n".join([f"- {doc.page_content}" for doc in docs])
+            from qdrant_client.http import models
+            
+            # Start with User ID filter (Always required)
+            must_conditions = [
+                models.FieldCondition(
+                    key="user_id",
+                    match=models.MatchValue(value=str(user_id))
+                )
+            ]
+            
+            # Add dynamic metadata filters
+            if metadata_filter:
+                for key, value in metadata_filter.items():
+                    # Support list of values (MatchAny) or single value (MatchValue)
+                    if isinstance(value, list):
+                        must_conditions.append(
+                            models.FieldCondition(
+                                key=f"metadata.{key}",
+                                match=models.MatchAny(any=value)
+                            )
+                        )
+                    else:
+                        must_conditions.append(
+                            models.FieldCondition(
+                                key=f"metadata.{key}",
+                                match=models.MatchValue(value=value)
+                            )
+                        )
+            
+            filter_condition = models.Filter(must=must_conditions)
+            
+            docs = self.vector_store.similarity_search(
+                query, 
+                k=k,
+                filter=filter_condition
+            )
+            
+            if not docs:
+                return ""
+                
+            return "\n\n".join([f"--- Excerpt from {doc.metadata.get('source', 'Unknown')} ---\n{doc.page_content}" for doc in docs])
         except Exception as e:
             logger.error(f"Error retrieving episodic memory: {e}")
             return ""

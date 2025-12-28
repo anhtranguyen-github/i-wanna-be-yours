@@ -19,39 +19,49 @@ class ConversationService:
         saved_conv = self.conv_repo.save(new_conv)
         return saved_conv.to_dict()
 
-    def add_message(self, conversation_id: int, role: str, content: str, attachment_ids: list = None) -> dict:
+    def _resolve_conversation(self, identifier) -> Conversation:
+        # If it's an integer or digit-string, try ID first
+        if isinstance(identifier, int) or (isinstance(identifier, str) and identifier.isdigit()):
+            conv = self.conv_repo.get_by_id(int(identifier))
+            if conv: return conv
+            
+        # Try as session_id
+        return self.conv_repo.get_by_session_id(str(identifier))
+
+    def add_message(self, conversation_id, role: str, content: str, attachment_ids: list = None) -> dict:
+        # Resolve conversation first
+        conv = self._resolve_conversation(conversation_id)
+        if not conv:
+            raise ValueError(f"Conversation {conversation_id} not found")
+        
+        real_id = conv.id
+
         new_msg = ChatMessage(
-            conversation_id=conversation_id,
+            conversation_id=real_id,
             role=role,
             content=content
         )
         
         if attachment_ids:
-            # Avoid circular import by importing locally or better yet, inject ResourceService.
-            # But for simple linking, we can use the repository or just model query if attached to session.
-            # Ideally we use a ResourceRepository here.
             from models.resource import Resource
-            # Simple query for now
             resources = Resource.query.filter(Resource.id.in_(attachment_ids)).all()
             new_msg.attachments.extend(resources)
 
         saved_msg = self.msg_repo.save(new_msg)
         
-        # Touch conversation to update timestamp for sorting
+        # Touch conversation
         from datetime import datetime
-        conv = self.conv_repo.get_by_id(conversation_id)
-        if conv:
-            conv.updated_at = datetime.utcnow()
-            self.conv_repo.save(conv)
+        conv.updated_at = datetime.utcnow()
+        self.conv_repo.save(conv)
 
         return saved_msg.to_dict()
 
-    def get_conversation_details(self, conversation_id: int) -> dict:
-        conv = self.conv_repo.get_by_id(conversation_id)
+    def get_conversation_details(self, conversation_id) -> dict:
+        conv = self._resolve_conversation(conversation_id)
         if not conv:
             return None
             
-        messages = self.msg_repo.get_by_conversation_id(conversation_id)
+        messages = self.msg_repo.get_by_conversation_id(conv.id)
         conv_dict = conv.to_dict()
         conv_dict['history'] = [m.to_dict() for m in messages]
         return conv_dict

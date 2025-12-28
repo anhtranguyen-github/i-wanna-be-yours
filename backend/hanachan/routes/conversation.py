@@ -18,7 +18,7 @@ def start_conversation():
     conversation = service.create_conversation(user_id, title)
     return jsonify(conversation), 201
 
-@bp.route('/<int:conversation_id>/messages', methods=['POST'])
+@bp.route('/<conversation_id>/messages', methods=['POST'])
 @login_required
 def add_message(conversation_id):
     user_id = request.user.get("userId") or request.user.get("id")
@@ -43,7 +43,7 @@ def add_message(conversation_id):
     except Exception as e:
         return jsonify({"error": "Internal server error"}), 500
 
-@bp.route('/<int:conversation_id>', methods=['GET'])
+@bp.route('/<conversation_id>', methods=['GET'])
 @login_required
 def get_conversation(conversation_id):
     user_id = request.user.get("userId") or request.user.get("id")
