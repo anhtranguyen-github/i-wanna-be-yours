@@ -172,35 +172,39 @@ class ResourcesModule:
             limit = int(request.args.get('limit', 50))
             offset = int(request.args.get('offset', 0))
             
-            query = {"deletedAt": None}
-            if user_id:
-                query["userId"] = user_id
-            if resource_type:
-                query["type"] = resource_type
-            
-            total = self.resources_collection.count_documents(query)
-            cursor = self.resources_collection.find(query) \
-                .sort("createdAt", -1) \
-                .skip(offset) \
-                .limit(limit)
-            
-            resources = []
-            for doc in cursor:
-                resources.append({
-                    "id": str(doc["_id"]),
-                    "title": doc.get("title"),
-                    "type": doc.get("type"),
-                    "fileSize": doc.get("fileSize"),
-                    "tags": doc.get("tags", []),
-                    "createdAt": doc.get("createdAt").isoformat() if doc.get("createdAt") else None
-                })
-            
-            return jsonify({
-                "resources": resources,
-                "total": total,
-                "limit": limit,
-                "offset": offset
-            }), 200
+            try:
+                query = {"deletedAt": None}
+                if user_id:
+                    query["userId"] = user_id
+                if resource_type:
+                    query["type"] = resource_type
+                
+                total = self.resources_collection.count_documents(query)
+                cursor = self.resources_collection.find(query) \
+                    .sort("createdAt", -1) \
+                    .skip(offset) \
+                    .limit(limit)
+                
+                resources = []
+                for doc in cursor:
+                    resources.append({
+                        "id": str(doc["_id"]),
+                        "title": doc.get("title"),
+                        "type": doc.get("type"),
+                        "fileSize": doc.get("fileSize"),
+                        "tags": doc.get("tags", []),
+                        "createdAt": doc.get("createdAt").isoformat() if doc.get("createdAt") else None
+                    })
+                
+                return jsonify({
+                    "resources": resources,
+                    "total": total,
+                    "limit": limit,
+                    "offset": offset
+                }), 200
+            except Exception as e:
+                logging.error(f"Error listing resources: {e}")
+                return jsonify({"error": "Failed to list resources", "details": str(e)}), 500
         
         
         @app.route("/v1/resources/<id>", methods=["GET"])

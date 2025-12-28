@@ -107,8 +107,9 @@ kill_existing_processes() {
     log "🧹 Aggressively cleaning up existing processes and services..."
     
     # 1. Stop Docker Infrastructure (Cleanest way)
-    log "  Stopping Docker containers (ollama, neo4j, qdrant, redis)..."
-    docker stop ollama_fixed neo4j qdrant redis >/dev/null 2>&1 || true
+    log "  Stopping Docker infrastructure..."
+    docker stop ollama_fixed >/dev/null 2>&1 || true
+    docker compose stop neo4j qdrant redis flask-dynamic-db express-db dictionary-db study-plan-service hanachan >/dev/null 2>&1 || true
     
     # 2. Kill by Name
     log "  Killing processes by name..."
@@ -424,17 +425,17 @@ log "✅ Started express-db (PID: $pid)"
     log "🚀 Starting flask-dynamic-db (port 5100)..."
     cd backend/flask || exit 1
     
-    if [ -f .venv/bin/activate ]; then
-        . .venv/bin/activate
-    else
-        log "⚠️  Flask venv not found. Running without activation."
+    # Ensure venv exists and is managed by uv
+    if [ ! -d .venv ]; then
+        uv venv .venv
     fi
+    
+    # Sync dependencies
+    uv pip install -r requirements.txt > /dev/null 2>&1
 
-    ./.venv/bin/gunicorn -w 1 -b 0.0.0.0:5100 --timeout 120 server:app \
+    uv run gunicorn -w 1 -b 0.0.0.0:5100 --timeout 120 server:app \
     > "$LOG_ROOT/flask-dynamic-db/flask_5100.log" 2>&1
     on_error "flask-dynamic-db" $?
-    
-    [ -n "$VIRTUAL_ENV" ] && deactivate
 ) &
 pid=$!
 PIDS+=($pid)
@@ -445,22 +446,17 @@ log "✅ Started flask-dynamic-db (PID: $pid)"
     log "🚀 Starting study-plan-service (port 5500)..."
     cd backend/study-plan-service || exit 1
     
-    if [ ! -f .venv/bin/activate ]; then
-        log "⚠️  Study Plan Service venv not found. Creating one..."
-        python3 -m venv .venv
+    # Ensure venv exists and is managed by uv
+    if [ ! -d .venv ]; then
+        uv venv .venv
     fi
-    . .venv/bin/activate
-    # Only install if gunicorn is not available (skip slow pip install)
-    if [ ! -f .venv/bin/gunicorn ]; then
-        log "📦 Installing requirements for study-plan-service..."
-        python3 -m pip install -r requirements.txt > /dev/null 2>&1
-    fi
+    
+    # Sync dependencies
+    uv pip install -r requirements.txt > /dev/null 2>&1
 
-    ./.venv/bin/gunicorn -w 1 -b 0.0.0.0:5500 --timeout 120 server:app \
+    uv run gunicorn -w 1 -b 0.0.0.0:5500 --timeout 120 server:app \
     > "$LOG_ROOT/study-plan-service/study_plan_5500.log" 2>&1
     on_error "study-plan-service" $?
-    
-    [ -n "$VIRTUAL_ENV" ] && deactivate
 ) &
 pid=$!
 PIDS+=($pid)
@@ -511,13 +507,17 @@ log "✅ Started python-dictionary (PID: $pid)"
     log "🚀 Starting hanachan (port 5400)..."
     cd backend/hanachan || exit 1
     
-    if [ -f .venv/bin/activate ]; then
-        . .venv/bin/activate
+    # Ensure venv exists and is managed by uv
+    if [ ! -d .venv ]; then
+        uv venv .venv
     fi
+    
+    # Sync dependencies
+    uv pip install -r requirements.txt > /dev/null 2>&1
 
     # Assuming app.py is the entry point and it uses FLASK_PORT env var
     export FLASK_PORT=5400
-    python3 app.py > "$LOG_ROOT/hanachan/hanachan_5400.log" 2>&1
+    uv run python app.py > "$LOG_ROOT/hanachan/hanachan_5400.log" 2>&1
     on_error "hanachan" $?
 ) &
 pid=$!
@@ -529,16 +529,13 @@ log "✅ Started hanachan (PID: $pid)"
     log "🚀 Starting hanachan-worker..."
     cd backend/hanachan || exit 1
     
-    if [ -f .venv/bin/activate ]; then
-        . .venv/bin/activate
-    fi
-    
     # Ensure REDIS_URL is set (default for local)
     export REDIS_URL="redis://localhost:6379/0"
     # Ensure OBJC_DISABLE_INITIALIZE_FORK_SAFETY is set for macOS/some Linux
     export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
     
-    ./run_worker.sh > "$LOG_ROOT/hanachan/worker.log" 2>&1
+    # dependencies should be already synced by the hanachan service block
+    uv run ./run_worker.sh > "$LOG_ROOT/hanachan/worker.log" 2>&1
     on_error "hanachan-worker" $?
 ) &
 pid=$!

@@ -7,3 +7,7 @@ gunicorn
 flask-talisman
 flask-limiter
 pyjwt
+pydantic
+python-magic
+clamd
+marshmallow

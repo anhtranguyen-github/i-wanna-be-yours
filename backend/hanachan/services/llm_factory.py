@@ -11,7 +11,7 @@ class ModelFactory:
         Creates a chat model based on the LLM_PROVIDER environment variable.
         Defaults to 'ollama' if not specified.
         """
-        provider = os.environ.get("LLM_PROVIDER", "ollama").lower()
+        provider = os.environ.get("LLM_PROVIDER", "openai").lower()
         
         if provider == "openai":
             # Lazy import to prevent hang on startup if not using OpenAI
@@ -53,7 +53,7 @@ class ModelFactory:
         """
         Creates an embedding model based on LLM_PROVIDER.
         """
-        provider = os.environ.get("LLM_PROVIDER", "ollama").lower()
+        provider = os.environ.get("LLM_PROVIDER", "openai").lower()
         
         if provider == "openai":
             from langchain_openai import OpenAIEmbeddings

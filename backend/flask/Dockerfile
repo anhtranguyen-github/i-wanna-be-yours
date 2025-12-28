@@ -35,7 +35,7 @@ COPY . .
 RUN uv venv && \
     . .venv/bin/activate && \
     uv pip install --upgrade pip && \
-    uv pip install flask flask-cors flask-pymongo requests pymongo gunicorn
+    uv pip install -r requirements.txt
 
 # Environment variables
 ENV FLASK_RUN_HOST=0.0.0.0
