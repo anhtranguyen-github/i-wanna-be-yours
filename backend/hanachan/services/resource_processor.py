@@ -11,7 +11,9 @@ except ImportError:
 
 # from docx import Document # python-docx
 
-RESOURCES_API = "http://localhost:5100"
+import os
+
+RESOURCES_API = os.environ.get("RESOURCES_API_URL", "http://localhost:5100")
 
 class ResourceProcessor:
     """Handles downloading and processing resources for AI context"""
@@ -59,6 +61,20 @@ class ResourceProcessor:
             }
         except Exception as e:
             logging.error(f"Error processing resource {resource_id}: {e}")
+            return None
+    
+    def trigger_ingestion(self, resource_id: str):
+        """Enqueue a background task to ingest the resource"""
+        try:
+            from services.queue_factory import get_queue
+            from tasks.resource import ingest_resource
+            
+            q = get_queue()
+            job = q.enqueue(ingest_resource, resource_id=resource_id)
+            logging.info(f"ResourceProcessor: Enqueued ingestion for {resource_id} (Job: {job.id})")
+            return job.id
+        except Exception as e:
+            logging.error(f"Failed to enqueue ingestion for {resource_id}: {e}")
             return None
     
     def _extract_text(self, file_bytes: bytes, mime_type: str, filename: str) -> str:

@@ -96,6 +96,7 @@ services:
       - EMBEDDING_DIMENSION=768
       - LLM_PROVIDER=ollama
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - RESOURCES_API_URL=http://flask-dynamic-db:5100
     depends_on:
       - hanachan-db
       - neo4j
@@ -189,6 +190,7 @@ services:
       - QDRANT_PORT=6333
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - PYTHONPATH=.
+      - RESOURCES_API_URL=http://flask-dynamic-db:5100
     depends_on:
       - redis
       - hanachan-db
