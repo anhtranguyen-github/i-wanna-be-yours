@@ -152,3 +152,15 @@ class MemoryManager:
             except Exception as e:
                 logger.warning(f"MemoryManager: JSON parse failed: {e}")
         return {}
+
+_memory_manager_instance = None
+
+def get_memory_manager():
+    """
+    Returns the singleton instance of MemoryManager.
+    """
+    global _memory_manager_instance
+    if _memory_manager_instance is None:
+        logger.info("Initializing MemoryManager Singleton...")
+        _memory_manager_instance = MemoryManager()
+    return _memory_manager_instance

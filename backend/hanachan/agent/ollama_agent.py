@@ -3,7 +3,7 @@ import logging
 from typing import List, Any, Generator, Dict
 from services.resource_processor import ResourceProcessor
 from langchain_core.messages import SystemMessage, HumanMessage
-from memory.manager import MemoryManager
+from memory.manager import MemoryManager, get_memory_manager
 from services.llm_factory import ModelFactory
 
 logger = logging.getLogger(__name__)
@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 class HanachanAgent:
     def __init__(self):
         self.processor = ResourceProcessor()
-        self.memory_manager = MemoryManager()
+        self.memory_manager = get_memory_manager()
         self.skills_dir = os.path.join(os.path.dirname(__file__), "skills")
         
         # Initialize LangChain Chat Model via Factory
