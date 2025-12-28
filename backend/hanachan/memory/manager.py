@@ -93,55 +93,26 @@ class MemoryManager:
             logger.error(f"MemoryManager: Context retrieval error: {e}")
             return ""
 
-    def save_interaction(self, user_input: str, assistant_output: str):
-        """Asynchronously (conceptually) saves information to memory stores."""
-        if self.use_mock:
-            logger.info(f"[MOCK] Saving: User={user_input[:20]} / Assistant={assistant_output[:20]}")
-            return
-
-        logger.info("MemoryManager: Processing interaction for memory storage...")
-        conversation = f"User: {user_input}\nAssistant: {assistant_output}"
-        
-        # 1. Episodic Summary
+    def save_interaction(self, session_id: str, user_message: str, agent_response: str):
+        """
+        Offload memory processing to the background worker.
+        """
         try:
-            summary_prompt = ChatPromptTemplate.from_messages([
-                ("system", "Summarize this interaction in a single, descriptive sentence focusing on new information provided by the user."),
-                ("human", "{interaction}")
-            ])
-            chain = summary_prompt | self.llm
-            summary = chain.invoke({"interaction": conversation}).content
-            self.episodic.add_memory(summary, metadata={"request_id": uuid.uuid4().hex})
-            logger.info(f"MemoryManager: Episodic memory updated: {summary[:50]}...")
-        except Exception as e:
-            logger.error(f"MemoryManager: Episodic storage failed: {e}")
-
-        # 2. Semantic Extraction
-        try:
-            extraction_prompt = ChatPromptTemplate.from_messages([
-                ("system", """Extract key entities and relationships.
-Target entities: User, Topic, Level, Goal, Preference.
-Relationships: LIKES, WANTS_TO_LEARN, HAS_GOAL, IS_AT_LEVEL.
-Return strictly JSON: {{"relationships": [...]}}"""),
-                ("human", "{interaction}")
-            ])
+            from services.queue_factory import get_queue
+            from tasks.memory import process_interaction
             
-            chain = extraction_prompt | self.llm
-            response = chain.invoke({"interaction": conversation}).content
+            q = get_queue()
+            job = q.enqueue(
+                process_interaction,
+                session_id=session_id,
+                user_message=user_message,
+                agent_response=agent_response
+            )
+            logger.info(f"MemoryManager: Enqueued background task {job.id} for session {session_id}")
             
-            kg_data = self._parse_json_safely(response)
-            if kg_data and "relationships" in kg_data:
-                valid_rels = []
-                for rel in kg_data["relationships"]:
-                    try:
-                        valid_rels.append(Relationship(**rel))
-                    except:
-                        continue
-                if valid_rels:
-                    self.semantic.add_relationships(valid_rels)
-                    logger.info(f"MemoryManager: Semantic memory updated with {len(valid_rels)} relationships.")
-                    
         except Exception as e:
-            logger.error(f"MemoryManager: Semantic extraction failed: {e}")
+            logger.error(f"MemoryManager: Failed to enqueue background task: {e}")
+            # Fail soft: Chat continues even if memory fails
 
     def _parse_json_safely(self, text: str) -> Dict[str, Any]:
         """Robust JSON extraction from LLM output."""

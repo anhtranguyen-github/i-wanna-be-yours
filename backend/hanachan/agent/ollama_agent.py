@@ -27,6 +27,7 @@ class HanachanAgent:
 
     def invoke(self, 
                prompt: str, 
+               session_id: str,
                user_id: str, 
                resource_ids: List[str] = None,
                chat_history: List[Dict[str, str]] = None,
@@ -73,18 +74,18 @@ class HanachanAgent:
 
         try:
             if stream:
-                return self._stream_generator(messages, prompt)
+                return self._stream_generator(messages, prompt, session_id)
             else:
                 response = self.llm.invoke(messages)
                 content = response.content
                 # Save interaction to memory
-                self.memory_manager.save_interaction(prompt, content)
+                self.memory_manager.save_interaction(session_id, prompt, content)
                 return content
         except Exception as e:
             logger.error(f"Agent Error: {e}")
             return f"My neural core is currently recalibrating. (Error: {str(e)})"
 
-    def _stream_generator(self, messages: List[Any], user_prompt: str) -> Generator[str, None, None]:
+    def _stream_generator(self, messages: List[Any], user_prompt: str, session_id: str) -> Generator[str, None, None]:
         full_response = ""
         try:
             for chunk in self.llm.stream(messages):
@@ -93,7 +94,7 @@ class HanachanAgent:
                 yield content
             
             # Save interaction after streaming completes
-            self.memory_manager.save_interaction(user_prompt, full_response)
+            self.memory_manager.save_interaction(session_id, user_prompt, full_response)
             
         except Exception as e:
             logger.error(f"Streaming error: {e}")

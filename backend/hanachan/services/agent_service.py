@@ -399,6 +399,7 @@ class AgentService:
 
         for chunk in agent.invoke(
             prompt=request_data.prompt,
+            session_id=request_data.session_id,
             user_id=request_data.user_id,
             resource_ids=resource_ids,
             chat_history=chat_history,
