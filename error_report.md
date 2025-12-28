@@ -67,3 +67,5 @@ This document tracks all errors, bugs, and failures encountered during the imple
 ## Pending / Unresolved Items
 - **Intermittent Mongo Connection Refused**: During startup, Mongo index initialization might fail if Mongo isn't ready. This is "soft-failed" with a warning for now.
 - **Rate Limit Blueprint Access**: Still verifying if `current_app.limiter` is reactive enough for all blueprint routes in high-load scenarios.
+- **Optimization**: Enforced usage of `uv` for all package management in Dockerfile and future scripts to ensure deterministic and high-speed builds.
+- **Fix**: Resolved `EpisodicMemory` connection block by forcing `prefer_grpc=False` and manually resolving the Qdrant hostname to an IP address before initializing the client.
