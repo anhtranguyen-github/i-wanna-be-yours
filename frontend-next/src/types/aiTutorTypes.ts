@@ -4,6 +4,12 @@ export interface Message {
     content: string;
     timestamp?: number;
     artifacts?: Artifact[];
+    attachments?: Array<{
+        id: string;
+        title?: string;
+        type?: string;
+        size?: number;
+    }>;
 }
 
 export interface Conversation {

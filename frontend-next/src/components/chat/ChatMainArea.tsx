@@ -157,8 +157,7 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
                 pendingMessage.text,
                 effectiveConversationId,
                 sessionId || `temp-${Date.now()}`,
-                pendingMessage.resourceIds,
-                pendingMessage.resources
+                pendingMessage.resourceIds
             ).catch(console.error);
 
             // Cleanup
@@ -236,8 +235,7 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
                     text,
                     effectiveConversationId,
                     sessionId || `temp-${Date.now()}`,
-                    resourceIds,
-                    resourcesData
+                    resourceIds
                 );
             } catch (error) {
                 console.error("Failed to send message:", error);
@@ -291,10 +289,10 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
         // Upload files in parallel or sequence
         for (const attached of newFiles) {
             try {
-                const result = await aiTutorService.uploadFile(attached.file!);
+                const result = await aiTutorService.uploadFile(attached.file!) as { id: string; url: string; ingestionStatus?: string };
                 setAttachedFiles(prev => prev.map(f =>
                     f.id === attached.id
-                        ? { ...f, uploading: false, backendId: result.id, ingestionStatus: result.ingestionStatus || 'pending' }
+                        ? { ...f, uploading: false, backendId: result.id, ingestionStatus: (result.ingestionStatus || 'pending') as 'pending' | 'processing' | 'completed' | 'failed' }
                         : f
                 ));
             } catch (error) {
