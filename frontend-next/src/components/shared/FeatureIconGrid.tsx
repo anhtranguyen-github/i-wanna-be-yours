@@ -56,13 +56,7 @@ export const defaultFeatures: FeatureItem[] = [
         color: "bg-brand-softBlue",
         href: "/dictionary"
     },
-    {
-        name: "Kanji",
-        description: "Simplified kanji learning techniques.",
-        icon: <ChatBubbleLeftEllipsisIcon className="h-6 w-6" />,
-        color: "bg-brand-orange",
-        href: "/tools/quick-kanji"
-    }
+
 ];
 
 // Condensed features for modal (4 items)

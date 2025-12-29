@@ -41,20 +41,7 @@ const routes = [
         icon: <Wrench className="w-6 h-6" />,
         color: "bg-slate-100 text-slate-600"
     },
-    {
-        title: "Quick Kanji",
-        description: "Rapid Kanji lookup and reference.",
-        href: "/tools/quick-kanji",
-        icon: <BrainCircuit className="w-6 h-6" />,
-        color: "bg-red-50 text-red-600"
-    },
-    {
-        title: "Quick Vocab",
-        description: "Fast vocabulary reference.",
-        href: "/tools/quick-vocab",
-        icon: <FileText className="w-6 h-6" />,
-        color: "bg-teal-50 text-teal-600"
-    },
+
 ];
 
 import { PageHeader } from "@/components/shared";
