@@ -81,6 +81,12 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [inputValue, setInputValue] = useState('');
     const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
+    const [pendingFiles, setPendingFiles] = useState<AttachedFile[]>([]); // Files moved from input to background monitoring
+    const [pendingMessage, setPendingMessage] = useState<{
+        text: string;
+        resourceIds: string[];
+        resources: any[];
+    } | null>(null);
     const [isHistoryLoading, setIsHistoryLoading] = useState(false);
 
     // Hooks
@@ -137,6 +143,32 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
         }
     }, [searchParams, user, messages.length, streamState.isStreaming, historyLoading]);
 
+    // Effect: Release Pending Message when files are ready
+    useEffect(() => {
+        if (!pendingMessage) return;
+
+        // Check if all required files in pendingFiles are completed (or failed)
+        const requiredFiles = pendingFiles.filter(f => pendingMessage.resourceIds.includes(f.backendId || ''));
+        const allReady = requiredFiles.every(f => f.ingestionStatus === 'completed' || f.ingestionStatus === 'failed');
+
+        if (allReady) {
+            // Trigger send
+            streamMessage(
+                pendingMessage.text,
+                effectiveConversationId,
+                sessionId || `temp-${Date.now()}`,
+                pendingMessage.resourceIds,
+                pendingMessage.resources
+            ).catch(console.error);
+
+            // Cleanup
+            setPendingMessage(null);
+            // Optionally remove these files from pendingFiles, but keeping them until specific cleanup might be safer? 
+            // We can clear pendingFiles that are done to avoid memory leaks
+            setPendingFiles(prev => prev.filter(f => !pendingMessage.resourceIds.includes(f.backendId || '')));
+        }
+    }, [pendingFiles, pendingMessage, effectiveConversationId, sessionId, streamMessage]);
+
     const handleSend = async (overrideInput?: string) => {
         if (isGuest) {
             openAuth('LOGIN', { flowType: 'CHAT', title: 'Neural Synchronization' });
@@ -144,7 +176,7 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
         }
 
         const text = overrideInput !== undefined ? overrideInput : inputValue;
-        if (!text.trim() || streamState.isStreaming) return;
+        if ((!text.trim() && attachedFiles.length === 0) || streamState.isStreaming) return;
 
         if (attachedFiles.some(f => f.uploading)) {
             addNotification({
@@ -170,29 +202,46 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
         setMessages(prev => [...prev, userMsg]);
 
         setInputValue('');
-        setAttachedFiles([]);
 
-        try {
-            const resourceIds = attachedFiles
-                .map(f => f.backendId)
-                .filter((id): id is string => !!id);
+        // Prepare resources
+        const resourceIds = attachedFiles
+            .map(f => f.backendId)
+            .filter((id): id is string => !!id);
 
-            const resources = attachedFiles.map(f => ({
-                id: f.backendId,
-                title: f.title,
-                type: f.file?.type.startsWith('image/') ? 'image' : 'document',
-                size: f.file?.size
-            }));
+        const resourcesData = attachedFiles.map(f => ({
+            id: f.backendId,
+            title: f.title,
+            type: f.file?.type.startsWith('image/') ? 'image' : 'document',
+            size: f.file?.size
+        }));
 
-            await streamMessage(
+        // Check if we need to wait for ingestion
+        const filesIngesting = attachedFiles.filter(f => f.ingestionStatus === 'processing' || f.ingestionStatus === 'pending');
+
+        if (filesIngesting.length > 0) {
+            // Queue it
+            setPendingFiles(prev => [...prev, ...attachedFiles]); // Move all to monitoring
+            setPendingMessage({
                 text,
-                effectiveConversationId,
-                sessionId || `temp-${Date.now()}`,
                 resourceIds,
-                resources
-            );
-        } catch (error) {
-            console.error("Failed to send message:", error);
+                resources: resourcesData
+            });
+            setAttachedFiles([]); // Clear input immediately
+            // Notification or visual cue could be added here
+        } else {
+            // Send Immediately
+            setAttachedFiles([]);
+            try {
+                await streamMessage(
+                    text,
+                    effectiveConversationId,
+                    sessionId || `temp-${Date.now()}`,
+                    resourceIds,
+                    resourcesData
+                );
+            } catch (error) {
+                console.error("Failed to send message:", error);
+            }
         }
     };
 
@@ -245,7 +294,7 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
                 const result = await aiTutorService.uploadFile(attached.file!);
                 setAttachedFiles(prev => prev.map(f =>
                     f.id === attached.id
-                        ? { ...f, uploading: false, backendId: result.id, ingestionStatus: 'pending' }
+                        ? { ...f, uploading: false, backendId: result.id, ingestionStatus: result.ingestionStatus || 'pending' }
                         : f
                 ));
             } catch (error) {
@@ -265,8 +314,11 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
 
     // Polling for ingestion status
     useEffect(() => {
+        // Poll both attachedFiles (input) and pendingFiles (background)
+        const allFiles = [...attachedFiles, ...pendingFiles];
+
         // Files that need polling: have backendId and not in terminal state
-        const processingFiles = attachedFiles.filter(f =>
+        const processingFiles = allFiles.filter(f =>
             f.backendId &&
             f.ingestionStatus &&
             f.ingestionStatus !== 'completed' &&
@@ -292,7 +344,15 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
             }));
 
             if (hasChanges) {
+                // Update attachedFiles
                 setAttachedFiles(prev => prev.map(f => {
+                    if (updates.has(f.id)) {
+                        return { ...f, ingestionStatus: updates.get(f.id) as any };
+                    }
+                    return f;
+                }));
+                // Update pendingFiles
+                setPendingFiles(prev => prev.map(f => {
                     if (updates.has(f.id)) {
                         return { ...f, ingestionStatus: updates.get(f.id) as any };
                     }
@@ -302,20 +362,32 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
         }, 2000);
 
         return () => clearInterval(interval);
-    }, [attachedFiles]);
+    }, [attachedFiles, pendingFiles]);
 
     const removeFile = (id: string) => {
         setAttachedFiles(prev => prev.filter(f => f.id !== id));
     };
 
     const chatStatus = useMemo(() => {
-        if (streamState.isStreaming) return 'TYPING';
+        if (streamState.isStreaming || pendingMessage) return 'TYPING'; // Show typing/thinking if pending
         if (historyLoading) return 'THINKING';
         return 'READY';
-    }, [streamState.isStreaming, historyLoading]);
+    }, [streamState.isStreaming, historyLoading, pendingMessage]);
 
     const allMessages = useMemo(() => {
-        if (!streamState.isStreaming || !streamState.currentText) return messages;
+        if ((!streamState.isStreaming || !streamState.currentText) && !pendingMessage) return messages;
+
+        // If pending, maybe show a "Thinking..." or "Analyzing docs..." message? 
+        // For now, standard streaming logic
+        if (pendingMessage && !streamState.isStreaming) {
+            const pendingMsg: ChatMessage = {
+                id: 'streaming-assistant-pending',
+                role: 'assistant',
+                content: "Analyzing documents...", // Temporary status
+                timestamp: new Date()
+            };
+            return [...messages, pendingMsg];
+        }
 
         const streamingMsg: ChatMessage = {
             id: 'streaming-assistant',
@@ -324,7 +396,7 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
             timestamp: new Date()
         };
         return [...messages, streamingMsg];
-    }, [messages, streamState.isStreaming, streamState.currentText]);
+    }, [messages, streamState.isStreaming, streamState.currentText, pendingMessage]);
 
     return (
         <div className="flex-1 flex flex-col h-full bg-[#fafafa] relative overflow-hidden group/chat">

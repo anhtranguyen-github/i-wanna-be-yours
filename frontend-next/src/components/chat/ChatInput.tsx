@@ -85,7 +85,7 @@ export function ChatInput({
         }
     }, [onFileSelect]);
 
-    const canSend = (value.trim() || attachedFiles.length > 0) && !isLoading && !hasUploading && !hasIngesting && !disabled;
+    const canSend = (value.trim() || attachedFiles.length > 0) && !isLoading && !hasUploading && !disabled;
 
     return (
         <div className="border-t border-slate-100 pt-4 px-4 pb-6 bg-white z-10 w-full max-w-3xl mx-auto">
