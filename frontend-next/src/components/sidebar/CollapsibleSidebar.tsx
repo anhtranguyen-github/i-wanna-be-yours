@@ -61,10 +61,15 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
     const width = SIDEBAR_WIDTHS[state];
     const isOnChat = activeSectionId === 'chat';
 
-    // Fetch chat history using SWR
+    // Fetch chat history using SWR with deduplication
     const { data: chats } = useSWR(
         isOnChat && user ? ['/h-api/conversations', user.id] : null,
-        () => aiTutorService.getConversations()
+        () => aiTutorService.getConversations(),
+        {
+            dedupingInterval: 10000, // Prevent re-fetches within 10 seconds
+            revalidateOnFocus: false, // Don't refetch on window focus
+            revalidateOnReconnect: false,
+        }
     );
 
     // Deduplicate chats based on _id to prevent UI duplicates

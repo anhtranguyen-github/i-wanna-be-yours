@@ -64,7 +64,9 @@ export function VirtualizedMessageList({
     useEffect(() => {
         if (messages.length > lastMessageCount.current) {
             // New message arrived, scroll to bottom
-            virtualizer.scrollToIndex(messages.length - 1, { align: 'end' });
+            requestAnimationFrame(() => {
+                virtualizer.scrollToIndex(messages.length - 1, { align: 'end' });
+            });
         }
         lastMessageCount.current = messages.length;
     }, [messages.length, virtualizer]);
@@ -88,9 +90,10 @@ export function VirtualizedMessageList({
                     return (
                         <div
                             key={virtualItem.key}
+                            data-index={virtualItem.index}
+                            ref={virtualizer.measureElement}
                             className="absolute top-0 left-0 w-full px-4"
                             style={{
-                                height: `${virtualItem.size}px`,
                                 transform: `translateY(${virtualItem.start}px)`,
                             }}
                         >
