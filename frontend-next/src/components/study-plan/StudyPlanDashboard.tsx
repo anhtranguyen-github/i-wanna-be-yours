@@ -31,6 +31,7 @@ import {
     ReflectionPrompt,
     ExamReadinessBar,
     VisionReminder,
+    PerformanceTrendsPanel,
 } from './';
 
 interface CardStates {
@@ -43,6 +44,7 @@ interface CardStates {
     'reflection-prompt': boolean;
     'exam-readiness': boolean;
     'vision-reminder': boolean;
+    'performance-trends': boolean;
 }
 
 export function StudyPlanDashboard() {
@@ -57,6 +59,7 @@ export function StudyPlanDashboard() {
     const [sessions, setSessions] = useState<StudySession[]>([]);
     const [reflections, setReflections] = useState<ReflectionEntry[]>([]);
     const [streak, setStreak] = useState({ current: 0, longest: 0 });
+    const [trends, setTrends] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
@@ -71,6 +74,7 @@ export function StudyPlanDashboard() {
         'reflection-prompt': false,
         'exam-readiness': true,
         'vision-reminder': false,
+        'performance-trends': true,
     });
 
     // Checkout modal
@@ -118,11 +122,12 @@ export function StudyPlanDashboard() {
                 localStorage.removeItem('pending_study_plan_setup');
 
                 // Load additional data in parallel
-                const [tasksRes, sessionsRes, streakRes, reflectionsRes] = await Promise.all([
+                const [tasksRes, sessionsRes, streakRes, reflectionsRes, trendsRes] = await Promise.all([
                     studyPlanService.getMyDailyTasks(),
                     studyPlanService.getStudySessions(20),
                     studyPlanService.getStudyStreak(),
                     studyPlanService.getReflections(5),
+                    studyPlanService.getPerformanceTrends(30),
                 ]);
 
                 setTasks(tasksRes.tasks || []);
@@ -142,6 +147,7 @@ export function StudyPlanDashboard() {
                     content: r.content,
                     createdAt: r.createdAt,
                 })) || []);
+                setTrends(trendsRes);
             }
         } catch (err: any) {
             console.error('Error loading dashboard data:', err);
@@ -322,6 +328,13 @@ export function StudyPlanDashboard() {
                             milestones={plan.milestones}
                             currentMilestoneId={plan.current_milestone_id}
                             isExpanded={expandedCards['milestone-timeline']}
+                            onToggle={handleCardToggle}
+                        />
+
+                        {/* Performance Trends */}
+                        <PerformanceTrendsPanel
+                            trends={trends}
+                            isExpanded={expandedCards['performance-trends']}
                             onToggle={handleCardToggle}
                         />
 

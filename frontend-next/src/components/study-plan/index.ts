@@ -11,6 +11,7 @@ export { ActivityRecords } from './ActivityRecords';
 export { ReflectionPrompt } from './ReflectionPrompt';
 export { ExamReadinessBar } from './ExamReadinessBar';
 export { VisionReminder } from './VisionReminder';
+export { PerformanceTrendsPanel } from './PerformanceTrendsPanel';
 
 // Legacy exports for backward compatibility
 export { StudyPlanDashboard } from './StudyPlanDashboard';

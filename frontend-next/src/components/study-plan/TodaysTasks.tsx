@@ -72,8 +72,8 @@ export function TodaysTasks({
                             <div
                                 key={task.id || idx}
                                 className={`flex items-center gap-4 p-4 rounded-xl border-2 transition-all ${isCompleted
-                                        ? 'bg-neutral-beige/30 border-transparent opacity-70'
-                                        : 'bg-neutral-white border-neutral-gray/10 hover:border-primary-strong/20'
+                                    ? 'bg-neutral-beige/30 border-transparent opacity-70'
+                                    : 'bg-neutral-white border-neutral-gray/10 hover:border-primary-strong/20'
                                     }`}
                             >
                                 {/* Action Button */}
@@ -84,8 +84,8 @@ export function TodaysTasks({
                                     }}
                                     disabled={isCompleted}
                                     className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-all ${isCompleted
-                                            ? 'bg-emerald-500 text-white'
-                                            : 'bg-neutral-beige text-neutral-gray hover:bg-primary-strong/10 hover:text-primary-strong'
+                                        ? 'bg-emerald-500 text-white'
+                                        : 'bg-neutral-beige text-neutral-gray hover:bg-primary-strong/10 hover:text-primary-strong'
                                         }`}
                                 >
                                     {isCompleted ? (
@@ -103,6 +103,12 @@ export function TodaysTasks({
                                             }`}>
                                             {task.title}
                                         </h4>
+                                        {task.priority && task.priority > 1 && (
+                                            <span className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider ${task.priority === 3 ? 'bg-rose-500 text-white' : 'bg-primary-strong text-white'
+                                                }`}>
+                                                {task.priority === 3 ? 'Urgent' : 'Prioritized'}
+                                            </span>
+                                        )}
                                     </div>
                                     <p className="text-sm text-neutral-ink/60 mt-0.5">{task.description}</p>
                                 </div>

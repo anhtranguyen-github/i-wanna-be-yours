@@ -216,6 +216,36 @@ class StudyPlanService {
         return this.handleResponse<PlanProgressReport>(res);
     }
 
+    /**
+     * Get performance trends and struggle points
+     */
+    async getPerformanceTrends(days: number = 30): Promise<{
+        status: string;
+        avg_note_quality: number;
+        identified_struggles: string[];
+    }> {
+        const user = await this.getCurrentUser();
+        if (!user) return { status: 'error', avg_note_quality: 0, identified_struggles: [] };
+
+        const res = await authFetch(`${API_BASE_URL}/v1/performance/trends?user_id=${user.id}&days=${days}`);
+        return this.handleResponse(res);
+    }
+
+    /**
+     * Batch update goals (e.g., for priority recalibration)
+     */
+    async batchUpdateGoals(updates: Array<{ id: string; fields: any }>): Promise<{ success: boolean }> {
+        const user = await this.getCurrentUser();
+        if (!user) throw new Error('Not authenticated');
+
+        const res = await authFetch(`${API_BASE_URL}/v1/smart-goals/batch`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id: user.id, updates }),
+        });
+        return this.handleResponse(res);
+    }
+
     // ============================================
     // Convenience Methods
     // ============================================

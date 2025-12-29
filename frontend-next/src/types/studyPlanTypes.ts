@@ -196,6 +196,7 @@ export interface DailyTask {
     description: string;
     estimated_minutes: number;
     status: TaskStatus;
+    priority?: number; // 1: normal, 2: high, 3: urgent
     completed_at: string | null;
     score: number | null;
 }
@@ -325,6 +326,23 @@ export interface ContentMasteryOverview {
     vocabulary: ContentMastery;
     reading: ContentMastery;
     listening: ContentMastery;
+}
+
+// ============================================
+// Performance & Trend Types
+// ============================================
+
+export interface StrugglePoint {
+    topic: string;
+    count: number;
+    last_seen: string;
+}
+
+export interface PerformanceTrend {
+    status: string;
+    avg_note_quality: number;
+    identified_struggles: string[];
+    details?: any;
 }
 
 // ============================================
