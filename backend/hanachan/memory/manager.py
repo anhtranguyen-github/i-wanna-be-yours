@@ -44,12 +44,14 @@ class MemoryManager:
         self.active = False
         self.episodic = None
         self.semantic = None
+        self.study = None
         self.llm = None
         
         # Lazy imports
         try:
             from .episodic import EpisodicMemory
             from .semantic import SemanticMemory
+            from .study import StudyMemory
             
             logger.debug("MemoryManager: Initializing EpisodicMemory...")
             self.episodic = EpisodicMemory()
@@ -57,6 +59,9 @@ class MemoryManager:
             
             logger.debug("MemoryManager: Initializing SemanticMemory...")
             self.semantic = SemanticMemory()
+
+            logger.debug("MemoryManager: Initializing StudyMemory...")
+            self.study = StudyMemory()
             
             if self.episodic or self.semantic:
                 self.active = True
@@ -89,7 +94,7 @@ class MemoryManager:
             logger.error(f"Error retrieving resource context: {e}")
             return ""
 
-    def retrieve_context(self, query: str, user_id: str) -> str:
+    def retrieve_context(self, query: str, user_id: str, token: str = None) -> str:
         """Retrieves formatted context from both memory stores, scoped to user."""
         if not self.active or not user_id:
             return ""
@@ -98,8 +103,11 @@ class MemoryManager:
         try:
             episodic_context = self.episodic.retrieve(query, user_id=user_id) if self.episodic else ""
             semantic_context = self.semantic.retrieve(user_id=user_id, query=query, limit=5) if self.semantic else ""
+            study_context = self.study.retrieve_learner_context(user_id=user_id, token=token) if self.study else ""
             
             context_parts = []
+            if study_context:
+                context_parts.append(study_context)
             if episodic_context:
                 context_parts.append(f"Relevant Past Conversations:\n{episodic_context}")
             if semantic_context and "No semantic memories" not in semantic_context:
