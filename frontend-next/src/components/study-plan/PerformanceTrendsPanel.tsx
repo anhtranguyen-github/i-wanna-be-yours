@@ -19,7 +19,7 @@ export function PerformanceTrendsPanel({
 }: PerformanceTrendsPanelProps) {
     if (!trends) return null;
 
-    const qualityScore = Math.round(trends.avg_note_quality * 10) / 10;
+    const qualityScore = Math.round((trends.avg_note_quality || 0) * 10) / 10;
     const struggles = trends.identified_struggles || [];
 
     const getScoreColor = (score: number) => {
