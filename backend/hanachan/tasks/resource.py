@@ -46,13 +46,34 @@ def ingest_resource(resource_id: str):
             # Helper to update status
             def update_status(status):
                 try:
-                    res = requests.put(
-                        f"{os.getenv('RESOURCES_API_URL', 'http://localhost:5100')}/v1/resources/{resource_id}",
-                        json={"ingestionStatus": status},
-                        headers={"Authorization": f"Bearer {token}"}
-                    )
-                    if not res.ok:
-                        logger.warning(f"⚠️ [WORKER] Failed to update status to {status}: {res.status_code}")
+                    # Logic Split: SQL vs Mongo
+                    if resource_id.isdigit():
+                        # SQL Resource (Local)
+                        # We must be in app context (we are)
+                        # Re-fetch to ensure attached to session? Or query fresh.
+                         res = Resource.query.get(int(resource_id))
+                         if res:
+                             # Map 'processing'/'completed' to what model expects?
+                             # Model doesn't explicitly store status? 
+                             # Wait, Resource model has no 'status' field in the file I viewed earlier!
+                             # It has 'summary' but no 'ingestionStatus'.
+                             # Let's check models/resource.py again.
+                             # It had: title, type, content, summary, user_id. NO status.
+                             # So we can't update status for SQL resources?
+                             # Or maybe we just log it.
+                             logger.info(f"ℹ️ [WORKER] SQL Resource {resource_id} status: {status} (No DB field)")
+                         else:
+                             logger.warning(f"⚠️ [WORKER] SQL Resource {resource_id} not found for status update")
+                    else:
+                        # Mongo Resource (API)
+                        base = os.getenv('RESOURCES_API_URL', 'http://localhost:5100').rstrip('/')
+                        res = requests.put(
+                            f"{base}/v1/resources/{resource_id}",
+                            json={"ingestionStatus": status},
+                            headers={"Authorization": f"Bearer {token}"}
+                        )
+                        if not res.ok:
+                            logger.warning(f"⚠️ [WORKER] Failed to update status to {status}: {res.status_code}")
                 except Exception as ex:
                     logger.error(f"⚠️ [WORKER] Error updating status: {ex}")
 

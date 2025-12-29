@@ -12,7 +12,7 @@ ALLOWED_EXTENSIONS = {
     'image': {'png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'},
     'audio': {'mp3', 'wav', 'ogg', 'm4a'}
 }
-MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
+MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB (Aligned with Frontend)
 CLAMAV_HOST = os.getenv("CLAMAV_HOST", "localhost")
 CLAMAV_PORT = int(os.getenv("CLAMAV_PORT", 3310))
 

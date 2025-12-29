@@ -325,8 +325,14 @@ class ResourcesModule:
                 if "ingestionStatus" in data:
                     update_fields["ingestionStatus"] = str(data["ingestionStatus"])
                 
+                
+                query = {"_id": ObjectId(id), "deletedAt": None}
+                role = request.user.get("role")
+                if role != 'admin':
+                    query["userId"] = user_id
+
                 result = self.resources_collection.update_one(
-                    {"_id": ObjectId(id), "userId": user_id, "deletedAt": None},
+                    query,
                     {"$set": update_fields}
                 )
                 

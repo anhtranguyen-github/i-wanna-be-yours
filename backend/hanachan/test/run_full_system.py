@@ -8,40 +8,46 @@ import requests
 import signal
 
 # Configuration
-PORT = 5100
+FLASK_PORT = 5100
+HANA_PORT = 5400
 HOST = "localhost"
-BASE_URL = f"http://{HOST}:{PORT}"
+FLASK_URL = f"http://{HOST}:{FLASK_PORT}"
+HANA_URL = f"http://{HOST}:{HANA_PORT}"
 WORKFLOW_SCRIPT = "backend/hanachan/test/workflows/workflow_comprehensive_chat.py"
-PYTHON_CMD = "backend/hanachan/.venv/bin/python"  # Adjust if needed for relative path
+PYTHON_CMD = "backend/hanachan/.venv/bin/python" 
 
 def is_port_in_use(port):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         return s.connect_ex((HOST, port)) == 0
 
-def start_backend():
-    print(f"🚀 [System] Starting Backend on Port {PORT}...")
-    # Adjust path to where server.py is likely located relative to root
-    # Assuming running from repo root
-    cmd = [PYTHON_CMD, "backend/hanachan/server.py"]
+def start_flask():
+    print(f"🚀 [System] Starting Flask (Resources) on Port {FLASK_PORT}...")
+    env = os.environ.copy()
+    env["FLASK_PORT"] = str(FLASK_PORT)
+    env["MONGO_URI_FLASK"] = "mongodb://localhost:27017/flaskFlashcardDB"
     
-    # Run in background
-    process = subprocess.Popen(
-        cmd,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        preexec_fn=os.setsid # Create new process group for clean kill
-    )
-    return process
+    cmd = [PYTHON_CMD, "backend/flask/server.py"]
+    return subprocess.Popen(cmd, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, preexec_fn=os.setsid)
 
-def wait_for_health(timeout=30):
+def start_hanachan():
+    print(f"🚀 [System] Starting Hanachan (Agent) on Port {HANA_PORT}...")
+    env = os.environ.copy()
+    env["FLASK_PORT"] = str(HANA_PORT)
+    # ALIGNMENT: Use the SAME Mongo DB as Flask so Agent can see uploaded resources
+    env["MONGO_URI"] = "mongodb://localhost:27017/flaskFlashcardDB"
+    env["ENABLE_MONGO"] = "true" # Ensure Hanachan connects to Mongo
+    
+    cmd = [PYTHON_CMD, "backend/hanachan/app.py"]
+    return subprocess.Popen(cmd, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, preexec_fn=os.setsid)
+
+def wait_for_health(url, name, timeout=30):
     start_time = time.time()
-    print("⏳ [System] Waiting for backend health...")
+    print(f"⏳ [System] Waiting for {name} health ({url})...")
     while time.time() - start_time < timeout:
         try:
-            # Try a simple endpoint
-            response = requests.get(f"{BASE_URL}/health", timeout=1)
+            response = requests.get(f"{url}/health", timeout=1)
             if response.status_code == 200:
-                print("✅ [System] Backend is Ready!")
+                print(f"✅ [System] {name} is Ready!")
                 return True
         except requests.ConnectionError:
             pass
@@ -51,29 +57,35 @@ def wait_for_health(timeout=30):
 def run_client_simulation():
     print(f"\n🎬 [System] Running Client Simulation: {WORKFLOW_SCRIPT}")
     env = os.environ.copy()
-    env["PYTHONPATH"] = "backend/hanachan" # Ensure imports work
+    env["PYTHONPATH"] = "backend/hanachan"
+    env["FLASK_URL"] = FLASK_URL
+    env["HANA_URL"] = HANA_URL
     
     result = subprocess.run(
         [PYTHON_CMD, WORKFLOW_SCRIPT],
         env=env,
-        capture_output=False # Let it print to stdout
+        capture_output=False
     )
     return result.returncode
 
 def main():
-    backend_process = None
-    started_by_script = False
+    flask_p = None
+    hana_p = None
 
     try:
-        # 1. Check Backend
-        if not is_port_in_use(PORT):
-            backend_process = start_backend()
-            started_by_script = True
-            if not wait_for_health():
-                print("❌ [System] Failed to start backend (Health Check Timeout)")
-                return 1
+        # 1. Start Flask
+        if not is_port_in_use(FLASK_PORT):
+            flask_p = start_flask()
+            if not wait_for_health(FLASK_URL, "Flask"): return 1
         else:
-            print(f"ℹ️  [System] Backend already running on port {PORT}. Using existing instance.")
+            print(f"ℹ️  [System] Flask running on {FLASK_PORT}.")
+
+        # 2. Start Hanachan
+        if not is_port_in_use(HANA_PORT):
+            hana_p = start_hanachan()
+            if not wait_for_health(HANA_URL, "Hanachan"): return 1
+        else:
+            print(f"ℹ️  [System] Hanachan running on {HANA_PORT}.")
 
         # 2. Run Client
         exit_code = run_client_simulation()
@@ -86,9 +98,17 @@ def main():
 
     finally:
         # 3. Cleanup
-        if started_by_script and backend_process:
-            print(f"\n🧹 [System] Stopping Backend (PID {backend_process.pid})...")
-            os.killpg(os.getpgid(backend_process.pid), signal.SIGTERM)
+        print("\n🧹 [System] Stopping Services...")
+        if flask_p:
+            try:
+                os.killpg(os.getpgid(flask_p.pid), signal.SIGTERM)
+                print("   Flask Stopped.")
+            except: pass
+        if hana_p:
+            try:
+                os.killpg(os.getpgid(hana_p.pid), signal.SIGTERM)
+                print("   Hanachan Stopped.")
+            except: pass
 
 if __name__ == "__main__":
     main()

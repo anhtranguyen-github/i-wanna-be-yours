@@ -26,7 +26,9 @@ def workflow_real_ingestion():
     print("\n🚀 WORKFLOW: Real Resource Ingestion & Deduplication")
     
     # Update path to new location
-    test_file_path = os.path.join(os.path.dirname(__file__), 'resources/sample_grammar.txt')
+    RESOURCES_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'resources'))
+    test_file_path = os.path.join(RESOURCES_DIR, 'sample_grammar.txt')
+    
     if not os.path.exists(test_file_path):
         print(f"❌ Test file not found: {test_file_path}")
         return

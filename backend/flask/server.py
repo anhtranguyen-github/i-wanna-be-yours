@@ -24,6 +24,8 @@ logging.basicConfig(
 )
 
 app = Flask(__name__)
+# Max Content Length: 10MB (Aligns with Frontend)
+app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024
 
 # Security Headers
 Talisman(app, force_https=False) # force_https=True in prod with proper certs
