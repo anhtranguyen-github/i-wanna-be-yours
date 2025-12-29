@@ -49,3 +49,5 @@ mcp-builder/
 .personalized-tutor/
 
 .env
+
+.testfile
