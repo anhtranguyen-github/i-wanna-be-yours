@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Search, Info, Cpu, History } from "lucide-react";
+import Link from "next/link";
+import { Search, Info, Cpu, History, Network } from "lucide-react";
 import { useUser } from "@/context/UserContext";
 
 import ParseTree from "@/components-parser/ParseTree";
 import GrammarExplanationSimple from "@/components-parser/GrammarExplanationSimple";
-import { NeuralLabLayout } from "@/components/neural/NeuralLabLayout";
 import { AdaptiveScanner } from "@/components/neural/AdaptiveScanner";
 import { GuestTeaser } from "@/components/neural/GuestTeaser";
 
@@ -70,29 +70,39 @@ const GrammarGraphPage = () => {
   };
 
   return (
-    <NeuralLabLayout
-      title="Grammar Graph"
-      subtitle="Neural Parsing Engine for Multilingual Syntactic Structural Analysis. Deconstruct any sentence into its fundamental linguistic vectors."
-    >
-      <div className="space-y-8 relative">
+    <div className="min-h-screen bg-neutral-beige/20 pb-24">
+      <div className="sticky top-0 z-40 bg-neutral-beige/95 backdrop-blur-md border-b border-neutral-gray/10 px-6 py-4">
+        <div className="max-w-7xl mx-auto flex items-center gap-4">
+          <Link href="/tools" className="p-2 hover:bg-neutral-gray/10 rounded-lg transition-colors">
+            <span className="sr-only">Back</span>
+            <svg className="w-5 h-5 text-neutral-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+          </Link>
+          <div>
+            <h1 className="text-xl font-black text-neutral-ink uppercase tracking-widest font-display">Grammar Graph</h1>
+            <p className="text-xs text-neutral-ink/60 font-bold">Syntactic structural analysis</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 py-8 space-y-8 relative">
         {/* Guest Lock */}
         {!authLoading && !user && <GuestTeaser toolName="Grammar Graph" />}
 
         {/* Control Panel */}
-        <section className="bg-neutral-900/50 backdrop-blur-xl border border-white/5 rounded-3xl p-8 shadow-2xl">
+        <section className="bg-white rounded-[2.5rem] p-8 border border-neutral-gray/20 shadow-xl shadow-primary/5">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <div className="md:col-span-3 space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-cyan-400 ml-1">
+                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-primary ml-1">
                   Syntactic Input
                 </label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                    <Search size={18} className="text-neutral-600 group-focus-within:text-cyan-400 transition-colors" />
+                    <Search size={18} className="text-neutral-400 group-focus-within:text-primary transition-colors" />
                   </div>
                   <input
                     type="text"
-                    className="w-full pl-12 pr-6 py-4 bg-black border border-neutral-800 rounded-xl text-neutral-200 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/20 transition-all font-jp text-lg"
+                    className="w-full pl-12 pr-6 py-4 bg-neutral-50 border border-neutral-200 rounded-2xl text-neutral-ink focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all font-jp text-lg placeholder:text-neutral-400"
                     placeholder="Enter sentence for deep analysis..."
                     value={sentence}
                     onChange={(e) => setSentence(e.target.value)}
@@ -102,13 +112,13 @@ const GrammarGraphPage = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-cyan-400 ml-1">
+                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-primary ml-1">
                   Target Lexicon
                 </label>
                 <select
                   value={language}
                   onChange={(e) => setLanguage(e.target.value)}
-                  className="w-full py-4 px-4 bg-black border border-neutral-800 rounded-xl text-neutral-300 focus:outline-none focus:border-cyan-500/50"
+                  className="w-full py-4 px-4 bg-neutral-50 border border-neutral-200 rounded-2xl text-neutral-ink focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all cursor-pointer"
                 >
                   <option>Japanese</option>
                   <option>Korean</option>
@@ -120,12 +130,12 @@ const GrammarGraphPage = () => {
             <button
               type="submit"
               disabled={loading || !user}
-              className="w-full bg-cyan-600 hover:bg-cyan-500 disabled:opacity-30 text-black font-black uppercase text-xs tracking-[0.2em] py-5 rounded-xl transition-all shadow-[0_0_20px_rgba(34,211,238,0.2)] flex items-center justify-center gap-3"
+              className="w-full bg-primary hover:bg-primary-strong disabled:opacity-50 text-white font-black uppercase text-xs tracking-[0.2em] py-5 rounded-2xl transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-3 transform active:scale-[0.99]"
             >
               {loading ? (
                 <>
-                  <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
-                  Initializng Scan...
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Analyzing Structure...
                 </>
               ) : (
                 <>
@@ -141,13 +151,18 @@ const GrammarGraphPage = () => {
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
           <div className="xl:col-span-2">
             <AdaptiveScanner isScanning={loading} mode="deep">
-              <div className="min-h-[600px] bg-black/40 rounded-xl p-8 flex items-center justify-center">
+              <div className="min-h-[600px] bg-white rounded-[2.5rem] border border-neutral-gray/20 shadow-xl shadow-primary/5 p-8 flex items-center justify-center overflow-hidden relative">
+                {/* Subtle grid background for graph area */}
+                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-5 pointer-events-none" />
                 {data ? (
                   <ParseTree data={data} />
                 ) : (
-                  <div className="text-center space-y-4">
-                    <div className="text-neutral-700 font-mono text-sm tracking-widest uppercase">Waiting for input...</div>
-                    <p className="text-neutral-800 text-xs">Enter a sentence above to generate a syntactic map.</p>
+                  <div className="text-center space-y-4 z-10">
+                    <div className="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Network size={32} className="text-neutral-300" />
+                    </div>
+                    <div className="text-neutral-400 font-bold text-xs tracking-widest uppercase">Waiting for input</div>
+                    <p className="text-neutral-500 text-xs">Enter a sentence above to generate a syntactic map.</p>
                   </div>
                 )}
               </div>
@@ -157,40 +172,42 @@ const GrammarGraphPage = () => {
           <div className="space-y-6">
             {/* Metadata Card */}
             {metadata && (
-              <div className="bg-neutral-900 border border-white/5 rounded-2xl p-6 shadow-xl">
+              <div className="bg-white border border-neutral-gray/20 rounded-[2rem] p-6 shadow-lg shadow-neutral-200/50">
                 <div className="flex items-center gap-2 mb-4">
-                  <History size={14} className="text-cyan-400" />
+                  <History size={14} className="text-primary" />
                   <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400">Telemetry</h3>
                 </div>
-                <div className="font-mono text-[10px] space-y-2">
-                  <div className="flex justify-between border-b border-white/5 pb-2">
-                    <span className="text-neutral-500">MODEL</span>
-                    <span className="text-cyan-400">{metadata.model}</span>
+                <div className="font-mono text-[10px] space-y-3">
+                  <div className="flex justify-between border-b border-neutral-100 pb-2">
+                    <span className="text-neutral-400">MODEL</span>
+                    <span className="text-primary-strong font-bold">{metadata.model}</span>
                   </div>
-                  <div className="flex justify-between border-b border-white/5 pb-2">
-                    <span className="text-neutral-500">CORE</span>
-                    <span className="text-cyan-400">{metadata.provider}</span>
+                  <div className="flex justify-between border-b border-neutral-100 pb-2">
+                    <span className="text-neutral-400">CORE</span>
+                    <span className="text-primary-strong font-bold">{metadata.provider}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-neutral-500">STAMP</span>
-                    <span className="text-neutral-300">{metadata.timestamp}</span>
+                    <span className="text-neutral-400">STAMP</span>
+                    <span className="text-neutral-600">{metadata.timestamp}</span>
                   </div>
                 </div>
               </div>
             )}
 
             {/* Explanation Card */}
-            <div className="bg-neutral-900/40 border border-white/5 rounded-2xl p-6 shadow-xl">
+            <div className="bg-white border border-neutral-gray/20 rounded-[2rem] p-6 shadow-lg shadow-neutral-200/50 h-fit">
               <div className="flex items-center gap-2 mb-4">
-                <Info size={14} className="text-cyan-400" />
+                <Info size={14} className="text-primary" />
                 <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400">Analysis</h3>
               </div>
-              <GrammarExplanationSimple sentence={sentence} url={gptGrammarUrl} />
+              <div className="text-neutral-ink">
+                <GrammarExplanationSimple sentence={sentence} url={gptGrammarUrl} />
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </NeuralLabLayout>
+    </div>
   );
 };
 

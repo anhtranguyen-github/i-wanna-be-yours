@@ -1,5 +1,7 @@
 'use client';
 
+import { PageHeader } from '@/components/shared/PageHeader';
+
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -271,22 +273,19 @@ export function StudyPlanDashboard() {
 
     return (
         <div className="min-h-screen bg-secondary pb-12">
-            {/* Header */}
-            <div className="bg-neutral-white border-b border-neutral-gray/30 sticky top-16 z-40 shadow-sm">
-                <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div className="flex items-center gap-4">
-                        <div className="p-3 bg-neutral-beige border border-neutral-gray/20 rounded-2xl text-primary-strong flex items-center justify-center">
-                            <Zap size={24} className="fill-primary-strong text-primary-strong" />
-                        </div>
-                        <div>
-                            <h1 className="text-xl font-black text-neutral-ink tracking-tight">Study Plan Dashboard</h1>
-                            <p className="text-xs text-neutral-ink font-bold flex items-center gap-2">
-                                <span className="w-2.5 h-2.5 rounded-full bg-primary-strong animate-pulse" />
-                                JLPT {plan.target_level} • {plan.days_remaining} days remaining
-                            </p>
-                        </div>
-                    </div>
 
+            {/* Header */}
+            <PageHeader
+                title="Study Plan Dashboard"
+                subtitle={
+                    <span className="flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-primary-strong animate-pulse" />
+                        JLPT {plan.target_level} • {plan.days_remaining} days remaining
+                    </span>
+                }
+                icon={<Zap size={24} className="fill-primary-strong text-primary-strong" />}
+                iconBgColor="bg-neutral-beige border border-neutral-gray/20"
+                rightContent={
                     <Link
                         href="/study-plan/settings"
                         className="flex items-center gap-2 px-4 py-2 text-neutral-ink hover:text-primary-strong transition-colors"
@@ -294,8 +293,8 @@ export function StudyPlanDashboard() {
                         <Settings size={18} />
                         <span className="text-sm font-bold">Settings</span>
                     </Link>
-                </div>
-            </div>
+                }
+            />
 
             {/* Main Content */}
             <main className="max-w-7xl mx-auto px-6 py-8">
