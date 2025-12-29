@@ -746,11 +746,11 @@ const openai = new OpenAI({
 });
 
 const systemPrompt =
-  "You are a teacher of Japanese and Korean language. Explain grammar of provided Japanese or Korean sentence in detail, explanation is in English. Return answer in Markdown format with Markdown formatting so the output is readable.";
+  "You are a teacher of Japanese and language. Explain grammar of provided Japanese or sentence in detail, explanation is in English. Return answer in Markdown format with Markdown formatting so the output is readable.";
 const translationPrompt =
-  "You are a translator. Translate the provided Japanese or Korean text to English. Return answer in Markdown format with Markdown formatting so the output is readable.";
+  "You are a translator. Translate the provided Japanese or text to English. Return answer in Markdown format with Markdown formatting so the output is readable.";
 const translationSbSPrompt =
-  "You are a translator. Translate the provided Japanese or Korean text to English. Translate side by side. Translate side by side in Markdown. Create side by side Markdown table. Ensure proper Markdown spacing, so it can be rendered correctly. Make it nicely formatted. Return answer in Markdown format with Markdown formatting so the output is readable.";
+  "You are a translator. Translate the provided Japanese or text to English. Translate side by side. Translate side by side in Markdown. Create side by side Markdown table. Ensure proper Markdown spacing, so it can be rendered correctly. Make it nicely formatted. Return answer in Markdown format with Markdown formatting so the output is readable.";
 const summaryPrompt =
   "You are a summarizer. Summarize the provided text in a concise manner. But be also rather detailed in your text summary. Return the summary in Markdown format with Markdown formatting so the output is readable.";
 const sentimentPrompt =
@@ -760,7 +760,7 @@ const parseTreePrompt =
   "You are a parse tree linguistic analyzer, analyze phrases and parts of speech. Analyze provided sentence and return its parse tree in JSON format. If the input sentece is in English, add descriptions in Japanese. Keys will be: type, value, translation, children. Return parse tree in JSON format, return only JSON structure, nothing else.";
 
 //const verbConjugationPrompt = 'return short JSON'
-// const verbConjugationPrompt = `You are specialist in verb conjugation of Japanese and Korean verbs.
+// const verbConjugationPrompt = `You are specialist in verb conjugation of Japanese and verbs.
 // For given verb (can be Japanese or Korean) provide verb conjugation logical hierarchical breakdown in format following to this.
 // Return ONLY JSON DATA, nothing else. Return only in JSON format.
 
@@ -785,7 +785,7 @@ Returned data is in the following JSON format only.
 Ensure no additional text or explanations, just the JSON.
 Data under "usage" key will be in English.
 Data under "example" key will be in target language (and in English in brackets),
-So for example Japanese sentence and English translation or Korean sentence and English translation.
+So for example Japanese sentence and English translation or sentence and English translation.
 Objects should have child objects where possible to show hierarchy, very important.
 You must have 3 hierarchy levels where possible.
 Output is supposed to teach students.
@@ -875,7 +875,7 @@ Example output format:
   ]
 }`;
 
-const verbConjugationPrompt = `You are an expert in Japanese and Korean verb conjugation. 
+const verbConjugationPrompt = `You are an expert in Japanese and verb conjugation. 
 For the given word, return a hierarchical breakdown of its conjugation. 
 ${payload_structure}`;
 

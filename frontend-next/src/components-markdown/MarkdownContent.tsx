@@ -20,7 +20,7 @@ function MarkdownContent({ lang, slug }: MarkdownContentProps) {
 
   // Sanitize and process the slug
   //const sanitizedSlug = decodedSlug.replace(/\s+/g, '_');
-  // Sanitize and process the slug   Korean grammar has hundreds of slashes so we replace / by -, because that is our file structure naming
+  // Sanitize and process the slug   grammar has hundreds of slashes so we replace / by -, because that is our file structure naming
   const sanitizedSlug = decodedSlug.replace(/\s+/g, '_').replace(/\//g, '-');
 
 

@@ -106,7 +106,7 @@ export default function About() {
               },
               {
                 dot: <ClockCircleOutlined style={{ fontSize: "16px" }} />,
-                children: "Adding Grammar and Vocabulary for Korean language.",
+                children: "Adding Grammar and Vocabulary for language.",
               },
             ]}
           />

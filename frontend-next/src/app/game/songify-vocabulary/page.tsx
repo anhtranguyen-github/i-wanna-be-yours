@@ -21,7 +21,7 @@ export default function LearningText() {
         </p>
         <p className="mb-4 text-red-500 font-semibold">
           However, this approach is very controversial. Generally hated in
-          Japanese and Korean learning communities on Reddit :), but that is
+          Japanese and learning communities on Reddit :), but that is
           nothing new for hanachan. We have many unusual learning features that
           are not widely accepted.
         </p>
@@ -69,7 +69,7 @@ export default function LearningText() {
             Below is an example of an AI-generated song created using the
             sentences we explored earlier. This song uses sentences about the
             word <strong>貧しい</strong> (mazushii) in Japanese and{" "}
-            <strong>가난한</strong> (ganahan) in Korean to craft lyrics:
+            <strong>가난한</strong> (ganahan) in to craft lyrics:
           </p>
 
 
@@ -95,7 +95,7 @@ export default function LearningText() {
           <p className="text-neutral-ink mb-4">
             Below is an example of an AI-generated song created using the
             sentences we explored earlier. This song uses sentences about the word <strong>貧しい</strong> (mazushii) in Japanese and{" "}
-            <strong>가난한</strong> (ganahan) in Korean to craft lyrics:
+            <strong>가난한</strong> (ganahan) in to craft lyrics:
           </p>
 
           <div className="text-center mb-6">
@@ -156,7 +156,7 @@ export default function LearningText() {
               rel="noopener noreferrer"
               className="block bg-pink-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-pink-700 text-center"
             >
-              Korean Synth Wave
+              Synth Wave
             </a>
             <a
               href="https://suno.com/song/59729938-9aab-41a6-b1a4-f8151a0bc1a0"
@@ -226,7 +226,7 @@ export default function LearningText() {
           </table>
         </div>
 
-        {/* Korean Section */}
+        {/* Section */}
         <div>
           <h2 className="text-2xl font-semibold mb-4 text-center">Korean</h2>
           <p className="text-neutral-ink text-center mb-4">
