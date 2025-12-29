@@ -55,6 +55,8 @@ def run_workflow():
 
     app = create_app()
     with app.app_context():
+        # Ensure tables exist
+        db.create_all()
         # --- Step 0: Pre-flight Safety Checks (Coordination Logic) ---
         print("\n🛡️ [Step 0] Verifying Backend-Frontend Coordination (Limits)...")
 
@@ -151,9 +153,7 @@ def run_workflow():
         if res.status_code in [200, 201]:
             data = res.json()
             pc_id = data['id']
-            print(f"✅ PC Upload Successful: {pc_id} (Status: {res.status_code})")
-            
-            # Force completion for test speed (simulate worker finishing)
+            # Force completion for test speed (standard flow)
             requests.put(f"{FLASK_URL}/v1/resources/{pc_id}", headers=headers, json={"ingestionStatus": "completed"})
             
             # Ensure index

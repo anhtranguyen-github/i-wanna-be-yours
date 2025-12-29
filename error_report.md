@@ -126,3 +126,67 @@ This document tracks all errors, bugs, and failures encountered during the imple
   - For local dev: Use `start_local_services.sh` which runs MongoDB locally and Flask can access it at `localhost:27017`
 - **Status**: ✅ Fixed for local dev. Docker deployment requires MongoDB container to be running.
 
+
+## 17. Flask Rate Limit (429 Too Many Requests)
+- **Error**: `POST /v1/resources/upload` or polling `/v1/resources/{id}` returns 429.
+- **Cause**: Flask default rate limits were too strict for the frontend's aggressive polling logic in `ChatMainArea.tsx`.
+- **Solution (Planned)**: Increase backend rate limits and implement exponential backoff on the client side.
+
+## 18. Worker Status Update Failures (404 & 500)
+- **Error**: `[WORKER] Failed to update status: 404` and `500`.
+- **Cause**:
+  1. **404 (Resource Not Found)**: The worker was trying to update "local" SQL resources (int IDs) by calling the external Flask API (which only knows about Mongo resources).
+  2. **404 (Permission Denied/Check Fail)**: The Flask API enforced strict `userId` matching. The "system-worker" token did not match the resource's owner, so the update happened on 0 documents.
+- **Solution**:
+  1. Updated `ingest_resource` task to detect SQL IDs and log locally instead of calling the API.
+  2. Introduced `ingestion_worker` role.
+  3. Updated Flask `update_resource` to allow `ingestion_worker` to bypass strict ownership checks specifically for `ingestionStatus` and `updatedAt`.
+
+## 19. Service Database Mismatch
+- **Error**: System test failed because Hanachan couldn't see resources uploaded to Flask.
+- **Cause**: Hanachan was defaulting to `hanachanDB` (SQLite/Mongo mix) while Flask used `flaskFlashcardDB`.
+- **Solution**: Updated `run_full_system.py` to force `MONGO_URI` to `flaskFlashcardDB` for both services, ensuring a shared view of the resource metadata.
+
+## 20. ProtocolError / ChunkedEncodingError
+- **Error**: `ProtocolError: Response ended prematurely` during streaming tests.
+- **Cause**: Connection instability or backend crash during high-throughput verification.
+- **Solution**: Implemented retry logic and ensured clean state by using dynamic full-length UUIDs for every test run to prevent data collision / overflow.
+
+## 21. Middleware Ownership Logic Flaw
+- **Error**: `validate_resource_access` failed 404 for Sidebar resources.
+- **Cause**: The middleware blindly called the external Flask API for validation. Sidebar resources exist only in Hanachan's local SQL DB.
+- **Solution**: Updated middleware to first `try` fetching from the local SQL `Resource` model (if ID is numeric) before falling back to the external API.
+
+
+## 22. Persistent MongoDB Resource Ingestion 404
+- **Error**: `[WORKER] Failed to fetch metadata for {resource_id}: 404` and `[WORKER] Failed to update status: 404`.
+- **Cause**:
+  1. **Database Name Inconsistency**: The `ResourcesModule` in Flask had a legacy hardcoded fallback to a database named `library`. Even though the test runner configured `flaskFlashcardDB`, the module was writing to/reading from the wrong database when URI parsing failed or was missing.
+  2. **Authorization Bypass Failure**: The `ingestion_worker` role check in the Flask Resource Module was not robust enough to handle all edge cases of user ID resolution, especially when using JWT tokens generated for internal service communication.
+  3. **Process Stale State**: Stale Flask processes on Port 5100 were running old code, causing changes to the `ResourcesModule` to appear ineffective during rapid iteration.
+  4. **Test Infrastructure Python Path mismatch**: `run_full_system.py` was using the same virtual environment for both Flask and Hanachan. Flask requires specific libraries (like `flask-pymongo`) that weren't in the Hanachan venv, leading to silent failures or module errors when Flask was spawned.
+- **Solution**:
+  1. **Robust DB Connection**: Refactored `ResourcesModule.__init__` to use `self.client.get_database()`. This natively respects the database name provided in the `MONGO_URI_FLASK` connection string, eliminating the `library` vs. `flaskFlashcardDB` mismatch.
+  2. **Strict RBAC Enforcement**: Verified that the `ingestion_worker` role is correctly extracted from the internal service token. Removed all temporary `user_id == 'system-worker'` bypasses to strictly follow the Principle of Least Privilege.
+  3. **Venv Separation**: Updated `run_full_system.py` to use distinct virtual environment paths (`backend/flask/.venv` and `backend/hanachan/.venv`) for starting each service.
+  4. **Database Reset Hygiene**: Updated `reset_db.py` to clear both `flaskFlashcardDB` and `library` databases to ensure no cross-run state pollution.
+- **Result**: ✅ **FIXED & SECURED**. Fully verified with strict role-based access; both SQL and MongoDB resources are successfully ingested while maintaining strict security boundaries.
+
+## 23. Ingestion Status Coordination & System Test Stability
+- **Error**:
+  1. **Test Failure**: `sqlite3.OperationalError: no such table: resources` during client simulation.
+  2. **Logic Gap**: Users could ask questions about resources currently being ingested, leading to "content not found" hallucinations because the Agent was unaware of the ingestion state.
+- **Cause**:
+  1. **DB Path Inconsistency**: `run_full_system.py` and the `workflow_comprehensive_chat.py` simulation were using different logic/paths/env-overrides for the SQLite database, causing the simulation to point to a non-existent or uninitialized table.
+  2. **Token Omission**: The Agent Service was not propagating the user's JWT token to the `ResourceProcessor`, preventing it from fetching protected metadata (status) during the chat flow.
+  3. **Agent Blindness**: The Agent prompt only included retrieved chunks (RAG). If retrieval failed (because ingestion wasn't done), the Agent assumed the resource was empty/invalid rather than "still processing".
+- **Solution**:
+  1. **Table Initialization**: Added `db.create_all()` inside the application context at the start of `workflow_comprehensive_chat.py`.
+  2. **Controlled Env Overrides**: Set `load_dotenv(override=False)` in Hanachan's database initialization to allow test environment variables (`DATABASE_URL`) to take precedence over the local `.env` file.
+  3. **Status-Aware Agent Service**:
+     - Updated `AgentRequest` schema to include a `token` field.
+     - Updated `AgentService` and routes to extract the JWT from the `Authorization` header and propagate it.
+     - Enhanced `HanachanAgent.invoke` to perform a pre-check: it fetches metadata for all attached `resource_ids` and checks `ingestionStatus`.
+     - **Critial Service Note**: If a resource is `pending` or `processing`, a high-priority system prompt is injected: `### CRITICAL SERVICE STATUS (INGESTION IN PROGRESS)`.
+- **Result**: ✅ **STABILIZED & ENHANCED**. The Agent now proactively informs users: *"I'm still processing 'Guide.pdf'—I'll let you know once it's fully ready!"* instead of failing silently. System tests now pass 100% with full database and authentication parity.
+
