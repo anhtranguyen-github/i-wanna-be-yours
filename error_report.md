@@ -190,3 +190,62 @@ This document tracks all errors, bugs, and failures encountered during the imple
      - **Critial Service Note**: If a resource is `pending` or `processing`, a high-priority system prompt is injected: `### CRITICAL SERVICE STATUS (INGESTION IN PROGRESS)`.
 - **Result**: ✅ **STABILIZED & ENHANCED**. The Agent now proactively informs users: *"I'm still processing 'Guide.pdf'—I'll let you know once it's fully ready!"* instead of failing silently. System tests now pass 100% with full database and authentication parity.
 
+
+## 24. Study Plan Creation 405 Method Not Allowed
+- **Error**: `POST /v1/study-plan/plans/create` returns `405 Method Not Allowed`.
+- **Cause**: The workflow used an incorrect endpoint URL (`/plans/create`). The correct endpoint is `POST /v1/study-plan/plans`.
+- **Solution**: Updated `workflow_autonomous_study_recalibration.py` to use the correct endpoint and include required `exam_date` field.
+- **Result**: ✅ **FIXED**. Study plan creation now returns 201 Created.
+
+## 25. Agent Tool Not Actually Executing (Hallucinated Tool Calls)
+- **Error**: Agent responded "I've recalibrated your study plan" but the goal priority remained at 1.
+- **Cause**: 
+  1. `chat_persona.md` had no tool instructions.
+  2. `recalibrate_study_priorities` required explicit goal IDs which the agent couldn't provide.
+- **Solution**:
+  1. Added **TOOLS** section to `chat_persona.md` with explicit tool usage instructions.
+  2. Made `recalibrate_study_priorities` autonomous: it now auto-fetches goals and matches them to topics.
+- **Result**: ✅ **FIXED**. Agent now correctly invokes and executes tools.
+
+## 26. Topic-to-Goal Matching Failure
+- **Error**: `recalibrate_study_priorities` fetched 2 goals but matched 0.
+- **Cause**: LLM called with `"passive_form"` but goal title was `"Passive Form Grammar"`. String `"passive_form"` is not a substring of `"passive form grammar"`.
+- **Solution**: Implemented word-based matching: split `"passive_form"` into `["passive", "form"]` and check if any word appears in goal title.
+- **Result**: ✅ **FIXED**. `"passive"` now matches `"passive form grammar"`.
+
+## 27. Batch Goal Update Not Persisting
+- **Error**: `batch_update_goals` returned success but `modified_count` was 0.
+- **Cause**: MongoDB `update_one()` wasn't checking if documents were modified.
+- **Solution**: Added explicit `result.modified_count > 0` check in `smart_goals.py`.
+- **Result**: ✅ **FIXED**. Accurate reporting of updated goals.
+
+## 28. Performance Trend Detection Missing Struggles
+- **Error**: `get_trends()` returned empty `identified_struggles` despite struggle keywords in audits.
+- **Cause**: Only checked `note_audit_details`, but keyword was in `summary` field.
+- **Solution**: Updated `performance.py` to check both `summary` and `note_audit_details`.
+- **Result**: ✅ **FIXED**. Trends now identify struggles from all text fields.
+
+## 29. 401 Unauthorized During Agent Context Retrieval
+- **Error**: `GET /v1/study-plan/plans HTTP/1.1 401 Unauthorized` when memory manager fetched learner context.
+- **Cause**: JWT token not propagated through: Routes → Agent → MemoryManager → StudyMemory → StudyServiceClient.
+- **Solution**: Added `token` parameter throughout the entire call chain with `Authorization` header in API calls.
+- **Result**: ✅ **FIXED**. All authenticated endpoints receive valid tokens.
+
+## 30. Workflow Not Signaling Failure to Test Runner
+- **Error**: `run_full_system.py` reported "PASSED" despite workflow internal failures.
+- **Cause**: Workflow used `return` on failure instead of `sys.exit(1)`.
+- **Solution**: Replaced all failure paths with `sys.exit(1)`.
+- **Result**: ✅ **FIXED**. Test runner correctly reports failures.
+
+---
+
+## FINAL SYSTEM TEST VERIFICATION (2025-12-29)
+
+```log
+🛠️ [Agent] Executing tool: recalibrate_study_priorities
+🔍 [Recalibrate] Found 2 goals for user
+✅ [Recalibrate] Matched word 'passive' to goal 'passive form grammar'
+🌟 SUCCESS: Study Agent proactively elevated priority for struggle point! (New Priority: 3)
+🎉 [System] All Comprehensive System Tests PASSED.
+Exit code: 0
+```
