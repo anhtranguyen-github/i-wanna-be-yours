@@ -19,7 +19,7 @@ def generate_system_token():
     payload = {
         "id": "system-worker",
         "userId": "system-worker",
-        "role": "admin", # Admin role usually bypasses checks or is allowed
+        "role": "ingestion_worker", # Specific system role, not admin
         "exp": int(time.time()) + 300
     }
     return jwt.encode(payload, JWT_SECRET, algorithm="HS256")

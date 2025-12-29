@@ -251,7 +251,8 @@ class ResourcesModule:
                     "_id": ObjectId(id),
                     "deletedAt": None
                 }
-                if role != 'admin':
+                # Allow Admin and Worker to bypass ownership for READ
+                if role not in ['admin', 'ingestion_worker']:
                     query["userId"] = user_id
 
                 resource = self.resources_collection.find_one(query)
@@ -287,7 +288,8 @@ class ResourcesModule:
                     "_id": ObjectId(id),
                     "deletedAt": None
                 }
-                if role != 'admin':
+                # Allow Admin and Worker to bypass ownership for READ
+                if role not in ['admin', 'ingestion_worker']:
                     query["userId"] = user_id
 
                 resource = self.resources_collection.find_one(query)
@@ -325,11 +327,33 @@ class ResourcesModule:
                 if "ingestionStatus" in data:
                     update_fields["ingestionStatus"] = str(data["ingestionStatus"])
                 
-                
                 query = {"_id": ObjectId(id), "deletedAt": None}
                 role = request.user.get("role")
-                if role != 'admin':
+                
+                # --- Authorization & Ownership Logic ---
+                # Check 1: Ingestion Worker (System Actor)
+                if role == 'ingestion_worker':
+                     # Enforce Least Privilege: Only allow status updates
+                     # update_fields includes 'updatedAt' and keys from request data
+                     allowed_keys = {'ingestionStatus', 'updatedAt'}
+                     
+                     if not set(update_fields.keys()).issubset(allowed_keys):
+                          msg = f"Security: Worker attempted to update forbidden fields: {list(update_fields.keys())}"
+                          logging.warning(msg)
+                          return jsonify({"error": "Worker limited to status updates only"}), 403
+
+                     # Audit Log (Requirement 4)
+                     logging.info(f"AUDIT [System Write]: Actor={role} Action=update_status Resource={id}")
+                     
+                     # ALLOW BYPASS: Do not add 'userId' constraint to query
+                     
+                # Check 2: Standard User (Owner)
+                else:
+                    # Strict Ownership Enforcement (Requirement 1)
                     query["userId"] = user_id
+                    
+                    # Note: Admin role is NOT globally exempted (Requirement 2), 
+                    # treating admins as owners of their own files only for this endpoint.
 
                 result = self.resources_collection.update_one(
                     query,
