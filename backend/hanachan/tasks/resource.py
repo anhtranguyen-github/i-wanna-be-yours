@@ -47,7 +47,7 @@ def ingest_resource(resource_id: str):
             def update_status(status):
                 try:
                     res = requests.put(
-                        f"{os.getenv('RESOURCES_API_URL')}/v1/resources/{resource_id}",
+                        f"{os.getenv('RESOURCES_API_URL', 'http://localhost:5100')}/v1/resources/{resource_id}",
                         json={"ingestionStatus": status},
                         headers={"Authorization": f"Bearer {token}"}
                     )

@@ -1,8 +1,8 @@
-
 import os
 import uuid
 import logging
 import shutil
+import hashlib
 from datetime import datetime, timezone
 from flask import request, jsonify, send_file
 from pymongo import MongoClient
@@ -44,6 +44,15 @@ class ResourcesModule:
         logging.basicConfig(level=logging.INFO)
     
     # --- Helper Methods ---
+
+    def calculate_file_hash(self, file) -> str:
+        """Calculates MD5 hash of a file stream."""
+        file.seek(0)
+        file_hash = hashlib.md5()
+        while chunk := file.read(8192):
+            file_hash.update(chunk)
+        file.seek(0) # Reset pointer
+        return file_hash.hexdigest()
 
     def is_allowed_file(self, filename: str) -> bool:
         if '.' not in filename:
@@ -95,8 +104,6 @@ class ResourcesModule:
         file.save(file_path)
         
         # Relative path for storage in DB
-        # Note: os.path.join might use backslashes on Windows, but we want forward slashes for DB consistency usually.
-        # However, backend is running in WSL/Linux, so forward slash is default.
         relative_path = f"{date_folder}/{unique_filename}"
         
         return {
@@ -124,6 +131,28 @@ class ResourcesModule:
                 validated_data = request.validated_data
                 tags = validated_data.get('tags') or []
                 description = validated_data.get('description', '')
+
+                # 1. Calculate Hash
+                file_hash = self.calculate_file_hash(file)
+
+                # 2. Check for Duplicates (User-scoped)
+                existing_resource = self.resources_collection.find_one({
+                    "userId": user_id,
+                    "fileHash": file_hash,
+                    "deletedAt": None
+                })
+
+                if existing_resource:
+                     logging.info(f"Duplicate file uploaded by user {user_id}. Returning existing resource {existing_resource['_id']}")
+                     return jsonify({
+                        "id": str(existing_resource["_id"]),
+                        "title": existing_resource["title"],
+                        "type": existing_resource["type"],
+                        "mimeType": existing_resource["mimeType"],
+                        "fileSize": existing_resource["fileSize"],
+                        "createdAt": existing_resource["createdAt"].isoformat() if existing_resource.get("createdAt") else None,
+                        "ingestionStatus": existing_resource.get("ingestionStatus", "completed") # Assume completed if existing
+                    }), 200 # OK (not Created)
                 
                 # Save file to disk
                 file_info = self.save_file(file)
@@ -138,6 +167,7 @@ class ResourcesModule:
                     "filePath": file_info['filePath'],
                     "fileSize": file_info['fileSize'],
                     "originalFilename": file.filename,
+                    "fileHash": file_hash, # Store hash
                     "tags": tags,
                     "metadata": {},
                     "createdAt": datetime.now(timezone.utc),

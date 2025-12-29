@@ -286,6 +286,11 @@ done
 # --- Main Logic ---
 log "=== Initializing Startup Script ==="
 
+# Load JWT_SECRET from .env if present
+if [ -f "$PROJECT_ROOT/.env" ]; then
+    export $(grep -v '^#' "$PROJECT_ROOT/.env" | grep 'JWT_SECRET' | xargs)
+fi
+
 # ======================================================================
 # 0. Clean Slate
 # ======================================================================
@@ -531,6 +536,7 @@ log "✅ Started hanachan (PID: $pid)"
     
     # Ensure REDIS_URL is set (default for local)
     export REDIS_URL="redis://localhost:6379/0"
+    export RESOURCES_API_URL="http://localhost:5100"
     # Ensure OBJC_DISABLE_INITIALIZE_FORK_SAFETY is set for macOS/some Linux
     export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
     
