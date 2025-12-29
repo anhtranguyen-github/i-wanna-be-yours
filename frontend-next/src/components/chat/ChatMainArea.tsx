@@ -359,7 +359,7 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
                     return f;
                 }));
             }
-        }, 2000);
+        }, 5000);
 
         return () => clearInterval(interval);
     }, [attachedFiles, pendingFiles]);

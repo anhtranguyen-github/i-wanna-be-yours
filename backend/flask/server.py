@@ -32,7 +32,7 @@ Talisman(app, force_https=False) # force_https=True in prod with proper certs
 limiter = Limiter(
     get_remote_address,
     app=app,
-    default_limits=["2000 per day", "100 per hour"],
+    default_limits=["5000 per day", "1000 per hour"],
     storage_uri="memory://",
 )
 
@@ -106,7 +106,7 @@ deck_module.register_routes(app)
 # -- resources -- #
 from modules.resources import ResourcesModule
 resources_module = ResourcesModule()
-resources_module.register_routes(app)
+resources_module.register_routes(app, limiter)
 
 # --------------- End of Class imports ---------------- #
 

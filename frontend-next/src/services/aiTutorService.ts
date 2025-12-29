@@ -172,7 +172,7 @@ class AITutorService {
     // --- Resources (Backend) ---
 
     async getResources(): Promise<Resource[]> {
-        const res = await authFetch(`${this.API_BASE_URL}/resources/`, {
+        const res = await authFetch(`/f-api/v1/resources`, {
             headers: this.getHeaders()
         });
         if (!res.ok) return [];
@@ -190,7 +190,7 @@ class AITutorService {
 
     async getResource(id: string): Promise<Resource | null> {
         try {
-            const res = await authFetch(`${this.API_BASE_URL}/resources/${id}`, {
+            const res = await authFetch(`/f-api/v1/resources/${id}`, {
                 headers: this.getHeaders()
             });
             if (!res.ok) return null;
@@ -207,7 +207,7 @@ class AITutorService {
     }
 
     async createResource(type: string, content: string, title: string): Promise<Resource> {
-        const res = await authFetch(`${this.API_BASE_URL}/resources/`, {
+        const res = await authFetch(`/f-api/v1/resources`, {
             method: 'POST',
             headers: this.getHeaders(),
             body: JSON.stringify({ type, content, title })
@@ -226,7 +226,7 @@ class AITutorService {
     }
 
     async deleteResource(id: string): Promise<void> {
-        await authFetch(`${this.API_BASE_URL}/resources/${id}`, {
+        await authFetch(`/f-api/v1/resources/${id}`, {
             method: 'DELETE',
             headers: this.getHeaders()
         });

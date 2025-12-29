@@ -115,7 +115,7 @@ class ResourcesModule:
 
     # --- Route Registration ---
 
-    def register_routes(self, app):
+    def register_routes(self, app, limiter):
         
         @app.route("/v1/resources/upload", methods=["POST"])
         @login_required
@@ -241,6 +241,7 @@ class ResourcesModule:
         
         @app.route("/v1/resources/<id>", methods=["GET"])
         @login_required
+        @limiter.exempt
         def get_resource(id):
             user_id = request.user.get("userId") or request.user.get("id")
             role = request.user.get("role")

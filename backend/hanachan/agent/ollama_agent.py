@@ -92,10 +92,16 @@ class HanachanAgent:
     def _stream_generator(self, messages: List[Any], user_prompt: str, session_id: str, user_id: str) -> Generator[str, None, None]:
         full_response = ""
         try:
+            logger.info(f"⚡ [Stream] Starting stream for user {user_id} (Session: {session_id})")
+            chunk_count = 0
             for chunk in self.llm.stream(messages):
                 content = chunk.content
+                logger.info(f"⚡ [Stream] Chunk received: {len(content)} chars")
                 full_response += content
+                chunk_count += 1
                 yield content
+            
+            logger.info(f"⚡ [Stream] Completed. Total chunks: {chunk_count}")
             
             # Save interaction after streaming completes
             self.memory_manager.save_interaction(session_id, user_id, user_prompt, full_response)
