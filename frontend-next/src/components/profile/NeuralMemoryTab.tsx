@@ -5,8 +5,10 @@ import dynamic from 'next/dynamic';
 import { useUser } from '@/context/UserContext';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Brain, History, Share2, ZoomIn, Loader2, Calendar } from 'lucide-react';
+import { Brain, History, Share2, ZoomIn, Loader2, Calendar, BarChart3, AlertCircle, TrendingUp, Tag } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import { studyPlanService } from '@/services/studyPlanService';
+import { PerformanceTrend } from '@/types/studyPlanTypes';
 
 // Dynamically import ForceGraph2D as it uses window/canvas
 const ForceGraph2D = dynamic(() => import('react-force-graph-2d'), {
@@ -31,8 +33,10 @@ export function NeuralMemoryTab() {
     const { user } = useUser();
     const [graphData, setGraphData] = useState<GraphData>({ nodes: [], links: [] });
     const [memories, setMemories] = useState<MemoryItem[]>([]);
+    const [trends, setTrends] = useState<PerformanceTrend | null>(null);
     const [loadingGraph, setLoadingGraph] = useState(false);
     const [loadingTimeline, setLoadingTimeline] = useState(false);
+    const [loadingTrends, setLoadingTrends] = useState(false);
     const graphRef = useRef<any>();
 
     useEffect(() => {
@@ -69,8 +73,21 @@ export function NeuralMemoryTab() {
             }
         };
 
+        const fetchTrends = async () => {
+            setLoadingTrends(true);
+            try {
+                const data = await studyPlanService.getPerformanceTrends(30);
+                setTrends(data);
+            } catch (e) {
+                console.error("Failed to fetch trends", e);
+            } finally {
+                setLoadingTrends(false);
+            }
+        };
+
         fetchGraph();
         fetchTimeline();
+        fetchTrends();
     }, [user]);
 
     const handleNodeClick = (node: any) => {
@@ -104,6 +121,9 @@ export function NeuralMemoryTab() {
                     </TabsTrigger>
                     <TabsTrigger value="episodic" className="flex items-center gap-2">
                         <History size={16} /> Episodic Timeline
+                    </TabsTrigger>
+                    <TabsTrigger value="gaps" className="flex items-center gap-2">
+                        <BarChart3 size={16} /> Performance Gaps
                     </TabsTrigger>
                 </TabsList>
 
@@ -187,6 +207,87 @@ export function NeuralMemoryTab() {
                                             </div>
                                         </div>
                                     ))}
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                <TabsContent value="gaps">
+                    <Card className="border-slate-200">
+                        <CardHeader>
+                            <CardTitle className="text-lg">Performance Intelligence</CardTitle>
+                            <CardDescription>Identifying persistent knowledge gaps and quality trends across your study history.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            {loadingTrends ? (
+                                <div className="flex py-12 justify-center"><Loader2 className="animate-spin text-neutral-ink" /></div>
+                            ) : !trends ? (
+                                <div className="text-center py-12 text-neutral-ink">No performance data available yet.</div>
+                            ) : (
+                                <div className="space-y-8">
+                                    <div className="grid md:grid-cols-2 gap-8">
+                                        <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100 space-y-4">
+                                            <div className="flex items-center gap-2">
+                                                <TrendingUp size={20} className="text-primary-strong" />
+                                                <h4 className="font-black text-neutral-ink">Note Quality Trend</h4>
+                                            </div>
+                                            <div className="flex items-baseline gap-2">
+                                                <span className="text-5xl font-black text-primary-strong">
+                                                    {Math.round(trends.avg_note_quality * 10) / 10}
+                                                </span>
+                                                <span className="text-neutral-ink/30 font-bold">/ 10</span>
+                                            </div>
+                                            <div className="h-3 w-full bg-slate-200 rounded-full overflow-hidden">
+                                                <div
+                                                    className="h-full bg-primary-strong rounded-full transition-all duration-1000"
+                                                    style={{ width: `${trends.avg_note_quality * 10}%` }}
+                                                />
+                                            </div>
+                                            <p className="text-xs text-neutral-ink/50 leading-relaxed font-medium">
+                                                Your average quality score from the last 30 days of study audits.
+                                                Higher scores indicate more descriptive and engaged learning notes.
+                                            </p>
+                                        </div>
+
+                                        <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100 space-y-4">
+                                            <div className="flex items-center gap-2">
+                                                <Tag size={20} className="text-rose-500" />
+                                                <h4 className="font-black text-neutral-ink">Knowledge Struggle Points</h4>
+                                            </div>
+                                            <div className="flex flex-wrap gap-2">
+                                                {trends.identified_struggles?.length === 0 ? (
+                                                    <p className="text-sm text-neutral-ink/40 italic py-2">No persistent gaps detected. You&apos;re mastering the content!</p>
+                                                ) : (
+                                                    trends.identified_struggles?.map((struggle, i) => (
+                                                        <span key={i} className="px-4 py-2 bg-white border border-rose-100 text-rose-600 rounded-xl text-xs font-black flex items-center gap-2 shadow-sm">
+                                                            <AlertCircle size={14} />
+                                                            {struggle}
+                                                        </span>
+                                                    ))
+                                                )}
+                                            </div>
+                                            <p className="text-xs text-neutral-ink/50 leading-relaxed font-medium">
+                                                These topics appear frequently in your struggle reports.
+                                                Hanachan will proactively prioritize these in your daily study goals.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-primary-strong/5 p-6 rounded-2xl border border-primary-strong/10">
+                                        <div className="flex gap-4">
+                                            <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center shrink-0">
+                                                <Brain size={24} className="text-primary-strong" />
+                                            </div>
+                                            <div className="space-y-1">
+                                                <h5 className="font-black text-neutral-ink text-sm">Adaptive Recalibration Active</h5>
+                                                <p className="text-xs text-neutral-ink/60 leading-relaxed font-medium">
+                                                    Your long-term memory is currently guiding the Study Agent.
+                                                    New goals will be generated specifically to bridge the gaps identified above.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             )}
                         </CardContent>

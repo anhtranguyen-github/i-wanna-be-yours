@@ -31,6 +31,7 @@ import {
 } from "@/types/learnerProgressTypes";
 import { PageHeader } from "@/components/shared";
 import { NeuralMemoryTab } from "@/components/profile/NeuralMemoryTab";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // =============================================================================
 // SUB-COMPONENTS
@@ -213,181 +214,190 @@ export default function ProfilePage() {
             />
 
             <main className="max-w-6xl mx-auto px-6 py-12">
-                <div className="mb-12">
-                    <NeuralMemoryTab />
-                </div>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-
-                    {/* LEFT COLUMN: Identity & Stats */}
-                    <div className="lg:col-span-2 space-y-12">
-
-                        {/* Identity Card */}
-                        <div className="relative group">
-                            <div className="absolute inset-0 bg-primary-strong/5 -xl rounded-[3rem] -z-10 group-hover:bg-primary-strong/10 transition-colors" />
-                            <div className="flex flex-col md:flex-row items-center md:items-start gap-8 p-10">
-                                <div className="relative shrink-0">
-                                    <div className="w-32 h-32 bg-white rounded-[2.5rem] flex items-center justify-center text-5xl shadow-xl shadow-primary-strong/5 border-4 border-white">
-                                        🌸
-                                    </div>
-                                    <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-primary-strong text-white rounded-full flex items-center justify-center font-black text-xs border-4 border-white shadow-lg">
-                                        {stats?.current_streak || 0}
-                                    </div>
-                                </div>
-                                <div className="flex-1 space-y-4 text-center md:text-left">
-                                    <div>
-                                        <div className="flex items-center justify-center md:justify-start gap-3 flex-wrap">
-                                            <h1 className="text-4xl font-black text-neutral-ink font-display tracking-tight">Active Scholar</h1>
-                                            <span className="px-3 py-1 bg-primary-strong/10 text-primary-strong text-[10px] font-black uppercase tracking-widest rounded-full leading-none">Hanabira Pro</span>
-                                        </div>
-                                        <p className="text-neutral-ink/40 font-bold mt-1">{user.email}</p>
-                                    </div>
-                                    <p className="text-neutral-ink/60 font-medium leading-relaxed max-w-lg">
-                                        &quot;Climbing the peaks of N3 vocabulary. Currently focusing on JLPT grammar patterns and daily flashcard discipline.&quot;
-                                    </p>
-                                    <div className="flex items-center justify-center md:justify-start gap-4">
-                                        <div className="flex items-center gap-2">
-                                            <Flame size={16} className="text-orange-500" />
-                                            <span className="text-xs font-black text-neutral-ink">{stats?.current_streak || 0}-Day Streak</span>
-                                        </div>
-                                        <div className="w-1.5 h-1.5 bg-neutral-beige/50 rounded-full" />
-                                        <div className="flex items-center gap-2">
-                                            <Calendar size={16} className="text-blue-500" />
-                                            <span className="text-xs font-black text-neutral-ink">Joined Dec 2025</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Mastery Grid */}
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                            <ProfileStat
-                                title="Vocabulary"
-                                value={stats?.vocabulary_mastered || 0}
-                                icon={<BookOpen size={24} />}
-                                color="bg-primary-strong/10 text-primary-strong"
-                            />
-                            <ProfileStat
-                                title="Kanji"
-                                value={stats?.kanji_mastered || 0}
-                                icon={<Pencil size={24} />}
-                                color="bg-orange-500/10 text-orange-600"
-                            />
-                            <ProfileStat
-                                title="Grammar"
-                                value={stats?.grammar_points_learned || 0}
-                                icon={<Globe size={24} />}
-                                color="bg-blue-500/10 text-blue-600"
-                            />
-                            <ProfileStat
-                                title="Study Time"
-                                value={learnerProgressService.formatStudyTime(stats?.total_study_time_minutes || 0)}
-                                icon={<Clock size={24} />}
-                                color="bg-neutral-ink/5 text-neutral-ink"
-                            />
-                        </div>
-
-                        {/* Achievements Section */}
-                        <div className="space-y-6">
-                            <div className="flex items-center justify-between px-2">
-                                <h3 className="text-xl font-black text-neutral-ink font-display flex items-center gap-3">
-                                    <Trophy size={22} className="text-yellow-500" />
-                                    Hall of Mastery
-                                </h3>
-                                <div className="text-[10px] font-black uppercase tracking-widest text-neutral-ink/30 italic">
-                                    {progressData?.achievements_count || 0} / {progressData?.total_achievements_available || 12} Earned
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {achievements.length > 0 ? achievements.map((achievement) => (
-                                    <AchievementItem key={achievement.id} achievement={achievement} />
-                                )) : (
-                                    <div className="col-span-full py-12 text-center bg-white/40 rounded-[2.5rem] border border-dashed border-neutral-gray/30">
-                                        <p className="text-neutral-ink/40 font-black uppercase tracking-widest text-xs">No achievements unlocked yet</p>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-
+                <Tabs defaultValue="overview" className="space-y-12">
+                    <div className="flex justify-center mb-8">
+                        <TabsList className="bg-white/50 backdrop-blur-sm border-white/40 shadow-sm">
+                            <TabsTrigger value="overview">Overview</TabsTrigger>
+                            <TabsTrigger value="memory">Study Memory</TabsTrigger>
+                            <TabsTrigger value="vault">Activity Vault</TabsTrigger>
+                        </TabsList>
                     </div>
 
-                    {/* RIGHT COLUMN: Activities & Insights */}
-                    <div className="space-y-12">
+                    <TabsContent value="overview">
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                            {/* LEFT COLUMN: Identity & Stats */}
+                            <div className="lg:col-span-2 space-y-12">
+                                {/* Identity Card */}
+                                <div className="relative group">
+                                    <div className="absolute inset-0 bg-primary-strong/5 -xl rounded-[3rem] -z-10 group-hover:bg-primary-strong/10 transition-colors" />
+                                    <div className="flex flex-col md:flex-row items-center md:items-start gap-8 p-10">
+                                        <div className="relative shrink-0">
+                                            <div className="w-32 h-32 bg-white rounded-[2.5rem] flex items-center justify-center text-5xl shadow-xl shadow-primary-strong/5 border-4 border-white">
+                                                🌸
+                                            </div>
+                                            <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-primary-strong text-white rounded-full flex items-center justify-center font-black text-xs border-4 border-white shadow-lg">
+                                                {stats?.current_streak || 0}
+                                            </div>
+                                        </div>
+                                        <div className="flex-1 space-y-4 text-center md:text-left">
+                                            <div>
+                                                <div className="flex items-center justify-center md:justify-start gap-3 flex-wrap">
+                                                    <h1 className="text-4xl font-black text-neutral-ink font-display tracking-tight">Active Scholar</h1>
+                                                    <span className="px-3 py-1 bg-primary-strong/10 text-primary-strong text-[10px] font-black uppercase tracking-widest rounded-full leading-none">Hanabira Pro</span>
+                                                </div>
+                                                <p className="text-neutral-ink/40 font-bold mt-1">{user.email}</p>
+                                            </div>
+                                            <p className="text-neutral-ink/60 font-medium leading-relaxed max-w-lg">
+                                                &quot;Climbing the peaks of N3 vocabulary. Currently focusing on JLPT grammar patterns and daily flashcard discipline.&quot;
+                                            </p>
+                                            <div className="flex items-center justify-center md:justify-start gap-4">
+                                                <div className="flex items-center gap-2">
+                                                    <Flame size={16} className="text-orange-500" />
+                                                    <span className="text-xs font-black text-neutral-ink">{stats?.current_streak || 0}-Day Streak</span>
+                                                </div>
+                                                <div className="w-1.5 h-1.5 bg-neutral-beige/50 rounded-full" />
+                                                <div className="flex items-center gap-2">
+                                                    <Calendar size={16} className="text-blue-500" />
+                                                    <span className="text-xs font-black text-neutral-ink">Joined Dec 2025</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                        {/* Weekly Goal Progress */}
-                        <div className="bg-white/60 backdrop-blur-md rounded-[2.5rem] p-8 border border-white shadow-sm space-y-8">
-                            <div className="space-y-1">
-                                <h3 className="text-lg font-black text-neutral-ink font-display">Weekly Rhythm</h3>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-neutral-ink/30 italic">Target completion</p>
+                                {/* Mastery Grid */}
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                                    <ProfileStat
+                                        title="Vocabulary"
+                                        value={stats?.vocabulary_mastered || 0}
+                                        icon={<BookOpen size={24} />}
+                                        color="bg-primary-strong/10 text-primary-strong"
+                                    />
+                                    <ProfileStat
+                                        title="Kanji"
+                                        value={stats?.kanji_mastered || 0}
+                                        icon={<Pencil size={24} />}
+                                        color="bg-orange-500/10 text-orange-600"
+                                    />
+                                    <ProfileStat
+                                        title="Grammar"
+                                        value={stats?.grammar_points_learned || 0}
+                                        icon={<Globe size={24} />}
+                                        color="bg-blue-500/10 text-blue-600"
+                                    />
+                                    <ProfileStat
+                                        title="Study Time"
+                                        value={learnerProgressService.formatStudyTime(stats?.total_study_time_minutes || 0)}
+                                        icon={<Clock size={24} />}
+                                        color="bg-neutral-ink/5 text-neutral-ink"
+                                    />
+                                </div>
+
+                                {/* Achievements Section */}
+                                <div className="space-y-6">
+                                    <div className="flex items-center justify-between px-2">
+                                        <h3 className="text-xl font-black text-neutral-ink font-display flex items-center gap-3">
+                                            <Trophy size={22} className="text-yellow-500" />
+                                            Hall of Mastery
+                                        </h3>
+                                        <div className="text-[10px] font-black uppercase tracking-widest text-neutral-ink/30 italic">
+                                            {progressData?.achievements_count || 0} / {progressData?.total_achievements_available || 12} Earned
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {achievements.length > 0 ? achievements.map((achievement) => (
+                                            <AchievementItem key={achievement.id} achievement={achievement} />
+                                        )) : (
+                                            <div className="col-span-full py-12 text-center bg-white/40 rounded-[2.5rem] border border-dashed border-neutral-gray/30">
+                                                <p className="text-neutral-ink/40 font-black uppercase tracking-widest text-xs">No achievements unlocked yet</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
                             </div>
 
+                            {/* RIGHT COLUMN: Goals */}
+                            <div className="space-y-12">
+                                {/* Weekly Goal Progress */}
+                                <div className="bg-white/60 backdrop-blur-md rounded-[2.5rem] p-8 border border-white shadow-sm space-y-8">
+                                    <div className="space-y-1">
+                                        <h3 className="text-lg font-black text-neutral-ink font-display">Weekly Rhythm</h3>
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-neutral-ink/30 italic">Target completion</p>
+                                    </div>
+
+                                    <div className="space-y-6">
+                                        {[
+                                            { label: 'Flashcards', current: stats?.weekly_goals?.flashcard_reviews?.current || 0, target: stats?.weekly_goals?.flashcard_reviews?.target || 100, color: 'bg-primary-strong' },
+                                            { label: 'Quizzes', current: stats?.weekly_goals?.quizzes_completed?.current || 0, target: stats?.weekly_goals?.quizzes_completed?.target || 5, color: 'bg-orange-500' },
+                                            { label: 'Study Time', current: stats?.weekly_goals?.study_minutes?.current || 0, target: stats?.weekly_goals?.study_minutes?.target || 150, color: 'bg-blue-500' },
+                                        ].map((goal, i) => {
+                                            const progress = Math.min(100, (goal.current / goal.target) * 100);
+                                            return (
+                                                <div key={i} className="space-y-2">
+                                                    <div className="flex items-center justify-between">
+                                                        <span className="text-[10px] font-black uppercase tracking-widest text-neutral-ink/60">{goal.label}</span>
+                                                        <span className="text-xs font-black text-neutral-ink">{goal.current}/{goal.target}</span>
+                                                    </div>
+                                                    <div className="h-1.5 w-full bg-neutral-beige/50 rounded-full overflow-hidden">
+                                                        <div
+                                                            className={`h-full ${goal.color} rounded-full transition-all duration-1000 ease-out`}
+                                                            style={{ width: `${progress}%` }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+
+                                {/* Social / Link Card */}
+                                <div className="bg-gradient-to-br from-neutral-ink to-neutral-ink/80 rounded-[2.5rem] p-8 text-white space-y-6 relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:scale-110 transition-transform">
+                                        <ArrowUpRight size={120} strokeWidth={4} />
+                                    </div>
+                                    <div className="space-y-2 relative z-10">
+                                        <h3 className="text-xl font-black font-display tracking-tight">Study Plan Sync</h3>
+                                        <p className="text-sm text-white/60 font-medium leading-relaxed">
+                                            Your profile is automatically synced with your active Study Plan.
+                                        </p>
+                                    </div>
+                                    <button
+                                        onClick={() => router.push('/study-plan')}
+                                        className="w-full bg-white text-neutral-ink py-4 rounded-2xl font-black text-xs hover:bg-primary-strong hover:text-white transition-all relative z-10"
+                                    >
+                                        Open Active Plan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </TabsContent>
+
+                    <TabsContent value="memory">
+                        <NeuralMemoryTab />
+                    </TabsContent>
+
+                    <TabsContent value="vault">
+                        <div className="max-w-4xl mx-auto space-y-12">
                             <div className="space-y-6">
-                                {[
-                                    { label: 'Flashcards', current: stats?.weekly_goals?.flashcard_reviews?.current || 0, target: stats?.weekly_goals?.flashcard_reviews?.target || 100, color: 'bg-primary-strong' },
-                                    { label: 'Quizzes', current: stats?.weekly_goals?.quizzes_completed?.current || 0, target: stats?.weekly_goals?.quizzes_completed?.target || 5, color: 'bg-orange-500' },
-                                    { label: 'Study Time', current: stats?.weekly_goals?.study_minutes?.current || 0, target: stats?.weekly_goals?.study_minutes?.target || 150, color: 'bg-blue-500' },
-                                ].map((goal, i) => {
-                                    const progress = Math.min(100, (goal.current / goal.target) * 100);
-                                    return (
-                                        <div key={i} className="space-y-2">
-                                            <div className="flex items-center justify-between">
-                                                <span className="text-[10px] font-black uppercase tracking-widest text-neutral-ink/60">{goal.label}</span>
-                                                <span className="text-xs font-black text-neutral-ink">{goal.current}/{goal.target}</span>
-                                            </div>
-                                            <div className="h-1.5 w-full bg-neutral-beige/50 rounded-full overflow-hidden">
-                                                <div
-                                                    className={`h-full ${goal.color} rounded-full transition-all duration-1000 ease-out`}
-                                                    style={{ width: `${progress}%` }}
-                                                />
-                                            </div>
+                                <div className="flex items-center justify-between px-2">
+                                    <h3 className="text-2xl font-black text-neutral-ink font-display flex items-center gap-4">
+                                        <Clock size={28} className="text-neutral-ink/30" />
+                                        Activity Vault Records
+                                    </h3>
+                                </div>
+                                <div className="bg-white/40 backdrop-blur-sm rounded-[3rem] p-8 border border-white/40 divide-y divide-white/20">
+                                    {recentActivities.length > 0 ? recentActivities.map((activity, i) => (
+                                        <ActivityRecord key={i} activity={activity} />
+                                    )) : (
+                                        <div className="py-24 text-center italic text-neutral-ink/30 text-lg font-bold">
+                                            No activity records found in the vault.
                                         </div>
-                                    );
-                                })}
+                                    )}
+                                </div>
                             </div>
                         </div>
-
-                        {/* Recent Activity Records */}
-                        <div className="space-y-6">
-                            <div className="flex items-center justify-between px-2">
-                                <h3 className="text-lg font-black text-neutral-ink font-display flex items-center gap-3">
-                                    <Clock size={20} className="text-neutral-ink/30" />
-                                    Vault Records
-                                </h3>
-                                <button className="text-[10px] font-black uppercase tracking-widest text-primary-strong hover:underline decoration-2 underline-offset-4 decoration-primary-strong/30">View All</button>
-                            </div>
-                            <div className="bg-white/40 backdrop-blur-sm rounded-[2.5rem] p-4 border border-white/40 divide-y divide-white/20">
-                                {recentActivities.length > 0 ? recentActivities.map((activity, i) => (
-                                    <ActivityRecord key={i} activity={activity} />
-                                )) : (
-                                    <div className="py-12 text-center italic text-neutral-ink/30 text-xs font-bold">
-                                        No recent activity logged.
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* Social / Link Card */}
-                        <div className="bg-gradient-to-br from-neutral-ink to-neutral-ink/80 rounded-[2.5rem] p-8 text-white space-y-6 relative overflow-hidden group">
-                            <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:scale-110 transition-transform">
-                                <ArrowUpRight size={120} strokeWidth={4} />
-                            </div>
-                            <div className="space-y-2 relative z-10">
-                                <h3 className="text-xl font-black font-display tracking-tight">Study Plan Sync</h3>
-                                <p className="text-sm text-white/60 font-medium leading-relaxed">
-                                    Your profile is automatically synced with your active Study Plan.
-                                </p>
-                            </div>
-                            <button
-                                onClick={() => router.push('/study-plan')}
-                                className="w-full bg-white text-neutral-ink py-4 rounded-2xl font-black text-xs hover:bg-primary-strong hover:text-white transition-all relative z-10"
-                            >
-                                Open Active Plan
-                            </button>
-                        </div>
-
-                    </div>
-
-                </div>
+                    </TabsContent>
+                </Tabs>
             </main>
         </div>
     );
