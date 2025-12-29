@@ -339,7 +339,7 @@ class AgentService:
 
     def stream_agent(self, request_data: AgentRequest):
         """Streaming version with full persistence"""
-        from agent.ollama_agent import HanachanAgent
+        from agent.core_agent import HanachanAgent
         from models.conversation import Conversation
         
         # 1. Initialize Persistence
