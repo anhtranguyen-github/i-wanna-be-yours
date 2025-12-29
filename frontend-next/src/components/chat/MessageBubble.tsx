@@ -66,10 +66,10 @@ function MessageBubbleComponent({ message, onOpenArtifact }: MessageBubbleProps)
             {/* Avatar */}
             <div className={`
                 w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0
-                ${isUser ? 'bg-brand-peach' : 'bg-brand-green'}
+                ${isUser ? 'bg-primary/20' : 'bg-neutral-beige border border-neutral-gray/10'}
             `}>
                 {isUser ? (
-                    <User size={16} className="text-white" />
+                    <User size={16} className="text-primary-strong" />
                 ) : (
                     <span className="text-sm">🌸</span>
                 )}
@@ -80,8 +80,8 @@ function MessageBubbleComponent({ message, onOpenArtifact }: MessageBubbleProps)
                 <div className={`
                     px-4 py-3 rounded-2xl shadow-sm border
                     ${isUser
-                        ? 'bg-brand-blue text-white border-brand-blue/20 rounded-tr-md'
-                        : 'bg-white text-brand-dark border-neutral-beige/50 rounded-tl-md'
+                        ? 'bg-primary text-white border-primary/20 rounded-tr-md'
+                        : 'bg-white text-neutral-ink border-neutral-gray/20 rounded-tl-md'
                     }
                 `}>
                     <p className="text-sm leading-relaxed whitespace-pre-wrap font-medium">{message.content}</p>

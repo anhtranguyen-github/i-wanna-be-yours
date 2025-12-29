@@ -426,27 +426,29 @@ export function ChatMainArea({ conversationId: conversationIdProp }: ChatMainAre
             {/* Content Area */}
             <div className="flex-1 relative overflow-hidden flex flex-col z-10">
                 {messages.length === 0 && !historyLoading ? (
-                    <div className="flex-1 flex flex-col items-center justify-center p-8 max-w-4xl mx-auto w-full">
-                        <WelcomeCard
-                            onSuggestionClick={(s) => handleSend(s)}
-                            isGuest={isGuest}
-                        />
-                        {isGuest && (
-                            <div className="mt-8 w-full max-w-lg">
-                                <InformativeLoginCard
-                                    title="Synchronize Your Journey"
-                                    description="Log in to preserve your neural history and unlock advanced Hanachan analysis across all modules."
-                                    icon={Brain}
-                                    benefits={[
-                                        "Unlimited Neural History",
-                                        "Personalized Learning Metrics",
-                                        "Artifact Cloud Synchronization",
-                                        "Priority AI Processing"
-                                    ]}
-                                    flowType="CHAT"
-                                />
-                            </div>
-                        )}
+                    <div className="flex-1 w-full overflow-y-auto">
+                        <div className="min-h-full flex flex-col items-center justify-center p-8 max-w-4xl mx-auto w-full">
+                            <WelcomeCard
+                                onSuggestionClick={(s) => handleSend(s)}
+                                isGuest={isGuest}
+                            />
+                            {isGuest && (
+                                <div className="mt-8 w-full max-w-lg">
+                                    <InformativeLoginCard
+                                        title="Synchronize Your Journey"
+                                        description="Log in to preserve your neural history and unlock advanced Hanachan analysis across all modules."
+                                        icon={Brain}
+                                        benefits={[
+                                            "Unlimited Neural History",
+                                            "Personalized Learning Metrics",
+                                            "Artifact Cloud Synchronization",
+                                            "Priority AI Processing"
+                                        ]}
+                                        flowType="CHAT"
+                                    />
+                                </div>
+                            )}
+                        </div>
                     </div>
                 ) : (
                     <VirtualizedMessageList

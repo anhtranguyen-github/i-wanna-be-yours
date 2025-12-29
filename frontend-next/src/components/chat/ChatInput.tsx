@@ -113,7 +113,7 @@ export function ChatInput({
                             </div>
                             {file.uploading || file.ingestionStatus === 'processing' || file.ingestionStatus === 'pending' ? (
                                 <div className="w-6 h-6 flex items-center justify-center">
-                                    <Loader2 size={14} className="animate-spin text-brand-green" />
+                                    <Loader2 size={14} className="animate-spin text-primary" />
                                 </div>
                             ) : (
                                 <button
@@ -129,7 +129,7 @@ export function ChatInput({
             )}
 
             {/* Input Container */}
-            <div className="relative flex items-end gap-2 bg-slate-50 rounded-2xl border border-slate-200 focus-within:border-brand-green focus-within:ring-2 focus-within:ring-brand-green/20 transition-all">
+            <div className="relative flex items-end gap-2 bg-slate-50 rounded-2xl border border-slate-200 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all">
                 {/* File Input */}
                 <input
                     type="file"
@@ -162,7 +162,7 @@ export function ChatInput({
                 {/* Action buttons */}
                 <div className="flex items-center gap-1 pr-2 pb-1.5">
                     <button
-                        className="p-2 text-neutral-ink hover:text-brand-green transition-colors"
+                        className="p-2 text-neutral-ink hover:text-primary transition-colors"
                         title="Voice input"
                     >
                         <Mic size={20} />
@@ -172,7 +172,7 @@ export function ChatInput({
                         disabled={!isGuest && !canSend}
                         className={`p-2 rounded-xl transition-all font-bold text-xs ${isGuest
                             ? "bg-primary text-white px-4 hover:scale-105 active:scale-95 flex items-center gap-2"
-                            : "bg-brand-green text-white hover:bg-brand-green/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                            : "bg-primary-strong text-white hover:bg-primary-strong/90 disabled:opacity-50 disabled:cursor-not-allowed"
                             }`}
                         title={isGuest ? "Unlock Neural Access" : "Send message"}
                     >
@@ -193,7 +193,7 @@ export function ChatInput({
                 <div className="flex items-center gap-2">
                     <button
                         onClick={() => onQuickAction?.('flashcard')}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-neutral-ink hover:text-brand-green hover:bg-brand-green/5 border border-transparent hover:border-brand-green/20 transition-all"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-neutral-ink hover:text-primary hover:bg-primary/5 border border-transparent hover:border-primary/20 transition-all"
                     >
                         <FileText size={14} />
                         Flashcards
