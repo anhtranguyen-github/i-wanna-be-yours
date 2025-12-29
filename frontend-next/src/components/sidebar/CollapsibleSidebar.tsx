@@ -28,7 +28,11 @@ import {
     Sparkles,
     Crown,
     PlusCircle,
-    Eye
+    Eye,
+    Loader2,
+    CheckCircle2,
+    Clock,
+    AlertCircle
 } from 'lucide-react';
 import { NAV_CONFIG, UTILITY_CONFIG, resolveActiveSectionId } from '@/config/navigation';
 
@@ -73,10 +77,19 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
         ? []
         : uniqueChats.filter(chat => chat.title.toLowerCase().includes(chatSearch.toLowerCase()));
 
-    // Fetch resources using SWR
-    const { data: serverResponse, error } = useSWR(
+    // Fetch resources using SWR with polling if any are processing
+    const { data: serverResponse, error, mutate: mutateResources } = useSWR(
         isOnChat && user ? ['/f-api/v1/resources', user.id] : null,
-        () => resourceService.list({ userId: String(user?.id) })
+        () => resourceService.list({ userId: String(user?.id) }),
+        {
+            // Poll every 5 seconds if we have resources in a non-terminal state
+            refreshInterval: (data) => {
+                const hasProcessing = data?.resources?.some(r =>
+                    r.ingestionStatus === 'processing' || r.ingestionStatus === 'pending'
+                );
+                return hasProcessing ? 5000 : 0;
+            }
+        }
     );
 
     const resources = serverResponse?.resources || [];
@@ -257,9 +270,26 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                                             className="group relative flex items-center gap-3 p-2.5 rounded-xl hover:bg-card border border-transparent hover:border-border/50 transition-all text-[13px] text-neutral-ink hover:text-neutral-ink cursor-grab active:cursor-grabbing font-bold shadow-none"
                                         >
                                             <div className="p-1.5 bg-muted/50 rounded-lg group-hover:bg-primary/10 group-hover:text-primary transition-colors">
-                                                <FileText size={14} />
+                                                {resource.ingestionStatus === 'processing' ? (
+                                                    <Loader2 size={14} className="animate-spin text-amber-500" />
+                                                ) : resource.ingestionStatus === 'pending' ? (
+                                                    <Clock size={14} className="text-neutral-ink opacity-50" />
+                                                ) : resource.ingestionStatus === 'failed' ? (
+                                                    <AlertCircle size={14} className="text-destructive" />
+                                                ) : (
+                                                    <FileText size={14} />
+                                                )}
                                             </div>
-                                            <span className="truncate flex-1 font-jp text-xs">{resource.title}</span>
+                                            <div className="flex flex-col min-w-0">
+                                                <span className="truncate font-jp text-xs">{resource.title}</span>
+                                                {resource.ingestionStatus && resource.ingestionStatus !== 'completed' && (
+                                                    <span className={`text-[9px] uppercase tracking-widest font-black leading-none mt-1 ${resource.ingestionStatus === 'processing' ? 'text-amber-500' :
+                                                        resource.ingestionStatus === 'failed' ? 'text-destructive' : 'text-neutral-ink opacity-50'
+                                                        }`}>
+                                                        {resource.ingestionStatus}
+                                                    </span>
+                                                )}
+                                            </div>
 
                                             {/* Action Buttons */}
                                             <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -309,7 +339,13 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                                         title={resource.title}
                                         onClick={() => openResourcePreview(resource as any)}
                                     >
-                                        <FileText size={18} />
+                                        {resource.ingestionStatus === 'processing' ? (
+                                            <Loader2 size={18} className="animate-spin text-amber-500" />
+                                        ) : resource.ingestionStatus === 'failed' ? (
+                                            <AlertCircle size={18} className="text-destructive" />
+                                        ) : (
+                                            <FileText size={18} />
+                                        )}
                                     </div>
                                 ))}
                             </div>

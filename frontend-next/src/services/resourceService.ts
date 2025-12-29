@@ -15,6 +15,7 @@ export interface Resource {
     tags?: string[];
     createdAt?: string;
     updatedAt?: string;
+    ingestionStatus?: 'pending' | 'processing' | 'completed' | 'failed';
 }
 
 export interface ResourceListResponse {

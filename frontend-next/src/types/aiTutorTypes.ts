@@ -17,10 +17,11 @@ export interface Conversation {
 
 export interface Resource {
     _id: string;
-    type: 'note' | 'link' | 'document';
+    type: 'note' | 'link' | 'document' | 'image' | 'audio';
     content: string;
     title: string;
     created_at: number;
+    ingestionStatus?: 'pending' | 'processing' | 'completed' | 'failed';
 }
 
 // === Artifact Types for AI-Generated Content ===

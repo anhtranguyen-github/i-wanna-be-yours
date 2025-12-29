@@ -71,11 +71,11 @@ export function ChatInput({
     const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            if (!disabled && !isLoading && !hasUploading && !hasIngesting) {
+            if (!disabled && !isLoading && !hasUploading) {
                 onSend();
             }
         }
-    }, [onSend, disabled, isLoading, hasUploading, hasIngesting]);
+    }, [onSend, disabled, isLoading, hasUploading]);
 
     const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && onFileSelect) {
@@ -85,7 +85,7 @@ export function ChatInput({
         }
     }, [onFileSelect]);
 
-    const canSend = (value.trim() || attachedFiles.length > 0) && !isLoading && !hasUploading && !hasIngesting && !disabled;
+    const canSend = (value.trim() || attachedFiles.length > 0) && !isLoading && !hasUploading && !disabled;
 
     return (
         <div className="border-t border-slate-100 pt-4 px-4 pb-6 bg-white z-10 w-full max-w-3xl mx-auto">
@@ -114,11 +114,15 @@ export function ChatInput({
                             </div>
                             {file.uploading || file.ingestionStatus === 'processing' || file.ingestionStatus === 'pending' ? (
                                 <div className="w-6 h-6 flex items-center justify-center">
-                                    <Loader2 size={14} className="animate-spin text-primary" />
+                                    <Loader2 size={14} className={`animate-spin ${file.ingestionStatus === 'processing' ? 'text-amber-500' : 'text-primary'}`} />
                                 </div>
                             ) : file.ingestionStatus === 'completed' ? (
                                 <div className="w-6 h-6 flex items-center justify-center rounded-full bg-green-50 text-green-600">
                                     <CheckSquare size={14} />
+                                </div>
+                            ) : file.ingestionStatus === 'failed' ? (
+                                <div className="w-6 h-6 flex items-center justify-center rounded-full bg-red-50 text-red-600">
+                                    <X size={14} />
                                 </div>
                             ) : (
                                 <button
