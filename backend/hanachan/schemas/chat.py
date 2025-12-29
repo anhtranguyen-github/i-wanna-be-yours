@@ -29,6 +29,7 @@ class AgentRequest(BaseModel):
     session_id: str
     user_id: str
     prompt: str
+    token: Optional[str] = None
     context_config: Optional[ContextConfigurationDTO] = None
     history: Optional[List[ChatMessageDTO]] = []
 

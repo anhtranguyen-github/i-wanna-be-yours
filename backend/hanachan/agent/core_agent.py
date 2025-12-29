@@ -31,12 +31,30 @@ class HanachanAgent:
                user_id: str, 
                resource_ids: List[str] = None,
                chat_history: List[Dict[str, str]] = None,
-               stream: bool = False) -> Any:
+               stream: bool = False,
+               token: str = None) -> Any:
         
         resource_ids = resource_ids or []
         chat_history = chat_history or []
-        system_text = self._get_system_prompt()
         
+        # 0. Check Resource Statuses (Metadata Awareness)
+        status_text = ""
+        if resource_ids:
+            status_notes = []
+            for rid in resource_ids:
+                meta = self.processor.get_resource_metadata(rid, token=token)
+                if meta:
+                    status = meta.get('ingestionStatus', 'completed')
+                    if status != 'completed':
+                        status_notes.append(f"- '{meta.get('title')}' is currently: {status}")
+            
+            if status_notes:
+                status_text = "### CRITICAL SERVICE STATUS (INGESTION IN PROGRESS):\n"
+                status_text += "The following resources the user is asking about are NOT fully ready. You MUST acknowledge this status to the user:\n"
+                status_text += "\n".join(status_notes) + "\n\n"
+
+        system_text = status_text + self._get_system_prompt()
+
         # 1. Gather Resource Context (RAG)
         if resource_ids:
             try:
@@ -74,6 +92,9 @@ class HanachanAgent:
                 messages.append(AIMessage(content=content))
         
         # Current Message
+        if status_text:
+            messages.append(SystemMessage(content=f"IMPORTANT STATUS REMINDER:\n{status_text}"))
+            
         messages.append(HumanMessage(content=prompt))
 
         try:

@@ -15,7 +15,13 @@ def invoke():
         limited_invoke()
     data = request.json
     try:
+        # Extract token from header if available
+        auth_header = request.headers.get('Authorization', '')
+        token = auth_header.replace('Bearer ', '') if auth_header.startswith('Bearer ') else None
+        
         agent_req = AgentRequest(**data)
+        if token: agent_req.token = token
+        
         service = AgentService()
         response = service.invoke_agent(agent_req)
         return jsonify(response.dict()), 200
@@ -28,7 +34,13 @@ def stream():
     from flask import Response, stream_with_context
     data = request.json
     try:
+        # Extract token from header if available
+        auth_header = request.headers.get('Authorization', '')
+        token = auth_header.replace('Bearer ', '') if auth_header.startswith('Bearer ') else None
+
         agent_req = AgentRequest(**data)
+        if token: agent_req.token = token
+        
         service = AgentService()
         
         def generate():

@@ -409,7 +409,8 @@ class AgentService:
             user_id=request_data.user_id,
             resource_ids=resource_ids,
             chat_history=chat_history,
-            stream=True
+            stream=True,
+            token=request_data.token
         ):
             if chunk:
                 chunk_count += 1

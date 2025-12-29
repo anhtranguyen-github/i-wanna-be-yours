@@ -53,15 +53,10 @@ def ingest_resource(resource_id: str):
                         # Re-fetch to ensure attached to session? Or query fresh.
                          res = Resource.query.get(int(resource_id))
                          if res:
-                             # Map 'processing'/'completed' to what model expects?
-                             # Model doesn't explicitly store status? 
-                             # Wait, Resource model has no 'status' field in the file I viewed earlier!
-                             # It has 'summary' but no 'ingestionStatus'.
-                             # Let's check models/resource.py again.
-                             # It had: title, type, content, summary, user_id. NO status.
-                             # So we can't update status for SQL resources?
-                             # Or maybe we just log it.
-                             logger.info(f"ℹ️ [WORKER] SQL Resource {resource_id} status: {status} (No DB field)")
+                             # Now we have the ingestion_status field
+                             res.ingestion_status = status
+                             db.session.commit()
+                             logger.info(f"✅ [WORKER] SQL Resource {resource_id} status updated to: {status}")
                          else:
                              logger.warning(f"⚠️ [WORKER] SQL Resource {resource_id} not found for status update")
                     else:
