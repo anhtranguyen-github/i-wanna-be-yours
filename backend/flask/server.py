@@ -6,7 +6,7 @@ This service handles flashcards, quizzes, library, and resources.
 NOTE: Study plan, learner progress, and adaptive learning have been moved to:
       backend/study-plan-service/ (port 5500)
 
-Deprecated modules moved to: modules/deprecated/
+
 """
 
 import os
@@ -115,10 +115,7 @@ resources_module.register_routes(app, limiter)
 # - learner_progress.py
 # - adaptive_learning.py
 
-# DEPRECATED (moved to modules/deprecated/):
-# - login_streak.py (duplicate of learner_progress streak)
-# - vocabulary_mining.py (unused)
-# - sentence_mining.py (unused)
+
 
 
 if __name__ == "__main__":
