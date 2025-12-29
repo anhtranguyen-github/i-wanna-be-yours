@@ -113,6 +113,10 @@ from modules.user_preferences import UserPreferencesModule
 user_preferences_module = UserPreferencesModule()
 user_preferences_module.register_routes(app)
 
+from modules.performance import PerformanceModule
+performance_module = PerformanceModule()
+performance_module.register_routes(app)
+
 # --------------- End of Module imports ---------------- #
 
 

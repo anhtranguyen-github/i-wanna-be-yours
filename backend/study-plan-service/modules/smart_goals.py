@@ -142,6 +142,7 @@ class SmartGoalsModule:
                 "time_bound_deadline": deadline,
                 "success_criteria": [],
                 "status": "active",
+                "priority": data.get("priority", 1), # 1: normal, 2: high, 3: urgent
                 "progress_percent": 0,
                 "created_at": now,
                 "updated_at": now
@@ -222,5 +223,34 @@ class SmartGoalsModule:
             res = self.goals.delete_one({"_id": ObjectId(goal_id)})
             if res.deleted_count == 0: return jsonify({"error": "Goal not found"}), 404
             return jsonify({"message": "Deleted successfully"})
+
+        @smart_bp.route("/batch", methods=["POST"])
+        def batch_update_goals():
+            data = request.json
+            user_id = data.get("user_id")
+            updates = data.get("updates", [])
+            
+            if not user_id: return jsonify({"error": "user_id required"}), 400
+            
+            results = []
+            now = datetime.now(timezone.utc)
+            
+            for item in updates:
+                goal_id = item.get("id")
+                if goal_id:
+                    # Update existing - use user_id from request body
+                    result = self.goals.update_one(
+                        {"_id": ObjectId(goal_id), "user_id": user_id},
+                        {"$set": {**item.get("fields", {}), "updated_at": now}}
+                    )
+                    if result.modified_count > 0:
+                        results.append(goal_id)
+                else:
+                    # Create new (optional behavior for batch)
+                    # For now just handle updates of existing
+                    pass
+                    
+            return jsonify({"updated_count": len(results), "ids": results}), 200
+
 
         app.register_blueprint(smart_bp)
