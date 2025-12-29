@@ -31,6 +31,7 @@ This directory contains end-to-end integration tests that simulate realistic use
 - **Verifies**:
     - **Real Ingestion**: Uploads file to Flask API (Post 5100).
     - **Deduplication**: Ensures re-uploading the same file returns existing ID.
+        - *Case Covered*: User has File A in Sidebar (existing) -> User uploads File A from PC -> System reuses existing ID.
     - **Indexing**: Triggers background ingestion working with real Flask backend.
     - **RAG Retrieval**: Chat query retrieves context from the real file.
     - **Answer Accuracy**: Agent uses the file content to summarize or answer questions (e.g., "Summarize this").
