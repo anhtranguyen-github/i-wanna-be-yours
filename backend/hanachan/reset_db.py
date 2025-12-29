@@ -62,6 +62,38 @@ def reset_database():
     except Exception as e:
         print(f"Qdrant Reset Failed: {e}")
 
+    print("\n--- 4. Resetting Mongo Resources ---")
+    try:
+        from pymongo import MongoClient
+        mongo_uri = os.environ.get("MONGO_URI", "mongodb://localhost:27017/flaskFlashcardDB")
+        if not mongo_uri:
+            # Fallback based on run_full_system.py config
+            mongo_uri = "mongodb://localhost:27017/flaskFlashcardDB"
+            
+        print(f"Connecting to Mongo: {mongo_uri}")
+        client = MongoClient(mongo_uri)
+        
+        # Parse db name
+        import urllib.parse
+        db_name = urllib.parse.urlparse(mongo_uri).path.lstrip('/') or "flaskFlashcardDB"
+        
+        mongo_db = client[db_name]
+        
+        # Wiping collections
+        colls = ["resources", "fs.files", "fs.chunks"]
+        for c in colls:
+            mongo_db[c].delete_many({})
+            print(f"Cleared Mongo collection ({mongo_db.name}): {c}")
+            
+        # Clean 'library' just in case of misconfig
+        library_db = client['library']
+        for c in colls:
+            library_db[c].delete_many({})
+            print(f"Cleared Mongo collection (library): {c}")
+            
+    except Exception as e:
+        print(f"Mongo Reset Failed: {e}")
+
     print("\n✅ Full System Reset Complete.")
 
 if __name__ == "__main__":

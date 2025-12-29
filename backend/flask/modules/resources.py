@@ -21,11 +21,18 @@ class ResourcesModule:
     
     def __init__(self):
         # MongoDB connection
-        # Using the same connection string as seen in server.py (or default local)
-        # server.py uses: app.config["MONGO_URI_FLASKFLASHCARDDATABASE"] = "mongodb://localhost:27017/flaskFlashcardDB"
-        # The plan says to use 'library' database.
-        self.client = MongoClient("mongodb://localhost:27017/")
-        self.db = self.client["library"]
+        # Read from env (set in run_full_system.py)
+        mongo_uri = os.getenv("MONGO_URI_FLASK", "mongodb://localhost:27017/flaskFlashcardDB")
+        logging.info(f"ResourcesModule connecting to: {mongo_uri}")
+        
+        self.client = MongoClient(mongo_uri)
+        try:
+            self.db = self.client.get_database()
+            if self.db.name == 'admin': # Default if path is missing
+                 self.db = self.client["flaskFlashcardDB"]
+        except:
+             self.db = self.client["flaskFlashcardDB"]
+             
         self.resources_collection = self.db["resources"]
         
         # File storage configuration
@@ -252,9 +259,11 @@ class ResourcesModule:
                     "deletedAt": None
                 }
                 # Allow Admin and Worker to bypass ownership for READ
-                if role not in ['admin', 'ingestion_worker']:
+                if role in ['admin', 'ingestion_worker']:
+                    pass # Allow bypass
+                else:
                     query["userId"] = user_id
-
+                
                 resource = self.resources_collection.find_one(query)
                 if not resource:
                     return jsonify({"error": "Resource not found"}), 404
@@ -289,7 +298,9 @@ class ResourcesModule:
                     "deletedAt": None
                 }
                 # Allow Admin and Worker to bypass ownership for READ
-                if role not in ['admin', 'ingestion_worker']:
+                if role in ['admin', 'ingestion_worker']:
+                    pass # Allow bypass
+                else:
                     query["userId"] = user_id
 
                 resource = self.resources_collection.find_one(query)
@@ -331,6 +342,7 @@ class ResourcesModule:
                 role = request.user.get("role")
                 
                 # --- Authorization & Ownership Logic ---
+                
                 # Check 1: Ingestion Worker (System Actor)
                 if role == 'ingestion_worker':
                      # Enforce Least Privilege: Only allow status updates

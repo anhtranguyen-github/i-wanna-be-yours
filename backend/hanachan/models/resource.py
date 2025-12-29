@@ -10,6 +10,7 @@ class Resource(db.Model):
     type = db.Column(db.String(50), nullable=False) # e.g., 'document', 'url', 'image'
     content = db.Column(db.Text, nullable=True) # Text content or URL
     summary = db.Column(db.Text, nullable=True)
+    ingestion_status = db.Column(db.String(50), default='pending') # New field for status tracking
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -20,6 +21,7 @@ class Resource(db.Model):
             'title': self.title,
             'type': self.type,
             'content': self.content,
+            'ingestionStatus': self.ingestion_status,
             'createdAt': self.created_at.isoformat() if self.created_at else None,
             'updatedAt': self.updated_at.isoformat() if self.updated_at else None
         }
