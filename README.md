@@ -1,192 +1,264 @@
-# hanachan.org - Japanese Learning Platform
+# 🌸 Hanabira.org - AI-Powered Japanese Learning Platform
 
-A comprehensive Japanese language learning platform with AI-powered tutoring, adaptive learning, premium unified UI, and personalized study plans.
+> **Full-stack, production-grade Japanese language learning platform featuring an autonomous AI tutor, memory-driven adaptive learning, real-time streaming chat, and comprehensive study management.**
 
-## 🌸 Features
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript)](https://www.typescriptlang.org/)
+[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python)](https://python.org/)
+[![LangChain](https://img.shields.io/badge/LangChain-Agentic_AI-green)](https://langchain.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-7.0-47A248?logo=mongodb)](https://mongodb.com/)
 
-### 📚 Core Learning
-- **Knowledge Base**: JLPT N1-N5 grammar, vocabulary, and kanji
-- **Flashcards**: SRS-based spaced repetition system with deck-based study
-- **Quoot**: High-stakes vocabulary battle game
-- **Practice Hub**: Structured drills and simulated exams
-- **Reading Practice**: Japanese text with furigana and translations
-- **JLPT Exams**: Full-length exam simulations with sticky navigation and scroll mode
+---
 
-### 🤖 AI Tutor (Hanachan)
-- Natural conversation practice
-- Grammar explanations and corrections
-- Study recommendations based on progress
-- Artifact generation (flashcards, summaries, quizzes)
+## 🎯 Project Overview
 
-### 📊 Progress Tracking & History
-- **Session Recording**: Track practice, flashcard, and game session results
-- **History Panel**: View recent activity across all learning modes
-- **Learner Tracking**: Track vocabulary, kanji, grammar mastery
-- **Adaptive Learning**: Recommendations based on performance
-- **Achievements**: Badges and streak tracking for motivation
+Hanabira is a comprehensive Japanese language learning platform built as a microservices architecture with 5+ backend services. The platform combines traditional learning methods (flashcards, spaced repetition, quizzes) with cutting-edge AI capabilities including an **autonomous LLM-powered tutor** that can analyze user progress, generate personalized content, and proactively adjust study priorities.
 
-### 🎯 Study Planning
-- **Study Plans**: JLPT exam-focused personalized study plans
-- **Daily Tasks**: AI-generated daily learning activities
-- **Weekly Goals**: Progress tracking against custom goals
-- **Milestones**: Long-term learning objectives
+### 🏆 Key Technical Achievements
 
-### 🔗 Social & Sharing
-- **Add by ID**: Import shared flashcard sets, practice protocols, or quoot arenas by ID
-- **Visibility Filters**: Browse public, official, or personal content
-- **Collection Management**: Organize followed items in personal collections
+- **Autonomous AI Agent**: LangChain-based agent with 7+ custom tools for study management, progress auditing, and content generation
+- **Real-time Streaming**: Server-sent events (SSE) for live AI response streaming with artifact extraction
+- **Memory Architecture**: Hybrid memory system combining episodic (Qdrant vectors), semantic (Neo4j graph), and study context
+- **Microservices**: 5 independent backend services with service-to-service authentication
+- **Type-Safe Full Stack**: End-to-end TypeScript with strict typing, Zod validation, and comprehensive interfaces
 
-## 🏗️ Architecture
+---
+
+## 🚀 Technical Stack
+
+### Frontend
+| Technology | Purpose |
+|------------|---------|
+| **Next.js 14** | React framework with App Router, Server Components, and API routes |
+| **TypeScript** | Static typing with strict configuration |
+| **SWR** | Data fetching with caching and revalidation |
+| **Tailwind CSS** | Utility-first styling with custom design system |
+| **Lucide React** | Icon library |
+
+### Backend Services
+| Service | Stack | Purpose |
+|---------|-------|---------|
+| **Express API** | Node.js, Express, MongoDB | Core API: auth (JWT), flashcards, practice, quoot game, records |
+| **Flask Resources** | Python, Flask, MongoDB | Document processing, RAG indexing, ingestion pipeline |
+| **Hanachan Agent** | Python, LangChain, SQLite | AI chat agent with streaming, tools, and multi-memory |
+| **Study Plan Service** | Python, Flask, MongoDB | SMART goals, OKRs, milestones, performance tracking |
+| **Dictionary Service** | Python, MeCab, SudachiPy | Japanese text tokenization and analysis |
+
+### AI & Machine Learning
+| Technology | Purpose |
+|------------|---------|
+| **LangChain** | Agent framework with tool binding and message management |
+| **OpenAI GPT-4o** | Primary LLM for chat and reasoning |
+| **Qdrant** | Vector database for episodic memory and RAG |
+| **Neo4j** | Graph database for semantic knowledge relationships |
+| **text-embedding-3-small** | 1536-dimension embeddings for similarity search |
+
+### Infrastructure
+| Technology | Purpose |
+|------------|---------|
+| **MongoDB** | Primary document store (4 databases) |
+| **Redis** | Background job queue (RQ workers) |
+| **Docker Compose** | Multi-container orchestration |
+| **JWT** | Stateless authentication across services |
+
+---
+
+## 🧠 AI Agent Architecture
+
+The **Hanachan AI Tutor** is the crown jewel of this project - an autonomous agent that goes beyond simple Q&A.
+
+### Agent Capabilities
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    Hanachan Agent                                │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐           │
+│  │  Chat Persona │  │  Tool Binding │  │  Memory Mgr  │          │
+│  │  (Markdown)   │  │  (7+ Tools)   │  │  (Hybrid)    │          │
+│  └──────────────┘  └──────────────┘  └──────────────┘           │
+│                                                                  │
+│  Tools:                                                          │
+│  • generate_suggested_goals   • audit_study_progress             │
+│  • prepare_milestone_exam     • perform_detailed_audit           │
+│  • update_goal_progress       • query_learning_records           │
+│  • recalibrate_study_priorities (autonomous goal updates)        │
+│                                                                  │
+│  Memory:                                                         │
+│  • Episodic: Recent interactions (Qdrant)                        │
+│  • Semantic: Knowledge gaps & relationships (Neo4j)              │
+│  • Study: Active plans, goals, performance trends                │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Proactive Recalibration
+
+The agent can **autonomously detect and fix** misaligned study priorities:
+
+1. **Trend Analysis**: Analyzes 30-day performance audits for recurring struggles
+2. **Goal Matching**: Maps identified struggles to existing SMART goals
+3. **Priority Update**: Elevates goal priorities via batch API calls
+4. **User Notification**: Informs user of changes in natural conversation
+
+---
+
+## 📊 Features
+
+### 🎓 Core Learning
+- **Knowledge Base**: Complete JLPT N1-N5 grammar, vocabulary, and kanji database
+- **Flashcards**: SRS-powered spaced repetition with custom decks
+- **Quoot**: High-stakes vocabulary battle game with real-time scoring
+- **Practice Hub**: Structured drills, simulated JLPT exams
+- **Reading Practice**: Japanese texts with furigana and translations
+
+### 💬 AI Tutor (Hanachan)
+- **Streaming Chat**: Real-time SSE response streaming
+- **Context-Aware**: Retrieves relevant memories and study context per message
+- **Artifact Generation**: Creates flashcard decks, summaries, quizzes on demand
+- **Ingestion Awareness**: Detects pending resource processing, notifies user
+- **Tool Invocation**: Proactively updates goals based on conversation
+
+### 📈 Study Management
+- **SMART Goals**: Measurable objectives with priority levels
+- **OKR Framework**: Objective-Key Result tracking
+- **Milestone Timeline**: Long-term learning objectives
+- **Performance Trends**: AI-identified knowledge gaps visualization
+- **Recalibration UI**: One-click agent-driven priority adjustments
+
+### 🔐 Authentication & Security
+- **JWT Authentication**: Stateless tokens with refresh mechanism
+- **Role-Based Access**: User, admin, and ingestion_worker roles
+- **Service-to-Service Auth**: Internal tokens for backend communication
+- **Resource Ownership**: Strict user-based access control
+
+---
+
+## 🏗️ System Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │                    Frontend (Next.js :3000)                          │
+│  • Server Components  • SWR Caching  • Auth Middleware              │
 └───────────────┬─────────────┬─────────────┬─────────────┬───────────┘
-                │             │             │             │           │
-                ▼             ▼             ▼             ▼           ▼
-         ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐
-         │ Express  │  │  Flask   │  │Dictionary│  │ Hanachan │  │Study-Plan│
-         │  :8000   │  │  :5100   │  │  :5200   │  │  :5400   │  │  :5500   │
-         └──────────┘  └──────────┘  └──────────┘  └──────────┘  └──────────┘
-               │             │             │             │             │
-               └─────────────┴─────────────┴─────┬───────┴─────────────┘
-                                                 │
-                                                 ▼
-                                     ┌──────────────────────┐
-                                     │  MongoDB :27017       │
-                                     └──────────────────────┘
+                │             │             │             │
+    ┌───────────┴───────────┐ │             │             │
+    │ /e-api/*              │ │ /f-api/*    │ /h-api/*    │ /s-api/*
+    ▼                       ▼ │             ▼             ▼
+┌──────────┐          ┌──────▼─────┐  ┌──────────┐  ┌──────────┐
+│ Express  │          │   Flask    │  │ Hanachan │  │Study-Plan│
+│  :8000   │          │   :5100    │  │  :5400   │  │  :5500   │
+│ Auth/API │          │ Resources  │  │ AI Agent │  │ Goals    │
+└────┬─────┘          └──────┬─────┘  └────┬─────┘  └────┬─────┘
+     │                       │             │             │
+     └───────────┬───────────┴──────┬──────┴─────────────┘
+                 │                  │
+         ┌───────▼───────┐  ┌───────▼───────┐
+         │   MongoDB     │  │    Qdrant     │
+         │   :27017      │  │    :6333      │
+         └───────────────┘  └───────────────┘
 ```
 
-### Services
+---
 
-| Service | Port | Purpose |
-|---------|------|---------|
-| **frontend-next** | 3000 | Next.js web application |
-| **express** | 8000 | Core API (auth, flashcards, practice, quoot, records) |
-| **flask** | 5100 | User data (progress, learner tracking) |
-| **python-dictionary** | 5200 | Japanese text processing (MeCab, sudachipy) |
-| **hanachan** | 5400 | AI chat agent (LangChain, Ollama) |
-| **study-plan-service** | 5500 | Strategy, OKRs, PACT, and SMART goal management |
+## 🧪 Testing
+
+### System Tests
+The project includes comprehensive end-to-end tests:
+
+```bash
+# Run full system test suite
+cd backend/hanachan
+.venv/bin/python test/run_full_system.py
+```
+
+**Test Workflows:**
+- `workflow_comprehensive_chat.py` - Full chat flow with resource upload, streaming, artifacts
+- `workflow_autonomous_study_recalibration.py` - Agent tool invocation and goal updates
+- `workflow_memory_recalibration.py` - Semantic memory and struggle detection
+
+---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 - Node.js 18+
-- Python 3.10+
-- MongoDB
-- Docker (for Ollama)
+- Python 3.10+ with `uv` package manager
+- MongoDB 7.0+
+- Docker (for Qdrant, Neo4j)
 
-### Running Locally
-
+### Run Locally
 ```bash
-# Start all services
+# Clone and setup
+git clone https://github.com/your-username/hanabira.org.git
+cd hanabira.org
+
+# Start all services (handles dependencies automatically)
 ./start_local_services.sh
 
-# Stop all services
+# Stop services
 ./start_local_services.sh stop
 ```
+
+### Environment Variables
+```bash
+# Required for AI features
+OPENAI_API_KEY=sk-...
+
+# Database connections
+MONGO_URI=mongodb://localhost:27017
+QDRANT_HOST=localhost
+NEO4J_URI=bolt://localhost:7687
+
+# JWT
+JWT_SECRET=your-secret-key
+```
+
+---
 
 ## 📁 Project Structure
 
 ```
-hanachan.org/
-├── frontend-next/          # Next.js frontend
-│   ├── src/
-│   │   ├── app/           # Next.js App Router pages
-│   │   ├── components/    # Reusable React components
-│   │   ├── services/      # API service clients
-│   │   ├── types/         # TypeScript definitions
-│   │   └── context/       # React context providers
+hanabira.org/
+├── frontend-next/              # Next.js 14 App Router
+│   ├── src/app/               # Pages and API routes
+│   ├── src/components/        # 100+ reusable React components
+│   ├── src/services/          # API clients with full typing
+│   ├── src/hooks/             # Custom hooks (useChatStream, etc.)
+│   └── src/context/           # Global state management
 │
 ├── backend/
-│   ├── express/           # Core API server
-│   │   ├── models/        # MongoDB schemas
-│   │   ├── routes/        # API route handlers
-│   │   └── seeding_scripts/ # Database seeders
-│   ├── flask/             # User data & learning API
-│   ├── study-plan-service/# Strategy and goals API
-│   ├── python-dictionary/ # Text processing API
-│   └── hanachan/          # AI chat agent
+│   ├── express/               # Node.js core API
+│   ├── flask/                 # Python resource service
+│   ├── hanachan/              # AI Agent service
+│   │   ├── agent/             # LangChain agent, tools, skills
+│   │   ├── memory/            # Episodic, semantic, study memory
+│   │   ├── services/          # External service clients
+│   │   └── test/workflows/    # System test suite
+│   ├── study-plan-service/    # Goals and tracking
+│   └── python-dictionary/     # NLP processing
 │
-├── start_local_services.sh # Service orchestration script
-└── docker-compose.yml      # Container orchestration
+├── start_local_services.sh    # One-command startup
+└── docker-compose.yml         # Full containerization
 ```
-
-## 🎨 Frontend Routes
-
-| Route | Description |
-|-------|-------------|
-| `/` | Landing page |
-| `/chat` | AI Tutor (Hanachan) |
-| `/activity` | Activity Hub (Games, Practice, Flashcards) |
-| `/flashcards` | Flashcard deck browser and study |
-| `/flashcards/study` | SRS study session |
-| `/practice` | Practice Hub (Drills, Quizzes) |
-| `/quoot` | Quoot game arena browser |
-| `/quoot/[id]` | Quoot game session |
-| `/tools` | Linguistic Laboratory (Vocab/Kanji maps, Text Parser) |
-| `/library` | Learning Library (Podcasts, Reading, Mnemonics) |
-| `/dictionary` | Integrated Japanese Dictionary |
-| `/study-plan` | Strategy Center (Goals, Milestones) |
-| `/dashboard` | User Profile & Progress Overview |
-| `/settings` | Account and UI Settings |
-
-## 🆕 Recent Updates
-
-### Activity History & Records (v1.4)
-- **Session Recording**: All practice, flashcard, and quoot sessions now save results
-- **HistoryPanel**: View recent activity with scores and timestamps
-- **HistoryModal**: Quick access to history from any hub page
-
-### Add by ID Feature (v1.4)
-- **RetrievalModal**: Add shared content to your collection by ID
-- **Follow System**: Track followed items across flashcards, practice, and quoot
-
-### Unified Access Filtering (v1.4)
-- **Visibility Filters**: Filter by Official, Public, or Personal content
-- **Sticky Headers**: Search and filters remain visible while scrolling
-- **Consistent UI**: Same filtering experience across all hub pages
-
-### UI Enhancements
-- **Link2 Icon**: Better icon for "Add by ID" functionality
-- **History Button**: Quick access to session history from hub pages
-- **Premium Matcha Aesthetic**: Consistent design language throughout
-
-## 🔧 Configuration
-
-### Environment Variables
-
-```bash
-# Frontend (.env.local)
-NEXT_PUBLIC_EXPRESS_API_URL=http://localhost:8000
-
-# Backend (.env)
-EXPRESS_API_URL=http://localhost:8000
-FLASK_API_URL=http://localhost:5100
-STUDY_PLAN_API_URL=http://localhost:5500
-DICTIONARY_API_URL=http://localhost:5200
-HANACHAN_API_URL=http://localhost:5400
-MONGO_URI=mongodb://localhost:27017/hanachan
-JWT_SECRET=your-secret-key
-```
-
-## 🔌 API Endpoints
-
-### Express API (Port 8000)
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/e-api/v1/auth/*` | POST | Authentication (login, register, refresh) |
-| `/e-api/v1/flashcards/*` | GET/POST | Flashcard sets and cards |
-| `/e-api/v1/practice/*` | GET/POST | Practice nodes and sessions |
-| `/e-api/v1/quoot/*` | GET/POST | Quoot arenas and games |
-| `/e-api/v1/records/*` | GET/POST | Session history records |
-| `/e-api/v1/user/*` | GET/POST | User preferences and follows |
-
-## 📝 License
-
-MIT License - see [LICENSE](./LICENSE) file for details.
 
 ---
 
-**hanachan.org** - 🌸 Your premium path to Japanese fluency
+## 🎨 Screenshots
+
+*Study Plan Dashboard with Smart Goals and Performance Trends*
+
+*AI Chat with Resource Upload and Streaming*
+
+*Flashcard Study with SRS Algorithm*
+
+---
+
+## 📝 License
+
+MIT License - see [LICENSE](./LICENSE) for details.
+
+---
+
+**Hanabira.org** - 🌸 Your intelligent path to Japanese fluency
+
+*Built with ❤️ as a full-stack portfolio project demonstrating microservices architecture, AI agent development, and modern React patterns.*
