@@ -108,12 +108,17 @@ export function ChatInput({
                                         file.ingestionStatus === 'processing' ? 'Ingesting...' :
                                             file.ingestionStatus === 'pending' ? 'Queued...' :
                                                 file.ingestionStatus === 'failed' ? 'Failed' :
-                                                    file.file ? `${(file.file.size / 1024).toFixed(1)} KB` : 'Resource'}
+                                                    file.ingestionStatus === 'completed' ? 'Ready' :
+                                                        file.file ? `${(file.file.size / 1024).toFixed(1)} KB` : 'Resource'}
                                 </p>
                             </div>
                             {file.uploading || file.ingestionStatus === 'processing' || file.ingestionStatus === 'pending' ? (
                                 <div className="w-6 h-6 flex items-center justify-center">
                                     <Loader2 size={14} className="animate-spin text-primary" />
+                                </div>
+                            ) : file.ingestionStatus === 'completed' ? (
+                                <div className="w-6 h-6 flex items-center justify-center rounded-full bg-green-50 text-green-600">
+                                    <CheckSquare size={14} />
                                 </div>
                             ) : (
                                 <button
