@@ -32,6 +32,7 @@ import {
     ExamReadinessBar,
     VisionReminder,
     PerformanceTrendsPanel,
+    SmartGoalsPanel,
 } from './';
 
 interface CardStates {
@@ -45,6 +46,7 @@ interface CardStates {
     'exam-readiness': boolean;
     'vision-reminder': boolean;
     'performance-trends': boolean;
+    'smart-goals': boolean;
 }
 
 export function StudyPlanDashboard() {
@@ -75,6 +77,7 @@ export function StudyPlanDashboard() {
         'exam-readiness': true,
         'vision-reminder': false,
         'performance-trends': true,
+        'smart-goals': true,
     });
 
     // Checkout modal
@@ -336,6 +339,7 @@ export function StudyPlanDashboard() {
                             trends={trends}
                             isExpanded={expandedCards['performance-trends']}
                             onToggle={handleCardToggle}
+                            onRecalibrate={() => router.push('/chat?prompt=Please+recalibrate+my+study+priorities+based+on+my+recent+struggles')}
                         />
 
                         {/* Content Mastery */}
@@ -386,6 +390,13 @@ export function StudyPlanDashboard() {
                             sessions={sessions}
                             isExpanded={expandedCards['activity-records']}
                             onToggle={handleCardToggle}
+                        />
+
+                        {/* Smart Goals */}
+                        <SmartGoalsPanel
+                            isExpanded={expandedCards['smart-goals']}
+                            onToggle={handleCardToggle}
+                            onRecalibrate={() => router.push('/chat?prompt=Please+recalibrate+my+study+priorities+based+on+my+recent+struggles')}
                         />
 
                         {/* Vision Reminder */}

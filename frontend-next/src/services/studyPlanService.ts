@@ -512,6 +512,80 @@ class StudyPlanService {
         const res = await authFetch(`${API_BASE_URL}/v1/user/reflections?user_id=${user.id}&limit=${limit}`);
         return this.handleResponse(res);
     }
+
+    // ============================================
+    // Smart Goals Endpoints
+    // ============================================
+
+    /**
+     * Get user's smart goals
+     */
+    async getSmartGoals(): Promise<{
+        goals: Array<{
+            _id: string;
+            title: string;
+            priority: number;
+            status: string;
+            measurable_metric: string;
+            measurable_target: number;
+            current_progress: number;
+        }>;
+    }> {
+        const user = await this.getCurrentUser();
+        if (!user) return { goals: [] };
+
+        const res = await authFetch(`${API_BASE_URL}/v1/smart-goals/?user_id=${user.id}`);
+        const goals = await this.handleResponse<any[]>(res);
+        return { goals };
+    }
+
+    /**
+     * Update a single goal's priority
+     */
+    async updateGoalPriority(goalId: string, priority: number): Promise<{ success: boolean }> {
+        const user = await this.getCurrentUser();
+        if (!user) throw new Error('Not authenticated');
+
+        return this.batchUpdateGoals([{ id: goalId, fields: { priority } }]);
+    }
+
+    /**
+     * Create a new smart goal
+     */
+    async createSmartGoal(goal: {
+        planId: string;
+        title: string;
+        priority?: number;
+        measurableMetric: string;
+        measurableTarget: number;
+    }): Promise<{ id: string }> {
+        const user = await this.getCurrentUser();
+        if (!user) throw new Error('Not authenticated');
+
+        const res = await authFetch(`${API_BASE_URL}/v1/smart-goals/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                user_id: user.id,
+                plan_id: goal.planId,
+                title: goal.title,
+                priority: goal.priority ?? 1,
+                measurable_metric: goal.measurableMetric,
+                measurable_target: goal.measurableTarget,
+            }),
+        });
+        return this.handleResponse(res);
+    }
+
+    /**
+     * Delete a smart goal
+     */
+    async deleteSmartGoal(goalId: string): Promise<{ success: boolean }> {
+        const res = await authFetch(`${API_BASE_URL}/v1/smart-goals/${goalId}`, {
+            method: 'DELETE',
+        });
+        return this.handleResponse(res);
+    }
 }
 
 export const studyPlanService = new StudyPlanService();

@@ -1,6 +1,6 @@
 'use client';
 
-import { TrendingUp, AlertCircle, BarChart3, Tag } from 'lucide-react';
+import { TrendingUp, AlertCircle, BarChart3, Tag, Sparkles } from 'lucide-react';
 import { CollapsibleCard } from './CollapsibleCard';
 import { PerformanceTrend } from '@/types/studyPlanTypes';
 
@@ -8,12 +8,14 @@ interface PerformanceTrendsPanelProps {
     trends: PerformanceTrend | null;
     isExpanded: boolean;
     onToggle: (id: string, isExpanded: boolean) => void;
+    onRecalibrate?: () => void;
 }
 
 export function PerformanceTrendsPanel({
     trends,
     isExpanded,
     onToggle,
+    onRecalibrate,
 }: PerformanceTrendsPanelProps) {
     if (!trends) return null;
 
@@ -67,7 +69,7 @@ export function PerformanceTrendsPanel({
                         <div className="flex-1 h-3 bg-neutral-gray/10 rounded-full overflow-hidden mb-2">
                             <div
                                 className={`h-full transition-all duration-1000 ${qualityScore >= 7 ? 'bg-emerald-500' :
-                                        qualityScore >= 5 ? 'bg-primary-strong' : 'bg-rose-500'
+                                    qualityScore >= 5 ? 'bg-primary-strong' : 'bg-rose-500'
                                     }`}
                                 style={{ width: `${qualityScore * 10}%` }}
                             />
@@ -105,6 +107,15 @@ export function PerformanceTrendsPanel({
                     <p className="text-xs text-neutral-ink/60 mt-4 font-medium">
                         Topics you've struggled with in long-term memory. Hanachan will prioritize these.
                     </p>
+                    {onRecalibrate && struggles.length > 0 && (
+                        <button
+                            onClick={onRecalibrate}
+                            className="w-full mt-4 py-2.5 px-4 bg-gradient-to-r from-rose-500 to-rose-600 text-white font-bold rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition-opacity text-sm"
+                        >
+                            <Sparkles size={14} />
+                            Ask Hanachan to Recalibrate
+                        </button>
+                    )}
                 </div>
             </div>
         </CollapsibleCard>

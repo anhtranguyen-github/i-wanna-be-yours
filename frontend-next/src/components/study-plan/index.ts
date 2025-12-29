@@ -12,6 +12,7 @@ export { ReflectionPrompt } from './ReflectionPrompt';
 export { ExamReadinessBar } from './ExamReadinessBar';
 export { VisionReminder } from './VisionReminder';
 export { PerformanceTrendsPanel } from './PerformanceTrendsPanel';
+export { SmartGoalsPanel } from './SmartGoalsPanel';
 
 // Legacy exports for backward compatibility
 export { StudyPlanDashboard } from './StudyPlanDashboard';
