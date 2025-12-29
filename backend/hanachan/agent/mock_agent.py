@@ -63,10 +63,12 @@ class MockAgent:
             }
         
         # 2. REAL AI RESPONSE via OllamaAgent
-        from agent.ollama_agent import HanachanAgent
+        from agent.core_agent import HanachanAgent
         ollama = HanachanAgent()
         real_content = ollama.invoke(
             prompt=prompt,
+            chat_history=[],
+            session_id=session_id,
             user_id=user_id,
             resource_ids=resource_ids,
             stream=False
