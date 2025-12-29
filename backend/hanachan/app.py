@@ -54,6 +54,10 @@ def create_app(test_config=None):
     
     # Import models to ensure they are registered with SQLAlchemy
     import models
+    
+    with app.app_context():
+        db.create_all()
+        logger.info("✅ Database tables verified/created.")
 
     # Register blueprints
     from routes.agent import bp as agent_bp
