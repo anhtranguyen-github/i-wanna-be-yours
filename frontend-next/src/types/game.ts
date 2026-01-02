@@ -1,5 +1,5 @@
 // =============================================================================
-// Hanabira Game Engine - Hybrid Assessment Mode Types
+// Hanachan Game Engine - Hybrid Assessment Mode Types
 // =============================================================================
 
 import { PracticeNode, Question, UserAnswer, JLPTLevel, SkillType } from './practice';

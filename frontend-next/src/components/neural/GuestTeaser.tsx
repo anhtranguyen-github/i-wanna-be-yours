@@ -39,7 +39,7 @@ export const GuestTeaser: React.FC<GuestTeaserProps> = ({ toolName }) => {
                     </h2>
 
                     <p className="text-neutral-ink/70 text-sm mb-8 leading-relaxed font-bold">
-                        Advanced linguistic modeling requires a synchronized session. Join the <span className="text-primary font-black">Hanabira Intelligence Tier</span> to unlock this tool.
+                        Advanced linguistic modeling requires a synchronized session. Join the <span className="text-primary font-black">Hanachan Intelligence Tier</span> to unlock this tool.
                     </p>
 
                     <div className="grid grid-cols-2 gap-4 mb-8 text-left">

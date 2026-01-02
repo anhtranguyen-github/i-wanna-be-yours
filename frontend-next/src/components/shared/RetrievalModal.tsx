@@ -133,14 +133,14 @@ export function RetrievalModal({ isOpen, onClose, type }: RetrievalModalProps) {
                                 <div className="space-y-2">
                                     <h4 className="text-lg font-black text-neutral-ink">Authentication Required</h4>
                                     <p className="text-sm font-bold text-neutral-ink/60 px-4">
-                                        Registry lookups and collection monitoring require an active Hanabira Core account.
+                                        Registry lookups and collection monitoring require an active Hanachan Core account.
                                     </p>
                                 </div>
                                 <button
                                     onClick={() => openAuth('LOGIN', { title: 'Registry Access', description: 'Unlock the ability to import shared content by ID.' })}
                                     className="w-full bg-primary-strong text-white py-4 rounded-2xl font-black shadow-lg shadow-primary/20 hover:bg-neutral-ink transition-all active:scale-[0.98]"
                                 >
-                                    Sign In to Hanapita
+                                    Sign In to Hanachan
                                 </button>
                             </div>
                         ) : (

@@ -1,5 +1,5 @@
 // =============================================================================
-// Hanabira Practice Nexus - Unified Type Definitions
+// Hanachan Practice Nexus - Unified Type Definitions
 // =============================================================================
 
 // --- Core Enums & Types ---

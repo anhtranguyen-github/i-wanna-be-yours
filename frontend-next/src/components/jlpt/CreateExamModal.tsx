@@ -79,7 +79,7 @@ export function CreateExamModal({ isOpen, onClose, onExamCreated }: CreateExamMo
             if (!user) {
                 // Guest users - store in localStorage (simplified)
                 const tempId = `local-exam-${Date.now()}`;
-                const localExams = JSON.parse(localStorage.getItem('hanabira_local_exams') || '[]');
+                const localExams = JSON.parse(localStorage.getItem('hanachan_local_exams') || '[]');
                 localExams.push({
                     id: tempId,
                     title: formState.title,
@@ -90,7 +90,7 @@ export function CreateExamModal({ isOpen, onClose, onExamCreated }: CreateExamMo
                     questions: generatedQuestions,
                     createdAt: new Date().toISOString()
                 });
-                localStorage.setItem('hanabira_local_exams', JSON.stringify(localExams));
+                localStorage.setItem('hanachan_local_exams', JSON.stringify(localExams));
                 onExamCreated(tempId);
             } else {
                 // Logged in users - save to API

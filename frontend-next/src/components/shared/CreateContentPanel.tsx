@@ -384,7 +384,7 @@ export function CreateContentPanel({ isOpen, onClose, type, onSave, initialData 
                         {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
                         {isSaving ? "Finalizing..." : `${initialData ? 'Update' : 'Save'} ${typeLabel}`}
                     </button>
-                    <p className="mt-4 text-center text-[10px] font-black uppercase tracking-widest text-neutral-ink/20">Ownership guaranteed: Managed via Hanabira Core.</p>
+                    <p className="mt-4 text-center text-[10px] font-black uppercase tracking-widest text-neutral-ink/20">Ownership guaranteed: Managed via Hanachan Core.</p>
                 </footer>
             </div>
         </div>
