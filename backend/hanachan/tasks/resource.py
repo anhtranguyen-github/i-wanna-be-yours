@@ -92,6 +92,34 @@ def ingest_resource(resource_id: str):
                 logger.error(f"❌ [WORKER] No userId found for resource {resource_id}. Aborting ingestion.")
                 return False
 
+            # 1.5 Generate Summary & Embeddings
+            # Use Factory for LLM access
+            try:
+                from services.llm_factory import ModelFactory
+                from langchain_core.prompts import ChatPromptTemplate
+                
+                llm = ModelFactory.create_chat_model(temperature=0)
+                
+                # Generate Summary
+                summary_prompt = ChatPromptTemplate.from_messages([
+                    ("system", "Summarize the following text in 3-5 concise sentences. Focus on the main topics and key takeaways."),
+                    ("human", "{text}")
+                ])
+                # Truncate content for summary generation to avoid context limits
+                summary_input = content[:4000] 
+                messages = summary_prompt.format_messages(text=summary_input)
+                generated_summary = llm.invoke(messages).content
+                
+                # Save Summary to DB
+                if resource_id.isdigit():
+                     res = Resource.query.get(int(resource_id))
+                     if res:
+                         res.summary = generated_summary
+                         db.session.commit()
+                         logger.info(f"📝 [WORKER] Generated summary for Resource {resource_id}")
+            except Exception as e:
+                logger.warning(f"⚠️ [WORKER] Summary generation failed: {e}")
+
             # 2. Chunking
             try:
                 from langchain_text_splitters import RecursiveCharacterTextSplitter

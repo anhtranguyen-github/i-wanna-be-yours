@@ -44,14 +44,22 @@ class SignalConsumer:
         """
         Wake up the Agent Workflow with full traceability.
         """
+        from backend.hanachan.services.observability import obs_service
+        obs_service.log_event(signal.trace_id, signal.user_id, "policy_evaluated", "ACCEPTED", {"priority": signal.priority})
+        
         print(f"[TRACING] ID: {signal.trace_id} | USER: {signal.user_id} | EVENT: {signal.type}")
         try:
             # We use the enhanced agent
             from backend.hanachan.workflows.enhanced_agent import study_agent
+            obs_service.log_event(signal.trace_id, signal.user_id, "agent_invoked", "RUNNING")
+            
             study_agent.handle_interaction(signal)
+            
             print(f"[TRACING] ID: {signal.trace_id} | STATUS: SUCCESS")
+            obs_service.log_event(signal.trace_id, signal.user_id, "agent_invoked", "SUCCESS")
         except Exception as e:
             print(f"[TRACING] ID: {signal.trace_id} | STATUS: FAILED | ERROR: {e}")
+            obs_service.log_event(signal.trace_id, signal.user_id, "agent_invoked", "FAILED", {"error": str(e)})
     
     def run(self):
         """

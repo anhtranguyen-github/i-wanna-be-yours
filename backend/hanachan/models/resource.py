@@ -21,6 +21,7 @@ class Resource(db.Model):
             'title': self.title,
             'type': self.type,
             'content': self.content,
+            'summary': self.summary,
             'ingestionStatus': self.ingestion_status,
             'createdAt': self.created_at.isoformat() if self.created_at else None,
             'updatedAt': self.updated_at.isoformat() if self.updated_at else None
