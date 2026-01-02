@@ -122,3 +122,16 @@ class SemanticMemory:
         except Exception as e:
             print(f"Error fetching user graph: {e}")
             return {"nodes": [], "links": []}
+
+    def get_node_count(self, user_id: str) -> int:
+        """Counts the number of nodes in the user's knowledge graph."""
+        if not self.graph:
+            return 0
+            
+        cypher = "MATCH (u:User {id: $user_id})-[:KNOWS]->(n) RETURN count(n) as count"
+        try:
+            result = self.graph.query(cypher, {'user_id': str(user_id)})
+            return result[0]['count'] if result else 0
+        except Exception as e:
+            print(f"Error counting nodes: {e}")
+            return 0

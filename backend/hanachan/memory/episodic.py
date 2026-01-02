@@ -51,14 +51,28 @@ class EpisodicMemory:
             collections = self.client.get_collections().collections
             exists = any(c.name == self.collection_name for c in collections)
             
+            if exists:
+                # Check dimension compatibility
+                coll_info = self.client.get_collection(self.collection_name)
+                # Note: vectors_config can be VectorParams (single) or dict (named vectors)
+                # We assume single dense vector for now as per initialization
+                current_dim = None
+                if hasattr(coll_info.config.params.vectors, 'size'):
+                    current_dim = coll_info.config.params.vectors.size
+                
+                if current_dim and current_dim != self.embedding_dimension:
+                    logger.warning(f"⚠️ Collection '{self.collection_name}' has dim={current_dim}, expected {self.embedding_dimension}. Recreating...")
+                    self.client.delete_collection(self.collection_name)
+                    exists = False
+                else:
+                    logger.debug(f"Qdrant collection {self.collection_name} exists with compatible config.")
+
             if not exists:
                 logger.info(f"Creating Qdrant collection: {self.collection_name} with dim={self.embedding_dimension}")
                 self.client.create_collection(
                     collection_name=self.collection_name,
                     vectors_config=VectorParams(size=self.embedding_dimension, distance=Distance.COSINE)
                 )
-            else:
-                logger.debug(f"Qdrant collection {self.collection_name} already exists.")
         except Exception as e:
             logger.error(f"Error initializing Qdrant collection: {e}")
 
