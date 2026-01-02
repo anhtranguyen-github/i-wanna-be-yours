@@ -154,10 +154,7 @@ def inject_signal():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# -- resources -- #
-from modules.resources import ResourcesModule
-resources_module = ResourcesModule()
-resources_module.register_routes(app, limiter)
+
 
 # --------------- End of Class imports ---------------- #
 

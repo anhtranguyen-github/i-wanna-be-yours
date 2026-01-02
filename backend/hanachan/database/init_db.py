@@ -13,7 +13,7 @@ def init_db():
             from models.content.audio import AudioContent
             from models.message import ChatMessage
             from models.conversation import Conversation
-            from models.resource import Resource
+
             from models.artifact import MessageArtifact, Citation
             
             db.create_all()

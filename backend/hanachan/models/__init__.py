@@ -1,5 +1,5 @@
 
-from .resource import Resource
+
 from .conversation import Conversation
 from .message import ChatMessage
 from .artifact import MessageArtifact, Citation
