@@ -4,7 +4,9 @@ import logging
 
 bp = Blueprint('memory', __name__, url_prefix='/memory')
 logger = logging.getLogger(__name__)
-memory_service = MemoryService()
+
+def get_memory_service():
+    return MemoryService()
 
 @bp.route('/semantic', methods=['GET'])
 def get_semantic_graph():
@@ -29,7 +31,7 @@ def get_episodic_timeline():
     if not user_id:
         return jsonify({"error": "userId is required"}), 400
 
-    memories = memory_service.retrieve_episodic_memory(user_id, query="recent", n_results=limit)
+    memories = get_memory_service().retrieve_episodic_memory(user_id, query="recent", n_results=limit)
     
     # Format for UI
     formatted = []
@@ -53,7 +55,7 @@ def get_memory_stats():
     
     try:
         # Get Episodic Count from Qdrant
-        episodic_stats = memory_service.get_memory_stats(user_id)
+        episodic_stats = get_memory_service().get_memory_stats(user_id)
         episodic_count = episodic_stats.get("episodic_count", 0)
         
         # Get Semantic Count from Neo4j

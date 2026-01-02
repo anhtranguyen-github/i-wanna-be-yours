@@ -3,7 +3,7 @@ from typing import List, Dict, Optional
 from datetime import datetime
 import os
 import logging
-from hanachan.memory.episodic import EpisodicMemory
+from memory.episodic import EpisodicMemory
 
 logger = logging.getLogger(__name__)
 
