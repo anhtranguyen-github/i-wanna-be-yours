@@ -50,5 +50,8 @@ mcp-builder/
 .personalized-tutor/
 
 .env
+.venv/
 
 .testfile
+
+chroma_db/
