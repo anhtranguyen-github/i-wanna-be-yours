@@ -44,6 +44,17 @@ class SignalProducer:
         try:
             self.redis.rpush(SIGNAL_QUEUE_NAME, json.dumps(signal_packet))
             print(f"[SignalProducer] Emitted {type} for {user_id} (Trace: {trace_id})")
+            
+            # Persist Trace
+            try:
+                from backend.hanachan.services.observability import obs_service
+                obs_service.log_event(trace_id, user_id, "signal_produced", "SUCCESS", {
+                    "type": type,
+                    "priority": priority
+                })
+            except Exception as e:
+                print(f"[SignalProducer] Trace logging error: {e}")
+                
             return trace_id
         except Exception as e:
             print(f"[SignalProducer] Error emitting signal: {e}")

@@ -68,7 +68,12 @@ class PerformanceModule:
         
         audits = list(cursor)
         if not audits:
-            return {"status": "no_data", "trends": []}
+            return {
+                "status": "no_data", 
+                "avg_note_quality": 0, 
+                "identified_struggles": [],
+                "audit_count": 0
+            }
             
         # Basic trend analysis: average note quality
         scores = [a.get("note_quality_score") for a in audits if a.get("note_quality_score") is not None]

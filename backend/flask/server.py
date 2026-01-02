@@ -105,6 +105,39 @@ from modules.decks import DeckModule
 deck_module = DeckModule()
 deck_module.register_routes(app)
 
+# -- observability -- #
+@app.route("/api/hanachan/traces", methods=["GET"])
+def get_traces():
+    from backend.hanachan.services.observability import obs_service
+    limit = request.args.get("limit", 20, type=int)
+    return jsonify({"traces": obs_service.get_trace_history(limit)}), 200
+
+@app.route("/api/hanachan/signals", methods=["POST"])
+def inject_signal():
+    """Manually trigger an intelligent workflow signal."""
+    from services.signal_producer import SignalProducer
+    import redis
+    
+    data = request.json
+    sig_type = data.get("type")
+    priority = data.get("priority", "P2")
+    user_id = data.get("user_id", "default_user")
+    
+    if not sig_type:
+        return jsonify({"error": "Type is required"}), 400
+        
+    try:
+        r = redis.Redis(host='localhost', port=6379, db=0)
+        producer = SignalProducer(redis_client=r)
+        trace_id = producer.emit(sig_type, priority, user_id)
+        return jsonify({
+            "status": "SUCCESS", 
+            "trace_id": trace_id,
+            "message": f"Signal '{sig_type}' injected for {user_id}"
+        }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 # -- resources -- #
 from modules.resources import ResourcesModule
 resources_module = ResourcesModule()
