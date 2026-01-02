@@ -115,45 +115,69 @@ function MessageBubbleComponent({ message, onOpenArtifact }: MessageBubbleProps)
                     <div className="mt-3 space-y-2 w-full max-w-sm">
                         <p className="text-xs font-bold text-neutral-ink uppercase tracking-wider ml-1">Generated Content</p>
                         {message.artifacts.map((artifact) => (
-                            <button
+                            <div
                                 key={artifact.id}
-                                onClick={() => onOpenArtifact(artifact)}
-                                className="w-full flex items-center gap-3 p-3 rounded-xl bg-white border border-slate-200 hover:border-brand-green/30 hover: transition-all group text-left"
+                                className="w-full bg-white rounded-2xl border border-neutral-gray/20 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200 group"
                             >
-                                <div className="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center group-hover:bg-brand-green/10 transition-colors">
-                                    <ArtifactIconSmall type={artifact.type} />
+                                {/* Header / Icon Area */}
+                                <div className="p-4 flex gap-4 items-start">
+                                    <div className="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center shrink-0 border border-slate-100 group-hover:bg-brand-green/5 transition-colors">
+                                        <ArtifactIconSmall type={artifact.type} />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center justify-between mb-1">
+                                            <p className="text-[10px] font-bold text-neutral-ink/60 uppercase tracking-wider">
+                                                {artifact.type.replace(/_/g, ' ')}
+                                            </p>
+                                            <div className="flex gap-1.5">
+                                                <span className="w-2 h-2 rounded-full bg-brand-green/40 animate-pulse" title="New Content" />
+                                            </div>
+                                        </div>
+                                        <h4 className="text-base font-bold text-brand-dark truncate leading-tight mb-1">
+                                            {artifact.title}
+                                        </h4>
+                                        {artifact.description && (
+                                            <p className="text-xs text-neutral-ink/80 line-clamp-2 leading-relaxed">
+                                                {artifact.description}
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
-                                <div className="flex-1 min-w-0">
-                                    <h4 className="text-sm font-bold text-brand-dark truncate">{artifact.title}</h4>
-                                    <p className="text-xs text-neutral-ink capitalize">{artifact.type.replace('_', ' ')}</p>
-                                </div>
-                                <div className="text-brand-green opacity-0 group-hover:opacity-100 transition-opacity text-xs font-bold">
-                                    OPEN
-                                </div>
-                            </button>
+
+                                {/* Action Footer */}
+                                <button
+                                    onClick={() => onOpenArtifact(artifact)}
+                                    className="w-full py-2.5 bg-slate-50 border-t border-slate-100 text-xs font-bold text-primary-strong flex items-center justify-center gap-2 hover:bg-primary/5 transition-colors group/btn"
+                                >
+                                    <span>VIEW CONTENT</span>
+                                    <span className="group-hover/btn:translate-x-0.5 transition-transform">→</span>
+                                </button>
+                            </div>
                         ))}
                     </div>
                 )}
 
                 {/* Actions */}
-                {!isUser && (
-                    <div className="flex items-center gap-1 mt-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button className="p-1 rounded hover:bg-slate-100 text-neutral-ink" title="Copy">
-                            <Copy size={14} />
-                        </button>
-                        <button className="p-1 rounded hover:bg-slate-100 text-neutral-ink" title="Good response">
-                            <ThumbsUp size={14} />
-                        </button>
-                        <button className="p-1 rounded hover:bg-slate-100 text-neutral-ink" title="Bad response">
-                            <ThumbsDown size={14} />
-                        </button>
-                        <button className="p-1 rounded hover:bg-slate-100 text-neutral-ink" title="Regenerate">
-                            <RefreshCw size={14} />
-                        </button>
-                    </div>
-                )}
-            </div>
-        </div>
+                {
+                    !isUser && (
+                        <div className="flex items-center gap-1 mt-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button className="p-1 rounded hover:bg-slate-100 text-neutral-ink" title="Copy">
+                                <Copy size={14} />
+                            </button>
+                            <button className="p-1 rounded hover:bg-slate-100 text-neutral-ink" title="Good response">
+                                <ThumbsUp size={14} />
+                            </button>
+                            <button className="p-1 rounded hover:bg-slate-100 text-neutral-ink" title="Bad response">
+                                <ThumbsDown size={14} />
+                            </button>
+                            <button className="p-1 rounded hover:bg-slate-100 text-neutral-ink" title="Regenerate">
+                                <RefreshCw size={14} />
+                            </button>
+                        </div>
+                    )
+                }
+            </div >
+        </div >
     );
 }
 

@@ -108,6 +108,7 @@ export function useChatStream(options: UseChatStreamOptions = {}): UseChatStream
                 // Stream the response
                 let fullText = '';
                 const decoder = new TextDecoder();
+                const collectedArtifacts: Artifact[] = artifacts || [];
 
                 while (true) {
                     const { done, value } = await reader.read();
@@ -124,6 +125,15 @@ export function useChatStream(options: UseChatStreamOptions = {}): UseChatStream
 
                             if (metadata.conversationId && !conversationId) {
                                 options.onConversationCreated?.(metadata.conversationId.toString());
+                            }
+
+                            // Check for Artifacts in metadata
+                            if (metadata.artifacts && Array.isArray(metadata.artifacts)) {
+                                const targetConvoId = metadata.conversationId || activeConvoId;
+                                if (targetConvoId) {
+                                    options.onArtifactsReceived?.(metadata.artifacts, targetConvoId.toString());
+                                }
+                                collectedArtifacts.push(...metadata.artifacts);
                             }
 
                             // If there's content after the newline, add it to fullText
@@ -151,7 +161,7 @@ export function useChatStream(options: UseChatStreamOptions = {}): UseChatStream
                     role: 'assistant',
                     content: fullText,
                     timestamp: new Date(),
-                    artifacts,
+                    artifacts: collectedArtifacts,
                 };
 
                 // Invalidate SWR caches
