@@ -218,4 +218,182 @@ def recalibrate_study_priorities(user_id: str, prioritized_topics: List[str], ad
     topics_str = ", ".join(prioritized_topics)
     return f"Recalibration complete. I have elevated the priority of {len(updates_to_make)} goals related to: {topics_str}. Your study plan is now optimized for your current struggle points."
 
+@tool
+def analyze_long_term_alignment(user_id: str, token: Optional[str] = None) -> str:
+    """
+    Analyzes if current activities align with high-level OKRs (Objectives and Key Results).
+    Use this for high-level motivational coaching and strategic pivots.
+    """
+    okrs = study_client.get_okrs(user_id, token=token)
+    if not okrs:
+        return "No long-term OKRs found. Perhaps we should define some high-level objectives?"
+    
+    report = ["### LONG-TERM ALIGNMENT ANALYSIS ###"]
+    for okr in okrs:
+        obj = okr.get("objective", "Unknown")
+        progress = okr.get("progress_percent", 0)
+        report.append(f"Objective: {obj} ({progress}% Complete)")
+        for kr in okr.get("key_results", []):
+            report.append(f"  - KR: {kr.get('title')} ({kr.get('progress')}/{kr.get('target')})")
+            
+    return "\n".join(report)
+
+@tool
+def get_habit_consistency_report(user_id: str, token: Optional[str] = None) -> str:
+    """
+    Analyzes habit PACTs (Commitments) to determine psychological momentum.
+    Use this when the user feels unmotivated or 'lazy'.
+    """
+    pacts = study_client.get_pacts(user_id, token=token)
+    if not pacts:
+        return "No active habit PACTs found. Consistency starts with a small commitment."
+    
+    report = ["### HABIT MOMENTUM REPORT ###"]
+    for p in pacts:
+        status = "✅ ACTIVE" if p.get("status") == "active" else "⚠️ STALLED"
+        streak = p.get("current_streak", 0)
+        report.append(f"PACT: {p.get('title')} -> {status} ({streak} day streak)")
+        
+    return "\n".join(report)
+
+@tool
+def evaluate_review_efficiency(user_id: str, token: Optional[str] = None) -> str:
+    """
+    Evaluates the effectiveness of previous Review Cycles (Daily/Weekly).
+    Determines if the user's accuracy is improving over time.
+    """
+    cycles = study_client.get_review_cycles(user_id, token=token)
+    if not cycles:
+        return "Not enough review cycle data to evaluate efficiency."
+    
+    latest = cycles[0]
+    metrics = latest.get("metrics", {})
+    acc = metrics.get("avg_accuracy", 0)
+    trend = metrics.get("accuracy_trend", "stable")
+    
+    analysis = f"Your last {latest.get('cycle_type')} review showed {acc}% accuracy."
+    if trend == "improving":
+        analysis += " Your retention is sharpening! The neural pathways are solidifying."
+    elif trend == "declining":
+        analysis += " Accuracy is dipping. We might need to reduce the cognitive load or focus on fundamentals."
+        
+    return f"### REVIEW EFFICIENCY EVALUATION ###\n{analysis}"
+
+
+# --- CONTENT CREATION TOOLS ---
+
+@tool
+def create_study_flashcards(user_id: str, topic: str, level: str = "N5", count: int = 5) -> str:
+    """
+    Generates a set of flashcards for a specific topic and level.
+    Use this when the user asks to 'make flashcards' about a subject.
+    - topic: The subject matter (e.g., 'Food', 'Travel', 'Grammar').
+    - level: JLPT level (e.g., 'N5', 'N3').
+    - count: Number of cards to generate (default 5).
+    """
+    from services.content_creator import ContentCreatorService
+    from services.artifact_service import ArtifactService
+    
+    prompt = f"Create {count} flashcards for JLPT {level} about {topic}"
+    artifact = ContentCreatorService.generate_flashcards(prompt, user_id)
+    
+    if artifact:
+        # We don't save to DB here directly because tools usually return text.
+        # However, for agent flow, we can return a JSON string describing the artifact
+        # that the Agent code will interpret and persist if it chooses to include it.
+        # BUT, the Agent's '_run_agent_loop' handles tool outputs as chat messages.
+        # To actually SHOW the artifact, we should likely persist it here and return a reference
+        # OR return the data and let the agent construct the response.
+        
+        # Strategy: Create the artifact immediately and return a confirmation message.
+        # This ensures the artifact exists when the agent mentions it.
+        
+        try:
+            saved = ArtifactService.create_artifact(
+                user_id=user_id,
+                artifact_type=artifact["type"],
+                title=artifact["title"],
+                data=artifact["data"],
+                description=f"Generated via tool: {topic} ({level})",
+                metadata=artifact.get("sidebar", {})
+            )
+            return json.dumps({
+                "artifact_id": str(saved['_id']),
+                "type": artifact["type"],
+                "title": artifact["title"],
+                "display_message": f"SUCCESS: Created Flashcard Deck '{artifact['title']}'."
+            })
+        except Exception as e:
+            return f"Error saving flashcards: {e}"
+            
+    return "Failed to generate flashcards."
+
+@tool
+def create_study_quiz(user_id: str, topic: str, level: str = "N5", count: int = 3) -> str:
+    """
+    Generates a multiple-choice quiz for a specific topic.
+    Use this when the user wants to practice or test their knowledge.
+    - topic: Subject (e.g., 'Verbs', 'Particles').
+    - level: JLPT level.
+    - count: Number of questions.
+    """
+    from services.content_creator import ContentCreatorService
+    from services.artifact_service import ArtifactService
+    
+    prompt = f"Create a quiz with {count} questions for JLPT {level} about {topic}"
+    artifact = ContentCreatorService.generate_quiz(prompt, user_id)
+    
+    if artifact:
+        try:
+            saved = ArtifactService.create_artifact(
+                user_id=user_id,
+                artifact_type=artifact["type"],
+                title=artifact["title"],
+                data=artifact["data"],
+                description=f"Generated via tool: {topic} ({level})",
+                metadata=artifact.get("sidebar", {})
+            )
+            return json.dumps({
+                "artifact_id": str(saved['_id']),
+                "type": artifact["type"],
+                "title": artifact["title"],
+                "display_message": f"SUCCESS: Created Quiz '{artifact['title']}'."
+            })
+        except Exception as e:
+            return f"Error saving quiz: {e}"
+    return "Failed to generate quiz."
+
+@tool
+def create_practice_exam(user_id: str, level: str = "N5") -> str:
+    """
+    Generates a comprehensive practice exam for a JLPT level.
+    Use this when the user asks for a 'test' or 'exam'.
+    - level: JLPT level (e.g., 'N5', 'N4').
+    """
+    from services.content_creator import ContentCreatorService
+    from services.artifact_service import ArtifactService
+    
+    prompt = f"Create a practice exam for JLPT {level}"
+    artifact = ContentCreatorService.generate_exam(prompt, user_id)
+    
+    if artifact:
+        try:
+            saved = ArtifactService.create_artifact(
+                user_id=user_id,
+                artifact_type=artifact["type"],
+                title=artifact["title"],
+                data=artifact["data"],
+                description=f"Generated via tool: Practice Exam ({level})",
+                metadata=artifact.get("sidebar", {})
+            )
+            return json.dumps({
+                "artifact_id": str(saved['_id']),
+                "type": artifact["type"],
+                "title": artifact["title"],
+                "display_message": f"SUCCESS: Created Practice Exam '{artifact['title']}'."
+            })
+        except Exception as e:
+            return f"Error saving exam: {e}"
+    return "Failed to generate exam."
+
 

@@ -1,13 +1,14 @@
-"""
-Content Creator Service for Hanachan AI
-Generates flashcards, quizzes, and exams based on user requests
-"""
-
-from typing import List, Dict, Any, Optional
+import logging
+import json
 import re
+from typing import List, Dict, Any, Optional
+from langchain_core.messages import SystemMessage, HumanMessage
+from services.llm_factory import ModelFactory
+
+logger = logging.getLogger(__name__)
 
 class ContentCreatorService:
-    """Service for generating learning content from user prompts"""
+    """Service for generating learning content using LLM (Groq/OpenAI)"""
     
     # Intent patterns for content creation
     FLASHCARD_PATTERNS = [
@@ -40,66 +41,10 @@ class ContentCreatorService:
         r"模擬試験",
     ]
 
-    # JLPT vocabulary samples by level
-    JLPT_VOCAB = {
-        "N5": [
-            {"word": "食べる", "reading": "たべる", "meaning": "to eat", "example": "ごはんを食べる。"},
-            {"word": "飲む", "reading": "のむ", "meaning": "to drink", "example": "水を飲む。"},
-            {"word": "見る", "reading": "みる", "meaning": "to see/watch", "example": "テレビを見る。"},
-            {"word": "聞く", "reading": "きく", "meaning": "to listen/ask", "example": "音楽を聞く。"},
-            {"word": "読む", "reading": "よむ", "meaning": "to read", "example": "本を読む。"},
-            {"word": "書く", "reading": "かく", "meaning": "to write", "example": "手紙を書く。"},
-            {"word": "話す", "reading": "はなす", "meaning": "to speak", "example": "日本語を話す。"},
-            {"word": "行く", "reading": "いく", "meaning": "to go", "example": "学校に行く。"},
-            {"word": "来る", "reading": "くる", "meaning": "to come", "example": "友達が来る。"},
-            {"word": "帰る", "reading": "かえる", "meaning": "to return", "example": "家に帰る。"},
-        ],
-        "N4": [
-            {"word": "予約", "reading": "よやく", "meaning": "reservation", "example": "ホテルを予約する。"},
-            {"word": "経験", "reading": "けいけん", "meaning": "experience", "example": "いい経験になった。"},
-            {"word": "準備", "reading": "じゅんび", "meaning": "preparation", "example": "旅行の準備をする。"},
-            {"word": "説明", "reading": "せつめい", "meaning": "explanation", "example": "先生が説明する。"},
-            {"word": "紹介", "reading": "しょうかい", "meaning": "introduction", "example": "友達を紹介する。"},
-            {"word": "届ける", "reading": "とどける", "meaning": "to deliver", "example": "荷物を届ける。"},
-            {"word": "届く", "reading": "とどく", "meaning": "to arrive", "example": "手紙が届く。"},
-            {"word": "決める", "reading": "きめる", "meaning": "to decide", "example": "予定を決める。"},
-        ],
-        "N3": [
-            {"word": "影響", "reading": "えいきょう", "meaning": "influence", "example": "天気の影響で遅れた。"},
-            {"word": "関係", "reading": "かんけい", "meaning": "relationship", "example": "仕事と関係がある。"},
-            {"word": "機会", "reading": "きかい", "meaning": "opportunity", "example": "いい機会だ。"},
-            {"word": "期待", "reading": "きたい", "meaning": "expectation", "example": "結果を期待する。"},
-            {"word": "共通", "reading": "きょうつう", "meaning": "common", "example": "共通の友達がいる。"},
-            {"word": "現在", "reading": "げんざい", "meaning": "present/current", "example": "現在の状況。"},
-            {"word": "効果", "reading": "こうか", "meaning": "effect", "example": "薬の効果がある。"},
-            {"word": "参加", "reading": "さんか", "meaning": "participation", "example": "会議に参加する。"},
-        ],
-    }
-    
-    # Grammar patterns by level
-    JLPT_GRAMMAR = {
-        "N5": [
-            {"pattern": "〜ます", "meaning": "Polite verb ending", "example": "食べます。"},
-            {"pattern": "〜ません", "meaning": "Polite negative", "example": "食べません。"},
-            {"pattern": "〜たい", "meaning": "Want to do", "example": "日本に行きたい。"},
-            {"pattern": "〜てください", "meaning": "Please do", "example": "教えてください。"},
-            {"pattern": "〜ましょう", "meaning": "Let's do", "example": "一緒に行きましょう。"},
-        ],
-        "N4": [
-            {"pattern": "〜たら", "meaning": "If/When", "example": "雨が降ったら、行かない。"},
-            {"pattern": "〜ても", "meaning": "Even if", "example": "高くても買う。"},
-            {"pattern": "〜ながら", "meaning": "While doing", "example": "音楽を聞きながら勉強する。"},
-            {"pattern": "〜そうだ", "meaning": "Looks like / Hearsay", "example": "おいしそうだ。"},
-            {"pattern": "〜ようにする", "meaning": "Try to / Make sure to", "example": "早く寝るようにする。"},
-        ],
-        "N3": [
-            {"pattern": "〜ばかり", "meaning": "Just did / Only", "example": "日本に来たばかりです。"},
-            {"pattern": "〜とおり", "meaning": "As / In accordance with", "example": "予定通りに進んだ。"},
-            {"pattern": "〜向け", "meaning": "Intended for", "example": "子供向けの本。"},
-            {"pattern": "〜わけがない", "meaning": "No way that", "example": "そんなわけがない。"},
-            {"pattern": "〜ことになる", "meaning": "It turns out that", "example": "転勤することになった。"},
-        ],
-    }
+    @classmethod
+    def fit_model(cls) -> Any:
+        # Use a slightly more creative temperature for content generation
+        return ModelFactory.create_chat_model(temperature=0.7)
 
     @classmethod
     def detect_creation_intent(cls, prompt: str) -> Optional[str]:
@@ -148,181 +93,214 @@ class ContentCreatorService:
     @classmethod
     def detect_count(cls, prompt: str) -> int:
         """Detect desired number of items from prompt"""
-        # Look for numbers
         numbers = re.findall(r'\d+', prompt)
         if numbers:
             count = int(numbers[0])
             return min(max(count, 3), 20)  # Clamp between 3 and 20
         return 5  # Default
 
+    @staticmethod
+    def _parse_llm_json(response_content: str) -> Any:
+        """Helper to parse JSON strictly from LLM response"""
+        try:
+            # Try finding the first { or [
+            start = -1
+            end = -1
+            if '{' in response_content:
+                start = response_content.find('{')
+                end = response_content.rfind('}') + 1
+            if '[' in response_content:
+                # If [ comes before {, or if { is not found
+                if start == -1 or (response_content.find('[') < start):
+                    start = response_content.find('[')
+                    end = response_content.rfind(']') + 1
+            
+            if start != -1 and end != -1:
+                clean_json = response_content[start:end]
+                return json.loads(clean_json)
+            else:
+                return json.loads(response_content)
+        except Exception as e:
+            logger.error(f"Failed to parse JSON from LLM: {e}")
+            logger.debug(f"Raw Output: {response_content}")
+            return None
+
     @classmethod
     def generate_flashcards(cls, prompt: str, user_id: str = None) -> Dict[str, Any]:
-        """Generate flashcard set based on prompt"""
+        """Generate flashcard set via LLM"""
         level = cls.detect_jlpt_level(prompt)
         skill = cls.detect_skill_type(prompt)
         count = cls.detect_count(prompt)
         
-        cards = []
-        title = f"JLPT {level} {skill.title()} Flashcards"
+        llm = cls.fit_model()
         
-        if skill == "vocabulary":
-            vocab_list = cls.JLPT_VOCAB.get(level, cls.JLPT_VOCAB["N5"])
-            for i, v in enumerate(vocab_list[:count]):
-                cards.append({
-                    "front": f"{v['word']} ({v['reading']})",
-                    "back": f"{v['meaning']}\n\n例: {v['example']}"
-                })
-        elif skill == "grammar":
-            grammar_list = cls.JLPT_GRAMMAR.get(level, cls.JLPT_GRAMMAR["N5"])
-            for i, g in enumerate(grammar_list[:count]):
-                cards.append({
-                    "front": g["pattern"],
-                    "back": f"{g['meaning']}\n\n例: {g['example']}"
-                })
+        system_prompt = f"""You are a Japanese language sensei.
+        Generate {count} flashcards for {level} level focusing on '{skill}'.
+        Return ONLY valid JSON in this format:
+        [
+            {{
+                "front": "Japanese Word/Kanji or Grammar Pattern",
+                "back": "Meaning in English\\n\\nExample: Japanese sentence (Translation)"
+            }}
+        ]
+        Do not output any markdown code fences or extra text. Just the JSON array.
+        """
         
-        return {
-            "type": "flashcard",
-            "title": title,
-            "sidebar": {"group": "Flashcards", "status": "new"},
-            "data": {
+        try:
+            logger.info(f"Generating flashcards via LLM: {level} {skill} x{count}")
+            response = llm.invoke([
+                SystemMessage(content=system_prompt),
+                HumanMessage(content=prompt)
+            ])
+            cards = cls._parse_llm_json(response.content)
+            
+            if not cards or not isinstance(cards, list):
+                logger.warning("LLM returned invalid flashcard format.")
+                return None
+
+            title = f"JLPT {level} {skill.title()} Flashcards"
+            return {
+                "type": "flashcard",
                 "title": title,
-                "level": level,
-                "skill": skill,
-                "cards": cards
+                "sidebar": {"group": "Flashcards", "status": "new"},
+                "data": {
+                    "title": title,
+                    "level": level,
+                    "skill": skill,
+                    "cards": cards
+                }
             }
-        }
+        except Exception as e:
+            logger.error(f"Error generating flashcards: {e}")
+            return None
 
     @classmethod
     def generate_quiz(cls, prompt: str, user_id: str = None) -> Dict[str, Any]:
-        """Generate quiz based on prompt"""
+        """Generate quiz via LLM"""
         level = cls.detect_jlpt_level(prompt)
         skill = cls.detect_skill_type(prompt)
         count = cls.detect_count(prompt)
         
-        questions = []
-        title = f"JLPT {level} {skill.title()} Quiz"
+        llm = cls.fit_model()
         
-        if skill == "vocabulary":
-            vocab_list = cls.JLPT_VOCAB.get(level, cls.JLPT_VOCAB["N5"])
-            for i, v in enumerate(vocab_list[:count]):
-                # Create meaning -> word question
-                wrong_answers = [x["word"] for x in vocab_list if x != v][:3]
-                options = [
-                    {"id": "a", "text": v["word"]},
-                    {"id": "b", "text": wrong_answers[0] if len(wrong_answers) > 0 else "分かる"},
-                    {"id": "c", "text": wrong_answers[1] if len(wrong_answers) > 1 else "話す"},
-                    {"id": "d", "text": wrong_answers[2] if len(wrong_answers) > 2 else "思う"},
-                ]
+        system_prompt = f"""You are a Japanese language quiz master.
+        Create a {count}-question multiple choice quiz for {level} level about '{skill}'.
+        Return ONLY valid JSON in this format:
+        [
+            {{
+                "content": "The question text (e.g. 'What is the reading of 食事?')",
+                "options": [
+                    {{"id": "a", "text": "Option A"}},
+                    {{"id": "b", "text": "Option B"}},
+                    {{"id": "c", "text": "Option C"}},
+                    {{"id": "d", "text": "Option D"}}
+                ],
+                "correctAnswer": "id of correct option (a, b, c, or d)",
+                "explanation": "Why it is correct.",
+                "difficulty": 3
+            }}
+        ]
+        Do not output markdown code fences. Strictly JSON array.
+        """
+        
+        try:
+            logger.info(f"Generating quiz via LLM: {level} {skill} x{count}")
+            response = llm.invoke([
+                SystemMessage(content=system_prompt),
+                HumanMessage(content=prompt)
+            ])
+            questions = cls._parse_llm_json(response.content)
+            
+            if not questions or not isinstance(questions, list):
+                logger.warning("LLM returned invalid quiz format.")
+                return None
                 
-                questions.append({
-                    "type": "multiple_choice",
-                    "content": f"What is the Japanese word for '{v['meaning']}'?",
-                    "options": options,
-                    "correctAnswer": "a",
-                    "explanation": f"「{v['word']}」({v['reading']}) means '{v['meaning']}'. Example: {v['example']}",
-                    "skill": "vocabulary",
-                    "difficulty": 3
-                })
-        
-        elif skill == "grammar":
-            grammar_list = cls.JLPT_GRAMMAR.get(level, cls.JLPT_GRAMMAR["N5"])
-            for i, g in enumerate(grammar_list[:count]):
-                wrong_patterns = [x["pattern"] for x in grammar_list if x != g][:3]
-                options = [
-                    {"id": "a", "text": g["pattern"]},
-                    {"id": "b", "text": wrong_patterns[0] if len(wrong_patterns) > 0 else "〜ない"},
-                    {"id": "c", "text": wrong_patterns[1] if len(wrong_patterns) > 1 else "〜だ"},
-                    {"id": "d", "text": wrong_patterns[2] if len(wrong_patterns) > 2 else "〜です"},
-                ]
+            # Post-process to ensure correct fields
+            for q in questions:
+                q["type"] = "multiple_choice"
+                q["skill"] = skill
                 
-                questions.append({
-                    "type": "multiple_choice",
-                    "content": f"Which grammar pattern means '{g['meaning']}'?",
-                    "options": options,
-                    "correctAnswer": "a",
-                    "explanation": f"{g['pattern']} means '{g['meaning']}'. Example: {g['example']}",
-                    "skill": "grammar",
-                    "difficulty": 3
-                })
-        
-        return {
-            "type": "quiz",
-            "title": title,
-            "sidebar": {"group": "Quizzes", "status": "new"},
-            "data": {
+            title = f"JLPT {level} {skill.title()} Quiz"
+            return {
+                "type": "quiz",
                 "title": title,
-                "description": f"Practice quiz for {level} {skill}",
-                "quizType": "quiz",
-                "level": level,
-                "skill": skill,
-                "timeLimitMinutes": None,
-                "questions": questions
+                "sidebar": {"group": "Quizzes", "status": "new"},
+                "data": {
+                    "title": title,
+                    "description": f"Practice quiz for {level} {skill}",
+                    "quizType": "quiz",
+                    "level": level,
+                    "skill": skill,
+                    "timeLimitMinutes": None,
+                    "questions": questions
+                }
             }
-        }
+        except Exception as e:
+            logger.error(f"Error generating quiz: {e}")
+            return None
 
     @classmethod
     def generate_exam(cls, prompt: str, user_id: str = None) -> Dict[str, Any]:
-        """Generate exam (more comprehensive than quiz)"""
+        """Generate exam via LLM"""
         level = cls.detect_jlpt_level(prompt)
-        count = 10  # Exams have more questions
+        count = 10 # Default for exam
         
-        # Mix vocabulary and grammar
-        questions = []
-        title = f"JLPT {level} Practice Exam"
+        llm = cls.fit_model()
         
-        vocab_list = cls.JLPT_VOCAB.get(level, cls.JLPT_VOCAB["N5"])
-        grammar_list = cls.JLPT_GRAMMAR.get(level, cls.JLPT_GRAMMAR["N5"])
-        
-        # Add vocabulary questions
-        for i, v in enumerate(vocab_list[:5]):
-            wrong_answers = [x["word"] for x in vocab_list if x != v][:3]
-            questions.append({
-                "type": "multiple_choice",
-                "content": f"【語彙】「{v['meaning']}」の日本語は何ですか。",
+        system_prompt = f"""You are a Japanese language exam proctor.
+        Create a comprehensive {count}-question practice exam for {level} level.
+        Include 5 Vocabulary/Kanji questions and 5 Grammar questions.
+        Return ONLY valid JSON in this format:
+        [
+            {{
+                "content": "Question text",
                 "options": [
-                    {"id": "a", "text": v["word"]},
-                    {"id": "b", "text": wrong_answers[0] if wrong_answers else "話す"},
-                    {"id": "c", "text": wrong_answers[1] if len(wrong_answers) > 1 else "聞く"},
-                    {"id": "d", "text": wrong_answers[2] if len(wrong_answers) > 2 else "見る"},
+                    {{"id": "a", "text": "..."}},
+                    {{"id": "b", "text": "..."}},
+                    {{"id": "c", "text": "..."}},
+                    {{"id": "d", "text": "..."}}
                 ],
                 "correctAnswer": "a",
-                "explanation": f"「{v['word']}」({v['reading']}) = {v['meaning']}",
-                "skill": "vocabulary",
+                "explanation": "Explanation",
+                "skill": "vocabulary" (or "grammar"),
                 "difficulty": 3
-            })
+            }}
+        ]
+        Do not output markdown code fences. Strictly JSON array.
+        """
         
-        # Add grammar questions
-        for i, g in enumerate(grammar_list[:5]):
-            wrong_patterns = [x["meaning"] for x in grammar_list if x != g][:3]
-            questions.append({
-                "type": "multiple_choice",
-                "content": f"【文法】「{g['pattern']}」の意味は何ですか。",
-                "options": [
-                    {"id": "a", "text": g["meaning"]},
-                    {"id": "b", "text": wrong_patterns[0] if wrong_patterns else "Negative"},
-                    {"id": "c", "text": wrong_patterns[1] if len(wrong_patterns) > 1 else "Past tense"},
-                    {"id": "d", "text": wrong_patterns[2] if len(wrong_patterns) > 2 else "Question"},
-                ],
-                "correctAnswer": "a",
-                "explanation": f"{g['pattern']} = {g['meaning']}. 例: {g['example']}",
-                "skill": "grammar",
-                "difficulty": 3
-            })
-        
-        return {
-            "type": "quiz",  # Uses same quiz artifact type
-            "title": title,
-            "sidebar": {"group": "Exams", "status": "new"},
-            "data": {
+        try:
+            logger.info(f"Generating exam via LLM: {level}")
+            response = llm.invoke([
+                SystemMessage(content=system_prompt),
+                HumanMessage(content=prompt)
+            ])
+            questions = cls._parse_llm_json(response.content)
+            
+            if not questions or not isinstance(questions, list):
+                return None
+                
+            for q in questions:
+                q["type"] = "multiple_choice"
+
+            title = f"JLPT {level} Practice Exam"
+            return {
+                "type": "quiz",  # Uses same quiz artifact type
                 "title": title,
-                "description": f"Comprehensive {level} practice exam covering vocabulary and grammar",
-                "quizType": "exam",
-                "level": level,
-                "skill": "mixed",
-                "timeLimitMinutes": 30,
-                "questions": questions
+                "sidebar": {"group": "Exams", "status": "new"},
+                "data": {
+                    "title": title,
+                    "description": f"Comprehensive {level} practice exam",
+                    "quizType": "exam",
+                    "level": level,
+                    "skill": "mixed",
+                    "timeLimitMinutes": 30,
+                    "questions": questions
+                }
             }
-        }
+        except Exception as e:
+            logger.error(f"Error generating exam: {e}")
+            return None
 
     @classmethod
     def generate_content(cls, intent: str, prompt: str, user_id: str = None) -> Dict[str, Any]:
@@ -343,63 +321,26 @@ class ContentCreatorService:
         
         if not artifact:
             return {
-                "content": "I'm not sure what you'd like me to create. You can ask me to:\n- Create flashcards\n- Make a quiz\n- Generate a practice exam",
+                "content": "I couldn't generate the content this time. Please try again or be more specific.",
                 "artifacts": [],
-                "suggestions": [
-                    {"text": "Create N5 vocabulary flashcards"},
-                    {"text": "Make a grammar quiz for N4"},
-                    {"text": "Generate an N3 practice exam"}
-                ]
+                "suggestions": []
             }
         
         level = cls.detect_jlpt_level(prompt)
         skill = cls.detect_skill_type(prompt)
         
+        # Reuse previous simple response templates
         if intent == "flashcard":
             card_count = len(artifact["data"]["cards"])
-            content = f"""### 📚 Flashcard Set Created!
-
-I've created a set of **{card_count} flashcards** for JLPT {level} {skill}.
-
-**{artifact['title']}**
-
-You can:
-- Click on any card to flip it
-- Save this set to your library
-- Request more cards with a different topic
-
-Would you like me to create more flashcards or quiz you on these words?"""
+            content = f"### 📚 Flashcard Set Created!\n\nI've created **{card_count} flashcards** for JLPT {level} {skill} using the latest study data."
         
         elif intent == "quiz":
             q_count = len(artifact["data"]["questions"])
-            content = f"""### 📝 Quiz Created!
-
-I've generated a **{q_count}-question quiz** for JLPT {level} {skill}.
-
-**{artifact['title']}**
-
-Features:
-- Multiple choice questions
-- Instant feedback after submission
-- Detailed explanations
-
-Click "Start Quiz" to begin, or save it to your library for later!"""
+            content = f"### 📝 Quiz Generated!\n\nA fresh **{q_count}-question quiz** for JLPT {level} {skill} is ready."
         
         elif intent == "exam":
             q_count = len(artifact["data"]["questions"])
-            time_limit = artifact["data"]["timeLimitMinutes"]
-            content = f"""### 🎓 Practice Exam Created!
-
-I've created a comprehensive **{q_count}-question practice exam** for JLPT {level}.
-
-**{artifact['title']}**
-
-This exam includes:
-- Vocabulary questions
-- Grammar questions
-- Time limit: {time_limit} minutes
-
-Good luck! 頑張ってください！"""
+            content = f"### 🎓 Practice Exam Ready!\n\nI've generated a comprehensive **{q_count}-question exam** for JLPT {level}."
         
         return {
             "content": content,
