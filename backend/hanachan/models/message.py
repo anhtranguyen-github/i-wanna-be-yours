@@ -1,11 +1,7 @@
 from database.database import db
 from datetime import datetime
 
-# Association table for Many-to-Many
-message_attachments = db.Table('message_attachments',
-    db.Column('message_id', db.Integer, db.ForeignKey('chat_messages.id'), primary_key=True),
-    db.Column('resource_id', db.Integer, db.ForeignKey('resources.id'), primary_key=True)
-)
+
 
 class ChatMessage(db.Model):
     __tablename__ = 'chat_messages'
@@ -19,7 +15,8 @@ class ChatMessage(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     # Relationships
-    attachments = db.relationship('Resource', secondary=message_attachments, backref=db.backref('messages', lazy='dynamic'))
+    # Multi-service attachments (List of Mongo IDs)
+    attachments = db.Column(db.JSON, default=list)
     artifacts = db.relationship('MessageArtifact', backref='message', cascade="all, delete-orphan")
     tasks = db.relationship('ProposedTask', backref='message', cascade="all, delete-orphan")
     suggestions = db.relationship('Suggestion', backref='message', cascade="all, delete-orphan")
@@ -31,7 +28,7 @@ class ChatMessage(db.Model):
             'content': self.content,
             'contextConfiguration': self.context_configuration,
             'createdAt': self.created_at.isoformat() if self.created_at else None,
-            'attachments': [r.to_dict() for r in self.attachments],
+            'attachments': self.attachments or [],
             'artifacts': [a.to_dict() for a in self.artifacts],
             'tasks': [t.to_dict() for t in self.tasks],
             'suggestions': [s.to_dict() for s in self.suggestions]

@@ -43,9 +43,7 @@ class ConversationService:
         )
         
         if attachment_ids:
-            from models.resource import Resource
-            resources = Resource.query.filter(Resource.id.in_(attachment_ids)).all()
-            new_msg.attachments.extend(resources)
+            new_msg.attachments = attachment_ids
 
         saved_msg = self.msg_repo.save(new_msg)
         
