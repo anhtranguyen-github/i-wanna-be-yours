@@ -166,9 +166,26 @@ class HanachanAgent:
                 return self._run_agent_loop(messages, session_id, user_id, prompt, token=token)
         except Exception as e:
             error_str = str(e).lower()
+            
+            # Rate limit detection
             if "rate limit" in error_str or "429" in error_str:
-                logger.error(f"⚠️ [Agent] Groq Rate Limit Hit: {e}")
-                return "My neural pathways are currently overloaded (Rate Limit Exceeded). Please try again in a moment."
+                logger.error(f"⚠️ [Agent] Rate Limit Hit: {e}")
+                return "My neural pathways are currently overloaded (Rate Limit Exceeded). The system will automatically use a fallback provider. Please try again."
+            
+            # Ollama OOM detection
+            if "memory" in error_str and ("gib" in error_str or "available" in error_str):
+                logger.error(f"⚠️ [Agent] Ollama OOM: {e}")
+                return "The local AI model requires more memory than available. Please try a smaller model or use cloud providers (Groq/OpenAI)."
+            
+            # Quota exhausted
+            if "quota" in error_str or "insufficient" in error_str:
+                logger.error(f"⚠️ [Agent] Quota Exhausted: {e}")
+                return "API quota has been exhausted. The system is switching to a fallback provider. Please try again."
+            
+            # Tool support error (Ollama models without tool support)
+            if "does not support tools" in error_str:
+                logger.warning(f"⚠️ [Agent] Model lacks tool support: {e}")
+                return "The current model does not support advanced features. Switching to text-only mode. Please try again."
             
             logger.error(f"Agent Error: {e}")
             return f"My neural core is currently recalibrating. (Error: {str(e)})"
