@@ -20,7 +20,7 @@ export function ReviewCycleCard({ review, onViewDetails, className }: ReviewCycl
         phase: { bg: 'bg-violet-50', border: 'border-violet-200', text: 'text-violet-700', icon: '🏆' },
     };
 
-    const config = cycleTypeColors[review.cycle_type];
+    const config = cycleTypeColors[review.cycle_type] || cycleTypeColors.daily;
     const metrics = review.metrics;
 
     const accuracyTrend = metrics.accuracy_trend === 'improving' ? 'up' :
@@ -84,19 +84,27 @@ export function ReviewCycleCard({ review, onViewDetails, className }: ReviewCycl
             {/* Priority Distribution */}
             <div className="px-5 pb-4">
                 <p className="text-xs font-semibold text-neutral-ink uppercase tracking-wide mb-2">Priority Queue</p>
-                <div className="flex h-3 rounded-full overflow-hidden">
-                    <div
-                        className="bg-red-500"
-                        style={{ width: `${(metrics.red_items_count / (metrics.red_items_count + metrics.yellow_items_count + metrics.green_items_count)) * 100}%` }}
-                    />
-                    <div
-                        className="bg-amber-500"
-                        style={{ width: `${(metrics.yellow_items_count / (metrics.red_items_count + metrics.yellow_items_count + metrics.green_items_count)) * 100}%` }}
-                    />
-                    <div
-                        className="bg-emerald-500"
-                        style={{ width: `${(metrics.green_items_count / (metrics.red_items_count + metrics.yellow_items_count + metrics.green_items_count)) * 100}%` }}
-                    />
+                <div className="flex h-3 rounded-full overflow-hidden bg-slate-100">
+                    {(() => {
+                        const total = metrics.red_items_count + metrics.yellow_items_count + metrics.green_items_count;
+                        if (total === 0) return null;
+                        return (
+                            <>
+                                <div
+                                    className="bg-red-500"
+                                    style={{ width: `${(metrics.red_items_count / total) * 100}%` }}
+                                />
+                                <div
+                                    className="bg-amber-500"
+                                    style={{ width: `${(metrics.yellow_items_count / total) * 100}%` }}
+                                />
+                                <div
+                                    className="bg-emerald-500"
+                                    style={{ width: `${(metrics.green_items_count / total) * 100}%` }}
+                                />
+                            </>
+                        );
+                    })()}
                 </div>
                 <div className="flex justify-between mt-1 text-[10px] text-neutral-ink">
                     <span>{metrics.red_items_count} RED</span>

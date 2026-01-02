@@ -52,7 +52,7 @@ export function NeuralMemoryTab() {
                     setGraphData(data);
                 }
             } catch (e) {
-                console.error("Failed to fetch graph", e);
+                // Background fetch silent fail
             } finally {
                 setLoadingGraph(false);
             }
@@ -67,7 +67,7 @@ export function NeuralMemoryTab() {
                     setMemories(data);
                 }
             } catch (e) {
-                console.error("Failed to fetch episodic memory", e);
+                // Background fetch silent fail
             } finally {
                 setLoadingTimeline(false);
             }
@@ -79,7 +79,7 @@ export function NeuralMemoryTab() {
                 const data = await studyPlanService.getPerformanceTrends(30);
                 setTrends(data);
             } catch (e) {
-                console.error("Failed to fetch trends", e);
+                // Background fetch silent fail
             } finally {
                 setLoadingTrends(false);
             }
@@ -106,10 +106,10 @@ export function NeuralMemoryTab() {
                 </div>
                 <div className="flex gap-2">
                     <span className="bg-brand-green/10 text-brand-green px-3 py-1 rounded-full text-xs font-bold font-mono">
-                        NODES: {graphData.nodes.length}
+                        NODES: {graphData.nodes?.length || 0}
                     </span>
                     <span className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs font-bold font-mono">
-                        MEMORIES: {memories.length}
+                        MEMORIES: {memories?.length || 0}
                     </span>
                 </div>
             </div>
@@ -234,14 +234,14 @@ export function NeuralMemoryTab() {
                                             </div>
                                             <div className="flex items-baseline gap-2">
                                                 <span className="text-5xl font-black text-primary-strong">
-                                                    {Math.round(trends.avg_note_quality * 10) / 10}
+                                                    {Math.round((trends.avg_note_quality || 0) * 10) / 10}
                                                 </span>
                                                 <span className="text-neutral-ink/30 font-bold">/ 10</span>
                                             </div>
                                             <div className="h-3 w-full bg-slate-200 rounded-full overflow-hidden">
                                                 <div
                                                     className="h-full bg-primary-strong rounded-full transition-all duration-1000"
-                                                    style={{ width: `${trends.avg_note_quality * 10}%` }}
+                                                    style={{ width: `${(trends.avg_note_quality || 0) * 10}%` }}
                                                 />
                                             </div>
                                             <p className="text-xs text-neutral-ink/50 leading-relaxed font-medium">

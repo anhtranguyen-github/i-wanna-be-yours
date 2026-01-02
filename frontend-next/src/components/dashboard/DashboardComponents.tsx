@@ -37,9 +37,10 @@ export function ProgressRing({
     showPercentage = true,
     children,
 }: ProgressRingProps) {
+    const safeProgress = progress || 0;
     const radius = (size - strokeWidth) / 2;
     const circumference = radius * 2 * Math.PI;
-    const offset = circumference - (Math.min(progress, 100) / 100) * circumference;
+    const offset = circumference - (Math.min(safeProgress, 100) / 100) * circumference;
 
     return (
         <div className="relative inline-flex items-center justify-center">
@@ -71,7 +72,7 @@ export function ProgressRing({
                     <>
                         {showPercentage && (
                             <span className="text-2xl font-bold text-neutral-ink dark:text-white">
-                                {Math.round(progress)}%
+                                {Math.round(safeProgress)}%
                             </span>
                         )}
                         {label && (
@@ -117,7 +118,7 @@ export function StatCard({ title, value, icon, trend, color = "#4CAF50", descrip
                     <p className="text-sm font-bold text-neutral-ink mb-1 uppercase tracking-tight font-display">
                         {title}
                     </p>
-                    <p className="text-3xl font-display font-black text-foreground">{value}</p>
+                    <p className="text-3xl font-display font-black text-foreground">{value ?? 0}</p>
                     {description && (
                         <p className="text-xs text-neutral-ink dark:text-neutral-ink mt-1">{description}</p>
                     )}
@@ -309,7 +310,8 @@ export function WeeklyProgressBar({
     color = "hsl(var(--primary))",
     showLabel = true
 }: WeeklyProgressBarProps) {
-    const progress = target > 0 ? Math.min(100, (current / target) * 100) : 0;
+    const calcProgress = target > 0 ? Math.min(100, (current / target) * 100) : 0;
+    const progress = isNaN(calcProgress) ? 0 : calcProgress;
 
     return (
         <div className="space-y-1">

@@ -11,6 +11,7 @@ export interface Artifact {
     id: string; // Mongo ID
     type: ArtifactType;
     title: string;
+    description?: string;
     data: any; // Flexible content
     metadata: SidebarMetadata & Record<string, any>;
     createdAt: string;
