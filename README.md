@@ -13,7 +13,7 @@
 
 ## 🎯 Project Overview
 
-Hanabira is a comprehensive Japanese language learning platform built as a microservices architecture with 5+ backend services. The platform combines traditional learning methods (flashcards, spaced repetition, quizzes) with cutting-edge AI capabilities including an **autonomous LLM-powered tutor** that can analyze user progress, generate personalized content, and proactively adjust study priorities.
+Hanachan is a comprehensive Japanese language learning platform built as a microservices architecture with 5+ backend services. The platform combines traditional learning methods (flashcards, spaced repetition, quizzes) with cutting-edge AI capabilities including an **autonomous LLM-powered tutor** that can analyze user progress, generate personalized content, and proactively adjust study priorities.
 
 ### 🏆 Key Technical Achievements
 
@@ -201,8 +201,15 @@ cd backend/hanachan
 git clone https://github.com/your-username/hanabira.org.git
 cd hanabira.org
 
-# Start all services (handles dependencies automatically)
+# Start all services (Development Mode - Auto-reload)
 ./start_local_services.sh
+
+# Start in Production Mode (Optimized Build)
+# Automatically builds frontend-next if .next/ is missing
+./start_local_services.sh --prod
+
+# Force Rebuild in Production Mode
+./start_local_services.sh --prod --rebuild
 
 # Stop services
 ./start_local_services.sh stop
@@ -227,7 +234,7 @@ JWT_SECRET=your-secret-key
 ## 📁 Project Structure
 
 ```
-hanabira.org/
+hanachan.org/
 ├── frontend-next/              # Next.js 14 App Router
 │   ├── src/app/               # Pages and API routes
 │   ├── src/components/        # 100+ reusable React components
@@ -268,6 +275,6 @@ MIT License - see [LICENSE](./LICENSE) for details.
 
 ---
 
-**Hanabira.org** - 🌸 Your intelligent path to Japanese fluency
+**Hanachan.org** - 🌸 Your intelligent path to Japanese fluency
 
 
