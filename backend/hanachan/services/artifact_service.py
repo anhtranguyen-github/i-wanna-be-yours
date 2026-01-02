@@ -27,6 +27,7 @@ class ArtifactService:
         artifact_type: str,
         title: str,
         data: Dict[str, Any],
+        description: Optional[str] = None,
         metadata: Optional[Dict[str, Any]] = None,
         conversation_id: Optional[str] = None,
         message_id: Optional[str] = None,
@@ -40,6 +41,7 @@ class ArtifactService:
             artifact_type: flashcard_single, flashcard_deck, quiz, exam, etc.
             title: Display title
             data: Artifact content (any structure)
+            description: Optional textual description/summary of the artifact
             metadata: Optional metadata (any fields)
             conversation_id: Optional link to chat session
             message_id: Optional link to specific message
@@ -57,6 +59,7 @@ class ArtifactService:
             "messageId": message_id,
             "type": artifact_type,
             "title": title,
+            "description": description,      # New field
             "data": data,                    # Store as-is, no validation
             "metadata": metadata or {},       # Store as-is, any fields
             "createdAt": now,

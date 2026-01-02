@@ -138,6 +138,7 @@ class AgentService:
                             artifact_type=a_type,
                             title=a_title,
                             data=a_data,
+                            description=art.get("description"), # Pass description
                             metadata=art.get("sidebar", {}),
                             conversation_id=conv_id,
                             message_id=str(asst_msg_id),

@@ -173,3 +173,36 @@ class StudyServiceClient:
         except Exception as e:
             logger.error(f"Failed to fetch performance trends for {user_id}: {e}")
             return {"status": "error", "message": str(e)}
+
+    def get_okrs(self, user_id: str, token: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Fetches the user's Objectives and Key Results."""
+        try:
+            headers = {"Authorization": f"Bearer {token}"} if token else {}
+            base_url = os.environ.get("STUDY_PLAN_SERVICE_URL", "http://localhost:5500")
+            res = requests.get(f"{base_url}/v1/okr/", params={"user_id": user_id}, headers=headers, timeout=5)
+            return res.json() if res.status_code == 200 else []
+        except Exception as e:
+            logger.error(f"Failed to fetch OKRs: {e}")
+            return []
+
+    def get_pacts(self, user_id: str, token: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Fetches the user's habit PACTs (Commitments)."""
+        try:
+            headers = {"Authorization": f"Bearer {token}"} if token else {}
+            base_url = os.environ.get("STUDY_PLAN_SERVICE_URL", "http://localhost:5500")
+            res = requests.get(f"{base_url}/v1/pact/", params={"user_id": user_id}, headers=headers, timeout=5)
+            return res.json() if res.status_code == 200 else []
+        except Exception as e:
+            logger.error(f"Failed to fetch PACTs: {e}")
+            return []
+
+    def get_review_cycles(self, user_id: str, token: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Fetches the history of review cycles (Daily, Weekly, Phase)."""
+        try:
+            headers = {"Authorization": f"Bearer {token}"} if token else {}
+            base_url = os.environ.get("STUDY_PLAN_SERVICE_URL", "http://localhost:5500")
+            res = requests.get(f"{base_url}/v1/review-cycles/", params={"user_id": user_id}, headers=headers, timeout=5)
+            return res.json() if res.status_code == 200 else []
+        except Exception as e:
+            logger.error(f"Failed to fetch Review Cycles: {e}")
+            return []
