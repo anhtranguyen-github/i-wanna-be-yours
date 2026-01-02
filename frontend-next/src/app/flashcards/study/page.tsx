@@ -281,6 +281,30 @@ export default function StudyPage() {
 
     const currentCard = queue[currentIndex];
 
+    if (!currentCard && !loading && !sessionComplete) {
+        return (
+            <div className="min-h-screen bg-background flex flex-col items-center justify-center p-8 text-center gap-6">
+                <div className="w-16 h-16 bg-success/10 text-success rounded-2xl flex items-center justify-center">
+                    <CheckCircle2 size={32} />
+                </div>
+                <h2 className="text-2xl font-black text-foreground font-display mb-2">
+                    All Nodes Synchronized
+                </h2>
+                <p className="text-neutral-ink font-bold mb-6 max-w-sm">
+                    Review complete. No further synaptic reinforcement required at this time.
+                </p>
+                <Link
+                    href="/flashcards"
+                    className="px-6 py-3 bg-foreground text-background font-black font-display text-sm rounded-xl hover:bg-foreground/90 transition-colors"
+                >
+                    Return to Hub
+                </Link>
+            </div>
+        );
+    }
+
+    if (!currentCard) return null; // Should not happen given guard above
+
     return (
         <div className="min-h-screen bg-neutral-beige/20 flex flex-col selection:bg-primary/20 overflow-hidden font-display relative">
 
@@ -293,7 +317,7 @@ export default function StudyPage() {
             />
 
             <StudyHeader
-                title={currentCard.set_name}
+                title={currentCard.set_name || 'General Practice'}
                 currentIndex={currentIndex}
                 totalCards={queue.length}
                 knownCount={knownCount}

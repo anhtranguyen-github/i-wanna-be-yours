@@ -76,6 +76,22 @@ def health_check():
     return jsonify({"message": "OK", "service": "flask-core", "port": flask_port}), 200
 
 
+@app.route("/v1/enhance-vocabulary", methods=["POST"])
+def enhance_vocabulary():
+    """
+    Stub endpoint for vocabulary enhancement.
+    Accepts parsed text data and userId, intended to add 'status' (known/unknown) content.
+    For now, returns the data as-is to unblock the frontend.
+    """
+    try:
+        data = request.json
+        # parsed_data is expected in data['data']
+        # we can add logic here later to check against flashcardDB
+        return jsonify(data.get("data", [])), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 
 
 # ---------------- Class imports ----------------- #

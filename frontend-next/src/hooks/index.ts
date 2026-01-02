@@ -8,6 +8,8 @@
 export { useArtifacts, useArtifactsMutate } from './useArtifacts';
 export { useChatStream, type ChatMessage } from './useChatStream';
 export { useConversation } from './useConversation';
+export { useIngestionStatus } from './useIngestionStatus';
+export { useChatComposer } from './useChatComposer';
 
 // Existing hooks
 export { useIsMobile } from './use-mobile';

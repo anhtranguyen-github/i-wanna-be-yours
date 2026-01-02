@@ -62,6 +62,11 @@ const nextConfig = {
         destination: '/study-plan',
         permanent: true,
       },
+      {
+        source: '/japanese/reading/:slug*',
+        destination: '/library/reading/:slug*',
+        permanent: true,
+      },
     ];
   },
   eslint: {

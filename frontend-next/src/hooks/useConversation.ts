@@ -45,6 +45,13 @@ interface UseConversationReturn {
      * Manually revalidate conversation
      */
     revalidate: () => Promise<void>;
+    /**
+     * Optimistically update messages
+     */
+    mutateMessages: (
+        action: Message[] | ((current: Message[]) => Message[]),
+        shouldRevalidate?: boolean
+    ) => Promise<void>;
 }
 
 const CONVERSATION_SWR_CONFIG = {
@@ -84,6 +91,26 @@ export function useConversation(
         await mutate();
     }, [mutate]);
 
+    // Optimistic mutation helper
+    const mutateMessages = useCallback(async (
+        action: Message[] | ((current: Message[]) => Message[]),
+        shouldRevalidate: boolean = true
+    ) => {
+        await mutate(currentData => {
+            if (!currentData) return undefined; // Can't mutate if no conversation exists yet? Actually we might want to create one?
+            // Assuming conversation exists if we are sending messages
+            const currentMessages = currentData.messages || [];
+            const newMessages = typeof action === 'function'
+                ? action(currentMessages)
+                : action;
+
+            return {
+                ...currentData,
+                messages: newMessages
+            };
+        }, shouldRevalidate);
+    }, [mutate]);
+
     return useMemo(() => ({
         conversation: data ?? null,
         messages: data?.messages ?? EMPTY_MESSAGES,
@@ -91,5 +118,6 @@ export function useConversation(
         isLoading,
         error,
         revalidate,
-    }), [data, isLoading, error, revalidate]);
+        mutateMessages
+    }), [data, isLoading, error, revalidate, mutateMessages]);
 }
