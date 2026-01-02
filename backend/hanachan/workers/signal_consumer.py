@@ -42,10 +42,16 @@ class SignalConsumer:
 
     def _dispatch_to_agent(self, signal: Signal):
         """
-        Wake up the Agent Workflow.
+        Wake up the Agent Workflow with full traceability.
         """
-        print(f"!!! WAKING AGENT !!! Signal: {signal.type} | Priority: {signal.priority} | Trace: {signal.trace_id}")
-        # Here we would call langgraph_workflow.invoke(signal)
+        print(f"[TRACING] ID: {signal.trace_id} | USER: {signal.user_id} | EVENT: {signal.type}")
+        try:
+            # We use the enhanced agent
+            from backend.hanachan.workflows.enhanced_agent import study_agent
+            study_agent.handle_interaction(signal)
+            print(f"[TRACING] ID: {signal.trace_id} | STATUS: SUCCESS")
+        except Exception as e:
+            print(f"[TRACING] ID: {signal.trace_id} | STATUS: FAILED | ERROR: {e}")
     
     def run(self):
         """
