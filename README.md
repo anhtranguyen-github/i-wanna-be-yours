@@ -1,4 +1,4 @@
-# 🌸 Hanabira.org - AI-Powered Japanese Learning Platform
+# 🌸 Hanachan.org - AI-Powered Japanese Learning Platform
 
 > **Full-stack, production-grade Japanese language learning platform featuring an autonomous AI tutor, memory-driven adaptive learning, real-time streaming chat, and comprehensive study management.**
 
