@@ -1,0 +1,32 @@
+[project]
+name = "resource-service"
+version = "0.1.0"
+description = "Neural Resource Service for Hanachan - Handles file management and RAG ingestion"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.109.0",
+    "uvicorn>=0.27.0",
+    "motor>=3.3.2",
+    "pydantic>=2.0.0",
+    "python-dotenv>=1.2.1",
+    "requests>=2.32.5",
+    "pypdf2>=3.0.1",
+    "python-docx>=1.2.0",
+    "qdrant-client",
+    "langchain",
+    "langchain-qdrant",
+    "langchain-openai",
+    "langchain-ollama",
+    "langchain-community",
+    "langchain-experimental",
+    "redis",
+    "rq",
+    "werkzeug",
+    "python-magic",
+    "cryptography",
+    "python-multipart",
+    "pyjwt"
+]
+
+[tool.uv]
+managed = true
