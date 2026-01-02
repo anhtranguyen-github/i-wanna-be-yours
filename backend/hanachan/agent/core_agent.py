@@ -68,8 +68,9 @@ class HanachanAgent:
                prompt: str, 
                session_id: str,
                user_id: str, 
-               resource_ids: List[str] = None,
+                resource_ids: List[str] = None,
                chat_history: List[Dict[str, str]] = None,
+               summary: str = None,
                stream: bool = False,
                token: str = None) -> Any:
         
@@ -97,8 +98,8 @@ class HanachanAgent:
         # 1. Gather Resource Context (RAG)
         if resource_ids:
             try:
-                # Retrieve relevant chunks from the selected resources
-                resource_context = self.memory_manager.retrieve_resource_context(prompt, user_id, resource_ids)
+                # Retrieve relevant chunks from the selected resources via NRS microservice
+                resource_context = self.memory_manager.retrieve_resource_context(prompt, user_id, resource_ids, token=token)
                 if resource_context:
                     logger.info("📄 [Agent] Injecting resource context into Prompt.")
                     system_text += f"\n\n## RELEVANT RESOURCE EXCERPTS:\n{resource_context}"
@@ -107,19 +108,27 @@ class HanachanAgent:
             except Exception as e:
                 logger.error(f"Resource Retrieval Error: {e}")
             
-        # 2. Gather Memory Context
-        try:
-            # Pass user_id for scoped retrieval
-            memory_context = self.memory_manager.retrieve_context(prompt, user_id=user_id, token=token)
-            if memory_context:
-                system_text += f"\n\n{memory_context}"
-        except Exception as e:
-            logger.error(f"Memory retrieval failed: {e}")
+        # 2. Gather Memory Context (LTM)
+        if os.environ.get("LTM_ENABLED", "True").lower() == "true":
+            try:
+                # Pass user_id for scoped retrieval
+                memory_context = self.memory_manager.retrieve_context(prompt, user_id=user_id, token=token)
+                if memory_context:
+                    system_text += f"\n\n{memory_context}"
+            except Exception as e:
+                logger.error(f"Memory retrieval failed: {e}")
+        else:
+            logger.info("🧠 [Agent] LTM is disabled. Skipping past conversation and KG retrieval.")
 
         # 3. Construct Messages
         from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
         
         messages = [SystemMessage(content=system_text)]
+        
+        # Inject Summary if available
+        if summary:
+            logger.info("🎬 [Agent] Injecting conversation summary into Context.")
+            messages.append(SystemMessage(content=f"## PREVIOUS CONVERSATION SUMMARY:\n{summary}\n\nUse the above summary to maintain continuity with older parts of the conversation."))
         
         # Inject Chat History
         for msg in chat_history:

@@ -77,22 +77,44 @@ class MemoryManager:
         except Exception as e:
             logger.error(f"MemoryManager: Memory LLM init failed: {e}")
 
-    def retrieve_resource_context(self, query: str, user_id: str, resource_ids: List[str]) -> str:
-        """Retrieves relevant chunks from attached resources."""
-        if not self.resource_memory or not resource_ids or not user_id:
+    def retrieve_resource_context(self, query: str, user_id: str, resource_ids: List[str], token: str = None) -> str:
+        """Retrieves relevant chunks from attached resources via NRS (MICROSERVICE)."""
+        if not resource_ids or not user_id:
             return ""
             
         try:
-            # We filter by resource_id to only search within attached docs
-            return self.resource_memory.retrieve(
-                query=query, 
-                user_id=user_id, 
-                k=5, 
-                metadata_filter={"resource_id": resource_ids}
-            )
+            import requests
+            # NRS_URL is http://localhost:5300/v1/resources
+            # Note: We call it through the Express proxy if possible, but internal cluster call is fine too.
+            # Local dev: http://localhost:5300/v1/resources/search
+            nrs_api = os.environ.get("NRS_API_URL", "http://localhost:5300/v1/resources")
+            headers = {"Authorization": f"Bearer {token}"} if token else {}
+            
+            # Form-encoded or JSON? Routes expect Form/JSON depending on implementation.
+            # My NRS routes use Form for search or Body?
+            # Let's check NRS routes again.
+            
+            payload = {
+                "query": query,
+                "resource_ids": resource_ids, # List
+                "limit": 5
+            }
+            
+            # NRS Search API (Async backend, but we call it sync here)
+            resp = requests.post(f"{nrs_api}/search", data=payload, headers=headers)
+            if resp.ok:
+                results = resp.json()
+                context_str = ""
+                for doc in results:
+                    title = doc["metadata"].get("title", "Unknown Source")
+                    context_str += f"\n[Source: {title}]:\n{doc['content']}\n"
+                return context_str.strip()
+            else:
+                logger.error(f"NRS Search failed: {resp.status_code} - {resp.text}")
+                
         except Exception as e:
-            logger.error(f"Error retrieving resource context: {e}")
-            return ""
+            logger.error(f"Error retrieving resource context from NRS: {e}")
+        return ""
 
     def retrieve_context(self, query: str, user_id: str, token: str = None) -> str:
         """Retrieves formatted context from both memory stores, scoped to user."""

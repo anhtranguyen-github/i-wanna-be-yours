@@ -16,6 +16,8 @@ from models.content.quiz import QuizSet, QuizQuestion, QuizOption
 from database.database import db
 import traceback
 
+from services.resource_processor import ResourceProcessor
+
 logger = logging.getLogger(__name__)
 
 class AgentService:
@@ -38,11 +40,22 @@ class AgentService:
             conv.session_id = request_data.session_id
             db.session.commit()
         
+        # Resolve Resource Titles for STM Mapping
+        resource_ids = request_data.context_config.resource_ids if request_data.context_config else []
+        attachments = []
+        if resource_ids:
+            processor = ResourceProcessor()
+            for rid in resource_ids:
+                meta = processor.get_resource_metadata(rid, token=request_data.token)
+                title = meta.get("title", "Unknown Resource") if meta else "Resource"
+                attachments.append({"id": rid, "title": title})
+
         # Save User Message
         user_msg = ChatMessage(
             conversation_id=conv.id,
             role="user",
             content=request_data.prompt,
+            attachments=attachments, # Now storing list of dicts: {id, title}
             context_configuration=request_data.context_config.dict() if request_data.context_config else None
         )
         db.session.add(user_msg)
@@ -369,14 +382,21 @@ class AgentService:
         # Fetch Chat History (Short-Term Memory) with Token Budget
         chat_history = []
         MAX_HISTORY_TOKENS = 2000
+        summary = None
         
+        if conv:
+            summary = conv.summary
+            
         if conv_id:
             try:
                 from utils.token_counter import estimate_tokens
                 
-                # Fetch larger batch (e.g., 50) to allow for filtering
-                recent_msgs = ChatMessage.query.filter_by(conversation_id=int(conv_id))\
-                    .order_by(ChatMessage.created_at.desc())\
+                # Fetch messages after the last summarization point
+                query = ChatMessage.query.filter_by(conversation_id=int(conv_id))
+                if conv and conv.last_summarized_msg_id:
+                    query = query.filter(ChatMessage.id > conv.last_summarized_msg_id)
+                
+                recent_msgs = query.order_by(ChatMessage.created_at.desc())\
                     .limit(50)\
                     .all()
                 
@@ -410,6 +430,7 @@ class AgentService:
             user_id=request_data.user_id,
             resource_ids=resource_ids,
             chat_history=chat_history,
+            summary=summary,
             stream=True,
             token=request_data.token
         ):
@@ -433,6 +454,20 @@ class AgentService:
                 db.session.add(asst_msg)
                 db.session.commit()
                 print(f"Streaming Persistence Complete for Conv {conv_id}")
+                
+                # Enqueue Summarization Task
+                try:
+                    from services.queue_factory import get_queue
+                    from tasks.summarization import summarize_conversation_task
+                    
+                    q = get_queue()
+                    # We only trigger if the message count is likely to be over the buffer
+                    # to avoid spamming jobs on every single short exchange
+                    q.enqueue(summarize_conversation_task, conversation_id=int(conv_id))
+                    logger.info(f"Enqueued summarization task for conversation {conv_id}")
+                except Exception as q_e:
+                    logger.warning(f"Failed to enqueue summarization task: {q_e}")
+
             except Exception as e:
                 print(f"Streaming Persistence Error (Post-stream): {e}")
                 db.session.rollback()
