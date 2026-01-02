@@ -59,3 +59,4 @@ chroma_db/
 mongo_data/
 
 
+*.pdf
