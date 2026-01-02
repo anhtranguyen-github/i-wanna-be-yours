@@ -269,6 +269,7 @@ mkdir -p "$LOG_ROOT/express-db" "$LOG_ROOT/flask-dynamic-db" "$LOG_ROOT/study-pl
 
 # --- Argument Parsing ---
 SHOULD_SEED=false
+SHOULD_REBUILD=false
 MODE="dev"
 
 for arg in "$@"; do
@@ -280,6 +281,9 @@ for arg in "$@"; do
     fi
     if [[ "$arg" == "prod" || "$arg" == "--prod" ]]; then
         MODE="prod"
+    fi
+    if [[ "$arg" == "rebuild" || "$arg" == "--rebuild" ]]; then
+        SHOULD_REBUILD=true
     fi
 done
 
@@ -554,6 +558,10 @@ log "✅ Started hanachan-worker (PID: $pid)"
     cd frontend-next || exit 1
     
     if [ "$MODE" == "prod" ]; then
+        if [ "$SHOULD_REBUILD" = true ] || [ ! -d ".next" ]; then
+             log "🔨 Building frontend-next for production..."
+             npm run build
+        fi
         log "🚀 Starting frontend-next (OPTIMIZED PRODUCTION)..."
         npm start > "$LOG_ROOT/frontend/next_3000.log" 2>&1
     else
