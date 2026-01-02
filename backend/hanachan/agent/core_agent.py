@@ -5,6 +5,7 @@ from services.resource_processor import ResourceProcessor
 from langchain_core.messages import SystemMessage, HumanMessage
 from memory.manager import MemoryManager, get_memory_manager
 from services.llm_factory import ModelFactory
+from agent.neural_swarm import swarm_instance
 from agent.tools.study_tools import (
     generate_suggested_goals, 
     audit_study_progress, 
@@ -12,7 +13,10 @@ from agent.tools.study_tools import (
     perform_detailed_audit,
     update_goal_progress,
     query_learning_records,
-    recalibrate_study_priorities
+    recalibrate_study_priorities,
+    create_study_flashcards,
+    create_study_quiz,
+    create_practice_exam
 )
 
 logger = logging.getLogger(__name__)
@@ -34,13 +38,23 @@ class HanachanAgent:
             perform_detailed_audit,
             update_goal_progress,
             query_learning_records,
-            recalibrate_study_priorities
+            recalibrate_study_priorities,
+            create_study_flashcards,
+            create_study_quiz,
+            create_practice_exam
         ]
         try:
-            self.llm_with_tools = self.llm.bind_tools(self.tools)
+            self.llm_with_tools = ModelFactory.create_chat_model(temperature=0.7, tools=self.tools)
         except Exception as e:
-            logger.warning(f"Tool binding not supported for this model: {e}")
+            logger.warning(f"Tool binding failed via factory: {e}")
             self.llm_with_tools = self.llm
+        
+        # Ensure base LLM is also available for streaming if needed
+        # Note: Streaming with fallbacks works differently, but we keep self.llm as primary reference if possible, 
+        # or we might need to recreate it without tools.
+        # Actually, self.llm is used in `_stream_generator` for direct streaming.
+        # Let's keep a separate reference for direct text (with fallback but no tools)
+        self.llm = ModelFactory.create_chat_model(temperature=0.7)
 
     def _get_system_prompt(self) -> str:
         try:
@@ -122,12 +136,40 @@ class HanachanAgent:
             
         messages.append(HumanMessage(content=prompt))
 
+        # --- NEURAL SWARM ROUTING ---
+        # First, check if this request should be handled by a specialist sub-agent
+        specialist_used = None
+        try:
+            swarm_response = swarm_instance.route_and_solve(prompt, user_id, token, chat_history, base_messages=messages)
+            if swarm_response != "GENERAL_FALLBACK":
+                logger.info("🐝 [Agent] Request solved by Neural Swarm Specialist.")
+                self.memory_manager.save_interaction(session_id, user_id, prompt, swarm_response)
+                
+                # Log specialist usage to traces
+                try:
+                    from backend.hanachan.services.observability import obs_service
+                    obs_service.log_event("swarm_task", user_id, "specialist_invoked", "SUCCESS", {
+                        "prompt": prompt[:50],
+                        "response_summary": swarm_response[:50]
+                    })
+                except: pass
+                
+                return swarm_response
+        except Exception as e:
+            logger.error(f"Swarm Error: {e}")
+        # ----------------------------
+
         try:
             if stream:
                 return self._stream_generator(messages, prompt, session_id, user_id, token=token)
             else:
                 return self._run_agent_loop(messages, session_id, user_id, prompt, token=token)
         except Exception as e:
+            error_str = str(e).lower()
+            if "rate limit" in error_str or "429" in error_str:
+                logger.error(f"⚠️ [Agent] Groq Rate Limit Hit: {e}")
+                return "My neural pathways are currently overloaded (Rate Limit Exceeded). Please try again in a moment."
+            
             logger.error(f"Agent Error: {e}")
             return f"My neural core is currently recalibrating. (Error: {str(e)})"
 
@@ -199,6 +241,26 @@ class HanachanAgent:
                         if 'user_id' in tool.args: t_args['user_id'] = user_id
                         if 'token' in tool.args: t_args['token'] = token
                         result = tool.invoke(t_args)
+
+                        # Intercept Artifacts
+                        import json
+                        try:
+                            res_data = json.loads(str(result))
+                            if isinstance(res_data, dict) and "artifact_id" in res_data:
+                                logger.info(f"🎨 [Stream] Found artifact in tool output: {res_data['title']}")
+                                artifact_info = {
+                                    "id": res_data["artifact_id"],
+                                    "type": res_data["type"],
+                                    "title": res_data["title"],
+                                    "data": {} # Minimal data, frontend will fetch full content if needed or use ID
+                                }
+                                yield f"__METADATA__:{json.dumps({'artifacts': [artifact_info]})}\n"
+                                
+                                # Use clean message for LLM context so it doesn't hallucinate JSON
+                                result = res_data.get("display_message", str(result))
+                        except Exception:
+                            pass # Not JSON or not artifact, ignore
+
                         messages.append(ToolMessage(content=str(result), tool_call_id=tc['id']))
                 
                 # Stream the final conclusion
@@ -217,5 +279,10 @@ class HanachanAgent:
             self.memory_manager.save_interaction(session_id, user_id, user_prompt, full_response)
             
         except Exception as e:
-            logger.error(f"Streaming error: {e}")
-            yield "I encountered a neural synchronization error."
+            error_str = str(e).lower()
+            if "rate limit" in error_str or "429" in error_str:
+                logger.error(f"⚠️ [Agent Stream] Groq Rate Limit Hit: {e}")
+                yield "My neural pathways are currently overloaded (Rate Limit Exceeded). Please wait a moment."
+            else:
+                logger.error(f"Streaming error: {e}")
+                yield "I encountered a neural synchronization error."
