@@ -120,6 +120,16 @@ app.use("/e-api/v1/f", verifyJWT, createProxyMiddleware({
   }
 }));
 
+// --- NRS Proxy ---
+// Route all /e-api/v1/r/ requests to the Neural Resource Service on port 5300
+app.use("/e-api/v1/r", verifyJWT, createProxyMiddleware({
+  target: 'http://localhost:5300/v1/resources',
+  changeOrigin: true,
+  pathRewrite: {
+    '^/e-api/v1/r': '', // remove /e-api/v1/r from the path
+  }
+}));
+
 // ---------------- Function Definitions ------------------ //
 const getAllWords = async (req, res) => {
   try {
