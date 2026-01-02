@@ -1,5 +1,5 @@
 {
-  "name": "hanabira-express",
+  "name": "hanachan-express",
   "version": "1.0.0",
   "scripts": {
     "start": "node my_server.js",

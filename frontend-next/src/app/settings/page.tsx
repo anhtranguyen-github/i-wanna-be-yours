@@ -137,7 +137,7 @@ export default function SettingsPage() {
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `hanabira-data-${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `hanachan-data-${new Date().toISOString().split('T')[0]}.json`;
             a.click();
             URL.revokeObjectURL(url);
         } catch (err) {
@@ -193,7 +193,7 @@ export default function SettingsPage() {
         return (
             <AuthErrorScreen
                 title="Restricted Access"
-                message="Your personal armory is locked. Please sign in to manage your Hanabira preferences."
+                message="Your personal armory is locked. Please sign in to manage your Hanachan preferences."
             />
         );
     }
@@ -340,7 +340,7 @@ export default function SettingsPage() {
                     <div className="bg-gradient-to-br from-neutral-ink to-slate-800 rounded-[2.5rem] p-8 text-white shadow-xl">
                         <Share2 size={32} className="text-primary-sky mb-4" />
                         <h4 className="text-xl font-black mb-2">Invite Others</h4>
-                        <p className="text-sm font-medium text-white/60 mb-6 leading-relaxed">Share your learning progress and challenge your allies to join the Hanabira Nexus.</p>
+                        <p className="text-sm font-medium text-white/60 mb-6 leading-relaxed">Share your learning progress and challenge your allies to join the Hanachan Nexus.</p>
                         <button className="w-full py-3 bg-white/10 hover:bg-white/20 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all">Generate Invite</button>
                     </div>
 

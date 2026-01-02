@@ -8,7 +8,7 @@
 const mongoose = require('mongoose');
 require('dotenv').config({ path: '../../.env' });
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/zenRelationshipsAutomated';
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/hanachan';
 
 // Define schema inline for standalone script
 const QuestionSchema = new mongoose.Schema({
@@ -32,7 +32,7 @@ const PracticeNodeSchema = new mongoose.Schema({
     skills: [String],
     origin: { type: String, default: 'system' },
     visibility: { type: String, default: 'global' },
-    creatorName: { type: String, default: 'Hanabira Official' },
+    creatorName: { type: String, default: 'Hanachan Official' },
     userId: { type: mongoose.Schema.Types.ObjectId, default: null },
     timeLimitMinutes: { type: Number, default: null },
     questions: [QuestionSchema],
@@ -54,7 +54,7 @@ const SEED_DATA = [
         skills: ['VOCABULARY'],
         origin: 'system',
         visibility: 'global',
-        creatorName: 'Hanabira Official',
+        creatorName: 'Hanachan Official',
         timeLimitMinutes: 10,
         questions: [
             {
@@ -81,7 +81,7 @@ const SEED_DATA = [
         skills: ['GRAMMAR'],
         origin: 'system',
         visibility: 'global',
-        creatorName: 'Hanabira Official',
+        creatorName: 'Hanachan Official',
         timeLimitMinutes: 15,
         questions: [
             {

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 require('dotenv').config({ path: '../../.env' });
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/zenRelationshipsAutomated';
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/hanachan';
 
 const FlashcardSchema = new mongoose.Schema({
     front: String,
@@ -17,7 +17,7 @@ const FlashcardSet = mongoose.model('FlashcardSet', new mongoose.Schema({
     level: { type: String, default: 'N3' },
     tags: [String],
     visibility: { type: String, default: 'global' },
-    creatorName: { type: String, default: 'Hanabira' },
+    creatorName: { type: String, default: 'Hanachan' },
     cards: [FlashcardSchema]
 }));
 
@@ -29,7 +29,7 @@ const SET_DATA = [
         level: "N5",
         tags: ["kanji", "beginner"],
         visibility: "global",
-        creatorName: "Hanabira Official",
+        creatorName: "Hanachan Official",
         cards: [
             { front: "日", back: "Day / Sun", reading: "ひ / にち", mnemonic: "Looks like a window where the sun shines in." },
             { front: "月", back: "Month / Moon", reading: "つき / げつ", mnemonic: "Looks like a crescent moon with two rays." },
@@ -43,7 +43,7 @@ const SET_DATA = [
         level: "N4",
         tags: ["vocabulary", "adjectives"],
         visibility: "global",
-        creatorName: "Hanabira Official",
+        creatorName: "Hanachan Official",
         cards: [
             { front: "高い", back: "Expensive / High", reading: "たかい" },
             { front: "安い", back: "Cheap", reading: "やすい" },

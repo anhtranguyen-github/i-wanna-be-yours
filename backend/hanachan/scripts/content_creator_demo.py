@@ -16,7 +16,7 @@ import os
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://localhost:11434/api/chat")
 OLLAMA_MODEL = os.environ.get("CHAT_MODEL", "qwen3:1.7b")
 MONGO_URI = os.environ.get("MONGO_URI", "mongodb://localhost:27017")
-DB_NAME = os.environ.get("DB_NAME", "hanabira")
+DB_NAME = os.environ.get("DB_NAME", "hanachan")
 COLLECTION = "ai_generated_contents"
 
 # === Data Models for Practice, Quoot, Flashcards ===

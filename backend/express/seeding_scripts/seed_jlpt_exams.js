@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const { JLPTUserExam } = require('../models/JLPTUserExam');
 
 // MongoDB connection (matches my_server.js)
-const MONGO_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/hanabira';
+const MONGO_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/hanachan';
 
 // System user ID for seeded content (placeholder ObjectId)
 const SYSTEM_USER_ID = new mongoose.Types.ObjectId('000000000000000000000001');

@@ -15,13 +15,13 @@ echo "Logging in to test account (timeout 10s)..."
 curl -v --connect-timeout 5 --max-time 10 -X POST "$API_URL" \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "student@hanabira.org",
+    "email": "student@hanachan.org",
     "password": "password123"
   }'
 
 echo -e "\n\nLogin request finished."
 
 
-# testuser2@hanabira.org
+# testuser2@hanachan.org
 # TestPass123!
 

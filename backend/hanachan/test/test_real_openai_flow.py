@@ -55,7 +55,7 @@ def test_real_flow():
         time.sleep(5)
         
         import subprocess
-        logs = subprocess.check_output(["docker", "logs", "hanabiraorg-worker-1"]).decode('utf-8')
+        logs = subprocess.check_output(["docker", "logs", "hanachanorg-worker-1"]).decode('utf-8')
         
         if session_id in logs and "Finished processing interaction" in logs:
             print(f"✅ Background worker successfully processed {session_id}")

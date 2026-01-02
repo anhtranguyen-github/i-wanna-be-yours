@@ -96,7 +96,7 @@ export default function ProfileSettingsPage() {
                         Back to Settings
                     </Link>
                     <h1 className="text-4xl font-black text-neutral-ink font-display">Edit Profile</h1>
-                    <p className="text-neutral-ink/60 font-medium">How the community sees you on Hanabira.</p>
+                    <p className="text-neutral-ink/60 font-medium">How the community sees you on Hanachan.</p>
                 </div>
 
                 {/* Form */}

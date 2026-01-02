@@ -243,7 +243,7 @@ export default function ProfilePage() {
                                             <div>
                                                 <div className="flex items-center justify-center md:justify-start gap-3 flex-wrap">
                                                     <h1 className="text-4xl font-black text-neutral-ink font-display tracking-tight">Active Scholar</h1>
-                                                    <span className="px-3 py-1 bg-primary-strong/10 text-primary-strong text-[10px] font-black uppercase tracking-widest rounded-full leading-none">Hanabira Pro</span>
+                                                    <span className="px-3 py-1 bg-primary-strong/10 text-primary-strong text-[10px] font-black uppercase tracking-widest rounded-full leading-none">Hanachan Pro</span>
                                                 </div>
                                                 <p className="text-neutral-ink/40 font-bold mt-1">{user.email}</p>
                                             </div>

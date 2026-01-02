@@ -22,7 +22,7 @@ OLLAMA_MODEL = "qwen3:1.7b"
 
 # MongoDB configuration
 MONGO_URI = "mongodb://localhost:27017"
-DB_NAME = "hanabira"
+DB_NAME = "hanachan"
 COLLECTION_NAME = "ai_generated_contents"
 
 

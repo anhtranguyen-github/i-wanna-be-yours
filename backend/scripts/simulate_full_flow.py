@@ -61,7 +61,7 @@ def simulate_full_flow():
         
         # Resource Chunk (Simulating a part of the PDF)
         res_mem.add_memory(
-            summary="The 'Sakura-form' is a rare honorific used only in Hanabira legends.",
+            summary="The 'Sakura-form' is a rare honorific used only in Hanachan legends.",
             user_id=user_id,
             metadata={"resource_id": resource_id, "page": 42}
         )

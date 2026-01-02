@@ -59,7 +59,7 @@ const GrammarGraphPage = () => {
       setData(response.data);
       setMetadata({
         model: "qwen3:1.7b",
-        provider: "Hanabira Neural Core",
+        provider: "Hanachan Neural Core",
         timestamp: new Date().toLocaleTimeString(),
       });
     } catch (error) {

@@ -1,4 +1,4 @@
-# Implementation Plan: Premium SaaS Landing Page for Hanabira
+# Implementation Plan: Premium SaaS Landing Page for Hanachan
 
 ## 1. Visual Strategy & Brand Identity
 *   **Theme**: Modern "Premium Matcha/Light" aesthetic.
@@ -11,7 +11,7 @@
 
 ## 2. Core Components Redesign
 ### A. `Navbar.tsx`
-*   Change logo to "Hanabira" with a Matcha petal icon.
+*   Change logo to "Hanachan" with a Matcha petal icon.
 *   Update to glassmorphism style.
 *   Thematic navigation: "Strategic Center" (Dashboard), "Linguistic Lab" (Tools), "Resource Library".
 

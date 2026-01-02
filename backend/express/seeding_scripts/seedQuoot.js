@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 require('dotenv').config({ path: '../../.env' }); // Adjust path as needed
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/zenRelationshipsAutomated';
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/hanachan';
 
 const QuootCardSchema = new mongoose.Schema({
     front: String,
@@ -16,7 +16,7 @@ const QuootArena = mongoose.model('QuootArena', new mongoose.Schema({
     icon: { type: String, default: '⚔️' },
     level: { type: String, default: 'N3' },
     visibility: { type: String, default: 'global' },
-    creatorName: { type: String, default: 'Hanabira' },
+    creatorName: { type: String, default: 'Hanachan' },
     cards: [QuootCardSchema]
 }));
 
@@ -27,7 +27,7 @@ const ARENA_DATA = [
         icon: "🦾",
         level: "N2",
         visibility: "global",
-        creatorName: "Hanabira Official",
+        creatorName: "Hanachan Official",
         cards: [
             { front: "電脳", back: "Cyberbrain", reading: "でんのう" },
             { front: "強化", back: "Enhancement", reading: "きょうか" },
@@ -41,7 +41,7 @@ const ARENA_DATA = [
         icon: "🏃",
         level: "N4",
         visibility: "global",
-        creatorName: "Hanabira Official",
+        creatorName: "Hanachan Official",
         cards: [
             { front: "勉強する", back: "to study", reading: "べんきょうする" },
             { front: "散歩する", back: "to take a walk", reading: "さんぽする" },

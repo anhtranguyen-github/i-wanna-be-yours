@@ -22,7 +22,7 @@ const { TanosWord } = require('../models/wordTanos');
 const { Sentence } = require('../models/sentence');
 const { Reading } = require('../models/reading');
 
-const MONGO_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/hanabira';
+const MONGO_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/hanachan';
 const SYSTEM_USER_ID = new mongoose.Types.ObjectId('000000000000000000000001');
 
 // AI Generated Content Collection
