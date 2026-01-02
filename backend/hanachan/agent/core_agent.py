@@ -62,7 +62,7 @@ class HanachanAgent:
             with open(skill_path, 'r', encoding='utf-8') as f:
                 return f.read()
         except:
-            return "You are Hanachan, an AI language tutor for Hanabira.org. Help users with Japanese/Korean learning."
+            return "You are Hanachan, an AI language tutor for Hanachan.org. Help users with Japanese/Korean learning."
 
     def invoke(self, 
                prompt: str, 
