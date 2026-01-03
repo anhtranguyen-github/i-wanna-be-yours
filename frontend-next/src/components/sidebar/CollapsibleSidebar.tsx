@@ -314,9 +314,9 @@ export function CollapsibleSidebar({ className = '' }: CollapsibleSidebarProps) 
                                                         e.preventDefault();
                                                         e.stopPropagation();
                                                         stageResource({
-                                                            id: resource.id,
+                                                            id: String(resource.id),
                                                             title: resource.title,
-                                                            type: resource.type || 'document'
+                                                            type: (resource.type as 'document' | 'image' | 'audio') || 'document'
                                                         });
                                                     }}
                                                     className="p-2 hover:bg-primary/10 rounded-lg text-neutral-ink hover:text-primary transition-all active:scale-90"
