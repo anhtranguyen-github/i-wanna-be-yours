@@ -37,9 +37,14 @@ This document defines the non-negotiable logic and flow constraints that ALL sub
 - If a legacy record is encountered, the system should **throw a general error** and skip it.
 - Prioritize cleaning the foundation over maintaining backward compatibility for experimental data.
 
+## 8. Real-World Validation (No Mocks)
+- **Zero Mocking of Models**: All reasoning and intent detection MUST be performed by real models running in the Ollama docker container. 
+- **Physical Data Seeding**: If specific data states are required for a test, they must be physically seeded into the database (Mongo/Neo4j/Postgres) before the test runs. Mocking database returns is prohibited.
+- **Simulation Boundary**: We can only simulate the *human* side (user chat messages). We must never simulate the *model* side (the agent's response). The system must prove its behavior through live inference.
+
 ---
 
-## 8. Directory Mapping
+## 9. Directory Mapping
 - **Config**: `backend/hanachan/config/` (Manifests & Policies)
 - **Engine**: `backend/hanachan/agent/engine/` (Aperture, PolicyEngine)
 - **Schema**: `backend/hanachan/schemas/` (Unified I/O models)
