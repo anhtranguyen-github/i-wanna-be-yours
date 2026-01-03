@@ -100,6 +100,13 @@ class HanachanAgent:
             intent_id = "admin_destructive_action"
             
         intent_decision = self.policy_engine.evaluate_intent(intent_id, user_id)
+        
+        self.memory_manager.log_trace(session_id, user_id, "intent_detection", {
+            "intent": intent_id,
+            "allowed": intent_decision["allowed"],
+            "reason": intent_decision.get("reason")
+        })
+
         if not intent_decision["allowed"]:
             logger.warning(f"🛡️ [Policy] Intent REJECTED: {intent_decision['reason']}")
             # We skip background persistence for rejected hostile intents
@@ -129,6 +136,7 @@ class HanachanAgent:
         asyncio.set_event_loop(loop)
         
         try:
+            self.memory_manager.log_trace(session_id, user_id, "aperture_start", {"query": prompt[:100]})
             learner_context = loop.run_until_complete(
                 self.context_assembler.assemble(
                     query=prompt,
@@ -140,8 +148,13 @@ class HanachanAgent:
             # Transform to narrative situation report
             situation_report = learner_context.to_system_narrative()
             system_text += f"\n\n{situation_report}"
+            self.memory_manager.log_trace(session_id, user_id, "aperture_end", {
+                "memory_hits": len(learner_context.memories),
+                "resource_hits": len(learner_context.resources)
+            })
         except Exception as e:
             logger.error(f"Aperture assembly failed: {e}")
+            self.memory_manager.log_trace(session_id, user_id, "aperture_error", {"error": str(e)})
         finally:
             loop.close()
 
@@ -181,6 +194,10 @@ class HanachanAgent:
                 self.memory_manager.save_interaction(session_id, user_id, prompt, swarm_response)
                 
                 # Log specialist usage to traces
+                self.memory_manager.log_trace(session_id, user_id, "specialist_routing", {
+                    "specialist": swarm_instance.get_last_specialist() or "unknown",
+                    "status": "SUCCESS"
+                })
                 try:
                     from backend.hanachan.services.observability import obs_service
                     obs_service.log_event("swarm_task", user_id, "specialist_invoked", "SUCCESS", {
@@ -189,7 +206,26 @@ class HanachanAgent:
                     })
                 except: pass
                 
-                return swarm_response
+                # [SYSTEM] Result is now a Governed Package
+                # Specialist outputs might contain artifact references (JSON or IDs)
+                import re
+                p_artifact_ids = re.findall(r'[0-9a-fA-F]{24}', str(swarm_response))
+                p_artifacts = []
+                for aid in set(p_artifact_ids):
+                    try:
+                        from services.artifact_service import ArtifactService
+                        art = ArtifactService.get_artifact(aid)
+                        if art:
+                            p_artifacts.append({
+                                "id": aid,
+                                "type": art.get("type"),
+                                "title": art.get("title"),
+                                "data": art.get("data"),
+                                "metadata": art.get("metadata", {})
+                            })
+                    except: pass
+
+                return governor.package(swarm_response, proposed_artifacts=p_artifacts)
         except Exception as e:
             logger.error(f"Swarm Error: {e}")
         # ----------------------------
@@ -202,30 +238,8 @@ class HanachanAgent:
                 package = self._run_agent_loop(messages, session_id, user_id, prompt, token=token)
                 return package
         except Exception as e:
-            error_str = str(e).lower()
-            
-            # Rate limit detection
-            if "rate limit" in error_str or "429" in error_str:
-                logger.error(f"⚠️ [Agent] Rate Limit Hit: {e}")
-                return "My neural pathways are currently overloaded (Rate Limit Exceeded). The system will automatically use a fallback provider. Please try again."
-            
-            # Ollama OOM detection
-            if "memory" in error_str and ("gib" in error_str or "available" in error_str):
-                logger.error(f"⚠️ [Agent] Ollama OOM: {e}")
-                return "The local AI model requires more memory than available. Please try a smaller model or use cloud providers (Groq/OpenAI)."
-            
-            # Quota exhausted
-            if "quota" in error_str or "insufficient" in error_str:
-                logger.error(f"⚠️ [Agent] Quota Exhausted: {e}")
-                return "API quota has been exhausted. The system is switching to a fallback provider. Please try again."
-            
-            # Tool support error (Ollama models without tool support)
-            if "does not support tools" in error_str:
-                logger.warning(f"⚠️ [Agent] Model lacks tool support: {e}")
-                return "The current model does not support advanced features. Switching to text-only mode. Please try again."
-            
             logger.error(f"Agent Error: {e}")
-            return f"My neural core is currently recalibrating. (Error: {str(e)})"
+            return governor.package(f"My neural core is currently recalibrating. (Error: {str(e)})")
 
     def _run_agent_loop(self, messages: List[Any], session_id: str, user_id: str, prompt: str, token: str = None) -> UnifiedOutput:
         """
@@ -274,6 +288,7 @@ class HanachanAgent:
                         
                         try:
                             # [SYSTEM] Executes proposal
+                            self.memory_manager.log_trace(session_id, user_id, "tool_start", {"tool": t_name, "args": t_args})
                             result = tool.invoke(t_args)
                             # Check if tool result mentions an artifact ID
                             import re
@@ -282,9 +297,11 @@ class HanachanAgent:
                             if matches: produced_artifact_ids.extend(matches)
                             
                             messages.append(ToolMessage(content=str(result), tool_call_id=tc['id']))
+                            self.memory_manager.log_trace(session_id, user_id, "tool_end", {"tool": t_name, "status": "SUCCESS"})
                         except Exception as e:
                             logger.error(f"Tool execution failed ({t_name}): {e}")
                             messages.append(ToolMessage(content=f"Error: {str(e)}", tool_call_id=tc['id']))
+                            self.memory_manager.log_trace(session_id, user_id, "tool_error", {"tool": t_name, "error": str(e)})
                 
                 # Continue loop to let LLM process tool results
                 continue

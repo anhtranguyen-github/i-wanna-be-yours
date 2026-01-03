@@ -69,6 +69,10 @@ class HanachanNeuralSwarm:
             for name, card in skill_registry.cards.items()
         }
         self.supervisor_llm = ModelFactory.create_chat_model(temperature=0)
+        self._last_specialist = None
+
+    def get_last_specialist(self) -> str:
+        return self._last_specialist
 
     def route_and_solve(self, prompt: str, user_id: str, token: str = None, chat_history: List[Dict] = None, base_messages: List[BaseMessage] = None) -> str:
         """Routes to the correct 'Skill Card' based on the request."""
@@ -87,6 +91,7 @@ class HanachanNeuralSwarm:
         
         specialist = self.specialists.get(choice)
         if specialist:
+            self._last_specialist = choice
             logger.info(f"🐝 [Swarm] Activating Specialist: {choice}")
             # Use provided base_messages (which contain memory RAG) if available
             if base_messages:
@@ -100,6 +105,7 @@ class HanachanNeuralSwarm:
             messages.append(HumanMessage(content=prompt))
             return specialist.invoke(messages, user_id, token)
         
+        self._last_specialist = None
         return "GENERAL_FALLBACK"
 
 swarm_instance = HanachanNeuralSwarm()
