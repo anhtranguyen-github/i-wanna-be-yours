@@ -163,43 +163,28 @@ router.post('/arenas/:id/submit', optionalAuth, async (req, res) => {
         const arena = await QuootArena.findById(id).lean();
         if (!arena) return res.status(404).json({ error: 'Arena not found' });
 
-        // Calculate unified result for frontend
-        const unifiedResult = calculateQuootResult(arena, {
+        const accuracy = Math.round((correctCount / totalCards) * 100);
+        const attempt = new QuootAttempt({
+            arenaId: id,
+            userId,
+            isAnonymous: !userId,
             score,
             correctCount,
+            totalCards,
             maxStreak,
-            totalCards
+            accuracy
+        });
+        await attempt.save();
+
+        // Calculate unified result for frontend (include isAnonymous)
+        const unifiedResult = calculateQuootResult(arena, {
+            ...req.body,
+            isAnonymous: !userId
         });
 
-        // Only save to DB if user is authenticated
-        if (userId) {
-            const accuracy = Math.round((correctCount / totalCards) * 100);
-            const attempt = new QuootAttempt({
-                arenaId: id,
-                userId,
-                score,
-                correctCount,
-                totalCards,
-                maxStreak,
-                accuracy
-            });
-            await attempt.save();
-
-            return res.status(200).json({
-                attemptId: attempt._id.toString(),
-                result: unifiedResult
-            });
-        }
-
-        // Guest response
         res.status(200).json({
-            attemptId: 'guest-session',
-            result: {
-                ...unifiedResult,
-                xpEarned: 0, // Guests don't earn XP
-                coinsEarned: 0,
-                streakExtended: false
-            }
+            attemptId: attempt._id.toString(),
+            result: unifiedResult
         });
     } catch (err) {
         console.error('Submit Quoot Attempt Error:', err);
@@ -212,30 +197,62 @@ router.post('/arenas/:id/submit', optionalAuth, async (req, res) => {
  */
 router.get('/attempts/:id', optionalAuth, async (req, res) => {
     try {
-        if (req.params.id === 'guest-session') {
-            return res.status(200).json({
-                result: {
-                    score: 0,
-                    accuracy: 0,
-                    feedback: { title: "Protocol Complete", message: "Analysis requires authentication.", suggestions: ["Sign in to save records"] }
-                }
-            });
-        }
-
-        if (!req.user) return res.status(401).json({ error: 'Authentication required' });
-
-        const userId = req.user.id || req.user.userId;
         const attempt = await QuootAttempt.findById(req.params.id)
             .populate('arenaId')
             .lean();
 
         if (!attempt) return res.status(404).json({ error: 'Attempt not found' });
-        if (attempt.userId.toString() !== userId) return res.status(403).json({ error: 'Forbidden' });
+
+        // Authorization logic:
+        // 1. If it's anonymous, anyone can view it via the deep link ID.
+        // 2. If it's owned by a user, only that user can view it.
+        if (!attempt.isAnonymous) {
+            if (!req.user) return res.status(401).json({ error: 'Authentication required' });
+
+            const userId = req.user.id || req.user.userId;
+            if (attempt.userId && attempt.userId.toString() !== userId) {
+                return res.status(403).json({ error: 'Forbidden' });
+            }
+        }
 
         const unifiedResult = calculateQuootResult(attempt.arenaId, attempt);
         res.status(200).json(unifiedResult);
     } catch (err) {
         console.error('Get Quoot Attempt Detail Error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+/**
+ * POST /attempts/:id/claim
+ * Claim an anonymous quoot attempt for the logged-in user
+ */
+router.post('/attempts/:id/claim', verifyJWT, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user.id || req.user.userId;
+
+        const attempt = await QuootAttempt.findById(id);
+
+        if (!attempt) {
+            return res.status(404).json({ error: 'Attempt not found' });
+        }
+
+        if (!attempt.isAnonymous || attempt.userId) {
+            return res.status(400).json({ error: 'This attempt has already been claimed or is not anonymous' });
+        }
+
+        // Link to user and remove anonymous flag
+        attempt.userId = userId;
+        attempt.isAnonymous = false;
+        await attempt.save();
+
+        res.status(200).json({
+            message: 'Quoot attempt successfully claimed',
+            id: attempt._id.toString()
+        });
+    } catch (err) {
+        console.error('Claim Quoot Attempt Error:', err);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

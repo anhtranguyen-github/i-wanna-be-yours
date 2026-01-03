@@ -145,6 +145,7 @@ function calculatePracticeResult(node, attempt) {
     return {
         sessionId: attempt._id ? attempt._id.toString() : Date.now().toString(),
         type: 'PRACTICE',
+        isAnonymous: !!attempt.isAnonymous,
         score: accuracy,
         accuracy,
         timeSeconds: timeSpentSeconds,
@@ -217,6 +218,7 @@ function calculateQuootResult(arena, gameState) {
     return {
         sessionId: Date.now().toString(),
         type: 'QUOOT',
+        isAnonymous: !!gameState.isAnonymous,
         score: accuracy,
         accuracy,
         timeSeconds: 0,

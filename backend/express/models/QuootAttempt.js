@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 
 const QuootAttemptSchema = new mongoose.Schema({
     arenaId: { type: mongoose.Schema.Types.ObjectId, ref: 'QuootArena', required: true },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false },
+    isAnonymous: { type: Boolean, default: false },
     score: { type: Number, required: true },
     correctCount: { type: Number, required: true },
     totalCards: { type: Number, required: true },

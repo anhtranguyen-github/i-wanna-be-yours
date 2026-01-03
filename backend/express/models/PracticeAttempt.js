@@ -14,7 +14,8 @@ const AnswerSchema = new mongoose.Schema({
 
 const PracticeAttemptSchema = new mongoose.Schema({
     nodeId: { type: mongoose.Schema.Types.ObjectId, ref: 'PracticeNode', required: true },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false },
+    isAnonymous: { type: Boolean, default: false },
     answers: [AnswerSchema],
     score: { type: Number, default: 0 },
     maxScore: { type: Number, default: 0 },
