@@ -106,18 +106,34 @@ Context is **selective**, not a "dump."
 
 ---
 
-## 7. Migration Roadmap
+## 7. Async Parallel Execution (The Conduit)
 
-1. **Phase 1: Declarative Config**
-    - Move `HanachanAgent.tools` to `manifest.yaml`.
-2. **Phase 2: The Context Assembler**
-    - Build the `Aperture` class to hide internal logic from `[LLM]`.
-3. **Phase 3: Governance Swap**
-    - Move from "LLM-decides-memory" to "LLM-proposes-memory".
-    - Replace `MemoryEvaluator` with `[SYSTEM]` rules.
+To maintain low latency, the **Context Assembly Engine** strictly follows a **Fan-Out Parallel Retrieval** model.
+
+### 7.1 The Parallel Retrieval Blueprint
+All memory sources are queried simultaneously using `asyncio.gather`. There are no blocking dependencies between different data types.
+
+```python
+# [SYSTEM] Parallel Intelligence Retrieval
+results = await asyncio.gather(
+    fetch_resources_rag(query),   # [SYSTEM] Qdrant (Textbooks/PDFs)
+    fetch_artifacts(user_id),     # [SYSTEM] MongoDB (Generated Quizzes/Flashcards)
+    fetch_episodic(user_id),      # [SYSTEM] Qdrant (Chat History)
+    fetch_semantic(user_id),      # [SYSTEM] Neo4j (Knowledge Graph)
+    fetch_study_plan(user_id)     # [SYSTEM] Service (Stats/Progress)
+)
+```
+
+- **Latency**: Total time is equal to the slowest single query (~100-200ms), not the sum.
+- **Speculative Execution**: The system starts pre-fetching STM and Study Data immediately upon receiving a request, even before [LLM] Intent Extraction is complete.
+
+### 7.2 Post-Response Processing (Fire-and-Forget)
+[SYSTEM] operations that do not affect the immediate response are offloaded to background tasks:
+- **`[SYSTEM]` Memory Updates**: Persisting new episodic/semantic memories.
+- **`[SYSTEM]` Audit Logging**: Recording tool usage and policy decisions.
+- **Persistence**: Scanned after the user receives the text stream.
 
 ---
 
-## 8. Final Vision One-Liner
-
-> "Hanachan is a secure operating system where the LLM is the reasoning interface, and the System is the sovereign authority."
+## 8. Migration Roadmap
+...
