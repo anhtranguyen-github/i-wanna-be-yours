@@ -58,10 +58,5 @@ chroma_db/
 
 mongo_data/
 
-notes_and_reports
-planning
-scripts
-tests
-workflows
-docs
+
 *.pdf
