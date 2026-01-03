@@ -172,13 +172,14 @@ class AITutorService {
     // --- Resources (Backend) ---
 
     async getResources(): Promise<Resource[]> {
-        const res = await authFetch(`/f-api/v1/resources`, {
+        const res = await authFetch(`${this.API_BASE_URL}/resource`, {
             headers: this.getHeaders()
         });
         if (!res.ok) return [];
         const data = await res.json();
+        const resources = data.resources || data;
 
-        return (Array.isArray(data) ? data : []).map((r: any) => ({
+        return (Array.isArray(resources) ? resources : []).map((r: any) => ({
             _id: r.id.toString(),
             type: r.type,
             content: r.content,
@@ -190,7 +191,7 @@ class AITutorService {
 
     async getResource(id: string): Promise<Resource | null> {
         try {
-            const res = await authFetch(`/f-api/v1/resources/${id}`, {
+            const res = await authFetch(`${this.API_BASE_URL}/resource/${id}`, {
                 headers: this.getHeaders()
             });
             if (!res.ok) return null;
@@ -207,7 +208,7 @@ class AITutorService {
     }
 
     async createResource(type: string, content: string, title: string): Promise<Resource> {
-        const res = await authFetch(`/f-api/v1/resources`, {
+        const res = await authFetch(`${this.API_BASE_URL}/resource`, {
             method: 'POST',
             headers: this.getHeaders(),
             body: JSON.stringify({ type, content, title })
@@ -226,7 +227,7 @@ class AITutorService {
     }
 
     async deleteResource(id: string): Promise<void> {
-        await authFetch(`/f-api/v1/resources/${id}`, {
+        await authFetch(`${this.API_BASE_URL}/resource/${id}`, {
             method: 'DELETE',
             headers: this.getHeaders()
         });
@@ -245,7 +246,7 @@ class AITutorService {
         // @ts-ignore
         delete headers['Content-Type'];
 
-        const response = await authFetch(`/f-api/v1/resources/upload`, {
+        const response = await authFetch(`${this.API_BASE_URL}/resource/upload`, {
             method: 'POST',
             headers: headers,
             body: formData
@@ -253,27 +254,8 @@ class AITutorService {
 
         if (!response.ok) throw new Error("Upload failed");
         const data = await response.json();
-        // Flask returns { id: "mongo_id", title: "filename", ... }
-        // The URL field for download is constructed via another endpoint, 
-        // but for now we can just return the ID as the URL or empty string if not strictly needed immediately by UI for simple display
-        // Chat UI might use 'url' to display a link?
-        // Helper to trigger ingestion
-        const triggerIngestion = async (id: string) => {
-            try {
-                // Determine API endpoint - use Hanachan API
-                // Assuming internal proxy or direct call
-                const ingestRes = await authFetch(`${this.API_BASE_URL}/resource/ingest/${id}`, {
-                    method: 'POST',
-                    headers: this.getHeaders()
-                });
-                if (!ingestRes.ok) console.warn("Failed to auto-trigger ingestion", id);
-            } catch (e) { console.error("Ingestion trigger error", e); }
-        };
 
-        // Trigger background ingestion immediately
-        triggerIngestion(data.id);
-
-        return { id: data.id, url: data.filePath || "" };
+        return { id: data.id.toString(), url: data.filePath || "" };
     }
 
     // --- Chat API (Backend) ---

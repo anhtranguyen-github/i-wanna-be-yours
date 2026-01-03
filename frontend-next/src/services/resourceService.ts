@@ -1,10 +1,10 @@
 
 import { authFetch } from '@/lib/authFetch';
 
-const FLASK_API = '/f-api';
+const HANACHAN_API = '/h-api';
 
 export interface Resource {
-    id: string;
+    id: number | string;
     userId?: string;
     title: string;
     description?: string;
@@ -22,7 +22,7 @@ export interface ResourceListResponse {
     resources: Resource[];
     total: number;
     limit: number;
-    offset: number;
+    page: number;
 }
 
 export const resourceService = {
@@ -34,7 +34,7 @@ export const resourceService = {
             tags.forEach(t => formData.append('tags', t));
         }
 
-        const res = await authFetch(`${FLASK_API}/v1/resources/upload`, {
+        const res = await authFetch(`${HANACHAN_API}/resource/upload`, {
             method: 'POST',
             body: formData,
         });
@@ -46,48 +46,49 @@ export const resourceService = {
         return res.json();
     },
 
-    async list(params?: { userId?: string; type?: string; limit?: number; offset?: number }): Promise<ResourceListResponse> {
+    async list(params?: { userId?: string; type?: string; limit?: number; page?: number }): Promise<ResourceListResponse> {
         const query = new URLSearchParams();
         if (params?.userId) query.set('userId', params.userId);
         if (params?.type) query.set('type', params.type);
         if (params?.limit) query.set('limit', String(params.limit));
-        if (params?.offset) query.set('offset', String(params.offset));
+        if (params?.page) query.set('page', String(params.page));
 
-        const res = await authFetch(`${FLASK_API}/v1/resources?${query}`);
+        const res = await authFetch(`${HANACHAN_API}/resource?${query}`);
         if (!res.ok) throw new Error('Failed to fetch resources');
         return res.json();
     },
 
-    async get(id: string): Promise<Resource> {
-        const res = await authFetch(`${FLASK_API}/v1/resources/${id}`);
+    async get(id: string | number): Promise<Resource> {
+        const res = await authFetch(`${HANACHAN_API}/resource/${id}`);
         if (!res.ok) throw new Error('Resource not found');
         return res.json();
     },
 
-    async update(id: string, data: Partial<Resource>): Promise<void> {
-        const res = await authFetch(`${FLASK_API}/v1/resources/${id}`, {
-            method: 'PUT',
+    async update(id: string | number, data: Partial<Resource>): Promise<void> {
+        const res = await authFetch(`${HANACHAN_API}/resource/${id}`, {
+            method: 'PATCH', // Switched to PATCH in Hanachan
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
         });
         if (!res.ok) throw new Error('Update failed');
     },
 
-    async delete(id: string): Promise<void> {
-        const res = await authFetch(`${FLASK_API}/v1/resources/${id}`, { method: 'DELETE' });
+    async delete(id: string | number): Promise<void> {
+        const res = await authFetch(`${HANACHAN_API}/resource/${id}`, { method: 'DELETE' });
         if (!res.ok) throw new Error('Delete failed');
     },
 
     async search(query: string, userId?: string): Promise<Resource[]> {
+        // Simple search fallback or implement in Hanachan
         const params = new URLSearchParams({ q: query });
         if (userId) params.set('userId', userId);
-        const res = await authFetch(`${FLASK_API}/v1/resources/search?${params}`);
+        const res = await authFetch(`${HANACHAN_API}/resource?${params}`);
         if (!res.ok) throw new Error('Search failed');
         const data = await res.json();
         return data.resources;
     },
 
-    getDownloadUrl(id: string): string {
-        return `${FLASK_API}/v1/resources/${id}/download`;
+    getDownloadUrl(id: string | number): string {
+        return `${HANACHAN_API}/resource/${id}/download`;
     }
 };
