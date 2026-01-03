@@ -61,35 +61,36 @@ The system maintains a hard boundary marked by "touches." The LLM **never** has 
 
 ---
 
-## 5. Resource vs. Artifact vs. Memory
+## 4. Resource vs. Artifact vs. Memory
 
-### 5.1 Data Definitions
-| Entity | **Resource** (Inbound) | **Artifact** (Outbound / Product) |
-| :--- | :--- | :--- |
-| **Origin** | External (Uploaded PDFs, Docs, URLs). | Internal (Results of content creator tools). |
-| **Nature** | Raw information source. | Structured objects (Flashcard Decks, Exams). |
-| **Service** | Handles by **NRS** (Neural Resource Service). | Handles by **ArtifactService**. |
+### 4.1 Data Definitions (Strict Taxonomy)
+| Entity | **Resource** (Inbound) | **Artifact** (Outbound / Product) | **Memory** (Experiential) |
+| :--- | :--- | :--- | :--- |
+| **Category** | Raw Knowledge | System Content / Objects | Experience / Growth |
+| **Origin** | External (Uploaded PDFs/Docs). | Internal (Tools like Content Creator). | Internal (Interaction traces). |
+| **Service** | **NRS** | **ArtifactService** | **MemoryManager** |
+| **Storage** | Vector DB (RAG) | Document Store (MongoDB) | Qdrant/Neo4j/Postgres |
 
-- **Artifacts** are the outputs of reasoning. They are objects like **Flashcard Decks**, **Exams**, and **Quizzes** generated for the user.
+- **Artifacts** are strictly **Products**. They are objects (Flashcard Decks, Exams, Quizzes) generated for the user. They are NOT memory.
+- **Memory** is the agent's record of experience (What it said, what it learned about the user).
 
-### 5.2 RAG vs. Memory (The Distinction)
-| Aspect | RAG (Resources) | Memory (Episodic/Semantic) |
-| :--- | :--- | :--- |
-| **Purpose** | External knowledge | Agent experience |
-| **Ownership** | System / Corpus | User / Agent |
-| **Mutability** | Read-only | Read/write (via `[SYSTEM]` gate) |
+### 4.2 RAG vs. Memory vs. Artifact
+- **RAG answers**: "What is in the textbook?"
+- **Memory answers**: "What did the user tell me about their goals?"
+- **Artifact Store answers**: "What specific flashcard decks have I built for this user?"
 
 ---
 
-## 6. Context Assembly Engine (The Intelligence Layer)
+## 5. Context Assembly Engine (The Intelligence Layer)
 
 Context is **selective**, not a "dump."
 
 1. **Intent Extraction**: `[LLM]` identifies user goal (e.g., "Grammar Practice").
 2. **Policy Filter**: `[SYSTEM]` ensures request is authed and scoped to `user_id`.
 3. **Retrieval Planning**: 
-    - `[SYSTEM]` pulls **Resources** via similarity.
-    - `[SYSTEM]` pulls **Artifacts** (Past work) via history.
+    - `[SYSTEM]` pulls **Resources** via similarity (RAG).
+    - `[SYSTEM]` pulls **Memory** (Episodic/Semantic) for context.
+    - `[SYSTEM]` pulls **Artifacts** (Past Products) if relevant to the intent.
 4. **Distillation**: `[SYSTEM]` distills findings into a concise "Situation Report."
 5. **Prompt Delivery**: `[LLM]` receives the report + user message.
 
@@ -100,7 +101,7 @@ Context is **selective**, not a "dump."
 1. **Never trust the LLM with authority.** `[SYSTEM]` is the final arbiter.
 2. **LLM Proposes, System Disposes.** Every reasoning output is an "action proposal."
 3. **Everything callable must be declared.** (Manifest as Source of Truth).
-4. **Memory is queried, not dumped.** (Context assembly over context dumping).
+4. **Memory is Experience; Artifacts are Products.** Never confuse the agent's record of life with the objects it creates.
 5. **Loops are system-owned.** `[SYSTEM]` prevents infinite reasoning.
 6. **Hide the "Guts".** The LLM never knows about MongoDB, Neo4j, or SQL schemas.
 
@@ -111,16 +112,15 @@ Context is **selective**, not a "dump."
 To maintain low latency, the **Context Assembly Engine** strictly follows a **Fan-Out Parallel Retrieval** model.
 
 ### 7.1 The Parallel Retrieval Blueprint
-All memory sources are queried simultaneously using `asyncio.gather`. There are no blocking dependencies between different data types.
+All sources are queried simultaneously using `asyncio.gather`. There are no blocking dependencies.
 
 ```python
-# [SYSTEM] Parallel Intelligence Retrieval
+# [SYSTEM] Parallel Reality Retrieval
 results = await asyncio.gather(
-    fetch_resources_rag(query),   # [SYSTEM] Qdrant (Textbooks/PDFs)
-    fetch_artifacts(user_id),     # [SYSTEM] MongoDB (Generated Quizzes/Flashcards)
-    fetch_episodic(user_id),      # [SYSTEM] Qdrant (Chat History)
-    fetch_semantic(user_id),      # [SYSTEM] Neo4j (Knowledge Graph)
-    fetch_study_plan(user_id)     # [SYSTEM] Service (Stats/Progress)
+    fetch_resources_rag(query),   # [SYSTEM] Knowledge (Knowledge Base)
+    fetch_artifacts(user_id),     # [SYSTEM] Products (Artifact Store)
+    fetch_memory(user_id),        # [SYSTEM] Experience (Episodic/Semantic)
+    fetch_study_plan(user_id)     # [SYSTEM] Progress (Learner Profile)
 )
 ```
 
