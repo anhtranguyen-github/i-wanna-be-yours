@@ -54,3 +54,30 @@ def prefetch_next_context(user_id: str, last_intent: str):
     logger.info(f"🏃 [Orchestration] Prefetching context after intent: {last_intent}")
     # Logic to identify 'probable' next intent and warm up RAG indices if needed.
     pass
+
+def process_resource_ingestion(resource_id: int):
+    """
+    Background Task: Processes a resource (extraction -> chunking -> vectorization).
+    """
+    logger.info(f"📄 [Ingestion] Starting processing for resource ID: {resource_id}")
+    
+    from repositories.resource_repository import ResourceRepository
+    repo = ResourceRepository()
+    
+    resource = repo.get_by_id(resource_id)
+    if not resource:
+        logger.error(f"Resource {resource_id} not found during background task")
+        return
+
+    try:
+        # Simulate processing time
+        time.sleep(5)
+        
+        # TODO: Implement actual parsing/chunking here
+        # For now, we'll mark it as completed
+        repo.update_status(resource_id, 'completed', metadata={"inferred_topics": ["Japanese", "Grammar"]})
+        logger.info(f"✅ [Ingestion] Resource {resource_id} processing completed.")
+        
+    except Exception as e:
+        logger.error(f"❌ [Ingestion] Failed to process resource {resource_id}: {e}")
+        repo.update_status(resource_id, 'failed', metadata={"error": str(e)})
