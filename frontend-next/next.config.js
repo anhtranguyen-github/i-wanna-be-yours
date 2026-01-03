@@ -10,6 +10,7 @@ const nextConfig = {
       { source: '/d-api/v1/convert/all', destination: `${process.env.HANACHAN_API_URL}/d-api/v1/convert/all` },
       { source: '/d-api/:path*', destination: `${process.env.DICTIONARY_API_URL}/:path*` },
       { source: '/h-api/:path*', destination: `${process.env.HANACHAN_API_URL}/:path*` },
+      { source: '/r-api/:path*', destination: `http://localhost:5300/:path*` },
     ]
   },
   async redirects() {

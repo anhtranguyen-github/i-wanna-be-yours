@@ -274,6 +274,19 @@ export async function getPracticeMyTags(): Promise<{ tags: string[] }> {
     return response.json();
 }
 
+/**
+ * Claim an anonymous attempt for the logged-in user
+ */
+export async function claimAttempt(attemptId: string): Promise<void> {
+    const response = await authFetch(`${API_BASE}/attempts/${attemptId}/claim`, {
+        method: 'POST'
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to claim attempt');
+    }
+}
+
 // Export as object for named import compatibility
 export const practiceService = {
     getNodes,
@@ -285,6 +298,7 @@ export const practiceService = {
     deleteNode,
     updateNode,
     cloneNode,
-    getPracticeMyTags
+    getPracticeMyTags,
+    claimAttempt
 };
 

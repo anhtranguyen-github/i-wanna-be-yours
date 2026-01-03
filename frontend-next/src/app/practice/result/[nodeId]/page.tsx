@@ -88,7 +88,28 @@ export default function PremiumResultPage() {
         };
 
         loadContent();
-    }, [nodeId, attemptId]);
+    }, [nodeId, attemptId, user]);
+
+    // Session Claiming Logic
+    // If a guest finishes an exam and then logs in, we claim that anonymous result for them.
+    useEffect(() => {
+        if (user && unifiedResult?.isAnonymous && attemptId) {
+            const autoClaim = async () => {
+                try {
+                    console.log("[AuthAware] Anonymous result detected for logged-in user. Claiming...");
+                    await practiceService.claimAttempt(attemptId);
+
+                    // Refresh data after claiming
+                    const resultData = await practiceService.getAttemptResult(attemptId);
+                    setUnifiedResult(mapResultIcons(resultData));
+                    console.log("[AuthAware] Attempt claimed and refreshed.");
+                } catch (e) {
+                    console.error("[AuthAware] Failed to claim anonymous attempt:", e);
+                }
+            };
+            autoClaim();
+        }
+    }, [user, unifiedResult?.isAnonymous, attemptId]);
 
     const toggleQuestion = (id: string) => {
         setExpandedQuestions(prev => {

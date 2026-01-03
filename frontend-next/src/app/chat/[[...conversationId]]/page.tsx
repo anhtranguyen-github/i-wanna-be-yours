@@ -7,6 +7,7 @@ import { useUser } from '@/context/UserContext';
 import { useGlobalAuth } from '@/context/GlobalAuthContext';
 import { Loader2 } from 'lucide-react';
 import { SIDEBAR_WIDTHS } from '@/components/chat/ChatLayoutContext';
+import ThoughtHUD from '@/components/chat/ThoughtHUD';
 
 // Dynamically import components with no SSR
 const ChatMainArea = dynamic(
@@ -72,8 +73,16 @@ export default function UnifiedChatPage() {
     // If guest is being redirected, show empty state or main area
     // Actually, letting ChatMainArea handle the 'no ID' case is fine.
 
+    // Check if DEV_MODE is enabled for ThoughtHUD
+    const isDevMode = process.env.NEXT_PUBLIC_DEV_MODE === 'true'
+
     return (
         <div className="flex flex-1 h-full bg-secondary overflow-hidden">
+            {/* Thought HUD (Developer Mode) */}
+            {isDevMode && (
+                <ThoughtHUD userId={String(user?.id || 'guest')} isEnabled={isDevMode} />
+            )}
+
             {/* Main Chat Area */}
             <main className="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-neutral-white  z-10 relative">
                 <ChatMainArea conversationId={conversationId} />

@@ -116,6 +116,58 @@ export default function UnifiedSessionPage() {
         return `${mins}:${secs.toString().padStart(2, "0")}`;
     };
 
+    // Scroll Sync logic for SCROLL mode
+    // Highlights the active question in the sidebar based on viewport position
+    useEffect(() => {
+        if (displayMode !== "SCROLL" || questions.length === 0 || isSubmitted) return;
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '-20% 0px -70% 0px', // Trigger when question is in the upper part of the viewport
+            threshold: 0
+        };
+
+        const handleIntersection = (entries: IntersectionObserverEntry[]) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.id.replace('q-', '');
+                    const index = questions.findIndex(q => q.id === id);
+                    if (index !== -1) {
+                        setCurrentIndex(index);
+                    }
+                }
+            });
+        };
+
+        const observer = new IntersectionObserver(handleIntersection, observerOptions);
+
+        // Let the DOM settle then observe
+        const timer = setTimeout(() => {
+            questions.forEach((q) => {
+                const el = document.getElementById(`q-${q.id}`);
+                if (el) observer.observe(el);
+            });
+        }, 100);
+
+        return () => {
+            observer.disconnect();
+            clearTimeout(timer);
+        };
+    }, [displayMode, questions, isSubmitted]);
+
+    // Handle immediate scroll when switching to SCROLL mode
+    useEffect(() => {
+        if (displayMode === "SCROLL" && questions.length > 0) {
+            const timer = setTimeout(() => {
+                const element = document.getElementById(`q-${questions[currentIndex].id}`);
+                if (element) {
+                    element.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+            }, 100);
+            return () => clearTimeout(timer);
+        }
+    }, [displayMode]);
+
     const getQuestionStatus = (questionId: string): QuestionStatus => {
         if (flagged.has(questionId)) return "FLAGGED";
         if (answers[questionId]?.selectedOptionId) return "ANSWERED";
@@ -138,7 +190,16 @@ export default function UnifiedSessionPage() {
     };
 
     const goToQuestion = (index: number) => {
-        if (index >= 0 && index < questions.length) setCurrentIndex(index);
+        if (index < 0 || index >= questions.length) return;
+
+        setCurrentIndex(index);
+
+        if (displayMode === "SCROLL") {
+            const element = document.getElementById(`q-${questions[index].id}`);
+            if (element) {
+                element.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+        }
     };
 
     const handleSubmit = useCallback(async () => {
