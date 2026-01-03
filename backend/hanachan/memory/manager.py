@@ -40,35 +40,57 @@ class MemoryManager:
         except Exception as e:
             logger.error(f"MemoryManager: Failed to initialize background queue: {e}")
 
-        # 2. Initialize live services
+        # 2. Initialize live services (each independently to allow partial degradation)
         self.active = False
         self.episodic = None
+        self.resource_memory = None
         self.semantic = None
         self.study = None
         self.llm = None
         
-        # Lazy imports
+        # Initialize Episodic Memory (Qdrant)
         try:
             from .episodic import EpisodicMemory
-            from .semantic import SemanticMemory
-            from .study import StudyMemory
-            
             logger.debug("MemoryManager: Initializing EpisodicMemory...")
             self.episodic = EpisodicMemory()
+            logger.info("MemoryManager: ✅ Episodic Memory (Qdrant) initialized.")
+        except Exception as e:
+            logger.warning(f"MemoryManager: ⚠️ Episodic Memory init failed: {e}")
+        
+        # Initialize Resource Memory (Qdrant - separate collection)
+        try:
+            from .episodic import EpisodicMemory
+            logger.debug("MemoryManager: Initializing Resource Memory...")
             self.resource_memory = EpisodicMemory(collection_name="resource_vectors")
-            
+            logger.info("MemoryManager: ✅ Resource Memory (Qdrant) initialized.")
+        except Exception as e:
+            logger.warning(f"MemoryManager: ⚠️ Resource Memory init failed: {e}")
+        
+        # Initialize Semantic Memory (Neo4j)
+        try:
+            from .semantic import SemanticMemory
             logger.debug("MemoryManager: Initializing SemanticMemory...")
             self.semantic = SemanticMemory()
-
+            if self.semantic and self.semantic.graph:
+                logger.info("MemoryManager: ✅ Semantic Memory (Neo4j) initialized.")
+            else:
+                logger.warning("MemoryManager: ⚠️ Semantic Memory initialized but Neo4j not connected.")
+        except Exception as e:
+            logger.warning(f"MemoryManager: ⚠️ Semantic Memory init failed: {e}")
+        
+        # Initialize Study Memory (External API)
+        try:
+            from .study import StudyMemory
             logger.debug("MemoryManager: Initializing StudyMemory...")
             self.study = StudyMemory()
-            
-            if self.episodic or self.semantic:
-                self.active = True
-                logger.info("MemoryManager: Live memory services are active.")
-
+            logger.info("MemoryManager: ✅ Study Memory initialized.")
         except Exception as e:
-            logger.error(f"MemoryManager: Live services init failed: {e}")
+            logger.warning(f"MemoryManager: ⚠️ Study Memory init failed: {e}")
+        
+        # Set active if any memory service is available
+        if self.episodic or self.semantic:
+            self.active = True
+            logger.info("MemoryManager: Live memory services are active.")
 
         # 3. Initialize LLM
         try:

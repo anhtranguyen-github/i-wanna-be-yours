@@ -43,8 +43,7 @@ def start_hanachan():
     print(f"🚀 [System] Starting Hanachan (Agent) on Port {HANA_PORT}...")
     env = os.environ.copy()
     env["FLASK_PORT"] = str(HANA_PORT)
-    db_path = os.path.abspath("backend/hanachan/instance/test_system.db")
-    env["DATABASE_URL"] = f"sqlite:///{db_path}"
+    env["DATABASE_URL"] = "postgresql://user:password@localhost:5433/mydatabase"
     env["MONGO_URI"] = "mongodb://localhost:27017/flaskFlashcardDB"
     env["ENABLE_MONGO"] = "true" 
     
@@ -83,8 +82,7 @@ def run_client_simulation(workflow_script):
     env["FLASK_URL"] = FLASK_URL
     env["HANA_URL"] = HANA_URL
     env["STUDY_PLAN_SERVICE_URL"] = STUDY_URL
-    db_path = os.path.abspath("backend/hanachan/instance/test_system.db")
-    env["DATABASE_URL"] = f"sqlite:///{db_path}"
+    env["DATABASE_URL"] = "postgresql://user:password@localhost:5433/mydatabase"
     env["MONGO_URI"] = "mongodb://localhost:27017/flaskFlashcardDB"
     
     result = subprocess.run(

@@ -15,7 +15,9 @@ from redis import Redis
 
 router = APIRouter(prefix="/v1/resources", tags=["resources"])
 
+# Configuration
 UPLOAD_FOLDER = os.environ.get("UPLOAD_FOLDER", "/app/uploads")
+MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB limit
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # Shared Redis Connection
@@ -34,6 +36,13 @@ async def upload_resource(
 ):
     user_id = user.get("userId") or user.get("id")
     content = await file.read()
+    
+    # 0. File Size Check
+    if len(content) > MAX_FILE_SIZE:
+        raise HTTPException(
+            status_code=413, 
+            detail=f"File too large. Max size: {MAX_FILE_SIZE // (1024*1024)}MB"
+        )
     
     # 1. Duplicate Check (User-scoped)
     file_hash = calculate_file_hash(content)

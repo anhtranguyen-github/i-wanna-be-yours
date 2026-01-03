@@ -8,19 +8,18 @@ from app import create_app, db
 
 @pytest.fixture
 def app():
-    db_path = "/tmp/test_stm_task.db"
-    if os.path.exists(db_path):
-        os.remove(db_path)
-    
-    os.environ['DATABASE_URL'] = f'sqlite:///{db_path}'
+    # Use PostgreSQL for testing - same as production
+    db_url = 'postgresql://user:password@localhost:5433/mydatabase'
+    os.environ['DATABASE_URL'] = db_url
         
-    app = create_app({'SQLALCHEMY_DATABASE_URI': f'sqlite:///{db_path}', 'TESTING': True})
+    app = create_app({'SQLALCHEMY_DATABASE_URI': db_url, 'TESTING': True})
     with app.app_context():
         db.create_all()
         yield app
     
-    if os.path.exists(db_path):
-        os.remove(db_path)
+    # Cleanup test data after tests
+    with app.app_context():
+        db.session.rollback()
 
 def test_summarization_task_updates_db(app):
     with app.app_context():

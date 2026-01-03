@@ -8,7 +8,9 @@ from app import create_app, db
 
 @pytest.fixture
 def app():
-    app = create_app({'SQLALCHEMY_DATABASE_URI': 'sqlite:///:memory:', 'TESTING': True})
+    # Use PostgreSQL for testing - same as production
+    db_url = 'postgresql://user:password@localhost:5433/mydatabase'
+    app = create_app({'SQLALCHEMY_DATABASE_URI': db_url, 'TESTING': True})
     with app.app_context():
         db.create_all()
         yield app

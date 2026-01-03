@@ -21,7 +21,7 @@ except ImportError:
 NRS_URL = os.environ.get("NRS_API_URL", "http://localhost:5300/v1/resources")
 
 def get_conversation_debug(session_id):
-    """Peek into the SQLite STM state for a specific session."""
+    """Peek into the PostgreSQL STM state for a specific session."""
     app = create_app()
     with app.app_context():
         conv = Conversation.query.filter_by(session_id=session_id).first()
