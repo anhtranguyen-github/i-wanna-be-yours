@@ -1,3 +1,12 @@
 flask
+flask-cors
+flask-talisman
+flask-limiter
+flask-pymongo
+pymongo
 python-dotenv
 redis
+python-magic
+gunicorn
+bcrypt
+PyJWT
