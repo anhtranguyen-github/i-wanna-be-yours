@@ -24,12 +24,27 @@ This document defines the non-negotiable logic and flow constraints that ALL sub
 - All retrieval must be `asyncio` based.
 - All persistence updates must be backgrounded (Fire-and-forget) to ensure zero user-facing latency.
 
-## 5. Directory Mapping
+## 5. Vision Alignment
+- All implementation details MUST align with the vision in `backend/hanachan/docs/UNIFIED_AGENT_ARCHITECTURE_BRAINSTORM.md`.
+- References to this vision document are mandatory in code comments for architectural decisions.
+
+## 6. Coordination Testing
+- "Silent" unit tests are insufficient. Every major component must be validated via **Coordinated Test Flows**.
+- Tests must simulate cross-feature interactions (e.g., Intent -> Tool -> Artifact -> Memory Update) to ensure shared logic works in symphony.
+
+## 7. Clean Break (No Legacy Support)
+- This is a transformative architecture. **Do NOT handle legacy data schemas or corrupted state.**
+- If a legacy record is encountered, the system should **throw a general error** and skip it.
+- Prioritize cleaning the foundation over maintaining backward compatibility for experimental data.
+
+---
+
+## 8. Directory Mapping
 - **Config**: `backend/hanachan/config/` (Manifests & Policies)
 - **Engine**: `backend/hanachan/agent/engine/` (Aperture, PolicyEngine)
 - **Schema**: `backend/hanachan/schemas/` (Unified I/O models)
 
 ---
 
-## 6. Shared Context Memory
+## 9. Shared Context Memory
 The `plans/unified_architecture/shared_context/` folder will store current state and coordination logs for these plans to ensure they don't drift apart during execution.
