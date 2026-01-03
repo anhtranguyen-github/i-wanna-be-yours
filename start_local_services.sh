@@ -499,7 +499,7 @@ log "✅ Started study-plan-service (PID: $pid)"
     if [ "$SHOULD_SEED" = true ]; then
         log "🌱 Seeding dictionary (Full JMDict + Kanjidic)..."
         # The reseed script handles both JMDict and Kanjidic
-        cd ../../ && ./reseed_dictionary.sh > "$LOG_ROOT/dictionary-db/full_seed.log" 2>&1 || true
+        cd ../../ && ./scripts/reseed_dictionary.sh > "$LOG_ROOT/dictionary-db/full_seed.log" 2>&1 || true
         cd backend/python-dictionary || exit 1
     fi
 
