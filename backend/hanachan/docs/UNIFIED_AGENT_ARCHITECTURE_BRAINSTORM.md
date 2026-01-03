@@ -26,14 +26,22 @@ Intent → Context Assembly → Reasoning → Action Proposal → Policy Check �
 | Concept | Definition | Analogy |
 | :--- | :--- | :--- |
 | **Manifest** | WHAT EXISTS: A catalog of capabilities (Tools, Specialists, Intents). | Restaurant menu / API Docs |
-| **Policy** | WHAT IS ALLOWED: Rules deciding whether something can be done now by whom. | Health inspection / Age check |
 
 - **Manifest** (`[SYSTEM]` defined) answers: *What tools exist? What inputs do they have?*
-- **Policy** (`[SYSTEM]` enforced) answers: *Can this agent call this tool? Is the rate limit exceeded?*
+- **Any authenticated user or guest has full access to the tools defined in the Manifest.**
+
+### 3.2 The Policy (What is ALLOWED)
+The "Law" of the system, enforced by the **Policy Engine**.
+- **Hierarchy**:
+    1. **Identity & Isolation**: Is the request authenticated and correctly scoped to a `user_id`? (Level 1: Ensures absolute data isolation).
+    2. **Capability**: Does the tool/service exist in the **Manifest**? (Level 2: Validates system possibility).
+    3. **Governance**: Is the action proposal safe according to system rules? (Level 3: "LLM Proposes, System Disposes").
+
+- **Core Memory Rule**: LLM cannot decide `is_memorable` or `scope`. The System uses pattern-matching (Internal) to decide what moves to permanent memory.
 
 ---
 
-## 3. Interaction Boundaries: [LLM] vs. [SYSTEM]
+## 4. Interaction Boundaries: [LLM] vs. [SYSTEM]
 
 The system maintains a hard boundary marked by "touches." The LLM **never** has direct authority over the physical environment.
 
@@ -46,16 +54,16 @@ The system maintains a hard boundary marked by "touches." The LLM **never** has 
 | **Loop Control** | `[LLM]` proposes a next step in the loop. | `[SYSTEM]` enforces limits and terminates loop. |
 
 **The LLM will NOT:**
-- Decide permissions.
+- Decisions are made by `[SYSTEM]` based on identity isolation.
 - Control its own execution loops.
 - Write to any memory/database directly.
 - Query databases or understand internal system connections.
 
 ---
 
-## 4. Resource vs. Artifact vs. Memory
+## 5. Resource vs. Artifact vs. Memory
 
-### 4.1 Data Definitions
+### 5.1 Data Definitions
 | Entity | **Resource** (Inbound) | **Artifact** (Outbound / Product) |
 | :--- | :--- | :--- |
 | **Origin** | External (Uploaded PDFs, Docs, URLs). | Internal (Results of content creator tools). |
@@ -64,7 +72,7 @@ The system maintains a hard boundary marked by "touches." The LLM **never** has 
 
 - **Artifacts** are the outputs of reasoning. They are objects like **Flashcard Decks**, **Exams**, and **Quizzes** generated for the user.
 
-### 4.2 RAG vs. Memory (The Distinction)
+### 5.2 RAG vs. Memory (The Distinction)
 | Aspect | RAG (Resources) | Memory (Episodic/Semantic) |
 | :--- | :--- | :--- |
 | **Purpose** | External knowledge | Agent experience |
@@ -73,12 +81,12 @@ The system maintains a hard boundary marked by "touches." The LLM **never** has 
 
 ---
 
-## 5. Context Assembly Engine (The Intelligence Layer)
+## 6. Context Assembly Engine (The Intelligence Layer)
 
 Context is **selective**, not a "dump."
 
 1. **Intent Extraction**: `[LLM]` identifies user goal (e.g., "Grammar Practice").
-2. **Policy Filter**: `[SYSTEM]` checks user role (Premium/Free) and tool access.
+2. **Policy Filter**: `[SYSTEM]` ensures request is authed and scoped to `user_id`.
 3. **Retrieval Planning**: 
     - `[SYSTEM]` pulls **Resources** via similarity.
     - `[SYSTEM]` pulls **Artifacts** (Past work) via history.
