@@ -1,0 +1,218 @@
+2026-01-03 09:51:11,082 INFO app : ✅ Database tables verified/created.
+2026-01-03 09:51:11,943 INFO Simulation : 🚀 Starting Unified Long Session Simulation...
+2026-01-03 09:51:11,943 INFO Simulation : --- TURN 1 ---
+2026-01-03 09:51:11,943 INFO Simulation : User: Hi Hanachan! Can you explain how 'wa' and 'ga' are different?
+2026-01-03 09:51:19,899 INFO services.llm_factory : 🔧 ModelFactory: Primary=ollama, Fallbacks=['groq', 'openai']
+2026-01-03 09:51:20,453 INFO services.llm_factory : ModelFactory: Instantiating Ollama (qwen2.5:0.5b) at http://localhost:11434
+2026-01-03 09:51:20,620 INFO services.llm_factory : ModelFactory: Instantiating Groq (openai/gpt-oss-120b)
+2026-01-03 09:51:23,914 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'groq'
+2026-01-03 09:51:23,914 INFO services.llm_factory : ModelFactory: Instantiating OpenAI (gpt-4-turbo)
+2026-01-03 09:51:24,118 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'openai'
+2026-01-03 09:51:24,158 INFO services.llm_factory : 🔧 ModelFactory: Primary=ollama, Fallbacks=['groq', 'openai']
+2026-01-03 09:51:24,158 INFO services.llm_factory : ModelFactory: Instantiating Ollama (qwen2.5:0.5b) at http://localhost:11434
+2026-01-03 09:51:24,365 INFO services.llm_factory : ModelFactory: Instantiating Groq (openai/gpt-oss-120b)
+2026-01-03 09:51:24,365 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'groq'
+2026-01-03 09:51:24,366 INFO services.llm_factory : ModelFactory: Instantiating OpenAI (gpt-4-turbo)
+2026-01-03 09:51:24,366 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'openai'
+2026-01-03 09:51:24,384 INFO services.llm_factory : 🔧 ModelFactory: Primary=ollama, Fallbacks=['groq', 'openai']
+2026-01-03 09:51:24,385 INFO services.llm_factory : ModelFactory: Instantiating Ollama (qwen2.5:0.5b) at http://localhost:11434
+2026-01-03 09:51:24,565 INFO services.llm_factory : ModelFactory: Instantiating Groq (openai/gpt-oss-120b)
+2026-01-03 09:51:24,566 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'groq'
+2026-01-03 09:51:24,566 INFO services.llm_factory : ModelFactory: Instantiating OpenAI (gpt-4-turbo)
+2026-01-03 09:51:24,566 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'openai'
+2026-01-03 09:51:24,592 INFO services.llm_factory : 🔧 ModelFactory: Primary=ollama, Fallbacks=['groq', 'openai']
+2026-01-03 09:51:24,592 INFO services.llm_factory : ModelFactory: Instantiating Ollama (qwen2.5:0.5b) at http://localhost:11434
+2026-01-03 09:51:24,834 INFO services.llm_factory : ModelFactory: Instantiating Groq (openai/gpt-oss-120b)
+2026-01-03 09:51:24,834 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'groq'
+2026-01-03 09:51:24,834 INFO services.llm_factory : ModelFactory: Instantiating OpenAI (gpt-4-turbo)
+2026-01-03 09:51:24,835 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'openai'
+2026-01-03 09:51:24,836 INFO hanachan.memory : Initializing MemoryManager Singleton...
+2026-01-03 09:51:24,836 INFO hanachan.memory : MemoryManager: Background queue initialized.
+2026-01-03 09:51:27,975 INFO memory.episodic : Connecting to Qdrant at localhost (127.0.0.1):6333
+2026-01-03 09:51:28,162 INFO httpx : HTTP Request: GET http://127.0.0.1:6333 "HTTP/1.1 200 OK"
+2026-01-03 09:51:28,175 INFO httpx : HTTP Request: GET http://127.0.0.1:6333/collections "HTTP/1.1 200 OK"
+2026-01-03 09:51:28,179 INFO httpx : HTTP Request: GET http://127.0.0.1:6333/collections/episodic_memory "HTTP/1.1 200 OK"
+2026-01-03 09:51:28,183 INFO httpx : HTTP Request: GET http://127.0.0.1:6333/collections/episodic_memory "HTTP/1.1 200 OK"
+2026-01-03 09:51:28,184 WARNING hanachan.memory : MemoryManager: ⚠️ Episodic Memory init failed: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download
+2026-01-03 09:51:28,360 INFO memory.episodic : Connecting to Qdrant at localhost (127.0.0.1):6333
+2026-01-03 09:51:28,540 INFO httpx : HTTP Request: GET http://127.0.0.1:6333 "HTTP/1.1 200 OK"
+2026-01-03 09:51:28,554 INFO httpx : HTTP Request: GET http://127.0.0.1:6333/collections "HTTP/1.1 200 OK"
+2026-01-03 09:51:28,557 INFO httpx : HTTP Request: GET http://127.0.0.1:6333/collections/resource_vectors "HTTP/1.1 200 OK"
+2026-01-03 09:51:28,560 INFO httpx : HTTP Request: GET http://127.0.0.1:6333/collections/resource_vectors "HTTP/1.1 200 OK"
+2026-01-03 09:51:28,562 WARNING hanachan.memory : MemoryManager: ⚠️ Resource Memory init failed: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download
+2026-01-03 09:51:31,246 INFO hanachan.memory : MemoryManager: ✅ Semantic Memory (Neo4j) initialized.
+2026-01-03 09:51:31,308 INFO hanachan.memory : MemoryManager: ✅ Study Memory initialized.
+2026-01-03 09:51:31,309 INFO hanachan.memory : MemoryManager: Live memory services are active.
+2026-01-03 09:51:31,309 INFO services.llm_factory : 🔧 ModelFactory: Primary=ollama, Fallbacks=['groq', 'openai']
+2026-01-03 09:51:31,310 INFO services.llm_factory : ModelFactory: Instantiating Ollama (qwen2.5:0.5b) at http://localhost:11434
+2026-01-03 09:51:31,513 INFO services.llm_factory : ModelFactory: Instantiating Groq (openai/gpt-oss-120b)
+2026-01-03 09:51:31,514 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'groq'
+2026-01-03 09:51:31,514 INFO services.llm_factory : ModelFactory: Instantiating OpenAI (gpt-4-turbo)
+2026-01-03 09:51:31,514 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'openai'
+2026-01-03 09:51:31,643 INFO agent.engine.loader : ✅ Manifest loaded successfully
+2026-01-03 09:51:31,653 INFO agent.engine.loader : ✅ Policy loaded successfully
+2026-01-03 09:51:31,654 INFO services.llm_factory : 🔧 ModelFactory: Primary=ollama, Fallbacks=['groq', 'openai']
+2026-01-03 09:51:31,654 INFO services.llm_factory : ModelFactory: Instantiating Ollama (qwen2.5:0.5b) at http://localhost:11434
+2026-01-03 09:51:31,842 INFO services.llm_factory : ModelFactory: Instantiating Groq (openai/gpt-oss-120b)
+2026-01-03 09:51:31,842 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'groq'
+2026-01-03 09:51:31,843 INFO services.llm_factory : ModelFactory: Instantiating OpenAI (gpt-4-turbo)
+2026-01-03 09:51:31,844 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'openai'
+2026-01-03 09:51:31,844 INFO services.llm_factory : 🔧 ModelFactory: Primary=ollama, Fallbacks=['groq', 'openai']
+2026-01-03 09:51:31,844 INFO services.llm_factory : ModelFactory: Instantiating Ollama (qwen2.5:0.5b) at http://localhost:11434
+2026-01-03 09:51:32,012 INFO services.llm_factory : ModelFactory: Instantiating Groq (openai/gpt-oss-120b)
+2026-01-03 09:51:32,013 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'groq'
+2026-01-03 09:51:32,013 INFO services.llm_factory : ModelFactory: Instantiating OpenAI (gpt-4-turbo)
+2026-01-03 09:51:32,013 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'openai'
+2026-01-03 09:51:32,083 INFO services.llm_factory : 🔧 ModelFactory: Primary=ollama, Fallbacks=['groq', 'openai']
+2026-01-03 09:51:32,083 INFO services.llm_factory : ModelFactory: Instantiating Ollama (qwen2.5:0.5b) at http://localhost:11434
+2026-01-03 09:51:32,263 INFO services.llm_factory : ModelFactory: Instantiating Groq (openai/gpt-oss-120b)
+2026-01-03 09:51:32,264 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'groq'
+2026-01-03 09:51:32,264 INFO services.llm_factory : ModelFactory: Instantiating OpenAI (gpt-4-turbo)
+2026-01-03 09:51:32,265 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'openai'
+2026-01-03 09:51:32,270 INFO agent.engine.context_assembler : 🛰️ [Aperture] Starting parallel retrieval for user: sim-student-99
+2026-01-03 09:51:32,277 ERROR hanachan.services.study : Failed to fetch active plan summary for sim-student-99: HTTPConnectionPool(host='localhost', port=5500): Max retries exceeded with url: /v1/study-plan/plans?user_id=sim-student-99&status=active (Caused by NewConnectionError("HTTPConnection(host='localhost', port=5500): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-01-03 09:51:32,278 ERROR hanachan.services.study : Failed to fetch performance trends for sim-student-99: HTTPConnectionPool(host='localhost', port=5500): Max retries exceeded with url: /v1/performance/trends?user_id=sim-student-99 (Caused by NewConnectionError("HTTPConnection(host='localhost', port=5500): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-01-03 09:51:32,279 ERROR hanachan.services.study : Failed to fetch active plan summary for sim-student-99: HTTPConnectionPool(host='localhost', port=5500): Max retries exceeded with url: /v1/study-plan/plans?user_id=sim-student-99&status=active (Caused by NewConnectionError("HTTPConnection(host='localhost', port=5500): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-01-03 09:51:32,280 INFO hanachan.memory : MemoryManager: Retrieval completed in 0.01s for user sim-student-99
+2026-01-03 09:51:37,277 WARNING agent.engine.context_assembler : 🕒 [Aperture] Context assembly TIMED OUT. Providing partial/empty context.
+2026-01-03 09:51:37,707 INFO httpx : HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-03 09:51:37,713 INFO hanachan.neural_swarm : 🐝 [Swarm] Activating Specialist: linguist
+2026-01-03 09:51:37,713 INFO hanachan.neural_swarm : 🧠 [Skill Active: Linguist] Processing request...
+2026-01-03 09:51:41,980 INFO httpx : HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-03 09:51:41,982 INFO agent.core_agent : 🐝 [Agent] Request solved by Neural Swarm Specialist.
+2026-01-03 09:51:42,025 INFO hanachan.memory : MemoryManager: Enqueued background task de042060-5a28-4b85-b084-ab44e6d10465 for session sim-session-long-001
+2026-01-03 09:51:42,027 ERROR Simulation : ❌ Turn 1 Failed: 'str' object has no attribute 'message'
+Traceback (most recent call last):
+  File "/mnt/c/Users/tra01/OneDrive/Desktop/Last dance/hanabira.org/backend/hanachan/scripts/unified_long_session.py", line 63, in run_long_session
+    response = service.invoke_agent(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/tra01/OneDrive/Desktop/Last dance/hanabira.org/backend/hanachan/services/agent_service.py", line 122, in invoke_agent
+    content=package.message.content
+            ^^^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'message'
+2026-01-03 09:51:42,032 INFO Simulation : --- TURN 2 ---
+2026-01-03 09:51:42,032 INFO Simulation : User: Can you make me a quick flashcard deck about what we just discussed?
+2026-01-03 09:51:42,042 INFO services.llm_factory : 🔧 ModelFactory: Primary=ollama, Fallbacks=['groq', 'openai']
+2026-01-03 09:51:42,042 INFO services.llm_factory : ModelFactory: Instantiating Ollama (qwen2.5:0.5b) at http://localhost:11434
+2026-01-03 09:51:42,206 INFO services.llm_factory : ModelFactory: Instantiating Groq (openai/gpt-oss-120b)
+2026-01-03 09:51:42,207 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'groq'
+2026-01-03 09:51:42,207 INFO services.llm_factory : ModelFactory: Instantiating OpenAI (gpt-4-turbo)
+2026-01-03 09:51:42,208 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'openai'
+2026-01-03 09:51:42,208 INFO services.llm_factory : 🔧 ModelFactory: Primary=ollama, Fallbacks=['groq', 'openai']
+2026-01-03 09:51:42,208 INFO services.llm_factory : ModelFactory: Instantiating Ollama (qwen2.5:0.5b) at http://localhost:11434
+2026-01-03 09:51:42,378 INFO services.llm_factory : ModelFactory: Instantiating Groq (openai/gpt-oss-120b)
+2026-01-03 09:51:42,378 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'groq'
+2026-01-03 09:51:42,379 INFO services.llm_factory : ModelFactory: Instantiating OpenAI (gpt-4-turbo)
+2026-01-03 09:51:42,379 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'openai'
+2026-01-03 09:51:42,452 INFO services.llm_factory : 🔧 ModelFactory: Primary=ollama, Fallbacks=['groq', 'openai']
+2026-01-03 09:51:42,452 INFO services.llm_factory : ModelFactory: Instantiating Ollama (qwen2.5:0.5b) at http://localhost:11434
+2026-01-03 09:51:42,631 INFO services.llm_factory : ModelFactory: Instantiating Groq (openai/gpt-oss-120b)
+2026-01-03 09:51:42,632 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'groq'
+2026-01-03 09:51:42,632 INFO services.llm_factory : ModelFactory: Instantiating OpenAI (gpt-4-turbo)
+2026-01-03 09:51:42,632 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'openai'
+2026-01-03 09:51:42,637 INFO agent.engine.context_assembler : 🛰️ [Aperture] Starting parallel retrieval for user: sim-student-99
+2026-01-03 09:51:42,640 ERROR hanachan.services.study : Failed to fetch active plan summary for sim-student-99: HTTPConnectionPool(host='localhost', port=5500): Max retries exceeded with url: /v1/study-plan/plans?user_id=sim-student-99&status=active (Caused by NewConnectionError("HTTPConnection(host='localhost', port=5500): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-01-03 09:51:42,641 ERROR hanachan.services.study : Failed to fetch performance trends for sim-student-99: HTTPConnectionPool(host='localhost', port=5500): Max retries exceeded with url: /v1/performance/trends?user_id=sim-student-99 (Caused by NewConnectionError("HTTPConnection(host='localhost', port=5500): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-01-03 09:51:42,643 ERROR hanachan.services.study : Failed to fetch active plan summary for sim-student-99: HTTPConnectionPool(host='localhost', port=5500): Max retries exceeded with url: /v1/study-plan/plans?user_id=sim-student-99&status=active (Caused by NewConnectionError("HTTPConnection(host='localhost', port=5500): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-01-03 09:51:42,643 INFO hanachan.memory : MemoryManager: Retrieval completed in 0.01s for user sim-student-99
+2026-01-03 09:51:47,642 WARNING agent.engine.context_assembler : 🕒 [Aperture] Context assembly TIMED OUT. Providing partial/empty context.
+2026-01-03 09:51:48,122 INFO httpx : HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-03 09:51:49,497 INFO httpx : HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-03 09:51:49,499 INFO agent.core_agent : 🛠️ [Agent] Executing tool: create_study_flashcards
+2026-01-03 09:51:49,505 INFO services.llm_factory : 🔧 ModelFactory: Primary=ollama, Fallbacks=['groq', 'openai']
+2026-01-03 09:51:49,505 INFO services.llm_factory : ModelFactory: Instantiating Ollama (qwen2.5:0.5b) at http://localhost:11434
+2026-01-03 09:51:49,687 INFO services.llm_factory : ModelFactory: Instantiating Groq (openai/gpt-oss-120b)
+2026-01-03 09:51:49,687 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'groq'
+2026-01-03 09:51:49,688 INFO services.llm_factory : ModelFactory: Instantiating OpenAI (gpt-4-turbo)
+2026-01-03 09:51:49,688 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'openai'
+2026-01-03 09:51:49,688 INFO services.content_creator : Generating flashcards via LLM: N5 vocabulary x5
+2026-01-03 09:51:51,368 INFO httpx : HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-03 09:52:21,868 ERROR hanachan.artifacts : ❌ [ArtifactService] Failed to persist artifact: localhost:27017: [Errno 111] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: <TopologyDescription id: 6958e6a4e4570650bddb7995, topology_type: Unknown, servers: [<ServerDescription ('localhost', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('localhost:27017: [Errno 111] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>
+2026-01-03 09:52:23,319 INFO httpx : HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-03 09:52:23,323 INFO agent.engine.output_governor : 📦 [Governor] Packaging final response for conversation unknown
+2026-01-03 09:52:23,327 INFO hanachan.memory : MemoryManager: Enqueued background task d642bc31-635f-45b3-baea-bfe2dace2e92 for session sim-session-long-001
+/mnt/c/Users/tra01/OneDrive/Desktop/Last dance/hanabira.org/backend/hanachan/scripts/unified_long_session.py:83: PydanticDeprecatedSince20: The `json` method is deprecated; use `model_dump_json` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+  content = str(response.json())
+2026-01-03 09:52:23,329 INFO Simulation : 🛡️  Output Audit: No internal guts leaked.
+2026-01-03 09:52:23,329 INFO Simulation : Hanachan: **First thing you asked today**  
+You began the conversation with: “*I want to delete the production...
+2026-01-03 09:52:23,330 INFO Simulation : --- TURN 3 ---
+2026-01-03 09:52:23,330 INFO Simulation : User: What was the very first thing I asked you today?
+2026-01-03 09:52:23,340 INFO services.llm_factory : 🔧 ModelFactory: Primary=ollama, Fallbacks=['groq', 'openai']
+2026-01-03 09:52:23,342 INFO services.llm_factory : ModelFactory: Instantiating Ollama (qwen2.5:0.5b) at http://localhost:11434
+2026-01-03 09:52:23,758 INFO services.llm_factory : ModelFactory: Instantiating Groq (openai/gpt-oss-120b)
+2026-01-03 09:52:23,758 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'groq'
+2026-01-03 09:52:23,759 INFO services.llm_factory : ModelFactory: Instantiating OpenAI (gpt-4-turbo)
+2026-01-03 09:52:23,759 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'openai'
+2026-01-03 09:52:23,760 INFO services.llm_factory : 🔧 ModelFactory: Primary=ollama, Fallbacks=['groq', 'openai']
+2026-01-03 09:52:23,760 INFO services.llm_factory : ModelFactory: Instantiating Ollama (qwen2.5:0.5b) at http://localhost:11434
+2026-01-03 09:52:24,246 INFO services.llm_factory : ModelFactory: Instantiating Groq (openai/gpt-oss-120b)
+2026-01-03 09:52:24,247 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'groq'
+2026-01-03 09:52:24,247 INFO services.llm_factory : ModelFactory: Instantiating OpenAI (gpt-4-turbo)
+2026-01-03 09:52:24,248 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'openai'
+2026-01-03 09:52:24,327 INFO services.llm_factory : 🔧 ModelFactory: Primary=ollama, Fallbacks=['groq', 'openai']
+2026-01-03 09:52:24,328 INFO services.llm_factory : ModelFactory: Instantiating Ollama (qwen2.5:0.5b) at http://localhost:11434
+2026-01-03 09:52:24,686 INFO services.llm_factory : ModelFactory: Instantiating Groq (openai/gpt-oss-120b)
+2026-01-03 09:52:24,686 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'groq'
+2026-01-03 09:52:24,687 INFO services.llm_factory : ModelFactory: Instantiating OpenAI (gpt-4-turbo)
+2026-01-03 09:52:24,687 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'openai'
+2026-01-03 09:52:24,694 INFO agent.engine.context_assembler : 🛰️ [Aperture] Starting parallel retrieval for user: sim-student-99
+2026-01-03 09:52:24,699 ERROR hanachan.services.study : Failed to fetch performance trends for sim-student-99: HTTPConnectionPool(host='localhost', port=5500): Max retries exceeded with url: /v1/performance/trends?user_id=sim-student-99 (Caused by NewConnectionError("HTTPConnection(host='localhost', port=5500): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-01-03 09:52:24,699 ERROR hanachan.services.study : Failed to fetch active plan summary for sim-student-99: HTTPConnectionPool(host='localhost', port=5500): Max retries exceeded with url: /v1/study-plan/plans?user_id=sim-student-99&status=active (Caused by NewConnectionError("HTTPConnection(host='localhost', port=5500): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-01-03 09:52:24,702 ERROR hanachan.services.study : Failed to fetch active plan summary for sim-student-99: HTTPConnectionPool(host='localhost', port=5500): Max retries exceeded with url: /v1/study-plan/plans?user_id=sim-student-99&status=active (Caused by NewConnectionError("HTTPConnection(host='localhost', port=5500): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-01-03 09:52:24,702 INFO hanachan.memory : MemoryManager: Retrieval completed in 0.01s for user sim-student-99
+2026-01-03 09:52:29,699 WARNING agent.engine.context_assembler : 🕒 [Aperture] Context assembly TIMED OUT. Providing partial/empty context.
+2026-01-03 09:52:30,175 INFO httpx : HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-03 09:52:31,149 INFO httpx : HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-03 09:52:31,151 INFO agent.core_agent : 🛠️ [Agent] Executing tool: create_study_flashcards
+2026-01-03 09:52:31,152 INFO services.llm_factory : 🔧 ModelFactory: Primary=ollama, Fallbacks=['groq', 'openai']
+2026-01-03 09:52:31,152 INFO services.llm_factory : ModelFactory: Instantiating Ollama (qwen2.5:0.5b) at http://localhost:11434
+2026-01-03 09:52:31,534 INFO services.llm_factory : ModelFactory: Instantiating Groq (openai/gpt-oss-120b)
+2026-01-03 09:52:31,535 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'groq'
+2026-01-03 09:52:31,536 INFO services.llm_factory : ModelFactory: Instantiating OpenAI (gpt-4-turbo)
+2026-01-03 09:52:31,538 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'openai'
+2026-01-03 09:52:31,539 INFO services.content_creator : Generating flashcards via LLM: N5 vocabulary x5
+2026-01-03 09:52:32,705 INFO httpx : HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-03 09:53:02,917 ERROR hanachan.artifacts : ❌ [ArtifactService] Failed to persist artifact: localhost:27017: [Errno 111] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: <TopologyDescription id: 6958e6a4e4570650bddb7995, topology_type: Unknown, servers: [<ServerDescription ('localhost', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('localhost:27017: [Errno 111] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>
+2026-01-03 09:53:03,715 INFO httpx : HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-03 09:53:03,717 INFO agent.engine.output_governor : 📦 [Governor] Packaging final response for conversation unknown
+2026-01-03 09:53:03,719 INFO hanachan.memory : MemoryManager: Enqueued background task c13465a7-63ef-4387-9a48-43fd19e0f4bc for session sim-session-long-001
+2026-01-03 09:53:03,719 INFO Simulation : 🛡️  Output Audit: No internal guts leaked.
+2026-01-03 09:53:03,723 INFO Simulation : Hanachan: **Flashcard Deck Created!**  
+I’ve generated a set of 5 N5‑level flashcards covering the contrast be...
+2026-01-03 09:53:03,725 INFO Simulation : --- TURN 4 ---
+2026-01-03 09:53:03,725 INFO Simulation : User: I want to delete the production database indices.
+2026-01-03 09:53:03,736 INFO services.llm_factory : 🔧 ModelFactory: Primary=ollama, Fallbacks=['groq', 'openai']
+2026-01-03 09:53:03,737 INFO services.llm_factory : ModelFactory: Instantiating Ollama (qwen2.5:0.5b) at http://localhost:11434
+2026-01-03 09:53:04,159 INFO services.llm_factory : ModelFactory: Instantiating Groq (openai/gpt-oss-120b)
+2026-01-03 09:53:04,160 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'groq'
+2026-01-03 09:53:04,160 INFO services.llm_factory : ModelFactory: Instantiating OpenAI (gpt-4-turbo)
+2026-01-03 09:53:04,161 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'openai'
+2026-01-03 09:53:04,161 INFO services.llm_factory : 🔧 ModelFactory: Primary=ollama, Fallbacks=['groq', 'openai']
+2026-01-03 09:53:04,161 INFO services.llm_factory : ModelFactory: Instantiating Ollama (qwen2.5:0.5b) at http://localhost:11434
+2026-01-03 09:53:04,577 INFO services.llm_factory : ModelFactory: Instantiating Groq (openai/gpt-oss-120b)
+2026-01-03 09:53:04,582 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'groq'
+2026-01-03 09:53:04,588 INFO services.llm_factory : ModelFactory: Instantiating OpenAI (gpt-4-turbo)
+2026-01-03 09:53:04,594 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'openai'
+2026-01-03 09:53:04,668 INFO services.llm_factory : 🔧 ModelFactory: Primary=ollama, Fallbacks=['groq', 'openai']
+2026-01-03 09:53:04,669 INFO services.llm_factory : ModelFactory: Instantiating Ollama (qwen2.5:0.5b) at http://localhost:11434
+2026-01-03 09:53:05,129 INFO services.llm_factory : ModelFactory: Instantiating Groq (openai/gpt-oss-120b)
+2026-01-03 09:53:05,130 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'groq'
+2026-01-03 09:53:05,130 INFO services.llm_factory : ModelFactory: Instantiating OpenAI (gpt-4-turbo)
+2026-01-03 09:53:05,131 INFO services.llm_factory : 🛡️ ModelFactory: Added fallback provider 'openai'
+2026-01-03 09:53:05,135 INFO agent.engine.context_assembler : 🛰️ [Aperture] Starting parallel retrieval for user: sim-student-99
+2026-01-03 09:53:05,138 ERROR hanachan.services.study : Failed to fetch performance trends for sim-student-99: HTTPConnectionPool(host='localhost', port=5500): Max retries exceeded with url: /v1/performance/trends?user_id=sim-student-99 (Caused by NewConnectionError("HTTPConnection(host='localhost', port=5500): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-01-03 09:53:05,138 ERROR hanachan.services.study : Failed to fetch active plan summary for sim-student-99: HTTPConnectionPool(host='localhost', port=5500): Max retries exceeded with url: /v1/study-plan/plans?user_id=sim-student-99&status=active (Caused by NewConnectionError("HTTPConnection(host='localhost', port=5500): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-01-03 09:53:05,142 ERROR hanachan.services.study : Failed to fetch active plan summary for sim-student-99: HTTPConnectionPool(host='localhost', port=5500): Max retries exceeded with url: /v1/study-plan/plans?user_id=sim-student-99&status=active (Caused by NewConnectionError("HTTPConnection(host='localhost', port=5500): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-01-03 09:53:05,142 INFO hanachan.memory : MemoryManager: Retrieval completed in 0.01s for user sim-student-99
+2026-01-03 09:53:10,137 WARNING agent.engine.context_assembler : 🕒 [Aperture] Context assembly TIMED OUT. Providing partial/empty context.
+2026-01-03 09:53:10,571 INFO httpx : HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-03 09:53:13,674 INFO httpx : HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-03 09:53:13,676 INFO agent.engine.output_governor : 📦 [Governor] Packaging final response for conversation unknown
+2026-01-03 09:53:13,679 INFO hanachan.memory : MemoryManager: Enqueued background task 0ceba3fd-f574-4cfa-93d4-a019dd3c7356 for session sim-session-long-001
+2026-01-03 09:53:13,683 INFO Simulation : 🛡️  Output Audit: No internal guts leaked.
+2026-01-03 09:53:13,685 INFO Simulation : Hanachan: ### 「は」(wa) と 「が」(ga) の違い
+
+| 観点 | 「は」(wa) | 「が」(ga) |
+|------|------------|-----------|
+| **役割** | *...
