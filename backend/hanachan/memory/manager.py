@@ -191,6 +191,34 @@ class MemoryManager:
         except Exception as e:
             logger.error(f"MemoryManager: Failed to enqueue background task: {e}")
 
+    def log_trace(self, session_id: str, user_id: str, event_type: str, data: dict = None):
+        """
+        Non-blocking logging of internal thought traces for HUD.
+        In DEV_MODE or when queue is unavailable, logs synchronously.
+        """
+        import os
+        from tasks.trace import log_agent_trace
+        
+        # Sync mode for development/simulation
+        if os.environ.get("DEV_MODE", "false").lower() == "true" or not self.queue:
+            try:
+                log_agent_trace(session_id, user_id, event_type, data or {})
+            except Exception as e:
+                logger.debug(f"Sync trace logging failed (non-critical): {e}")
+            return
+
+        try:
+            self.queue.enqueue(
+                log_agent_trace,
+                session_id=session_id,
+                user_id=user_id,
+                event_type=event_type,
+                data=data or {},
+                job_timeout='10s' # Traces are small and should be fast
+            )
+        except Exception as e:
+            logger.error(f"Failed to enqueue trace: {e}")
+
     def _parse_json_safely(self, text: str) -> Dict[str, Any]:
         """Robust JSON extraction from LLM output."""
         try:
