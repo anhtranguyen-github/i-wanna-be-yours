@@ -2,6 +2,9 @@ import os
 import logging
 from typing import List, Any, Generator, Dict
 from services.resource_processor import ResourceProcessor
+from agent.engine.context_assembler import ContextAssembler
+from agent.engine.output_governor import OutputGovernor
+from schemas.output import UnifiedOutput
 from langchain_core.messages import SystemMessage, HumanMessage
 from memory.manager import MemoryManager, get_memory_manager
 from services.llm_factory import ModelFactory
@@ -26,6 +29,15 @@ class HanachanAgent:
         self.processor = ResourceProcessor()
         self.memory_manager = get_memory_manager()
         self.skills_dir = os.path.join(os.path.dirname(__file__), "skills")
+        
+        # [SYSTEM] Initialize Context Aperture (Parallel Retrieval)
+        self.context_assembler = ContextAssembler(self.memory_manager)
+        
+        # [SYSTEM] Initialize Governance Engine
+        from agent.engine.policy_engine import PolicyEngine
+        from agent.engine.loader import ConfigLoader
+        self.policy_engine = PolicyEngine()
+        self.manifest = ConfigLoader.get_manifest()
         
         # Initialize LangChain Chat Model via Factory
         self.llm = ModelFactory.create_chat_model(temperature=0.7)
@@ -77,6 +89,22 @@ class HanachanAgent:
         resource_ids = resource_ids or []
         chat_history = chat_history or []
         
+        # 0. Output Governor Prep
+        governor = OutputGovernor(user_id, session_id, "unknown")
+        
+        # --- POLICY: INTENT EVALUATION (Eager Check) ---
+        intent_id = "general_request"
+        # Proxy for intent classification: check for destructive keywords
+        destructive_keywords = ["delete database", "drop table", "destroy database", "delete bank", "delete production", "delete the production database"]
+        if any(kw in prompt.lower() for kw in destructive_keywords):
+            intent_id = "admin_destructive_action"
+            
+        intent_decision = self.policy_engine.evaluate_intent(intent_id, user_id)
+        if not intent_decision["allowed"]:
+            logger.warning(f"🛡️ [Policy] Intent REJECTED: {intent_decision['reason']}")
+            # We skip background persistence for rejected hostile intents
+            return governor.package(f"I'm sorry, I cannot perform that action. {intent_decision['reason']}")
+
         # 0. Check Resource Statuses (Metadata Awareness)
         status_text = ""
         if resource_ids:
@@ -95,30 +123,27 @@ class HanachanAgent:
 
         system_text = status_text + self._get_system_prompt()
 
-        # 1. Gather Resource Context (RAG)
-        if resource_ids:
-            try:
-                # Retrieve relevant chunks from the selected resources via NRS microservice
-                resource_context = self.memory_manager.retrieve_resource_context(prompt, user_id, resource_ids, token=token)
-                if resource_context:
-                    logger.info("📄 [Agent] Injecting resource context into Prompt.")
-                    system_text += f"\n\n## RELEVANT RESOURCE EXCERPTS:\n{resource_context}"
-                else:
-                    logger.warning("⚠️ [Agent] No resource context found for request with resource_ids.")
-            except Exception as e:
-                logger.error(f"Resource Retrieval Error: {e}")
-            
-        # 2. Gather Memory Context (LTM)
-        if os.environ.get("LTM_ENABLED", "True").lower() == "true":
-            try:
-                # Pass user_id for scoped retrieval
-                memory_context = self.memory_manager.retrieve_context(prompt, user_id=user_id, token=token)
-                if memory_context:
-                    system_text += f"\n\n{memory_context}"
-            except Exception as e:
-                logger.error(f"Memory retrieval failed: {e}")
-        else:
-            logger.info("🧠 [Agent] LTM is disabled. Skipping past conversation and KG retrieval.")
+        # [SYSTEM] Aperture implementation: Parallel Context Assembly
+        import asyncio
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        
+        try:
+            learner_context = loop.run_until_complete(
+                self.context_assembler.assemble(
+                    query=prompt,
+                    user_id=user_id,
+                    resource_ids=resource_ids,
+                    token=token
+                )
+            )
+            # Transform to narrative situation report
+            situation_report = learner_context.to_system_narrative()
+            system_text += f"\n\n{situation_report}"
+        except Exception as e:
+            logger.error(f"Aperture assembly failed: {e}")
+        finally:
+            loop.close()
 
         # 3. Construct Messages
         from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
@@ -144,6 +169,7 @@ class HanachanAgent:
             messages.append(SystemMessage(content=f"IMPORTANT STATUS REMINDER:\n{status_text}"))
             
         messages.append(HumanMessage(content=prompt))
+
 
         # --- NEURAL SWARM ROUTING ---
         # First, check if this request should be handled by a specialist sub-agent
@@ -172,7 +198,9 @@ class HanachanAgent:
             if stream:
                 return self._stream_generator(messages, prompt, session_id, user_id, token=token)
             else:
-                return self._run_agent_loop(messages, session_id, user_id, prompt, token=token)
+                # [SYSTEM] Result is now a Unified Package
+                package = self._run_agent_loop(messages, session_id, user_id, prompt, token=token)
+                return package
         except Exception as e:
             error_str = str(e).lower()
             
@@ -199,35 +227,60 @@ class HanachanAgent:
             logger.error(f"Agent Error: {e}")
             return f"My neural core is currently recalibrating. (Error: {str(e)})"
 
-    def _run_agent_loop(self, messages: List[Any], session_id: str, user_id: str, prompt: str, token: str = None, max_iterations: int = 5) -> str:
-        """Handles a multi-turn execution loop with tool support."""
+    def _run_agent_loop(self, messages: List[Any], session_id: str, user_id: str, prompt: str, token: str = None) -> UnifiedOutput:
+        """
+        Handles a multi-turn execution loop with tool support.
+        [SYSTEM] Managed iteration loop with Output Governance.
+        """
+        governor = OutputGovernor(user_id, session_id, "unknown") # TODO: Resolved conversation ID
+        produced_artifact_ids = []
+        
+        max_iterations = self.policy_engine.max_iterations
         for i in range(max_iterations):
-            # 1. Call LLM
+            # 1. Call LLM (Reasoning Proposal)
             response = self.llm_with_tools.invoke(messages)
             
-            # 2. Check for tool calls
+            # 2. Check for tool calls (Action Proposals)
             if hasattr(response, 'tool_calls') and response.tool_calls:
                 from langchain_core.messages import ToolMessage
                 
                 # Append AI message with tool calls
                 messages.append(response)
                 
-                # Execute tools
+                # [SYSTEM] Tool Execution with Policy Check
                 tool_map = {t.name: t for t in self.tools}
                 for tc in response.tool_calls:
                     t_name = tc['name']
                     t_args = tc['args']
-                    tool = tool_map.get(t_name)
                     
+                    # [SYSTEM] TOUCH: Policy Engine Check
+                    decision = self.policy_engine.evaluate_tool_call(t_name, user_id)
+                    
+                    if not decision["allowed"]:
+                        logger.warning(f"🚫 [Policy] Tool execution REJECTED: {t_name}. Reason: {decision['reason']}")
+                        messages.append(ToolMessage(
+                            content=f"SYSTEM REJECTION: {decision['reason']}. You must inform the user why this action cannot be taken.",
+                            tool_call_id=tc['id']
+                        ))
+                        continue
+
+                    tool = tool_map.get(t_name)
                     if tool:
                         logger.info(f"🛠️ [Agent] Executing tool: {t_name}")
-                        if 'user_id' in tool.args:
-                            t_args['user_id'] = user_id
+                        # [SYSTEM] Enforce user_id scoping (No model can change this)
+                        t_args['user_id'] = user_id
                         if 'token' in tool.args:
                             t_args['token'] = token
                         
                         try:
+                            # [SYSTEM] Executes proposal
                             result = tool.invoke(t_args)
+                            # Check if tool result mentions an artifact ID
+                            import re
+                            # Pattern to find MongoDB ObjectID or common UUID-like IDs
+                            matches = re.findall(r'[0-9a-fA-F]{24}', str(result))
+                            if matches: produced_artifact_ids.extend(matches)
+                            
                             messages.append(ToolMessage(content=str(result), tool_call_id=tc['id']))
                         except Exception as e:
                             logger.error(f"Tool execution failed ({t_name}): {e}")
@@ -238,16 +291,49 @@ class HanachanAgent:
             else:
                 # No tool calls, this is the final answer
                 content = response.content
+                
+                # [SYSTEM] Memory Governance Check
+                # Decide if this response is memorable before saving (Fire-and-forget)
+                memory_decision = self.policy_engine.evaluate_memory_save(content)
+                if memory_decision:
+                    # In a real async flow, this would be pushed to a background queue
+                    logger.info(f"🧠 [Memory] Flagged for persistence: {memory_decision['rule_type']}")
+                
+                # Fetch real artifact data for Produced IDs
+                artifacts_to_package = []
+                for aid in set(produced_artifact_ids):
+                    try:
+                        from services.artifact_service import ArtifactService
+                        art = ArtifactService.get_artifact(aid)
+                        if art:
+                            artifacts_to_package.append({
+                                "id": aid,
+                                "type": art.get("type"),
+                                "title": art.get("title"),
+                                "data": art.get("data"),
+                                "metadata": art.get("metadata", {})
+                            })
+                    except: pass
+
+                # Package final output
+                package = governor.package(content, proposed_artifacts=None) # Tools already registered them
+                # But we manually add the artifacts we found to the package for DTO
+                for a in artifacts_to_package:
+                    from schemas.output import PackageArtifact
+                    package.artifacts.append(PackageArtifact(**a))
+
                 self.memory_manager.save_interaction(session_id, user_id, prompt, content)
-                return content
+                return package
         
         # If we hit max iterations
         error_msg = "Agent loop exceeded maximum iterations."
         logger.warning(error_msg)
-        return f"I'm sorry, I'm having trouble finishing that task. ({error_msg})"
+        return governor.package(f"I'm sorry, I'm having trouble finishing that task. ({error_msg})")
 
     def _stream_generator(self, messages: List[Any], user_prompt: str, session_id: str, user_id: str, token: str = None) -> Generator[str, None, None]:
         full_response = ""
+        governor = OutputGovernor(user_id, session_id, "unknown") # TODO: Resolve conversation ID
+        produced_artifact_ids = []
         try:
             # Note: Tool calling in streaming is complex. 
             # For now, we use non-streaming tools if a tool call is detected.
@@ -261,10 +347,22 @@ class HanachanAgent:
                 
                 tool_map = {t.name: t for t in self.tools}
                 for tc in initial_response.tool_calls:
-                    tool = tool_map.get(tc['name'])
+                    t_name = tc['name']
+                    
+                    # [SYSTEM] Policy Check
+                    decision = self.policy_engine.evaluate_tool_call(t_name, user_id)
+                    if not decision["allowed"]:
+                        logger.warning(f"🚫 [Policy Stream] REJECTED: {t_name}")
+                        messages.append(ToolMessage(
+                            content=f"Access Denied: {decision['reason']}",
+                            tool_call_id=tc['id']
+                        ))
+                        continue
+
+                    tool = tool_map.get(t_name)
                     if tool:
                         t_args = tc['args']
-                        if 'user_id' in tool.args: t_args['user_id'] = user_id
+                        t_args['user_id'] = user_id
                         if 'token' in tool.args: t_args['token'] = token
                         result = tool.invoke(t_args)
 

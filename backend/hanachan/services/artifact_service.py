@@ -69,9 +69,15 @@ class ArtifactService:
             "isPublic": False
         }
         
-        result = collection.insert_one(doc)
-        doc["_id"] = str(result.inserted_id)
-        
+        try:
+            result = collection.insert_one(doc)
+            doc["_id"] = str(result.inserted_id)
+        except Exception as e:
+            import logging, uuid
+            logging.getLogger("hanachan.artifacts").error(f"❌ [ArtifactService] Failed to persist artifact: {e}")
+            # Fallback to Ghost ID to keep the session alive
+            doc["_id"] = f"ghost-{uuid.uuid4().hex[:8]}"
+            
         return doc
 
     @staticmethod
