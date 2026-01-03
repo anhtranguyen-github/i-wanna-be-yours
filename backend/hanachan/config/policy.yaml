@@ -1,0 +1,66 @@
+# ═══════════════════════════════════════════════════════════════
+# GLOBAL POLICIES - Shared rules for all interactions
+# ═══════════════════════════════════════════════════════════════
+global:
+  # Mantra: LLM Proposes, System Disposes
+  enforce_isolation: true
+  max_loop_iterations: 5
+  fire_and_forget_memory: true
+
+# ═══════════════════════════════════════════════════════════════
+# IDENTITY POLICIES - Access control by identity type
+# ═══════════════════════════════════════════════════════════════
+identity:
+  # In Hanachan, any authed user has full manifest access.
+  # "Guest" might be scoped differently if they are not fully authed.
+  types:
+    - id: "user"
+      isolation_level: "strict" # Forced user_id scoping on all DB calls
+      tool_access: "*"         # Can use all tools in manifest
+      memory_access: ["episodic", "semantic", "artifacts", "stm", "study"]
+      resource_access: ["*"]
+
+    - id: "guest"
+      isolation_level: "strict"
+      tool_access: ["explain_grammar", "create_study_flashcards"]
+      memory_access: ["stm"]   # Guests only get session memory
+      resource_access: ["public"]
+
+# ═══════════════════════════════════════════════════════════════
+# MEMORY GOVERNANCE - Rules for saving information
+# ═══════════════════════════════════════════════════════════════
+memory_governance:
+  save_rules:
+    - type: "user_preference"
+      patterns: ["I like", "I prefer", "I want to focus on", "my goal is"]
+      action: "save_to_semantic"
+      priority: 3
+
+    - type: "learning_struggle"
+      patterns: ["I don't understand", "hard for me", "confusing", "struggling with", "struggle with"]
+      action: "save_to_semantic"
+      priority: 5
+
+    - type: "general_fact"
+      patterns: ["I live in", "my level is"]
+      action: "save_to_semantic"
+      priority: 2
+
+    - type: "episodic_auto_save"
+      condition: "after_each_interaction"
+      action: "save_to_episodic"
+
+# ═══════════════════════════════════════════════════════════════
+# TOOL GUARDRAILS - Constraints on tool execution
+# ═══════════════════════════════════════════════════════════════
+tool_guardrails:
+  - tool_id: "recalibrate_study_priorities"
+    requires_approval: false # Set to true if we want system-manual intervention
+    rate_limit: "5/hour"
+
+  - tool_id: "create_study_flashcards"
+    rate_limit: "20/day"
+    max_output_tokens: 2000
+
+  - tool_id: "perform_detailed_audit"
+    requires_context: ["study_stats", "learner_history"]

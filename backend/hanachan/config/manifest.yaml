@@ -1,0 +1,192 @@
+version: "1.0"
+name: "hanachan-agent"
+description: "AI Japanese Language Tutor"
+
+# ═══════════════════════════════════════════════════════════════
+# MEMORY STORES - What memory systems exist
+# ═══════════════════════════════════════════════════════════════
+memory:
+  stores:
+    - id: "episodic"
+      type: "vector"
+      backend: "qdrant"
+      collection: "episodic_memory"
+      description: "Timestamped conversation memories"
+    - id: "semantic"
+      type: "graph"
+      backend: "neo4j"
+      description: "User knowledge graph (facts, goals, preferences)"
+    - id: "resources"
+      type: "vector"
+      backend: "qdrant"
+      collection: "resource_vectors"
+      description: "Uploaded document chunks (RAG)"
+    - id: "stm"
+      type: "relational"
+      backend: "postgresql"
+      description: "Active conversation state (Short-Term Memory)"
+    - id: "artifacts"
+      type: "document"
+      backend: "mongodb"
+      collection: "artifacts"
+      description: "AI-generated products (flashcards, quizzes)"
+    - id: "study"
+      type: "api"
+      backend: "study_service"
+      description: "Learner progress and study plans"
+
+# ═══════════════════════════════════════════════════════════════
+# INTENTS - What user intentions the system recognizes
+# ═══════════════════════════════════════════════════════════════
+intents:
+  - id: "explain_grammar"
+    description: "User wants grammar explanation"
+    triggers:
+      keywords: ["explain", "grammar", "meaning", "what is", "how do I use"]
+      patterns:
+        - "(explain|what is|how do)\\s+.*(grammar|particle)"
+        - "meaning of"
+    
+  - id: "create_flashcards"
+    description: "User wants to create study flashcards"
+    triggers:
+      keywords: ["flashcard", "flashcards", "make cards"]
+      patterns:
+        - "(make|create|generate)\\s+(me\\s+)?flashcards?"
+        - "flashcards?\\s+(for|about)"
+    
+  - id: "create_quiz"
+    description: "User wants to take a quiz"
+    triggers:
+      keywords: ["quiz", "test me", "practice quiz"]
+      patterns:
+        - "(make|create|generate|give)\\s+(me\\s+)?(a\\s+)?quiz"
+    
+  - id: "create_exam"
+    description: "User wants a full practice exam"
+    triggers:
+      keywords: ["exam", "practice exam", "full test"]
+    
+  - id: "check_progress"
+    description: "User wants to see their study progress"
+    triggers:
+      keywords: ["progress", "streak", "stats", "how am I doing", "audit"]
+    
+  - id: "recall_past"
+    description: "User asking about past conversations or work"
+    triggers:
+      keywords: ["remember", "last time", "we discussed", "you said", "find my quiz"]
+    
+  - id: "recalibrate"
+    description: "User needs study plan optimization"
+    triggers:
+      keywords: ["recalibrate", "adjust my plan", "focus on"]
+
+  - id: "chat"
+    description: "General conversation"
+    triggers:
+      fallback: true
+
+# ═══════════════════════════════════════════════════════════════
+# TOOLS - What functions the system can execute
+# ═══════════════════════════════════════════════════════════════
+tools:
+  - id: "generate_suggested_goals"
+    function: "backend.hanachan.agent.tools.study_tools.generate_suggested_goals"
+    description: "Suggest actionable SMART goals"
+    
+  - id: "audit_study_progress"
+    function: "backend.hanachan.agent.tools.study_tools.audit_study_progress"
+    description: "Deep audit of study habits and progress"
+    
+  - id: "prepare_milestone_exam"
+    function: "backend.hanachan.agent.tools.study_tools.prepare_milestone_exam"
+    description: "Generate mock exam structure for current milestone"
+    
+  - id: "perform_detailed_audit"
+    function: "backend.hanachan.agent.tools.study_tools.perform_detailed_audit"
+    description: "Dump comprehensive performance audit"
+    
+  - id: "update_goal_progress"
+    function: "backend.hanachan.agent.tools.study_tools.update_goal_progress"
+    description: "Update completion status of a daily goal"
+    
+  - id: "query_learning_records"
+    function: "backend.hanachan.agent.tools.study_tools.query_learning_records"
+    description: "Query past learning records (exams, flashcards, etc.)"
+    
+  - id: "recalibrate_study_priorities"
+    function: "backend.hanachan.agent.tools.study_tools.recalibrate_study_priorities"
+    description: "Update study plan priorities based on trends"
+    
+  - id: "analyze_long_term_alignment"
+    function: "backend.hanachan.agent.tools.study_tools.analyze_long_term_alignment"
+    description: "Analyze alignment with high-level OKRs"
+    
+  - id: "get_habit_consistency_report"
+    function: "backend.hanachan.agent.tools.study_tools.get_habit_consistency_report"
+    description: "Analyze habit momentum and commitments"
+    
+  - id: "evaluate_review_efficiency"
+    function: "backend.hanachan.agent.tools.study_tools.evaluate_review_efficiency"
+    description: "Evaluate effectiveness of review cycles"
+    
+  - id: "create_study_flashcards"
+    function: "backend.hanachan.agent.tools.study_tools.create_study_flashcards"
+    description: "Generate flashcard deck"
+    produces: "artifact"
+    
+  - id: "create_study_quiz"
+    function: "backend.hanachan.agent.tools.study_tools.create_study_quiz"
+    description: "Generate multiple-choice quiz"
+    produces: "artifact"
+    
+  - id: "create_practice_exam"
+    function: "backend.hanachan.agent.tools.study_tools.create_practice_exam"
+    description: "Generate comprehensive practice exam"
+    produces: "artifact"
+
+# ═══════════════════════════════════════════════════════════════
+# SPECIALISTS - What sub-agents exist
+# ═══════════════════════════════════════════════════════════════
+specialists:
+  - id: "sensei"
+    name: "Sensei"
+    description: "Grammar teacher and explainer"
+    handles_intents: ["explain_grammar"]
+    memory_access: ["episodic", "resources", "stm"]
+    
+  - id: "mentor"
+    name: "Mentor"
+    description: "Motivational coach and habit analyst"
+    handles_intents: ["check_progress"]
+    uses_tools: ["get_habit_consistency_report", "analyze_long_term_alignment"]
+    memory_access: ["episodic", "study"]
+    
+  - id: "architect"
+    name: "Architect"
+    description: "Study plan optimizer"
+    handles_intents: ["recalibrate"]
+    uses_tools: ["recalibrate_study_priorities", "generate_suggested_goals"]
+    memory_access: ["episodic", "semantic", "study"]
+    
+  - id: "archivist"
+    name: "Archivist"
+    description: "Memory and work recall specialist"
+    handles_intents: ["recall_past"]
+    uses_tools: ["query_learning_records"]
+    memory_access: ["episodic", "semantic", "artifacts", "stm"]
+    
+  - id: "curator"
+    name: "Curator"
+    description: "Content creator"
+    handles_intents: ["create_flashcards", "create_quiz", "create_exam"]
+    uses_tools: ["create_study_flashcards", "create_study_quiz", "create_practice_exam"]
+    memory_access: ["episodic", "resources"]
+    
+  - id: "evaluator"
+    name: "Evaluator"
+    description: "Performance auditor"
+    handles_intents: ["check_progress"]
+    uses_tools: ["audit_study_progress", "perform_detailed_audit", "evaluate_review_efficiency"]
+    memory_access: ["episodic", "semantic", "study"]
