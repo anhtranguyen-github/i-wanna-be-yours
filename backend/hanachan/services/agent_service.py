@@ -236,8 +236,10 @@ class AgentService:
         ):
             if chunk:
                 chunk_count += 1
-                full_content += chunk
-                yield chunk
+                # Ensure chunk is a string (handles edge cases from fallback models)
+                chunk_str = chunk if isinstance(chunk, str) else str(chunk)
+                full_content += chunk_str
+                yield chunk_str
         
         logger.info(f"✅ Finished stream. Sent {chunk_count} chunks, total length: {len(full_content)}")
 

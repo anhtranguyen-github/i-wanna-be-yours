@@ -11,3 +11,5 @@ from .content.mindmap import Mindmap
 from .content.audio import AudioContent
 from .episode import Episode, EpisodeStatus
 from .memory_job import MemoryJob, JobType, JobStatus
+from .trace import AgentTrace
+from .resource import Resource
